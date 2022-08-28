@@ -5,7 +5,7 @@ namespace App\Http\Controllers\general;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class ProfilePhone extends Controller
+class ProfilePhoneController extends Controller
 {
     /**
      * Display a listing of the resource.
