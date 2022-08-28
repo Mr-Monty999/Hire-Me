@@ -20,7 +20,7 @@ class CreateCommentsTable extends Migration
             $table->string("photo", 255)->nullable();
             $table->bigInteger("post_id")->unsigned();
             $table->bigInteger("profile_id")->unsigned();
-            $table->bigInteger("comment_id")->unsigned();
+            $table->bigInteger("comment_id")->unsigned()->nullable();
             $table->timestamps();
 
             $table->foreign("post_id")->references("id")->on("posts")->cascadeOnDelete()->cascadeOnUpdate();

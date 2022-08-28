@@ -18,12 +18,9 @@ class CreateUsersTable extends Migration
             $table->string('username');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->bigInteger("profile_id")->unsigned();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
-
-            $table->foreign("profile_id")->references("id")->on("profiles")->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 

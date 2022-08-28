@@ -14,14 +14,14 @@ class CreateProfileFollowTable extends Migration
     public function up()
     {
         Schema::create('profile_follow', function (Blueprint $table) {
-            $table->bigInteger("profile_id")->unsigned();
-            $table->bigInteger("profile_followed_id")->unsigned();
+            $table->bigInteger("profile1_id")->unsigned();
+            $table->bigInteger("profile2_id")->unsigned();
             $table->timestamps();
 
-            $table->primary(["profile_id", "profile_followed_id"]);
+            $table->primary(["profile1_id", "profile2_id"]);
 
-            $table->foreign("profile_id")->references("id")->on("profiles")->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreign("profile_followed_id")->references("id")->on("profiles")->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign("profile1_id")->references("id")->on("profiles")->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign("profile2_id")->references("id")->on("profiles")->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 
