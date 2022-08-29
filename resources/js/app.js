@@ -8,6 +8,16 @@ require("./bootstrap");
 
 window.Vue = require("vue").default;
 
+import "bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/css/bootstrap.rtl.min.css";
+import "normalize.css";
+import "./assets/css/main.css";
+
+import NavBar from "./components/layouts/NavBar.vue";
+import FooterBar from "./components/layouts/FooterBar.vue";
+import router from "./router/index";
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -27,4 +37,9 @@ window.Vue = require("vue").default;
 
 const app = new Vue({
     el: "#app",
+    router,
+    components: {
+        NavBar,
+        FooterBar,
+    },
 });
