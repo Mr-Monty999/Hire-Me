@@ -12,8 +12,8 @@
 <body>
 
 
-    <div id="app">
-        <nav-bar></nav-bar>
+    <div id="app" class="">
+        <header-bar></header-bar>
         <router-view></router-view>
         <footer-bar></footer-bar>
     </div>

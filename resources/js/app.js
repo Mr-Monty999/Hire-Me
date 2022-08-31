@@ -14,7 +14,7 @@ import "bootstrap/dist/css/bootstrap.rtl.min.css";
 import "normalize.css";
 import "./assets/css/main.css";
 
-import NavBar from "./components/layouts/NavBar.vue";
+import HeaderBar from "./components/layouts/HeaderBar.vue";
 import FooterBar from "./components/layouts/FooterBar.vue";
 import router from "./router/index";
 
@@ -39,7 +39,7 @@ const app = new Vue({
     el: "#app",
     router,
     components: {
-        NavBar,
+        HeaderBar,
         FooterBar,
     },
 });

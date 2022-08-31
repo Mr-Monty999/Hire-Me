@@ -4,9 +4,13 @@ namespace App\Http\Controllers\general;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLoginRequest;
+use App\Http\Requests\UserRegisterRequest;
+use App\Models\Profile;
+use App\Models\User;
 use App\Services\ResponseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -25,23 +29,30 @@ class UserController extends Controller
         $request->validated();
         $data = $request->all();
 
-        if (Auth::attempt($request->only(["email", "password"]))) {
-            return ResponseService::JsonSuccess($data, "تم تسجيل الدخول بنجاح");
+
+        if (Auth::attempt($request->only(["email", "password"]), true)) {
+            return ResponseService::json(Auth::user(), "تم تسجيل الدخول بنجاح");
         } else
-            return ResponseService::JsonError($data, "الرجاء التحقق من البيانات !");
+            return ResponseService::json($data, "الرجاء التحقق من البيانات !", 401);
     }
 
     public function logout()
     {
         $data = Auth::user();
         Auth::logout();
-        return ResponseService::JsonSuccess($data, "تم تسجيل الخروج بنجاح");
+        return ResponseService::json($data, "تم تسجيل الخروج بنجاح");
     }
 
 
-    public function store(Request $request)
+    public function store(UserRegisterRequest $request)
     {
-        //
+        $request->validated();
+        $data = $request->all();
+        $data["password"] = bcrypt($data["password"]);
+        $data["repassword"] = bcrypt($data["repassword"]);
+        $data["user_id"] =  User::create($data)->id;
+        Profile::create($data);
+        return ResponseService::json($data, "تم إنشاء الحساب بنجاح");
     }
 
     /**

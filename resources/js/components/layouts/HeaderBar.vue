@@ -1,8 +1,10 @@
 <template>
-    <div>
-        <nav class="navbar navbar-expand-lg bg-light">
+    <header>
+        <nav class="navbar navbar-expand-lg bg-success">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">شغلني</a>
+                <router-link class="navbar-brand" :to="{ name: 'home' }"
+                    >شغلني</router-link
+                >
                 <button
                     class="navbar-toggler"
                     type="button"
@@ -24,6 +26,7 @@
                                 class="nav-link"
                                 :to="{ name: 'home' }"
                                 active-class="active"
+                                exact
                                 >الرئيسية</router-link
                             >
                         </li>
@@ -47,6 +50,14 @@
                         <li class="nav-item">
                             <router-link
                                 class="nav-link"
+                                :to="{ name: 'contact' }"
+                                active-class="active"
+                                >تواصل معنا</router-link
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <router-link
+                                class="nav-link"
                                 :to="{ name: 'about' }"
                                 active-class="active"
                                 >حول</router-link
@@ -56,19 +67,20 @@
                 </div>
             </div>
         </nav>
-    </div>
+    </header>
 </template>
 
 <script>
 import axios from "axios";
 
 export default {
-    name: "NavBar",
+    name: "HeaderBar",
 };
 </script>
 
 <style scoped>
 a {
     text-decoration: none;
+    color: white;
 }
 </style>

@@ -13,18 +13,10 @@ class ResponseService
     {
     }
 
-    public static function JsonSuccess($data, $message)
+    public static function json($data, $message, $status = 200)
     {
         $response["data"] = $data;
         $response["message"] = $message;
-        $response["succuess"] = true;
-        return response()->json($response);
-    }
-    public static function JsonError($data, $message)
-    {
-        $response["data"] = $data;
-        $response["message"] = $message;
-        $response["succuess"] = false;
-        return response()->json($response);
+        return response()->json($response, $status);
     }
 }

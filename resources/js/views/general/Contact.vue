@@ -1,5 +1,5 @@
 <template>
-    <main class="container d-flex flex-column align-items-center">Profile</main>
+    <main class="container d-flex flex-column align-items-center">Contact</main>
 </template>
 
 <script>

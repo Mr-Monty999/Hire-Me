@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <footer class="d-flex flex-column align-items-center footer bg-success">
         <h1>Footer</h1>
-    </div>
+    </footer>
 </template>
 
 <script>

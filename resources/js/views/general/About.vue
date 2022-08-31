@@ -1,5 +1,5 @@
 <template>
-    <div></div>
+    <main class="container d-flex flex-column align-items-center">About</main>
 </template>
 
 <script>
