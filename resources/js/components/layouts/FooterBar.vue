@@ -1,6 +1,6 @@
 <template>
     <footer class="d-flex flex-column align-items-center footer bg-success">
-        <h1>Footer</h1>
+        <h1>Made By Monty</h1>
     </footer>
 </template>
 

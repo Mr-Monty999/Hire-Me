@@ -47,4 +47,15 @@ const router = new VueRouter({
     routes,
 });
 
+router.beforeEach(function (to, from, next) {
+    const routes = ["profile"];
+    if (localStorage.getItem("token") == null) {
+        if (routes.includes(to.name)) next({ name: "login" });
+    } else {
+        if (!routes.includes(to.name)) next({ name: "profile" });
+    }
+
+    next();
+});
+
 export default router;

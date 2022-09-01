@@ -18,10 +18,14 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
+
+
+
 Route::group(["namespace" => "general"], function () {
 
     //Users
     Route::resource("users", "UserController");
+
     Route::post("users/login", "UserController@login");
     Route::post("users/logout", "UserController@logout");
 

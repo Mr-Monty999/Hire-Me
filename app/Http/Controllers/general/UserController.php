@@ -31,7 +31,11 @@ class UserController extends Controller
 
 
         if (Auth::attempt($request->only(["email", "password"]), true)) {
-            return ResponseService::json(Auth::user(), "تم تسجيل الدخول بنجاح");
+            // Auth::user()->tokens()->delete();
+            $data = Auth::user();
+            $data["token"] = Auth::user()->createToken($data["email"])->plainTextToken;
+
+            return ResponseService::json($data, "تم تسجيل الدخول بنجاح");
         } else
             return ResponseService::json($data, "الرجاء التحقق من البيانات !", 401);
     }
@@ -50,7 +54,9 @@ class UserController extends Controller
         $data = $request->all();
         $data["password"] = bcrypt($data["password"]);
         $data["repassword"] = bcrypt($data["repassword"]);
-        $data["user_id"] =  User::create($data)->id;
+        $user = User::create($data);
+        $data["user_id"] =  $user->id;
+        $data["token"] = $user->createToken($data["email"])->plainTextToken;
         Profile::create($data);
         return ResponseService::json($data, "تم إنشاء الحساب بنجاح");
     }
