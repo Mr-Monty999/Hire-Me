@@ -47,14 +47,14 @@
                                 >إنضمام</router-link
                             >
                         </li>
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <router-link
                                 class="nav-link"
                                 :to="{ name: 'contact' }"
                                 active-class="active"
                                 >تواصل معنا</router-link
                             >
-                        </li>
+                        </li> -->
                         <li class="nav-item">
                             <router-link
                                 class="nav-link"

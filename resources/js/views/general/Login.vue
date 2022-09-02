@@ -74,7 +74,11 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
-                    localStorage.setItem("token", response.data.data.token);
+                    localStorage.setItem(
+                        "user",
+                        JSON.stringify(response.data.data)
+                    );
+
                     // this.success = true;
                     this.$router.push({ name: "profile" });
                 })

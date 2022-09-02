@@ -1,5 +1,6 @@
 <template>
     <div>
+        <profile-header-bar></profile-header-bar>
         <main class="container rounded bg-white mt-5 mb-5">
             <div class="row">
                 <div class="col-md-3 border-right">
@@ -13,6 +14,16 @@
                         /><span class="font-weight-bold">Edogaru</span
                         ><span class="text-black-50">edogaru@mail.com.my</span
                         ><span>8,000 متابع </span>
+                    </div>
+                    <div>
+                        <textarea
+                            name=""
+                            class="form-control"
+                            id=""
+                            cols="50"
+                            rows="5"
+                            placeholder="عني"
+                        ></textarea>
                     </div>
                 </div>
                 <div class="col-md-5 border-right">
@@ -103,6 +114,15 @@
                                     type="text"
                                     class="form-control"
                                     placeholder="الشارع"
+                                    value=""
+                                />
+                            </div>
+                            <div class="col-md-12">
+                                <label class="labels">الموقع الإلكتروني</label
+                                ><input
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="الموقع الإكتروني"
                                     value=""
                                 />
                             </div>
@@ -231,12 +251,13 @@
 
 <script>
 import axios from "axios";
-// import HeaderBar from "../../components/layouts/HeaderBar.vue";
+import ProfileHeaderBar from "../../components/layouts/ProfileHeaderBar.vue";
 import FooterBar from "../../components/layouts/FooterBar.vue";
 
 export default {
     components: {
         FooterBar,
+        ProfileHeaderBar,
     },
 };
 </script>
@@ -285,5 +306,9 @@ body {
     color: #fff;
     cursor: pointer;
     border: solid 1px #ba68c8;
+}
+
+textarea {
+    resize: none;
 }
 </style>

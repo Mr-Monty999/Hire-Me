@@ -1,6 +1,19 @@
 <template>
-    <footer class="d-flex flex-column align-items-center footer bg-success">
-        <h1>Made By Monty</h1>
+    <footer
+        dir="ltr"
+        class="d-flex footer bg-success justify-content-between text-light align-items-center"
+    >
+        <div>
+            <h4>Made By :</h4>
+            <h6>Montaser Mohammed</h6>
+            <h6>Mohammed Anwer</h6>
+            <h6>Marwaa</h6>
+            <h6>Munjeda</h6>
+        </div>
+        <div>
+            <h4>Supervised By :</h4>
+            <h6>Sufian Ali</h6>
+        </div>
     </footer>
 </template>
 
@@ -12,4 +25,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+footer {
+    padding: 30px;
+}
+</style>

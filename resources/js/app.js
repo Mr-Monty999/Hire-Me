@@ -11,8 +11,10 @@ window.Vue = require("vue").default;
 import "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/css/bootstrap.rtl.min.css";
+import "jquery";
 import "normalize.css";
 import "./assets/css/main.css";
+import "./assets/css/all.min.css";
 
 import HeaderBar from "./components/layouts/HeaderBar.vue";
 import FooterBar from "./components/layouts/FooterBar.vue";

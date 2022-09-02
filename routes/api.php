@@ -27,35 +27,40 @@ Route::group(["namespace" => "general"], function () {
     Route::resource("users", "UserController");
 
     Route::post("users/login", "UserController@login");
-    Route::post("users/logout", "UserController@logout");
 
-    //Profiles
-    Route::resource("profiles", "ProfileController");
+    Route::group(["middleware" => "auth:sanctum"], function () {
+        //User Logout
+        Route::post("users/logout", "UserController@logout");
 
-    //Profile Phones
-    Route::resource("profile-phones", "ProfilePhoneController");
 
-    //Certificates
-    Route::resource("certificates", "CertificateController");
+        //Profiles
+        Route::resource("profiles", "ProfileController");
 
-    //Comments
-    Route::resource("comments", "CommentController");
+        //Profile Phones
+        Route::resource("profile-phones", "ProfilePhoneController");
 
-    //Companies
-    Route::resource("companies", "CompanyController");
+        //Certificates
+        Route::resource("certificates", "CertificateController");
 
-    //Company Phones
-    Route::resource("companies-phones", "CompanyPhoneController");
+        //Comments
+        Route::resource("comments", "CommentController");
 
-    //Experiences
-    Route::resource("experiences", "ExperienceController");
+        //Companies
+        Route::resource("companies", "CompanyController");
 
-    //Posts
-    Route::resource("posts", "PostController");
+        //Company Phones
+        Route::resource("companies-phones", "CompanyPhoneController");
 
-    //Skills
-    Route::resource("skills", "SkillController");
+        //Experiences
+        Route::resource("experiences", "ExperienceController");
 
-    //Tags
-    Route::resource("tags", "TagController");
+        //Posts
+        Route::resource("posts", "PostController");
+
+        //Skills
+        Route::resource("skills", "SkillController");
+
+        //Tags
+        Route::resource("tags", "TagController");
+    });
 });

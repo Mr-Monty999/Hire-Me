@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\general;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProfileUpdateRquest;
 use App\Models\Profile;
+use App\Services\ResponseService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
@@ -68,9 +71,16 @@ class ProfileController extends Controller
      * @param  \App\Models\Profile  $profile
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Profile $profile)
+    public function update(ProfileUpdateRquest $request, Profile $profile)
     {
-        //
+
+        $request->validated();
+        $data = $request->all();
+        $user = Auth::user();
+
+        $user->profile->update($data);
+
+        return ResponseService::json($data, "تم حفظ الملف الشخصي بنجاح");
     }
 
     /**

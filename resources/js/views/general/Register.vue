@@ -42,7 +42,7 @@
                     <input
                         type="password"
                         class="form-control"
-                        placeholder="كلمة المرور إعادة كتابة كلمة المرور"
+                        placeholder="إعادة كتابة كلمة المرور"
                         v-model="repassword"
                     />
                 </div>
@@ -104,7 +104,11 @@ export default {
                 .then((response) => {
                     console.log(response);
                     this.success = true;
-                    localStorage.setItem("token", response.data.data.token);
+                    localStorage.setItem(
+                        "user",
+                        JSON.stringify(response.data.data)
+                    );
+
                     this.$router.push({ name: "profile" });
                 })
                 .catch((error) => {

@@ -7,3 +7,7 @@ main {
     min-height: 90vh;
     padding: 50px;
 }
+
+.bg-success {
+    background-color: #20c997 !important;
+}

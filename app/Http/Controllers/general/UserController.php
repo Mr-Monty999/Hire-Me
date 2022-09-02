@@ -27,24 +27,26 @@ class UserController extends Controller
     public function login(UserLoginRequest $request)
     {
         $request->validated();
-        $data = $request->all();
 
 
         if (Auth::attempt($request->only(["email", "password"]), true)) {
             // Auth::user()->tokens()->delete();
             $data = Auth::user();
-            $data["token"] = Auth::user()->createToken($data["email"])->plainTextToken;
+
+            $data["token"] = Auth::user()->createToken(uniqid("token_"))->plainTextToken;
 
             return ResponseService::json($data, "تم تسجيل الدخول بنجاح");
         } else
-            return ResponseService::json($data, "الرجاء التحقق من البيانات !", 401);
+            return ResponseService::json(null, "الرجاء التحقق من البيانات !", 401);
     }
 
     public function logout()
     {
-        $data = Auth::user();
-        Auth::logout();
-        return ResponseService::json($data, "تم تسجيل الخروج بنجاح");
+        // if (Auth::user() != null)
+        //     $data = Auth::user();
+        // Auth::logout();
+
+        return ResponseService::json(null, "تم تسجيل الخروج بنجاح");
     }
 
 
@@ -56,7 +58,7 @@ class UserController extends Controller
         $data["repassword"] = bcrypt($data["repassword"]);
         $user = User::create($data);
         $data["user_id"] =  $user->id;
-        $data["token"] = $user->createToken($data["email"])->plainTextToken;
+        $data["token"] = $user->createToken(uniqid("token_"))->plainTextToken;
         Profile::create($data);
         return ResponseService::json($data, "تم إنشاء الحساب بنجاح");
     }

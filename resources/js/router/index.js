@@ -49,7 +49,7 @@ const router = new VueRouter({
 
 router.beforeEach(function (to, from, next) {
     const routes = ["profile"];
-    if (localStorage.getItem("token") == null) {
+    if (localStorage.getItem("user") == null) {
         if (routes.includes(to.name)) next({ name: "login" });
     } else {
         if (!routes.includes(to.name)) next({ name: "profile" });
