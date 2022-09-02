@@ -104,12 +104,10 @@ export default {
                 .then((response) => {
                     console.log(response);
                     this.success = true;
-                    localStorage.setItem(
-                        "user",
-                        JSON.stringify(response.data.data)
-                    );
+                    localStorage.setItem("user", JSON.stringify(response.data));
 
-                    this.$router.push({ name: "profile" });
+                    // this.$router.push({ name: "profile" });
+                    location.reload();
                 })
                 .catch((error) => {
                     console.log(error.response);

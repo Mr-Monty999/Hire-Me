@@ -74,13 +74,11 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
-                    localStorage.setItem(
-                        "user",
-                        JSON.stringify(response.data.data)
-                    );
+                    localStorage.setItem("user", JSON.stringify(response.data));
 
                     // this.success = true;
-                    this.$router.push({ name: "profile" });
+                    // this.$router.push({ name: "profile" });
+                    location.reload();
                 })
                 .catch(function (error) {
                     // this.success = false;

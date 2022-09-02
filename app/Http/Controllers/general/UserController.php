@@ -60,6 +60,7 @@ class UserController extends Controller
         $data["user_id"] =  $user->id;
         $data["token"] = $user->createToken(uniqid("token_"))->plainTextToken;
         Profile::create($data);
+        unset($data["password"], $data["repassword"]);
         return ResponseService::json($data, "تم إنشاء الحساب بنجاح");
     }
 

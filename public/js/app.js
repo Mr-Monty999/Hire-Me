@@ -5367,10 +5367,9 @@ __webpack_require__.r(__webpack_exports__);
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        localStorage.removeItem("user");
-        this.$router.push({
-          name: "login"
-        });
+        localStorage.removeItem("user"); // this.$router.push({ name: "login" });
+
+        location.reload();
       })["catch"](function (error) {
         console.log(error.response);
       });
@@ -5502,11 +5501,10 @@ __webpack_require__.r(__webpack_exports__);
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        localStorage.setItem("user", JSON.stringify(response.data.data)); // this.success = true;
+        localStorage.setItem("user", JSON.stringify(response.data)); // this.success = true;
+        // this.$router.push({ name: "profile" });
 
-        this.$router.push({
-          name: "profile"
-        });
+        location.reload();
       })["catch"](function (error) {
         // this.success = false;
         console.log(error.response);
@@ -5595,11 +5593,9 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         console.log(response);
         _this.success = true;
-        localStorage.setItem("user", JSON.stringify(response.data.data));
+        localStorage.setItem("user", JSON.stringify(response.data)); // this.$router.push({ name: "profile" });
 
-        _this.$router.push({
-          name: "profile"
-        });
+        location.reload();
       })["catch"](function (error) {
         console.log(error.response);
         _this.success = false;

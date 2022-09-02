@@ -122,7 +122,8 @@ export default {
                     console.log(response);
                     localStorage.removeItem("user");
 
-                    this.$router.push({ name: "login" });
+                    // this.$router.push({ name: "login" });
+                    location.reload();
                 })
                 .catch(function (error) {
                     console.log(error.response);

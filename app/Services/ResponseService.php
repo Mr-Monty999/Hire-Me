@@ -15,8 +15,9 @@ class ResponseService
 
     public static function json($data, $message, $status = 200)
     {
-        $response["data"] = $data;
-        $response["message"] = $message;
-        return response()->json($response, $status);
+        // $response["data"] = $data;
+        // $response["message"] = $message;
+        $data["message"] = $message;
+        return response()->json($data, $status);
     }
 }
