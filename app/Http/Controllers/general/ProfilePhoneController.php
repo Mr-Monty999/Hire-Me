@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\general;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProfilePhoneStoreRequest;
+use App\Models\Profile;
+use App\Services\ResponseService;
 use Illuminate\Http\Request;
 
 class ProfilePhoneController extends Controller
@@ -33,9 +36,13 @@ class ProfilePhoneController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProfilePhoneStoreRequest $request)
     {
-        //
+        $request->validated();
+        $profile = Profile::find($request->user_id);
+        $profile->phones()->create($request->all());
+
+        return ResponseService::json($request->all(), "تم إضافة رقم الهاتف بنجاح");
     }
 
     /**

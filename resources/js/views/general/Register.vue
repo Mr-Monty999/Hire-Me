@@ -22,6 +22,14 @@
                 </div>
                 <div class="input-group mb-3">
                     <input
+                        type="date"
+                        class="form-control"
+                        placeholder="تاريخ الميلاد"
+                        v-model="birthdate"
+                    />
+                </div>
+                <div class="input-group mb-3">
+                    <input
                         type="text"
                         class="form-control"
                         placeholder="البريد الإلكتروني @example.com"
@@ -66,9 +74,9 @@
 
 <script>
 import axios from "axios";
-import headerAuth from "../../helpers/auth";
 import HeaderBar from "../../components/layouts/HeaderBar.vue";
 import FooterBar from "../../components/layouts/FooterBar.vue";
+import headerAuth from "../../helpers/auth";
 
 export default {
     data() {
@@ -77,6 +85,7 @@ export default {
             lastname: "",
             email: "",
             password: "",
+            birthdate: "",
             repassword: "",
             success: null,
         };
@@ -87,15 +96,17 @@ export default {
     },
     methods: {
         register() {
+            var vm = this;
             axios
                 .post(
                     "/api/users",
                     {
-                        firstname: this.firstname,
-                        lastname: this.lastname,
-                        email: this.email,
-                        password: this.password,
-                        repassword: this.repassword,
+                        firstname: vm.firstname,
+                        lastname: vm.lastname,
+                        email: vm.email,
+                        birthdate: vm.birthdate,
+                        password: vm.password,
+                        repassword: vm.repassword,
                     },
                     {
                         headers: headerAuth,
@@ -103,15 +114,14 @@ export default {
                 )
                 .then((response) => {
                     console.log(response);
-                    this.success = true;
+                    vm.success = true;
                     localStorage.setItem("user", JSON.stringify(response.data));
 
-                    // this.$router.push({ name: "profile" });
-                    location.reload();
+                    vm.$router.push({ name: "profile" });
                 })
                 .catch((error) => {
                     console.log(error.response);
-                    this.success = false;
+                    vm.success = false;
                 });
         },
     },

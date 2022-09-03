@@ -17,7 +17,7 @@ class CreateExperiencesTable extends Migration
             $table->id();
             $table->date("start");
             $table->date("end");
-            $table->string("posistion", 255);
+            $table->string("position", 255);
             $table->string("company_name", 255);
             $table->bigInteger("company_id")->unsigned()->nullable();
             $table->bigInteger("profile_id")->unsigned();

@@ -13,6 +13,7 @@ class Profile extends Model
         "firstname",
         "lastname",
         "nickname",
+        "birthdate",
         "about",
         "avatar",
         "background_photo",

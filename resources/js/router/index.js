@@ -26,7 +26,7 @@ const routes = [
         component: Login,
     },
     {
-        path: "/profile",
+        path: "/profile/:id",
         name: "profile",
         component: Profile,
     },
@@ -52,7 +52,10 @@ router.beforeEach(function (to, from, next) {
     if (localStorage.getItem("user") == null) {
         if (routes.includes(to.name)) next({ name: "login" });
     } else {
-        if (!routes.includes(to.name)) next({ name: "profile" });
+        if (!routes.includes(to.name))
+            next(
+                "/profile/" + JSON.parse(localStorage.getItem("user")).id + ""
+            );
     }
 
     next();

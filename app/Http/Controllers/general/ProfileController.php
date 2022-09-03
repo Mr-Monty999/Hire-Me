@@ -5,6 +5,7 @@ namespace App\Http\Controllers\general;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProfileUpdateRquest;
 use App\Models\Profile;
+use App\Models\ProfilePhone;
 use App\Services\ResponseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -50,7 +51,13 @@ class ProfileController extends Controller
      */
     public function show(Profile $profile)
     {
-        //
+        $data = $profile;
+        $data["phones"] = $profile->phones;
+        $data["skills"] = $profile->skills;
+        $data["experiences"] = $profile->experiences;
+        $data["user"] = $profile->user;
+
+        return ResponseService::json($profile, "تم جلب البيانات بنجاح");
     }
 
     /**
@@ -76,9 +83,7 @@ class ProfileController extends Controller
 
         $request->validated();
         $data = $request->all();
-        $user = Auth::user();
-
-        $user->profile->update($data);
+        $profile->update($data);
 
         return ResponseService::json($data, "تم حفظ الملف الشخصي بنجاح");
     }

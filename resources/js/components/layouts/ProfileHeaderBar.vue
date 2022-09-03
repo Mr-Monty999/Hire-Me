@@ -30,7 +30,7 @@
                                 aria-expanded="false"
                             >
                                 <span>
-                                    <span>منتصر محمد</span>
+                                    <span>{{ firstname }} {{ lastname }}</span>
                                     <img
                                         class="personal-photo"
                                         src="https://cdn.pixabay.com/photo/2017/02/04/12/25/man-2037255_960_720.jpg"
@@ -108,8 +108,17 @@ import headerAuth from "../../helpers/auth";
 export default {
     name: "ProfileHeaderBar",
     components: {},
+    data() {
+        return {
+            firstname: "",
+            lastname: "",
+            user_id: "",
+        };
+    },
     methods: {
         logout() {
+            var vm = this;
+
             axios
                 .post(
                     "/api/users/logout",
@@ -121,14 +130,40 @@ export default {
                 .then(function (response) {
                     console.log(response);
                     localStorage.removeItem("user");
-
-                    // this.$router.push({ name: "login" });
-                    location.reload();
+                    vm.$router.push({ name: "login" });
                 })
                 .catch(function (error) {
                     console.log(error.response);
                 });
         },
+        viewProfile() {
+            var vm = this;
+
+            vm.$router.push({ name: "profile", params: [vm.user_id] });
+        },
+
+        getProfileInfo(userId = this.user_id) {
+            var vm = this;
+
+            axios
+                .get("/api/profiles/" + userId + "", {
+                    headers: headerAuth,
+                })
+                .then(function (response) {
+                    console.log(response);
+                    vm.firstname = response.data.firstname;
+                    vm.lastname = response.data.lastname;
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                });
+        },
+    },
+
+    created() {
+        let userId = JSON.parse(localStorage.getItem("user")).id;
+        this.user_id = userId;
+        this.getProfileInfo();
     },
 };
 </script>

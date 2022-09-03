@@ -58,10 +58,9 @@ class UserController extends Controller
         $data["repassword"] = bcrypt($data["repassword"]);
         $user = User::create($data);
         $data["user_id"] =  $user->id;
-        $data["token"] = $user->createToken(uniqid("token_"))->plainTextToken;
+        $user["token"] = $user->createToken(uniqid("token_"))->plainTextToken;
         Profile::create($data);
-        unset($data["password"], $data["repassword"]);
-        return ResponseService::json($data, "تم إنشاء الحساب بنجاح");
+        return ResponseService::json($user, "تم إنشاء الحساب بنجاح");
     }
 
     /**

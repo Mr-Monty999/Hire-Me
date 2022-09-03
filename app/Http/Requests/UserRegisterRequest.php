@@ -26,6 +26,7 @@ class UserRegisterRequest extends FormRequest
         return [
             "firstname" => "required",
             "lastname" => "required",
+            "birthdate" => "date",
             "email" => "email|unique:users,email",
             "password" => "required",
             "repassword" => "same:password"
@@ -40,7 +41,9 @@ class UserRegisterRequest extends FormRequest
             "email.unique" => "هذا البريد موجود بالفعل !",
             "email.email" => "البريد الإلكتروني غير صالح !",
             "password.required" => "الرجاء كتابة كلمة السر !",
-            "repassword.same" => "كلمة السر لاتتطابق !"
+            "repassword.same" => "كلمة السر لاتتطابق !",
+            "birthdate.date" => "الرجاء إدخال تاريخ فقط !"
+
 
         ];
     }

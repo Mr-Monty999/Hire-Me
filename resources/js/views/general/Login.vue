@@ -43,9 +43,9 @@
 
 <script>
 import axios from "axios";
-import headerAuth from "../../helpers/auth";
 import HeaderBar from "../../components/layouts/HeaderBar.vue";
 import FooterBar from "../../components/layouts/FooterBar.vue";
+import headerAuth from "../../helpers/auth";
 
 export default {
     data() {
@@ -61,12 +61,14 @@ export default {
     },
     methods: {
         login() {
+            var vm = this;
+
             axios
                 .post(
                     "/api/users/login",
                     {
-                        email: this.email,
-                        password: this.password,
+                        email: vm.email,
+                        password: vm.password,
                     },
                     {
                         headers: headerAuth,
@@ -76,12 +78,11 @@ export default {
                     console.log(response);
                     localStorage.setItem("user", JSON.stringify(response.data));
 
-                    // this.success = true;
-                    // this.$router.push({ name: "profile" });
-                    location.reload();
+                    vm.success = true;
+                    vm.$router.push({ name: "profile" });
                 })
                 .catch(function (error) {
-                    // this.success = false;
+                    vm.success = false;
                     console.log(error.response);
                 });
         },
