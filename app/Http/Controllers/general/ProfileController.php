@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\general;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProfileStoreRequest;
 use App\Http\Requests\ProfileUpdateRquest;
 use App\Models\Profile;
 use App\Models\ProfilePhone;
+use App\Models\User;
 use App\Services\ResponseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +21,8 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        //
+        $data = Profile::with("phones", "skills", "experiences", "posts")->get();
+        return ResponseService::json($data, "تم جلب البيانات بنجاح");
     }
 
     /**
@@ -29,7 +32,6 @@ class ProfileController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -38,9 +40,12 @@ class ProfileController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProfileStoreRequest $request)
     {
-        //
+        $request->validated();
+        Profile::create($request->all());
+
+        return ResponseService::json($request->all(), "تم اضافة الملف الشخصي");
     }
 
     /**
@@ -49,13 +54,10 @@ class ProfileController extends Controller
      * @param  \App\Models\Profile  $profile
      * @return \Illuminate\Http\Response
      */
-    public function show(Profile $profile)
+    public function show($id)
     {
-        $data = $profile;
-        $data["phones"] = $profile->phones;
-        $data["skills"] = $profile->skills;
-        $data["experiences"] = $profile->experiences;
-        $data["user"] = $profile->user;
+
+        $profile = Profile::with("phones", "skills", "experiences", "posts")->where("user_id", $id)->first();
 
         return ResponseService::json($profile, "تم جلب البيانات بنجاح");
     }
@@ -78,11 +80,13 @@ class ProfileController extends Controller
      * @param  \App\Models\Profile  $profile
      * @return \Illuminate\Http\Response
      */
-    public function update(ProfileUpdateRquest $request, Profile $profile)
+    public function update(ProfileUpdateRquest $request, $id)
     {
 
         $request->validated();
         $data = $request->all();
+
+        $profile = Profile::where("user_id", $id)->first();
         $profile->update($data);
 
         return ResponseService::json($data, "تم حفظ الملف الشخصي بنجاح");
@@ -94,8 +98,8 @@ class ProfileController extends Controller
      * @param  \App\Models\Profile  $profile
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Profile $profile)
+    public function destroy($id)
     {
-        //
+        $profile = Profile::where("user_id", $id)->first();
     }
 }

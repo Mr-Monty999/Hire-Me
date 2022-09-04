@@ -40,8 +40,13 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a class="dropdown-item" href="#"
-                                        >الملف الشخصي</a
+                                    <router-link
+                                        class="dropdown-item"
+                                        :to="{
+                                            name: 'profile',
+                                            params: { id: user_id },
+                                        }"
+                                        >الملف الشخصي</router-link
                                     >
                                 </li>
                                 <li>
@@ -118,6 +123,7 @@ export default {
     methods: {
         logout() {
             var vm = this;
+            localStorage.removeItem("user");
 
             axios
                 .post(
@@ -129,8 +135,8 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
-                    localStorage.removeItem("user");
-                    vm.$router.push({ name: "login" });
+                    // vm.$router.push({ name: "login" });
+                    location.reload();
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -139,7 +145,7 @@ export default {
         viewProfile() {
             var vm = this;
 
-            vm.$router.push({ name: "profile", params: [vm.user_id] });
+            vm.$router.push({ name: "profile", params: { id: vm.user_id } });
         },
 
         getProfileInfo(userId = this.user_id) {

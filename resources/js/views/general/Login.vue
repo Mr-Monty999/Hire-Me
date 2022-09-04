@@ -79,7 +79,13 @@ export default {
                     localStorage.setItem("user", JSON.stringify(response.data));
 
                     vm.success = true;
-                    vm.$router.push({ name: "profile" });
+                    // vm.$router.push({
+                    //     name: "profile",
+                    //     params: {
+                    //         id: response.data.id,
+                    //     },
+                    // });
+                    location.reload();
                 })
                 .catch(function (error) {
                     vm.success = false;

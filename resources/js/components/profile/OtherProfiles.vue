@@ -1,6 +1,6 @@
 <template>
     <div>
-        <main class="container rounded bg-white mt-5 mb-5">
+        <main class="container rounded mt-5 mb-5">
             <div class="row">
                 <div class="col-md-3 border-right">
                     <div
@@ -16,7 +16,7 @@
                         ><span>8,000 متابع </span>
                     </div>
                     <div>
-                        <div class="form-control" readonly>
+                        <div class="form-control text-break">
                             {{ about }}
                         </div>
                     </div>
@@ -99,7 +99,7 @@
                         <div
                             class="d-flex justify-content-between align-items-center experience"
                         >
-                            <h3>الخبرة</h3>
+                            <h3>الخبرات</h3>
                         </div>
                         <br />
                         <div class="col-md-12">
@@ -115,12 +115,16 @@
                             >
                                 <h3>المهارات</h3>
                             </div>
-                            <div class="col-md-12">
-                                <label class="labels">إسم المهارة</label>
-                                <div class="">
-                                    {{ skill_name }}
-                                </div>
-                            </div>
+
+                            <ul class="list-group list">
+                                <li
+                                    class="text-center list-group-item"
+                                    v-for="(skill, i) in skills"
+                                    :key="i"
+                                >
+                                    {{ skill.name }}
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -163,6 +167,7 @@ export default {
             experiences: "",
             skills: "",
             user_id: 0,
+            profile_id: 0,
             success: null,
         };
     },
@@ -176,6 +181,7 @@ export default {
                 })
                 .then(function (response) {
                     console.log(response);
+                    vm.profile_id = response.data.id;
                     vm.firstname = response.data.firstname;
                     vm.lastname = response.data.lastname;
                     vm.nickname = response.data.nickname;

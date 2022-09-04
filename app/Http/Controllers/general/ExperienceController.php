@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\general;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ExperienceStoreRequest;
+use App\Models\Company;
 use App\Models\Experience;
+use App\Services\ResponseService;
 use Illuminate\Http\Request;
 
 class ExperienceController extends Controller
@@ -15,7 +18,9 @@ class ExperienceController extends Controller
      */
     public function index()
     {
-        //
+
+        $data = Experience::with("phones", "skills", "experiences", "posts")->get();
+        return ResponseService::json($data, "تم جلب البيانات بنجاح");
     }
 
     /**
@@ -34,9 +39,18 @@ class ExperienceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ExperienceStoreRequest $request)
     {
-        //
+        $request->validated();
+        $data = $request->all();
+
+        $company = Company::where("name", $data["company_name"])->first();
+
+        if ($company != null)
+            $data["company_id"] = $company->id;
+
+        $ex =   Experience::create($data);
+        return ResponseService::json($ex, "تم إضافة الخبرة بنجاح");
     }
 
     /**

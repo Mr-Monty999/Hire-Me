@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\general;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SkillStoreRequest;
 use App\Models\Skill;
+use App\Services\ResponseService;
 use Illuminate\Http\Request;
 
 class SkillController extends Controller
@@ -15,7 +17,9 @@ class SkillController extends Controller
      */
     public function index()
     {
-        //
+
+        $data = Skill::with("profiles")->get();
+        return ResponseService::json($data, "تم جلب البيانات بنجاح");
     }
 
     /**
@@ -34,9 +38,20 @@ class SkillController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(SkillStoreRequest $request)
     {
-        //
+        $request->validated();
+        $data = $request->all();
+
+        $skill = Skill::where("name", $data["name"])->first();
+
+        if ($skill == null)
+            $skill = Skill::create($data);
+
+        $skill->profiles()->syncWithoutDetaching($data["profile_id"]);
+
+
+        return ResponseService::json($skill, "تم إضافة المهارة بنجاح");
     }
 
     /**

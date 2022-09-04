@@ -40,6 +40,17 @@ class UserController extends Controller
             return ResponseService::json(null, "الرجاء التحقق من البيانات !", 401);
     }
 
+    public function register(UserRegisterRequest $request)
+    {
+        $request->validated();
+        $data = $request->all();
+        $data["password"] = bcrypt($data["password"]);
+        $user = User::create($data);
+        $data["user_id"] =  $user->id;
+        $user["token"] = $user->createToken(uniqid("token_"))->plainTextToken;
+        Profile::create($data);
+        return ResponseService::json($user, "تم إنشاء الحساب بنجاح");
+    }
     public function logout()
     {
         // if (Auth::user() != null)
@@ -52,15 +63,6 @@ class UserController extends Controller
 
     public function store(UserRegisterRequest $request)
     {
-        $request->validated();
-        $data = $request->all();
-        $data["password"] = bcrypt($data["password"]);
-        $data["repassword"] = bcrypt($data["repassword"]);
-        $user = User::create($data);
-        $data["user_id"] =  $user->id;
-        $user["token"] = $user->createToken(uniqid("token_"))->plainTextToken;
-        Profile::create($data);
-        return ResponseService::json($user, "تم إنشاء الحساب بنجاح");
     }
 
     /**

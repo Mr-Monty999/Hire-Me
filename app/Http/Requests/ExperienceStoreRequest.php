@@ -24,7 +24,11 @@ class ExperienceStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            "start" => "date",
+            "end" => "date",
+            "position" => "required",
+            "company_name" => "required",
+            "profile_id" => "required"
         ];
     }
 }

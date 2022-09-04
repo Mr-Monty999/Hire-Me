@@ -39,7 +39,7 @@ class ProfilePhoneController extends Controller
     public function store(ProfilePhoneStoreRequest $request)
     {
         $request->validated();
-        $profile = Profile::find($request->user_id);
+        $profile = Profile::where("user_id", $request->user_id)->first();
         $profile->phones()->create($request->all());
 
         return ResponseService::json($request->all(), "تم إضافة رقم الهاتف بنجاح");

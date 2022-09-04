@@ -99,14 +99,14 @@ export default {
             var vm = this;
             axios
                 .post(
-                    "/api/users",
+                    "/api/users/register",
                     {
-                        firstname: vm.firstname,
-                        lastname: vm.lastname,
                         email: vm.email,
-                        birthdate: vm.birthdate,
                         password: vm.password,
                         repassword: vm.repassword,
+                        firstname: vm.firstname,
+                        lastname: vm.lastname,
+                        birthdate: vm.birthdate,
                     },
                     {
                         headers: headerAuth,
@@ -117,7 +117,14 @@ export default {
                     vm.success = true;
                     localStorage.setItem("user", JSON.stringify(response.data));
 
-                    vm.$router.push({ name: "profile" });
+                    // vm.$router.push({
+                    //     name: "profile",
+                    //     params: {
+                    //         id: response.data.id,
+                    //     },
+                    // });
+
+                    location.reload();
                 })
                 .catch((error) => {
                     console.log(error.response);

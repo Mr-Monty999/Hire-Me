@@ -25,8 +25,8 @@ Route::group(["namespace" => "general"], function () {
 
     //Users
     Route::resource("users", "UserController");
-
     Route::post("users/login", "UserController@login");
+    Route::post("users/register", "UserController@register");
 
     Route::group(["middleware" => "auth:sanctum"], function () {
         //User Logout

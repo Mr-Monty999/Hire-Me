@@ -53,9 +53,12 @@ router.beforeEach(function (to, from, next) {
         if (routes.includes(to.name)) next({ name: "login" });
     } else {
         if (!routes.includes(to.name))
-            next(
-                "/profile/" + JSON.parse(localStorage.getItem("user")).id + ""
-            );
+            next({
+                name: "profile",
+                params: {
+                    id: JSON.parse(localStorage.getItem("user")).id,
+                },
+            });
     }
 
     next();

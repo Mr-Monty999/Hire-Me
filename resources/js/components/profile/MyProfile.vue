@@ -1,6 +1,6 @@
 <template>
     <div>
-        <main class="container rounded bg-white mt-5 mb-5">
+        <main class="container rounded mt-5 mb-5">
             <div class="row">
                 <div class="col-md-3 border-right">
                     <div
@@ -56,7 +56,7 @@
                                 />
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <label class="labels">اللقب</label
                                 ><input
                                     type="text"
@@ -247,7 +247,11 @@
                             />
                         </div>
                         <div class="mt-1">
-                            <button class="btn btn-success" type="button">
+                            <button
+                                @click="addExperience"
+                                class="btn btn-success"
+                                type="button"
+                            >
                                 اضافة الخبرة
                             </button>
                         </div>
@@ -258,6 +262,7 @@
                             >
                                 <h3>المهارات</h3>
                             </div>
+
                             <div class="col-md-12">
                                 <label class="labels">إسم المهارة</label
                                 ><input
@@ -269,10 +274,23 @@
                                 />
                             </div>
                             <div class="mt-1">
-                                <button class="btn btn-success" type="button">
+                                <button
+                                    @click="addSkill"
+                                    class="btn btn-success"
+                                    type="button"
+                                >
                                     اضافة المهارة
                                 </button>
                             </div>
+                            <ul class="list-group list">
+                                <li
+                                    class="text-center list-group-item"
+                                    v-for="(skill, i) in skills"
+                                    :key="i"
+                                >
+                                    {{ skill.name }}
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -315,6 +333,7 @@ export default {
             experiences: "",
             skills: "",
             user_id: 0,
+            profile_id: 0,
             success: null,
         };
     },
@@ -366,7 +385,7 @@ export default {
                         start: vm.start,
                         end: vm.end,
                         position: vm.position,
-                        user_id: vm.user_id,
+                        profile_id: vm.profile_id,
                     },
 
                     {
@@ -375,6 +394,10 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
+                    vm.company_name = "";
+                    vm.start = "";
+                    vm.end = "";
+                    vm.position = "";
 
                     vm.success = true;
                 })
@@ -391,7 +414,7 @@ export default {
                     "/api/skills",
                     {
                         name: this.skill_name,
-                        user_id: vm.user_id,
+                        profile_id: vm.profile_id,
                     },
 
                     {
@@ -400,6 +423,8 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
+                    vm.skills.push(response.data);
+                    vm.skill_name = "";
 
                     vm.success = true;
                 })
@@ -425,7 +450,7 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
-
+                    vm.phone = "";
                     vm.success = true;
                 })
                 .catch(function (error) {
@@ -442,6 +467,7 @@ export default {
                 })
                 .then(function (response) {
                     console.log(response);
+                    vm.profile_id = response.data.id;
                     vm.firstname = response.data.firstname;
                     vm.lastname = response.data.lastname;
                     vm.nickname = response.data.nickname;

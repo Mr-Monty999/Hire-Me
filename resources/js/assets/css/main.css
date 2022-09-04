@@ -6,8 +6,16 @@
 main {
     min-height: 90vh;
     padding: 50px;
+    background-color: #f3f2ef !important;
 }
 
 .bg-success {
     background-color: #20c997 !important;
+}
+
+.list {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    max-height: 300px;
+    overflow-y: scroll;
 }
