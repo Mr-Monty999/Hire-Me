@@ -59,6 +59,7 @@ Route::group(["namespace" => "general"], function () {
 
         //Skills
         Route::resource("skills", "SkillController");
+        Route::delete("skills/detach/{profileId}/{skillId}", "SkillController@detach");
 
         //Tags
         Route::resource("tags", "TagController");

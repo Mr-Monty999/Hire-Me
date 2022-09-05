@@ -4,6 +4,7 @@ namespace App\Http\Controllers\general;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SkillStoreRequest;
+use App\Models\Profile;
 use App\Models\Skill;
 use App\Services\ResponseService;
 use Illuminate\Http\Request;
@@ -53,7 +54,13 @@ class SkillController extends Controller
 
         return ResponseService::json($skill, "تم إضافة المهارة بنجاح");
     }
+    public function detach($profileId, $skillId)
+    {
+        $skill = Skill::find($skillId);
+        $skill->profiles()->detach($profileId);
 
+        return ResponseService::json($skill, "تم حذف المهارة بنجاح");
+    }
     /**
      * Display the specified resource.
      *
@@ -62,7 +69,7 @@ class SkillController extends Controller
      */
     public function show(Skill $skill)
     {
-        //
+        return ResponseService::json($skill, "تم عرض المهارة بنجاح");
     }
 
     /**
@@ -96,6 +103,8 @@ class SkillController extends Controller
      */
     public function destroy(Skill $skill)
     {
-        //
+        $skill->delete();
+
+        return ResponseService::json($skill, "تم حذف المهارة بنجاح");
     }
 }

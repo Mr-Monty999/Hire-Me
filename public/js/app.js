@@ -5591,6 +5591,20 @@ __webpack_require__.r(__webpack_exports__);
       if (diff > 0) return diff + " شهر";
       diff = end.getDate() - start.getDate();
       if (diff > 0) return diff + " يوم";
+    },
+    deleteSkill: function deleteSkill(profileId, skillId) {
+      var vm = this;
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/skills/detach/" + profileId + "/" + skillId, {
+        headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
+      }).then(function (response) {
+        console.log(response);
+        var index = vm.skills.findIndex(function (el) {
+          return el.id == skillId;
+        });
+        vm.skills.splice(index, 1);
+      })["catch"](function (error) {
+        console.log(error.response);
+      });
     }
   },
   created: function created() {
@@ -6275,12 +6289,14 @@ var render = function render() {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _c("div", [_c("main", {
+  return _c("div", {
+    staticClass: "root-div"
+  }, [_c("main", {
     staticClass: "container rounded mt-5 mb-5"
   }, [_c("div", {
-    staticClass: "row"
+    staticClass: "row gap-4"
   }, [_c("div", {
-    staticClass: "col-md-3 border-right"
+    staticClass: "col-md-3 border-right bg-mine"
   }, [_c("div", {
     staticClass: "d-flex flex-column align-items-center text-center p-3 py-5"
   }, [_c("img", {
@@ -6758,7 +6774,7 @@ var render = function render() {
       }
     }
   })])]), _vm._v(" "), _vm._m(2), _vm._v(" "), _c("div", {
-    staticClass: "col-md-4"
+    staticClass: "col-md-3 bg-mine"
   }, [_c("div", {
     staticClass: "p-3 py-5"
   }, [_vm._m(3), _vm._v(" "), _c("br"), _vm._v(" "), _c("div", {
@@ -7026,11 +7042,7 @@ var render = function render() {
         _vm.skill_name = $event.target.value;
       }
     }
-  })]), _vm._v(" "), _vm.addSkillSuccess ? _c("div", {
-    staticClass: "alert alert-success text-center"
-  }, [_vm._v("\n                                                تم اضافة المهارة بنجاح\n                                            ")]) : _vm.addSkillSuccess == false ? _c("div", {
-    staticClass: "alert alert-danger text-center"
-  }, [_vm._v("\n                                                الرجاء التحقق من البيانات\n                                            ")]) : _vm._e()]), _vm._v(" "), _c("div", {
+  })])]), _vm._v(" "), _c("div", {
     staticClass: "modal-footer"
   }, [_c("button", {
     staticClass: "btn btn-secondary",
@@ -7041,18 +7053,77 @@ var render = function render() {
   }, [_vm._v("\n                                                إغلاق\n                                            ")]), _vm._v(" "), _c("button", {
     staticClass: "btn btn-success",
     attrs: {
-      type: "button"
+      type: "button",
+      "data-bs-dismiss": "modal"
     },
     on: {
       click: _vm.addSkill
     }
-  }, [_vm._v("\n                                                إضافة\n                                            ")])])])])])]), _vm._v(" "), _c("ul", {
+  }, [_vm._v("\n                                                إضافة\n                                            ")])])])])])]), _vm._v(" "), _vm.addSkillSuccess ? _c("div", {
+    staticClass: "alert alert-success text-center"
+  }, [_vm._v("\n                            تم اضافة المهارة بنجاح\n                        ")]) : _vm.addSkillSuccess == false ? _c("div", {
+    staticClass: "alert alert-danger text-center"
+  }, [_vm._v("\n                            الرجاء التحقق من البيانات\n                        ")]) : _vm._e(), _vm._v(" "), _c("ul", {
     staticClass: "list-group list"
   }, _vm._l(_vm.skills, function (skill, i) {
     return _c("li", {
       key: i,
       staticClass: "text-center list-group-item"
-    }, [_vm._v("\n                                " + _vm._s(skill.name) + "\n                            ")]);
+    }, [_c("p", [_vm._v(_vm._s(skill.name))]), _vm._v(" "), _c("button", {
+      staticClass: "btn btn-danger",
+      attrs: {
+        type: "button",
+        "data-bs-toggle": "modal",
+        "data-bs-target": "#deleteSkillModal" + i
+      }
+    }, [_vm._v("\n                                    حذف\n                                ")]), _vm._v(" "), _c("div", {
+      staticClass: "modal fade",
+      attrs: {
+        id: "deleteSkillModal" + i,
+        tabindex: "-1",
+        "aria-labelledby": "deleteSkillModal" + i,
+        "aria-hidden": "true"
+      }
+    }, [_c("div", {
+      staticClass: "modal-dialog modal-dialog-scrollable"
+    }, [_c("div", {
+      staticClass: "modal-content"
+    }, [_c("div", {
+      staticClass: "modal-header"
+    }, [_c("h5", {
+      staticClass: "modal-title",
+      attrs: {
+        id: "deleteSkillModal" + i
+      }
+    }, [_vm._v("\n                                                    حذف " + _vm._s(skill.name) + "\n                                                ")]), _vm._v(" "), _c("button", {
+      staticClass: "btn-close",
+      attrs: {
+        type: "button",
+        "data-bs-dismiss": "modal",
+        "aria-label": "Close"
+      }
+    })]), _vm._v(" "), _c("div", {
+      staticClass: "modal-body"
+    }, [_vm._v("\n                                                هل أنت متاكد من حذف\n                                                " + _vm._s(skill.name) + "\n                                            ")]), _vm._v(" "), _c("div", {
+      staticClass: "modal-footer"
+    }, [_c("button", {
+      staticClass: "btn btn-secondary",
+      attrs: {
+        type: "button",
+        "data-bs-dismiss": "modal"
+      }
+    }, [_vm._v("\n                                                    لا\n                                                ")]), _vm._v(" "), _c("button", {
+      staticClass: "btn btn-success",
+      attrs: {
+        type: "button",
+        "data-bs-dismiss": "modal"
+      },
+      on: {
+        click: function click($event) {
+          return _vm.deleteSkill(_vm.profile_id, skill.id);
+        }
+      }
+    }, [_vm._v("\n                                                    نعم\n                                                ")])])])])])]);
   }), 0)])])])])])]);
 };
 
@@ -7087,7 +7158,7 @@ var staticRenderFns = [function () {
       _c = _vm._self._c;
 
   return _c("div", {
-    staticClass: "col-md-5 border-right"
+    staticClass: "col-md-5 border-right bg-mine"
   }, [_c("div", {
     staticClass: "p-3 py-5"
   }, [_c("h4", [_vm._v("منشوراتك")]), _vm._v(" "), _c("div", {
@@ -13451,7 +13522,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "* {\n    margin: 0px;\n    padding: 0px;\n    font-size: 20px;\n}\nmain {\n    min-height: 90vh;\n    padding: 50px;\n    background-color: #f3f2ef !important;\n}\n\n.bg-success {\n    background-color: #20c997 !important;\n}\n\n.list {\n    margin-top: 20px;\n    margin-bottom: 20px;\n    max-height: 300px;\n    overflow-y: scroll;\n}\n\n.accordion {\n    margin-top: 20px;\n    margin-bottom: 20px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "* {\n    margin: 0px;\n    padding: 0px;\n    font-size: 20px;\n}\nmain {\n    min-height: 90vh;\n    padding: 50px;\n}\n\n.bg-success {\n    background-color: #20c997 !important;\n}\n\n.list {\n    margin-top: 20px;\n    margin-bottom: 20px;\n    max-height: 300px;\n    overflow-y: scroll;\n}\n\n.accordion {\n    margin-top: 20px;\n    margin-bottom: 20px;\n}\n.bg-mine {\n    background-color: #f3f2ef !important;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -13548,7 +13619,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-d0fe79c8] {\n    background: rgb(99, 39, 120);\n}\n.form-control[data-v-d0fe79c8]:focus {\n    box-shadow: none;\n    border-color: #ba68c8;\n}\n.profile-button[data-v-d0fe79c8] {\n    background: rgb(99, 39, 120);\n    box-shadow: none;\n    border: none;\n}\n.profile-button[data-v-d0fe79c8]:hover {\n    background: #682773;\n}\n.profile-button[data-v-d0fe79c8]:focus {\n    background: #198754;\n    box-shadow: none;\n}\n.profile-button[data-v-d0fe79c8]:active {\n    background: #682773;\n    box-shadow: none;\n}\n.back[data-v-d0fe79c8]:hover {\n    color: #682773;\n    cursor: pointer;\n}\n.labels[data-v-d0fe79c8] {\n    font-size: 16px;\n}\n.add-experience[data-v-d0fe79c8]:hover {\n    background: #ba68c8;\n    color: #fff;\n    cursor: pointer;\n    border: solid 1px #ba68c8;\n}\ntextarea[data-v-d0fe79c8] {\n    resize: none;\n}\n.alert[data-v-d0fe79c8] {\n    margin-top: 10px;\n    margin-bottom: 10px;\n}\nbody[data-v-d0fe79c8] {\n    background-color: #eee;\n    font-family: \"Poppins\", sans-serif;\n    font-weight: 300;\n}\n.card[data-v-d0fe79c8] {\n    border: none;\n}\n.ellipsis[data-v-d0fe79c8] {\n    color: #a09c9c;\n}\nhr[data-v-d0fe79c8] {\n    color: #a09c9c;\n    margin-top: 4px;\n    margin-bottom: 8px;\n}\n.muted-color[data-v-d0fe79c8] {\n    color: #a09c9c;\n    font-size: 13px;\n}\n.ellipsis i[data-v-d0fe79c8] {\n    margin-top: 3px;\n    cursor: pointer;\n}\n.icons i[data-v-d0fe79c8] {\n    font-size: 25px;\n}\n.icons .fa-heart[data-v-d0fe79c8] {\n    color: red;\n}\n.icons .fa-smile-o[data-v-d0fe79c8] {\n    color: yellow;\n    font-size: 29px;\n}\n.rounded-image[data-v-d0fe79c8] {\n    border-radius: 50% !important;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    height: 50px;\n    width: 50px;\n}\n.name[data-v-d0fe79c8] {\n    font-weight: 600;\n}\n.comment-text[data-v-d0fe79c8] {\n    font-size: 12px;\n}\n.status small[data-v-d0fe79c8] {\n    margin-right: 10px;\n    color: blue;\n}\n.form-control[data-v-d0fe79c8] {\n    border-radius: 26px;\n}\n.comment-input[data-v-d0fe79c8] {\n    position: relative;\n}\n.fonts[data-v-d0fe79c8] {\n    position: absolute;\n    right: 13px;\n    top: 8px;\n    color: #a09c9c;\n}\n.form-control[data-v-d0fe79c8]:focus {\n    color: #495057;\n    background-color: #fff;\n    border-color: #8bbafe;\n    outline: 0;\n    box-shadow: none;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-d0fe79c8] {\n    /* background: rgb(99, 39, 120); */\n}\n.form-control[data-v-d0fe79c8]:focus {\n    box-shadow: none;\n    /* border-color: #ba68c8; */\n}\n.profile-button[data-v-d0fe79c8] {\n    /* background: rgb(99, 39, 120); */\n    box-shadow: none;\n    border: none;\n}\n.profile-button[data-v-d0fe79c8]:hover {\n    /* background: #682773; */\n}\n.profile-button[data-v-d0fe79c8]:focus {\n    /* background: #198754; */\n    box-shadow: none;\n}\n.profile-button[data-v-d0fe79c8]:active {\n    /* background: #682773; */\n    box-shadow: none;\n}\n.back[data-v-d0fe79c8]:hover {\n    /* color: #682773; */\n    cursor: pointer;\n}\n.labels[data-v-d0fe79c8] {\n    font-size: 16px;\n}\n.add-experience[data-v-d0fe79c8]:hover {\n    background: #ba68c8;\n    color: #fff;\n    cursor: pointer;\n    border: solid 1px #ba68c8;\n}\ntextarea[data-v-d0fe79c8] {\n    resize: none;\n}\n.alert[data-v-d0fe79c8] {\n    margin-top: 10px;\n    margin-bottom: 10px;\n}\nbody[data-v-d0fe79c8] {\n    background-color: #eee;\n    font-family: \"Poppins\", sans-serif;\n    font-weight: 300;\n}\n.card[data-v-d0fe79c8] {\n    border: none;\n}\n.ellipsis[data-v-d0fe79c8] {\n    color: #a09c9c;\n}\nhr[data-v-d0fe79c8] {\n    color: #a09c9c;\n    margin-top: 4px;\n    margin-bottom: 8px;\n}\n.muted-color[data-v-d0fe79c8] {\n    color: #a09c9c;\n    font-size: 13px;\n}\n.ellipsis i[data-v-d0fe79c8] {\n    margin-top: 3px;\n    cursor: pointer;\n}\n.icons i[data-v-d0fe79c8] {\n    font-size: 25px;\n}\n.icons .fa-heart[data-v-d0fe79c8] {\n    color: red;\n}\n.icons .fa-smile-o[data-v-d0fe79c8] {\n    color: yellow;\n    font-size: 29px;\n}\n.rounded-image[data-v-d0fe79c8] {\n    border-radius: 50% !important;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    height: 50px;\n    width: 50px;\n}\n.name[data-v-d0fe79c8] {\n    font-weight: 600;\n}\n.comment-text[data-v-d0fe79c8] {\n    font-size: 12px;\n}\n.status small[data-v-d0fe79c8] {\n    margin-right: 10px;\n    color: blue;\n}\n.form-control[data-v-d0fe79c8] {\n    border-radius: 26px;\n}\n.comment-input[data-v-d0fe79c8] {\n    position: relative;\n}\n.fonts[data-v-d0fe79c8] {\n    position: absolute;\n    right: 13px;\n    top: 8px;\n    color: #a09c9c;\n}\n.form-control[data-v-d0fe79c8]:focus {\n    color: #495057;\n    background-color: #fff;\n    border-color: #8bbafe;\n    outline: 0;\n    box-shadow: none;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

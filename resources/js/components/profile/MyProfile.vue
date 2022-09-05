@@ -1,8 +1,8 @@
 <template>
-    <div>
+    <div class="root-div">
         <main class="container rounded mt-5 mb-5">
-            <div class="row">
-                <div class="col-md-3 border-right">
+            <div class="row gap-4">
+                <div class="col-md-3 border-right bg-mine">
                     <div
                         class="d-flex flex-column align-items-center text-center p-3 py-5"
                     >
@@ -325,7 +325,7 @@
                         ></textarea>
                     </div>
                 </div>
-                <div class="col-md-5 border-right">
+                <div class="col-md-5 border-right bg-mine">
                     <div class="p-3 py-5">
                         <h4>منشوراتك</h4>
                         <div class="container mt-5 mb-5">
@@ -419,7 +419,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3 bg-mine">
                     <div class="p-3 py-5">
                         <div
                             class="d-flex justify-content-between align-items-center experience"
@@ -696,20 +696,6 @@
                                                         v-model="skill_name"
                                                     />
                                                 </div>
-                                                <div
-                                                    class="alert alert-success text-center"
-                                                    v-if="addSkillSuccess"
-                                                >
-                                                    تم اضافة المهارة بنجاح
-                                                </div>
-                                                <div
-                                                    class="alert alert-danger text-center"
-                                                    v-else-if="
-                                                        addSkillSuccess == false
-                                                    "
-                                                >
-                                                    الرجاء التحقق من البيانات
-                                                </div>
                                             </div>
                                             <div class="modal-footer">
                                                 <button
@@ -721,6 +707,7 @@
                                                 </button>
                                                 <button
                                                     type="button"
+                                                    data-bs-dismiss="modal"
                                                     class="btn btn-success"
                                                     @click="addSkill"
                                                 >
@@ -731,14 +718,103 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <div
+                                class="alert alert-success text-center"
+                                v-if="addSkillSuccess"
+                            >
+                                تم اضافة المهارة بنجاح
+                            </div>
+                            <div
+                                class="alert alert-danger text-center"
+                                v-else-if="addSkillSuccess == false"
+                            >
+                                الرجاء التحقق من البيانات
+                            </div>
                             <ul class="list-group list">
                                 <li
                                     class="text-center list-group-item"
                                     v-for="(skill, i) in skills"
                                     :key="i"
                                 >
-                                    {{ skill.name }}
+                                    <p>{{ skill.name }}</p>
+                                    <!-- <button
+
+                                        class="btn btn-danger"
+                                    >
+                                        حذف
+                                    </button> -->
+                                    <!-- Button trigger modal -->
+                                    <button
+                                        type="button"
+                                        class="btn btn-danger"
+                                        data-bs-toggle="modal"
+                                        :data-bs-target="
+                                            '#deleteSkillModal' + i
+                                        "
+                                    >
+                                        حذف
+                                    </button>
+
+                                    <!-- Modal -->
+                                    <div
+                                        class="modal fade"
+                                        :id="'deleteSkillModal' + i"
+                                        tabindex="-1"
+                                        :aria-labelledby="
+                                            'deleteSkillModal' + i
+                                        "
+                                        aria-hidden="true"
+                                    >
+                                        <div
+                                            class="modal-dialog modal-dialog-scrollable"
+                                        >
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5
+                                                        class="modal-title"
+                                                        :id="
+                                                            'deleteSkillModal' +
+                                                            i
+                                                        "
+                                                    >
+                                                        حذف {{ skill.name }}
+                                                    </h5>
+                                                    <button
+                                                        type="button"
+                                                        class="btn-close"
+                                                        data-bs-dismiss="modal"
+                                                        aria-label="Close"
+                                                    ></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    هل أنت متاكد من حذف
+                                                    {{ skill.name }}
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-secondary"
+                                                        data-bs-dismiss="modal"
+                                                    >
+                                                        لا
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        data-bs-dismiss="modal"
+                                                        class="btn btn-success"
+                                                        @click="
+                                                            deleteSkill(
+                                                                profile_id,
+                                                                skill.id
+                                                            )
+                                                        "
+                                                    >
+                                                        نعم
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </li>
                             </ul>
                         </div>
@@ -962,6 +1038,22 @@ export default {
 
             if (diff > 0) return diff + " يوم";
         },
+        deleteSkill(profileId, skillId) {
+            var vm = this;
+
+            axios
+                .delete("/api/skills/detach/" + profileId + "/" + skillId, {
+                    headers: headerAuth,
+                })
+                .then(function (response) {
+                    console.log(response);
+                    var index = vm.skills.findIndex((el) => el.id == skillId);
+                    vm.skills.splice(index, 1);
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                });
+        },
     },
     created() {
         let userId = JSON.parse(localStorage.getItem("user")).id;
@@ -973,36 +1065,36 @@ export default {
 
 <style scoped>
 body {
-    background: rgb(99, 39, 120);
+    /* background: rgb(99, 39, 120); */
 }
 
 .form-control:focus {
     box-shadow: none;
-    border-color: #ba68c8;
+    /* border-color: #ba68c8; */
 }
 
 .profile-button {
-    background: rgb(99, 39, 120);
+    /* background: rgb(99, 39, 120); */
     box-shadow: none;
     border: none;
 }
 
 .profile-button:hover {
-    background: #682773;
+    /* background: #682773; */
 }
 
 .profile-button:focus {
-    background: #198754;
+    /* background: #198754; */
     box-shadow: none;
 }
 
 .profile-button:active {
-    background: #682773;
+    /* background: #682773; */
     box-shadow: none;
 }
 
 .back:hover {
-    color: #682773;
+    /* color: #682773; */
     cursor: pointer;
 }
 
