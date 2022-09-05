@@ -19,3 +19,8 @@ main {
     max-height: 300px;
     overflow-y: scroll;
 }
+
+.accordion {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}

@@ -5461,7 +5461,10 @@ __webpack_require__.r(__webpack_exports__);
       skills: "",
       user_id: 0,
       profile_id: 0,
-      success: null
+      saveSuccess: null,
+      addExperienceSuccess: null,
+      addPhoneSuccess: null,
+      addSkillSuccess: null
     };
   },
   methods: {
@@ -5487,9 +5490,9 @@ __webpack_require__.r(__webpack_exports__);
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        vm.success = true;
+        vm.saveSuccess = true;
       })["catch"](function (error) {
-        vm.success = false;
+        vm.saveSuccess = false;
         console.log(error.response);
       });
     },
@@ -5509,9 +5512,9 @@ __webpack_require__.r(__webpack_exports__);
         vm.start = "";
         vm.end = "";
         vm.position = "";
-        vm.success = true;
+        vm.addExperienceSuccess = true;
       })["catch"](function (error) {
-        vm.success = false;
+        vm.addExperienceSuccess = false;
         console.log(error.response);
       });
     },
@@ -5526,9 +5529,9 @@ __webpack_require__.r(__webpack_exports__);
         console.log(response);
         vm.skills.push(response.data);
         vm.skill_name = "";
-        vm.success = true;
+        vm.addSkillSuccess = true;
       })["catch"](function (error) {
-        vm.success = false;
+        vm.addSkillSuccess = false;
         console.log(error.response);
       });
     },
@@ -5542,9 +5545,9 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         console.log(response);
         vm.phone = "";
-        vm.success = true;
+        vm.addPhoneSuccess = true;
       })["catch"](function (error) {
-        vm.success = false;
+        vm.addPhoneSuccess = false;
         console.log(error.response);
       });
     },
@@ -5577,6 +5580,16 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         console.log(error.response);
       });
+    },
+    calcExp: function calcExp(startDate, endDate) {
+      var start = new Date(startDate),
+          end = new Date(endDate);
+      var diff = end.getFullYear() - start.getFullYear();
+      if (diff > 0) return diff + " سنة";
+      diff = end.getMonth() - start.getMonth();
+      if (diff > 0) return diff + " شهر";
+      diff = end.getDate() - start.getDate();
+      if (diff > 0) return diff + " يوم";
     }
   },
   created: function created() {
@@ -5668,6 +5681,16 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         console.log(error.response);
       });
+    },
+    calcExp: function calcExp(startDate, endDate) {
+      var start = new Date(startDate),
+          end = new Date(endDate);
+      var diff = end.getFullYear() - start.getFullYear();
+      if (diff > 0) return diff + " سنة";
+      diff = end.getMonth() - start.getMonth();
+      if (diff > 0) return diff + " شهر";
+      diff = end.getDate() - start.getDate();
+      if (diff > 0) return diff + " يوم";
     }
   },
   created: function created() {
@@ -6415,7 +6438,11 @@ var render = function render() {
     on: {
       click: _vm.addPhone
     }
-  }, [_vm._v("\n                                اضافة رقم الهاتف\n                            ")])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n                                اضافة رقم الهاتف\n                            ")])]), _vm._v(" "), _vm.addPhoneSuccess ? _c("div", {
+    staticClass: "alert alert-success text-center"
+  }, [_vm._v("\n                            تم اضافة الرقم بنجاح\n                        ")]) : _vm.addPhoneSuccess == false ? _c("div", {
+    staticClass: "alert alert-danger text-center"
+  }, [_vm._v("\n                            الرجاء التحقق من البيانات\n                        ")]) : _vm._e(), _vm._v(" "), _c("div", {
     staticClass: "col-md-12"
   }, [_c("label", {
     staticClass: "labels"
@@ -6663,7 +6690,11 @@ var render = function render() {
         return _vm.savePersonalInfo();
       }
     }
-  }, [_vm._v("\n                            حفظ\n                        ")])])])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n                            حفظ\n                        ")])]), _vm._v(" "), _vm.saveSuccess ? _c("div", {
+    staticClass: "alert alert-success text-center"
+  }, [_vm._v("\n                        تم حفظ الملف الشخصي بنجاح\n                    ")]) : _vm.saveSuccess == false ? _c("div", {
+    staticClass: "alert alert-danger text-center"
+  }, [_vm._v("\n                        الرجاء التحقق من البيانات\n                    ")]) : _vm._e()])]), _vm._v(" "), _c("div", {
     staticClass: "col-md-4"
   }, [_c("div", {
     staticClass: "p-3 py-5"
@@ -6697,7 +6728,7 @@ var render = function render() {
     staticClass: "col-md-12"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("بداية العمل")]), _c("input", {
+  }, [_vm._v("بداية المنصب")]), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -6707,7 +6738,7 @@ var render = function render() {
     staticClass: "form-control",
     attrs: {
       type: "date",
-      placeholder: "بداية العمل",
+      placeholder: "بداية المنصب",
       name: "start"
     },
     domProps: {
@@ -6723,7 +6754,7 @@ var render = function render() {
     staticClass: "col-md-12"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("النهاية")]), _c("input", {
+  }, [_vm._v("نهاية المنصب")]), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -6733,7 +6764,7 @@ var render = function render() {
     staticClass: "form-control",
     attrs: {
       type: "date",
-      placeholder: "النهاية",
+      placeholder: "نهاية المنصب",
       name: "end"
     },
     domProps: {
@@ -6749,7 +6780,7 @@ var render = function render() {
     staticClass: "col-md-12"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("نوع العمل")]), _c("input", {
+  }, [_vm._v("المنصب")]), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -6759,7 +6790,7 @@ var render = function render() {
     staticClass: "form-control",
     attrs: {
       type: "text",
-      placeholder: "نوع العمل",
+      placeholder: "المنصب",
       name: "position"
     },
     domProps: {
@@ -6781,7 +6812,78 @@ var render = function render() {
     on: {
       click: _vm.addExperience
     }
-  }, [_vm._v("\n                            اضافة الخبرة\n                        ")])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n                            اضافة الخبرة\n                        ")])]), _vm._v(" "), _vm.addExperienceSuccess ? _c("div", {
+    staticClass: "alert alert-success text-center"
+  }, [_vm._v("\n                        تم اضافة الخبرة بنجاح\n                    ")]) : _vm.addExperienceSuccess == false ? _c("div", {
+    staticClass: "alert alert-danger text-center"
+  }, [_vm._v("\n                        الرجاء التحقق من البيانات\n                    ")]) : _vm._e(), _vm._v(" "), _c("div", {
+    staticClass: "accordion",
+    attrs: {
+      id: "accordionExample"
+    }
+  }, _vm._l(_vm.experiences, function (exp, i) {
+    return _c("div", {
+      key: i,
+      staticClass: "accordion-item"
+    }, [_c("h2", {
+      staticClass: "accordion-header",
+      attrs: {
+        id: "heading" + i
+      }
+    }, [_c("button", {
+      staticClass: "accordion-button collapsed",
+      attrs: {
+        type: "button",
+        "data-bs-toggle": "collapse",
+        "data-bs-target": "#collapse" + i,
+        "aria-expanded": "false",
+        "aria-controls": "collapse" + i
+      }
+    }, [_c("div", [_c("h5", [_vm._v(_vm._s(exp.company_name))]), _vm._v(" "), _c("p", {
+      staticClass: "bold"
+    }, [_vm._v("\n                                            خبرة\n                                            " + _vm._s(_vm.calcExp(exp.start, exp.end)) + "\n                                        ")])])])]), _vm._v(" "), _c("div", {
+      staticClass: "accordion-collapse collapse",
+      attrs: {
+        id: "collapse" + i,
+        "aria-labelledby": "heading" + i,
+        "data-bs-parent": "#accordionExample"
+      }
+    }, [_c("div", {
+      staticClass: "accordion-body"
+    }, [_c("ul", {
+      staticClass: "list-group"
+    }, [_c("li", {
+      staticClass: "list-group-item"
+    }, [_c("h4", {
+      staticClass: "text-center"
+    }, [_vm._v("\n                                                إسم الشركة\n                                            ")]), _vm._v(" "), _c("p", {
+      staticClass: "text-center"
+    }, [_vm._v("\n                                                " + _vm._s(exp.company_name) + "\n                                            ")])]), _vm._v(" "), _c("li", {
+      staticClass: "list-group-item"
+    }, [_c("h4", {
+      staticClass: "text-center"
+    }, [_vm._v("\n                                                نوع العمل\n                                            ")]), _vm._v(" "), _c("p", {
+      staticClass: "text-center"
+    }, [_vm._v("\n                                                " + _vm._s(exp.position) + "\n                                            ")])]), _vm._v(" "), _c("li", {
+      staticClass: "list-group-item"
+    }, [_c("h4", {
+      staticClass: "text-center"
+    }, [_vm._v("\n                                                بداية المنصب\n                                            ")]), _vm._v(" "), _c("p", {
+      staticClass: "text-center"
+    }, [_vm._v("\n                                                " + _vm._s(exp.start) + "\n                                            ")])]), _vm._v(" "), _c("li", {
+      staticClass: "list-group-item"
+    }, [_c("h4", {
+      staticClass: "text-center"
+    }, [_vm._v("\n                                                نهاية المنصب\n                                            ")]), _vm._v(" "), _c("p", {
+      staticClass: "text-center"
+    }, [_vm._v("\n                                                " + _vm._s(exp.end) + "\n                                            ")])]), _vm._v(" "), _c("li", {
+      staticClass: "list-group-item"
+    }, [_c("h4", {
+      staticClass: "text-center"
+    }, [_vm._v("\n                                                الخبرة\n                                            ")]), _vm._v(" "), _c("p", {
+      staticClass: "text-center"
+    }, [_vm._v("\n                                                " + _vm._s(_vm.calcExp(exp.start, exp.end)) + "\n                                            ")])])])])])]);
+  }), 0), _vm._v(" "), _c("div", {
     staticClass: "p-3 py-5"
   }, [_vm._m(3), _vm._v(" "), _c("div", {
     staticClass: "col-md-12"
@@ -6819,7 +6921,11 @@ var render = function render() {
     on: {
       click: _vm.addSkill
     }
-  }, [_vm._v("\n                                اضافة المهارة\n                            ")])]), _vm._v(" "), _c("ul", {
+  }, [_vm._v("\n                                اضافة المهارة\n                            ")])]), _vm._v(" "), _vm.addSkillSuccess ? _c("div", {
+    staticClass: "alert alert-success text-center"
+  }, [_vm._v("\n                            تم اضافة المهارة بنجاح\n                        ")]) : _vm.addSkillSuccess == false ? _c("div", {
+    staticClass: "alert alert-danger text-center"
+  }, [_vm._v("\n                            الرجاء التحقق من البيانات\n                        ")]) : _vm._e(), _vm._v(" "), _c("ul", {
     staticClass: "list-group list"
   }, _vm._l(_vm.skills, function (skill, i) {
     return _c("li", {
@@ -6851,7 +6957,7 @@ var staticRenderFns = [function () {
 
   return _c("div", {
     staticClass: "d-flex justify-content-between align-items-center experience"
-  }, [_c("h3", [_vm._v("الخبرة")])]);
+  }, [_c("h3", [_vm._v("الخبرات")])]);
 }, function () {
   var _vm = this,
       _c = _vm._self._c;
@@ -6899,9 +7005,29 @@ var render = function render() {
     staticClass: "font-weight-bold"
   }, [_vm._v(_vm._s(_vm.firstname) + " " + _vm._s(_vm.lastname))]), _c("span", {
     staticClass: "text-black-50"
-  }, [_vm._v(_vm._s(_vm.email))]), _c("span", [_vm._v("8,000 متابع ")])]), _vm._v(" "), _c("div", [_c("div", {
-    staticClass: "form-control text-break"
-  }, [_vm._v("\n                        " + _vm._s(_vm.about) + "\n                    ")])])]), _vm._v(" "), _c("div", {
+  }, [_vm._v(_vm._s(_vm.email))]), _c("span", [_vm._v("8,000 متابع ")])]), _vm._v(" "), _c("div", [_c("textarea", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.about,
+      expression: "about"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      "aria-label": "readonly input example",
+      readonly: ""
+    },
+    domProps: {
+      value: _vm.about
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.about = $event.target.value;
+      }
+    }
+  })])]), _vm._v(" "), _c("div", {
     staticClass: "col-md-5 border-right"
   }, [_c("div", {
     staticClass: "p-3 py-5"
@@ -6949,11 +7075,74 @@ var render = function render() {
     staticClass: "col-md-4"
   }, [_c("div", {
     staticClass: "p-3 py-5"
-  }, [_vm._m(2), _vm._v(" "), _c("br"), _vm._v(" "), _c("div", {
-    staticClass: "col-md-12"
-  }, [_c("label", {
-    staticClass: "labels"
-  }, [_vm._v("إسم الشركة")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                            " + _vm._s(_vm.company_name) + "\n                        ")])]), _vm._v(" "), _c("div", {
+  }, [_vm._m(2), _vm._v(" "), _c("div", {
+    staticClass: "accordion",
+    attrs: {
+      id: "accordionExample"
+    }
+  }, _vm._l(_vm.experiences, function (exp, i) {
+    return _c("div", {
+      key: i,
+      staticClass: "accordion-item"
+    }, [_c("h2", {
+      staticClass: "accordion-header",
+      attrs: {
+        id: "heading" + i
+      }
+    }, [_c("button", {
+      staticClass: "accordion-button collapsed",
+      attrs: {
+        type: "button",
+        "data-bs-toggle": "collapse",
+        "data-bs-target": "#collapse" + i,
+        "aria-expanded": "false",
+        "aria-controls": "collapse" + i
+      }
+    }, [_c("div", [_c("h5", [_vm._v(_vm._s(exp.company_name))]), _vm._v(" "), _c("p", {
+      staticClass: "bold"
+    }, [_vm._v("\n                                            خبرة\n                                            " + _vm._s(_vm.calcExp(exp.start, exp.end)) + "\n                                        ")])])])]), _vm._v(" "), _c("div", {
+      staticClass: "accordion-collapse collapse",
+      attrs: {
+        id: "collapse" + i,
+        "aria-labelledby": "heading" + i,
+        "data-bs-parent": "#accordionExample"
+      }
+    }, [_c("div", {
+      staticClass: "accordion-body"
+    }, [_c("ul", {
+      staticClass: "list-group"
+    }, [_c("li", {
+      staticClass: "list-group-item"
+    }, [_c("h4", {
+      staticClass: "text-center"
+    }, [_vm._v("\n                                                إسم الشركة\n                                            ")]), _vm._v(" "), _c("p", {
+      staticClass: "text-center"
+    }, [_vm._v("\n                                                " + _vm._s(exp.company_name) + "\n                                            ")])]), _vm._v(" "), _c("li", {
+      staticClass: "list-group-item"
+    }, [_c("h4", {
+      staticClass: "text-center"
+    }, [_vm._v("\n                                                نوع العمل\n                                            ")]), _vm._v(" "), _c("p", {
+      staticClass: "text-center"
+    }, [_vm._v("\n                                                " + _vm._s(exp.position) + "\n                                            ")])]), _vm._v(" "), _c("li", {
+      staticClass: "list-group-item"
+    }, [_c("h4", {
+      staticClass: "text-center"
+    }, [_vm._v("\n                                                بداية المنصب\n                                            ")]), _vm._v(" "), _c("p", {
+      staticClass: "text-center"
+    }, [_vm._v("\n                                                " + _vm._s(exp.start) + "\n                                            ")])]), _vm._v(" "), _c("li", {
+      staticClass: "list-group-item"
+    }, [_c("h4", {
+      staticClass: "text-center"
+    }, [_vm._v("\n                                                نهاية المنصب\n                                            ")]), _vm._v(" "), _c("p", {
+      staticClass: "text-center"
+    }, [_vm._v("\n                                                " + _vm._s(exp.end) + "\n                                            ")])]), _vm._v(" "), _c("li", {
+      staticClass: "list-group-item"
+    }, [_c("h4", {
+      staticClass: "text-center"
+    }, [_vm._v("\n                                                الخبرة\n                                            ")]), _vm._v(" "), _c("p", {
+      staticClass: "text-center"
+    }, [_vm._v("\n                                                " + _vm._s(_vm.calcExp(exp.start, exp.end)) + "\n                                            ")])])])])])]);
+  }), 0), _vm._v(" "), _c("div", {
     staticClass: "p-3 py-5"
   }, [_vm._m(3), _vm._v(" "), _c("ul", {
     staticClass: "list-group list"
@@ -7251,7 +7440,7 @@ var render = function render() {
       }
     }
   }, [_c("div", {
-    staticClass: "input-group mb-3"
+    staticClass: "form-floating mb-3"
   }, [_c("input", {
     directives: [{
       name: "model",
@@ -7261,6 +7450,7 @@ var render = function render() {
     }],
     staticClass: "form-control",
     attrs: {
+      id: "firstname",
       type: "text",
       placeholder: "الإسم الأول"
     },
@@ -7273,8 +7463,12 @@ var render = function render() {
         _vm.firstname = $event.target.value;
       }
     }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "input-group mb-3"
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "firstname"
+    }
+  }, [_vm._v("الإسم الأول")])]), _vm._v(" "), _c("div", {
+    staticClass: "form-floating mb-3"
   }, [_c("input", {
     directives: [{
       name: "model",
@@ -7285,7 +7479,8 @@ var render = function render() {
     staticClass: "form-control",
     attrs: {
       type: "text",
-      placeholder: "إسم العائلة"
+      placeholder: "إسم العائلة",
+      id: "lastname"
     },
     domProps: {
       value: _vm.lastname
@@ -7296,8 +7491,12 @@ var render = function render() {
         _vm.lastname = $event.target.value;
       }
     }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "input-group mb-3"
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "lastname"
+    }
+  }, [_vm._v("إسم العائلة")])]), _vm._v(" "), _c("div", {
+    staticClass: "form-floating mb-3"
   }, [_c("input", {
     directives: [{
       name: "model",
@@ -7308,7 +7507,8 @@ var render = function render() {
     staticClass: "form-control",
     attrs: {
       type: "date",
-      placeholder: "تاريخ الميلاد"
+      placeholder: "تاريخ الميلاد",
+      id: "birthdate"
     },
     domProps: {
       value: _vm.birthdate
@@ -7319,8 +7519,12 @@ var render = function render() {
         _vm.birthdate = $event.target.value;
       }
     }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "input-group mb-3"
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "birthdate"
+    }
+  }, [_vm._v("تاريخ الميلاد")])]), _vm._v(" "), _c("div", {
+    staticClass: "form-floating mb-3"
   }, [_c("input", {
     directives: [{
       name: "model",
@@ -7331,7 +7535,8 @@ var render = function render() {
     staticClass: "form-control",
     attrs: {
       type: "text",
-      placeholder: "البريد الإلكتروني @example.com"
+      placeholder: "البريد الإلكتروني @example.com",
+      id: "email"
     },
     domProps: {
       value: _vm.email
@@ -7342,8 +7547,12 @@ var render = function render() {
         _vm.email = $event.target.value;
       }
     }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "input-group mb-3"
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "email"
+    }
+  }, [_vm._v("البريد الإلكتروني")])]), _vm._v(" "), _c("div", {
+    staticClass: "form-floating mb-3"
   }, [_c("input", {
     directives: [{
       name: "model",
@@ -7354,7 +7563,8 @@ var render = function render() {
     staticClass: "form-control",
     attrs: {
       type: "password",
-      placeholder: "كلمة المرور"
+      placeholder: "كلمة المرور",
+      id: "password"
     },
     domProps: {
       value: _vm.password
@@ -7365,8 +7575,12 @@ var render = function render() {
         _vm.password = $event.target.value;
       }
     }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "input-group mb-3"
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "password"
+    }
+  }, [_vm._v("كلمة المرور")])]), _vm._v(" "), _c("div", {
+    staticClass: "form-floating mb-3"
   }, [_c("input", {
     directives: [{
       name: "model",
@@ -7377,7 +7591,8 @@ var render = function render() {
     staticClass: "form-control",
     attrs: {
       type: "password",
-      placeholder: "إعادة كتابة كلمة المرور"
+      placeholder: "إعادة كتابة كلمة المرور",
+      id: "repassword"
     },
     domProps: {
       value: _vm.repassword
@@ -7388,7 +7603,11 @@ var render = function render() {
         _vm.repassword = $event.target.value;
       }
     }
-  })]), _vm._v(" "), _c("button", {
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "repassword"
+    }
+  }, [_vm._v("إعادة كتابة كلمة المرور")])]), _vm._v(" "), _c("button", {
     staticClass: "btn btn-success offset-3",
     attrs: {
       type: "submit"
@@ -12990,7 +13209,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "* {\n    margin: 0px;\n    padding: 0px;\n    font-size: 20px;\n}\nmain {\n    min-height: 90vh;\n    padding: 50px;\n    background-color: #f3f2ef !important;\n}\n\n.bg-success {\n    background-color: #20c997 !important;\n}\n\n.list {\n    margin-top: 20px;\n    margin-bottom: 20px;\n    max-height: 300px;\n    overflow-y: scroll;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "* {\n    margin: 0px;\n    padding: 0px;\n    font-size: 20px;\n}\nmain {\n    min-height: 90vh;\n    padding: 50px;\n    background-color: #f3f2ef !important;\n}\n\n.bg-success {\n    background-color: #20c997 !important;\n}\n\n.list {\n    margin-top: 20px;\n    margin-bottom: 20px;\n    max-height: 300px;\n    overflow-y: scroll;\n}\n\n.accordion {\n    margin-top: 20px;\n    margin-bottom: 20px;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -13086,7 +13305,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-d0fe79c8] {\n    background: rgb(99, 39, 120);\n}\n.form-control[data-v-d0fe79c8]:focus {\n    box-shadow: none;\n    border-color: #ba68c8;\n}\n.profile-button[data-v-d0fe79c8] {\n    background: rgb(99, 39, 120);\n    box-shadow: none;\n    border: none;\n}\n.profile-button[data-v-d0fe79c8]:hover {\n    background: #682773;\n}\n.profile-button[data-v-d0fe79c8]:focus {\n    background: #198754;\n    box-shadow: none;\n}\n.profile-button[data-v-d0fe79c8]:active {\n    background: #682773;\n    box-shadow: none;\n}\n.back[data-v-d0fe79c8]:hover {\n    color: #682773;\n    cursor: pointer;\n}\n.labels[data-v-d0fe79c8] {\n    font-size: 11px;\n}\n.add-experience[data-v-d0fe79c8]:hover {\n    background: #ba68c8;\n    color: #fff;\n    cursor: pointer;\n    border: solid 1px #ba68c8;\n}\ntextarea[data-v-d0fe79c8] {\n    resize: none;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-d0fe79c8] {\n    background: rgb(99, 39, 120);\n}\n.form-control[data-v-d0fe79c8]:focus {\n    box-shadow: none;\n    border-color: #ba68c8;\n}\n.profile-button[data-v-d0fe79c8] {\n    background: rgb(99, 39, 120);\n    box-shadow: none;\n    border: none;\n}\n.profile-button[data-v-d0fe79c8]:hover {\n    background: #682773;\n}\n.profile-button[data-v-d0fe79c8]:focus {\n    background: #198754;\n    box-shadow: none;\n}\n.profile-button[data-v-d0fe79c8]:active {\n    background: #682773;\n    box-shadow: none;\n}\n.back[data-v-d0fe79c8]:hover {\n    color: #682773;\n    cursor: pointer;\n}\n.labels[data-v-d0fe79c8] {\n    font-size: 11px;\n}\n.add-experience[data-v-d0fe79c8]:hover {\n    background: #ba68c8;\n    color: #fff;\n    cursor: pointer;\n    border: solid 1px #ba68c8;\n}\ntextarea[data-v-d0fe79c8] {\n    resize: none;\n}\n.alert[data-v-d0fe79c8] {\n    margin-top: 10px;\n    margin-bottom: 10px;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -13110,7 +13329,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-57a055d9] {\n    background: rgb(99, 39, 120);\n}\n.form-control[data-v-57a055d9]:focus {\n    box-shadow: none;\n    border-color: #ba68c8;\n}\n.profile-button[data-v-57a055d9] {\n    background: rgb(99, 39, 120);\n    box-shadow: none;\n    border: none;\n}\n.profile-button[data-v-57a055d9]:hover {\n    background: #682773;\n}\n.profile-button[data-v-57a055d9]:focus {\n    background: #198754;\n    box-shadow: none;\n}\n.profile-button[data-v-57a055d9]:active {\n    background: #682773;\n    box-shadow: none;\n}\n.back[data-v-57a055d9]:hover {\n    color: #682773;\n    cursor: pointer;\n}\n.labels[data-v-57a055d9] {\n    font-size: 11px;\n}\n.add-experience[data-v-57a055d9]:hover {\n    background: #ba68c8;\n    color: #fff;\n    cursor: pointer;\n    border: solid 1px #ba68c8;\n}\ntextarea[data-v-57a055d9] {\n    resize: none;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-57a055d9] {\n    background: rgb(99, 39, 120);\n}\n.form-control[data-v-57a055d9]:focus {\n    box-shadow: none;\n    border-color: #ba68c8;\n}\n.profile-button[data-v-57a055d9] {\n    background: rgb(99, 39, 120);\n    box-shadow: none;\n    border: none;\n}\n.profile-button[data-v-57a055d9]:hover {\n    background: #682773;\n}\n.profile-button[data-v-57a055d9]:focus {\n    background: #198754;\n    box-shadow: none;\n}\n.profile-button[data-v-57a055d9]:active {\n    background: #682773;\n    box-shadow: none;\n}\n.back[data-v-57a055d9]:hover {\n    color: #682773;\n    cursor: pointer;\n}\n.labels[data-v-57a055d9] {\n    font-size: 11px;\n}\n.add-experience[data-v-57a055d9]:hover {\n    background: #ba68c8;\n    color: #fff;\n    cursor: pointer;\n    border: solid 1px #ba68c8;\n}\ntextarea[data-v-57a055d9] {\n    resize: none;\n    min-height: 300px;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

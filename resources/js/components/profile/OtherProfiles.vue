@@ -16,9 +16,14 @@
                         ><span>8,000 متابع </span>
                     </div>
                     <div>
-                        <div class="form-control text-break">
-                            {{ about }}
-                        </div>
+                        <textarea
+                            class="form-control"
+                            type="text"
+                            aria-label="readonly input example"
+                            readonly
+                            v-model="about"
+                        >
+                        </textarea>
                     </div>
                 </div>
                 <div class="col-md-5 border-right">
@@ -101,11 +106,92 @@
                         >
                             <h3>الخبرات</h3>
                         </div>
-                        <br />
-                        <div class="col-md-12">
-                            <label class="labels">إسم الشركة</label>
-                            <div class="">
-                                {{ company_name }}
+                        <!-- <br /> -->
+                        <div class="accordion" id="accordionExample">
+                            <div
+                                v-for="(exp, i) in experiences"
+                                :key="i"
+                                class="accordion-item"
+                            >
+                                <h2
+                                    class="accordion-header"
+                                    :id="'heading' + i"
+                                >
+                                    <button
+                                        class="accordion-button collapsed"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        :data-bs-target="'#collapse' + i"
+                                        aria-expanded="false"
+                                        :aria-controls="'collapse' + i"
+                                    >
+                                        <div>
+                                            <h5>{{ exp.company_name }}</h5>
+                                            <p class="bold">
+                                                خبرة
+                                                {{
+                                                    calcExp(exp.start, exp.end)
+                                                }}
+                                            </p>
+                                        </div>
+                                    </button>
+                                </h2>
+                                <div
+                                    :id="'collapse' + i"
+                                    class="accordion-collapse collapse"
+                                    :aria-labelledby="'heading' + i"
+                                    data-bs-parent="#accordionExample"
+                                >
+                                    <div class="accordion-body">
+                                        <ul class="list-group">
+                                            <li class="list-group-item">
+                                                <h4 class="text-center">
+                                                    إسم الشركة
+                                                </h4>
+                                                <p class="text-center">
+                                                    {{ exp.company_name }}
+                                                </p>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <h4 class="text-center">
+                                                    نوع العمل
+                                                </h4>
+                                                <p class="text-center">
+                                                    {{ exp.position }}
+                                                </p>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <h4 class="text-center">
+                                                    بداية المنصب
+                                                </h4>
+                                                <p class="text-center">
+                                                    {{ exp.start }}
+                                                </p>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <h4 class="text-center">
+                                                    نهاية المنصب
+                                                </h4>
+                                                <p class="text-center">
+                                                    {{ exp.end }}
+                                                </p>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <h4 class="text-center">
+                                                    الخبرة
+                                                </h4>
+                                                <p class="text-center">
+                                                    {{
+                                                        calcExp(
+                                                            exp.start,
+                                                            exp.end
+                                                        )
+                                                    }}
+                                                </p>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -206,6 +292,22 @@ export default {
                     console.log(error.response);
                 });
         },
+        calcExp(startDate, endDate) {
+            var start = new Date(startDate),
+                end = new Date(endDate);
+
+            var diff = end.getFullYear() - start.getFullYear();
+
+            if (diff > 0) return diff + " سنة";
+
+            diff = end.getMonth() - start.getMonth();
+
+            if (diff > 0) return diff + " شهر";
+
+            diff = end.getDate() - start.getDate();
+
+            if (diff > 0) return diff + " يوم";
+        },
     },
     created() {
         this.getProfileInfo();
@@ -261,5 +363,6 @@ body {
 
 textarea {
     resize: none;
+    min-height: 300px;
 }
 </style>

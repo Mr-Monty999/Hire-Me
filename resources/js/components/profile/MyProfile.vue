@@ -87,6 +87,18 @@
                                     اضافة رقم الهاتف
                                 </button>
                             </div>
+                            <div
+                                class="alert alert-success text-center"
+                                v-if="addPhoneSuccess"
+                            >
+                                تم اضافة الرقم بنجاح
+                            </div>
+                            <div
+                                class="alert alert-danger text-center"
+                                v-else-if="addPhoneSuccess == false"
+                            >
+                                الرجاء التحقق من البيانات
+                            </div>
 
                             <div class="col-md-12">
                                 <label class="labels">تاريخ الميلاد</label
@@ -196,6 +208,18 @@
                                 حفظ
                             </button>
                         </div>
+                        <div
+                            class="alert alert-success text-center"
+                            v-if="saveSuccess"
+                        >
+                            تم حفظ الملف الشخصي بنجاح
+                        </div>
+                        <div
+                            class="alert alert-danger text-center"
+                            v-else-if="saveSuccess == false"
+                        >
+                            الرجاء التحقق من البيانات
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -203,7 +227,7 @@
                         <div
                             class="d-flex justify-content-between align-items-center experience"
                         >
-                            <h3>الخبرة</h3>
+                            <h3>الخبرات</h3>
                         </div>
                         <br />
                         <div class="col-md-12">
@@ -217,31 +241,31 @@
                             />
                         </div>
                         <div class="col-md-12">
-                            <label class="labels">بداية العمل</label
+                            <label class="labels">بداية المنصب</label
                             ><input
                                 type="date"
                                 class="form-control"
-                                placeholder="بداية العمل"
+                                placeholder="بداية المنصب"
                                 name="start"
                                 v-model="start"
                             />
                         </div>
                         <div class="col-md-12">
-                            <label class="labels">النهاية</label
+                            <label class="labels">نهاية المنصب</label
                             ><input
                                 type="date"
                                 class="form-control"
-                                placeholder="النهاية"
+                                placeholder="نهاية المنصب"
                                 name="end"
                                 v-model="end"
                             />
                         </div>
                         <div class="col-md-12">
-                            <label class="labels">نوع العمل</label
+                            <label class="labels">المنصب</label
                             ><input
                                 type="text"
                                 class="form-control"
-                                placeholder="نوع العمل"
+                                placeholder="المنصب"
                                 name="position"
                                 v-model="position"
                             />
@@ -255,7 +279,105 @@
                                 اضافة الخبرة
                             </button>
                         </div>
-
+                        <div
+                            class="alert alert-success text-center"
+                            v-if="addExperienceSuccess"
+                        >
+                            تم اضافة الخبرة بنجاح
+                        </div>
+                        <div
+                            class="alert alert-danger text-center"
+                            v-else-if="addExperienceSuccess == false"
+                        >
+                            الرجاء التحقق من البيانات
+                        </div>
+                        <div class="accordion" id="accordionExample">
+                            <div
+                                v-for="(exp, i) in experiences"
+                                :key="i"
+                                class="accordion-item"
+                            >
+                                <h2
+                                    class="accordion-header"
+                                    :id="'heading' + i"
+                                >
+                                    <button
+                                        class="accordion-button collapsed"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        :data-bs-target="'#collapse' + i"
+                                        aria-expanded="false"
+                                        :aria-controls="'collapse' + i"
+                                    >
+                                        <div>
+                                            <h5>{{ exp.company_name }}</h5>
+                                            <p class="bold">
+                                                خبرة
+                                                {{
+                                                    calcExp(exp.start, exp.end)
+                                                }}
+                                            </p>
+                                        </div>
+                                    </button>
+                                </h2>
+                                <div
+                                    :id="'collapse' + i"
+                                    class="accordion-collapse collapse"
+                                    :aria-labelledby="'heading' + i"
+                                    data-bs-parent="#accordionExample"
+                                >
+                                    <div class="accordion-body">
+                                        <ul class="list-group">
+                                            <li class="list-group-item">
+                                                <h4 class="text-center">
+                                                    إسم الشركة
+                                                </h4>
+                                                <p class="text-center">
+                                                    {{ exp.company_name }}
+                                                </p>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <h4 class="text-center">
+                                                    نوع العمل
+                                                </h4>
+                                                <p class="text-center">
+                                                    {{ exp.position }}
+                                                </p>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <h4 class="text-center">
+                                                    بداية المنصب
+                                                </h4>
+                                                <p class="text-center">
+                                                    {{ exp.start }}
+                                                </p>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <h4 class="text-center">
+                                                    نهاية المنصب
+                                                </h4>
+                                                <p class="text-center">
+                                                    {{ exp.end }}
+                                                </p>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <h4 class="text-center">
+                                                    الخبرة
+                                                </h4>
+                                                <p class="text-center">
+                                                    {{
+                                                        calcExp(
+                                                            exp.start,
+                                                            exp.end
+                                                        )
+                                                    }}
+                                                </p>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="p-3 py-5">
                             <div
                                 class="d-flex justify-content-between align-items-center experience"
@@ -281,6 +403,18 @@
                                 >
                                     اضافة المهارة
                                 </button>
+                            </div>
+                            <div
+                                class="alert alert-success text-center"
+                                v-if="addSkillSuccess"
+                            >
+                                تم اضافة المهارة بنجاح
+                            </div>
+                            <div
+                                class="alert alert-danger text-center"
+                                v-else-if="addSkillSuccess == false"
+                            >
+                                الرجاء التحقق من البيانات
                             </div>
                             <ul class="list-group list">
                                 <li
@@ -334,7 +468,10 @@ export default {
             skills: "",
             user_id: 0,
             profile_id: 0,
-            success: null,
+            saveSuccess: null,
+            addExperienceSuccess: null,
+            addPhoneSuccess: null,
+            addSkillSuccess: null,
         };
     },
     methods: {
@@ -367,10 +504,10 @@ export default {
                 .then(function (response) {
                     console.log(response);
 
-                    vm.success = true;
+                    vm.saveSuccess = true;
                 })
                 .catch(function (error) {
-                    vm.success = false;
+                    vm.saveSuccess = false;
                     console.log(error.response);
                 });
         },
@@ -399,10 +536,10 @@ export default {
                     vm.end = "";
                     vm.position = "";
 
-                    vm.success = true;
+                    vm.addExperienceSuccess = true;
                 })
                 .catch(function (error) {
-                    vm.success = false;
+                    vm.addExperienceSuccess = false;
                     console.log(error.response);
                 });
         },
@@ -426,10 +563,10 @@ export default {
                     vm.skills.push(response.data);
                     vm.skill_name = "";
 
-                    vm.success = true;
+                    vm.addSkillSuccess = true;
                 })
                 .catch(function (error) {
-                    vm.success = false;
+                    vm.addSkillSuccess = false;
                     console.log(error.response);
                 });
         },
@@ -451,10 +588,10 @@ export default {
                 .then(function (response) {
                     console.log(response);
                     vm.phone = "";
-                    vm.success = true;
+                    vm.addPhoneSuccess = true;
                 })
                 .catch(function (error) {
-                    vm.success = false;
+                    vm.addPhoneSuccess = false;
                     console.log(error.response);
                 });
         },
@@ -491,6 +628,22 @@ export default {
                 .catch(function (error) {
                     console.log(error.response);
                 });
+        },
+        calcExp(startDate, endDate) {
+            var start = new Date(startDate),
+                end = new Date(endDate);
+
+            var diff = end.getFullYear() - start.getFullYear();
+
+            if (diff > 0) return diff + " سنة";
+
+            diff = end.getMonth() - start.getMonth();
+
+            if (diff > 0) return diff + " شهر";
+
+            diff = end.getDate() - start.getDate();
+
+            if (diff > 0) return diff + " يوم";
         },
     },
     created() {
@@ -549,5 +702,9 @@ body {
 
 textarea {
     resize: none;
+}
+.alert {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 </style>

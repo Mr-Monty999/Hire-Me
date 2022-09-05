@@ -58,7 +58,6 @@ class ProfileController extends Controller
     {
 
         $profile = Profile::with("phones", "skills", "experiences", "posts")->where("user_id", $id)->first();
-
         return ResponseService::json($profile, "تم جلب البيانات بنجاح");
     }
 
@@ -71,6 +70,10 @@ class ProfileController extends Controller
     public function edit(Profile $profile)
     {
         //
+
+
+
+
     }
 
     /**

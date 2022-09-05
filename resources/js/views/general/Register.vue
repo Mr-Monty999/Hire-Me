@@ -4,55 +4,67 @@
 
         <main class="container d-flex flex-column align-items-center">
             <form @submit.prevent="register()" class="">
-                <div class="input-group mb-3">
+                <div class="form-floating mb-3">
                     <input
+                        id="firstname"
                         type="text"
                         class="form-control"
                         placeholder="الإسم الأول"
                         v-model="firstname"
                     />
+                    <label for="firstname">الإسم الأول</label>
                 </div>
-                <div class="input-group mb-3">
+                <div class="form-floating mb-3">
                     <input
                         type="text"
                         class="form-control"
                         placeholder="إسم العائلة"
                         v-model="lastname"
+                        id="lastname"
                     />
+                    <label for="lastname">إسم العائلة</label>
                 </div>
-                <div class="input-group mb-3">
+                <div class="form-floating mb-3">
                     <input
                         type="date"
                         class="form-control"
                         placeholder="تاريخ الميلاد"
                         v-model="birthdate"
+                        id="birthdate"
                     />
+                    <label for="birthdate">تاريخ الميلاد</label>
                 </div>
-                <div class="input-group mb-3">
+                <div class="form-floating mb-3">
                     <input
                         type="text"
                         class="form-control"
                         placeholder="البريد الإلكتروني @example.com"
                         v-model="email"
+                        id="email"
                     />
+                    <label for="email">البريد الإلكتروني</label>
                 </div>
 
-                <div class="input-group mb-3">
+                <div class="form-floating mb-3">
                     <input
                         type="password"
                         class="form-control"
                         placeholder="كلمة المرور"
                         v-model="password"
+                        id="password"
                     />
+                    <label for="password">كلمة المرور</label>
                 </div>
 
-                <div class="input-group mb-3">
+                <div class="form-floating mb-3">
                     <input
                         type="password"
                         class="form-control"
                         placeholder="إعادة كتابة كلمة المرور"
                         v-model="repassword"
+                        id="repassword"
                     />
+                    <label for="repassword">إعادة كتابة كلمة المرور</label>
                 </div>
                 <button class="btn btn-success offset-3" type="submit">
                     إنشاء حساب
