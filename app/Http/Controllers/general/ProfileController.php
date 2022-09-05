@@ -57,7 +57,7 @@ class ProfileController extends Controller
     public function show($id)
     {
 
-        $profile = Profile::with("phones", "skills", "experiences", "posts")->where("user_id", $id)->first();
+        $profile = Profile::with("phones", "skills", "experiences", "posts", "user")->where("user_id", $id)->first();
         return ResponseService::json($profile, "تم جلب البيانات بنجاح");
     }
 

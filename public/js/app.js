@@ -5508,6 +5508,7 @@ __webpack_require__.r(__webpack_exports__);
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
+        vm.experiences.push(response.data);
         vm.company_name = "";
         vm.start = "";
         vm.end = "";
@@ -6290,42 +6291,35 @@ var render = function render() {
     }
   }), _c("span", {
     staticClass: "font-weight-bold"
-  }, [_vm._v(_vm._s(_vm.firstname) + " " + _vm._s(_vm.lastname))]), _c("span", {
-    staticClass: "text-black-50"
-  }, [_vm._v(_vm._s(_vm.email))]), _c("span", [_vm._v("8,000 متابع ")])]), _vm._v(" "), _c("div", [_c("textarea", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.about,
-      expression: "about"
-    }],
-    staticClass: "form-control",
+  }, [_vm._v(_vm._s(_vm.firstname) + " " + _vm._s(_vm.lastname))]), _vm._v(" "), _c("span", [_c("button", {
+    staticClass: "btn btn-warning",
     attrs: {
-      name: "about",
-      id: "",
-      cols: "50",
-      rows: "5",
-      placeholder: "عني"
-    },
-    domProps: {
-      value: _vm.about
-    },
-    on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.about = $event.target.value;
-      }
+      type: "button",
+      "data-bs-toggle": "modal",
+      "data-bs-target": "#editProfileInfo"
     }
-  })])]), _vm._v(" "), _c("div", {
-    staticClass: "col-md-5 border-right"
+  }, [_vm._v("\n                            تعديل الملف الشخصي\n                        ")]), _vm._v(" "), _c("div", {
+    staticClass: "modal fade",
+    attrs: {
+      id: "editProfileInfo",
+      tabindex: "-1",
+      "aria-labelledby": "editProfileInfoLabel",
+      "aria-hidden": "true"
+    }
   }, [_c("div", {
-    staticClass: "p-3 py-5"
+    staticClass: "modal-dialog modal-dialog-scrollable"
+  }, [_c("div", {
+    staticClass: "modal-content"
   }, [_vm._m(0), _vm._v(" "), _c("div", {
+    staticClass: "modal-body"
+  }, [_c("div", {}, [_c("div", {
+    staticClass: "d-flex mb-3"
+  }), _vm._v(" "), _c("div", {
     staticClass: "row mt-2"
   }, [_c("div", {
-    staticClass: "col-md-6"
+    staticClass: "col-md-12"
   }, [_c("label", {
-    staticClass: "labels"
+    staticClass: "labels form-label"
   }, [_vm._v("الإسم الأول")]), _c("input", {
     directives: [{
       name: "model",
@@ -6349,9 +6343,9 @@ var render = function render() {
       }
     }
   })]), _vm._v(" "), _c("div", {
-    staticClass: "col-md-6"
+    staticClass: "col-md-12"
   }, [_c("label", {
-    staticClass: "labels"
+    staticClass: "labels form-label"
   }, [_vm._v("إسم العائلة")]), _c("input", {
     directives: [{
       name: "model",
@@ -6377,7 +6371,7 @@ var render = function render() {
   })]), _vm._v(" "), _c("div", {
     staticClass: "col-md-12"
   }, [_c("label", {
-    staticClass: "labels"
+    staticClass: "labels form-label"
   }, [_vm._v("اللقب")]), _c("input", {
     directives: [{
       name: "model",
@@ -6400,13 +6394,44 @@ var render = function render() {
         _vm.nickname = $event.target.value;
       }
     }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": ""
+    }
+  }, [_vm._v("حول")]), _vm._v(" "), _c("textarea", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.about,
+      expression: "about"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      name: "about",
+      id: "",
+      cols: "50",
+      rows: "5",
+      placeholder: "عني"
+    },
+    domProps: {
+      value: _vm.about
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.about = $event.target.value;
+      }
+    }
   })])]), _vm._v(" "), _c("div", {
     staticClass: "row mt-3"
   }, [_c("div", {
     staticClass: "col-md-12"
   }, [_c("label", {
-    staticClass: "labels"
-  }, [_vm._v(" رقم الهاتف")]), _c("input", {
+    staticClass: "labels form-label"
+  }, [_vm._v("\n                                                        رقم الهاتف")]), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -6438,15 +6463,15 @@ var render = function render() {
     on: {
       click: _vm.addPhone
     }
-  }, [_vm._v("\n                                اضافة رقم الهاتف\n                            ")])]), _vm._v(" "), _vm.addPhoneSuccess ? _c("div", {
+  }, [_vm._v("\n                                                        اضافة رقم الهاتف\n                                                    ")])]), _vm._v(" "), _vm.addPhoneSuccess ? _c("div", {
     staticClass: "alert alert-success text-center"
-  }, [_vm._v("\n                            تم اضافة الرقم بنجاح\n                        ")]) : _vm.addPhoneSuccess == false ? _c("div", {
+  }, [_vm._v("\n                                                    تم اضافة الرقم بنجاح\n                                                ")]) : _vm.addPhoneSuccess == false ? _c("div", {
     staticClass: "alert alert-danger text-center"
-  }, [_vm._v("\n                            الرجاء التحقق من البيانات\n                        ")]) : _vm._e(), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n                                                    الرجاء التحقق من\n                                                    البيانات\n                                                ")]) : _vm._e(), _vm._v(" "), _c("div", {
     staticClass: "col-md-12"
   }, [_c("label", {
-    staticClass: "labels"
-  }, [_vm._v("تاريخ الميلاد")]), _c("input", {
+    staticClass: "labels form-label"
+  }, [_vm._v("تاريخ\n                                                        الميلاد")]), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -6471,7 +6496,7 @@ var render = function render() {
   })]), _vm._v(" "), _c("div", {
     staticClass: "col-md-12"
   }, [_c("label", {
-    staticClass: "labels"
+    staticClass: "labels form-label"
   }, [_vm._v("الدولة")]), _c("input", {
     directives: [{
       name: "model",
@@ -6497,7 +6522,7 @@ var render = function render() {
   })]), _vm._v(" "), _c("div", {
     staticClass: "col-md-12"
   }, [_c("label", {
-    staticClass: "labels"
+    staticClass: "labels form-label"
   }, [_vm._v("الولاية")]), _c("input", {
     directives: [{
       name: "model",
@@ -6523,7 +6548,7 @@ var render = function render() {
   })]), _vm._v(" "), _c("div", {
     staticClass: "col-md-12"
   }, [_c("label", {
-    staticClass: "labels"
+    staticClass: "labels form-label"
   }, [_vm._v("المدينة")]), _c("input", {
     directives: [{
       name: "model",
@@ -6549,7 +6574,7 @@ var render = function render() {
   })]), _vm._v(" "), _c("div", {
     staticClass: "col-md-12"
   }, [_c("label", {
-    staticClass: "labels"
+    staticClass: "labels form-label"
   }, [_vm._v("الشارع")]), _c("input", {
     directives: [{
       name: "model",
@@ -6575,8 +6600,8 @@ var render = function render() {
   })]), _vm._v(" "), _c("div", {
     staticClass: "col-md-12"
   }, [_c("label", {
-    staticClass: "labels"
-  }, [_vm._v("الموقع الإلكتروني")]), _c("input", {
+    staticClass: "labels form-label"
+  }, [_vm._v("الموقع\n                                                        الإلكتروني")]), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -6603,13 +6628,13 @@ var render = function render() {
   }, [_vm._m(1), _vm._v(" "), _c("div", {
     staticClass: "col-md-12"
   }, [_c("label", {
-    staticClass: "labels"
+    staticClass: "labels form-label"
   }, [_vm._v("الجامعة")]), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
       value: _vm.university,
-      expression: "university"
+      expression: "\n                                                                university\n                                                            "
     }],
     staticClass: "form-control",
     attrs: {
@@ -6629,8 +6654,8 @@ var render = function render() {
   })]), _vm._v(" "), _c("div", {
     staticClass: "col-md-12"
   }, [_c("label", {
-    staticClass: "labels"
-  }, [_vm._v("الدرجة العلمية")]), _c("input", {
+    staticClass: "labels form-label"
+  }, [_vm._v("الدرجة\n                                                            العلمية")]), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -6655,13 +6680,13 @@ var render = function render() {
   })]), _vm._v(" "), _c("div", {
     staticClass: "col-md-12"
   }, [_c("label", {
-    staticClass: "labels"
-  }, [_vm._v("نوع التخصص")]), _c("input", {
+    staticClass: "labels form-label"
+  }, [_vm._v("نوع\n                                                            التخصص")]), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
       value: _vm.study_type,
-      expression: "study_type"
+      expression: "\n                                                                study_type\n                                                            "
     }],
     staticClass: "form-control",
     attrs: {
@@ -6678,9 +6703,19 @@ var render = function render() {
         _vm.study_type = $event.target.value;
       }
     }
-  })])])]), _vm._v(" "), _c("div", {
-    staticClass: "mt-1 text-center"
+  })])])]), _vm._v(" "), _vm.saveSuccess ? _c("div", {
+    staticClass: "alert alert-success text-center"
+  }, [_vm._v("\n                                                تم حفظ الملف الشخصي بنجاح\n                                            ")]) : _vm.saveSuccess == false ? _c("div", {
+    staticClass: "alert alert-danger text-center"
+  }, [_vm._v("\n                                                الرجاء التحقق من البيانات\n                                            ")]) : _vm._e()])]), _vm._v(" "), _c("div", {
+    staticClass: "modal-footer"
   }, [_c("button", {
+    staticClass: "btn btn-secondary",
+    attrs: {
+      type: "button",
+      "data-bs-dismiss": "modal"
+    }
+  }, [_vm._v("\n                                            إغلاق\n                                        ")]), _vm._v(" "), _c("button", {
     staticClass: "btn btn-success",
     attrs: {
       type: "button"
@@ -6690,15 +6725,66 @@ var render = function render() {
         return _vm.savePersonalInfo();
       }
     }
-  }, [_vm._v("\n                            حفظ\n                        ")])]), _vm._v(" "), _vm.saveSuccess ? _c("div", {
-    staticClass: "alert alert-success text-center"
-  }, [_vm._v("\n                        تم حفظ الملف الشخصي بنجاح\n                    ")]) : _vm.saveSuccess == false ? _c("div", {
-    staticClass: "alert alert-danger text-center"
-  }, [_vm._v("\n                        الرجاء التحقق من البيانات\n                    ")]) : _vm._e()])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n                                            حفظ\n                                        ")])])])])])]), _vm._v(" "), _c("span", {
+    staticClass: "text-black-50"
+  }, [_vm._v(_vm._s(_vm.email))]), _c("span", [_vm._v("8,000 متابع ")])]), _vm._v(" "), _c("div", [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": ""
+    }
+  }, [_vm._v("حول")]), _vm._v(" "), _c("textarea", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.about,
+      expression: "about"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      name: "about",
+      id: "",
+      cols: "50",
+      rows: "5",
+      readonly: "",
+      placeholder: "عني"
+    },
+    domProps: {
+      value: _vm.about
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.about = $event.target.value;
+      }
+    }
+  })])]), _vm._v(" "), _vm._m(2), _vm._v(" "), _c("div", {
     staticClass: "col-md-4"
   }, [_c("div", {
     staticClass: "p-3 py-5"
-  }, [_vm._m(2), _vm._v(" "), _c("br"), _vm._v(" "), _c("div", {
+  }, [_vm._m(3), _vm._v(" "), _c("br"), _vm._v(" "), _c("div", {
+    staticClass: "mt-1"
+  }, [_c("button", {
+    staticClass: "btn btn-success",
+    attrs: {
+      type: "button",
+      "data-bs-toggle": "modal",
+      "data-bs-target": "#exampleModal"
+    }
+  }, [_vm._v("\n                            خبرة جديدة\n                        ")]), _vm._v(" "), _c("div", {
+    staticClass: "modal fade",
+    attrs: {
+      id: "exampleModal",
+      tabindex: "-1",
+      "aria-labelledby": "exampleModalLabel",
+      "aria-hidden": "true"
+    }
+  }, [_c("div", {
+    staticClass: "modal-dialog modal-dialog-scrollable"
+  }, [_c("div", {
+    staticClass: "modal-content"
+  }, [_vm._m(4), _vm._v(" "), _c("div", {
+    staticClass: "modal-body"
+  }, [_c("div", {
     staticClass: "col-md-12"
   }, [_c("label", {
     staticClass: "labels"
@@ -6802,9 +6888,19 @@ var render = function render() {
         _vm.position = $event.target.value;
       }
     }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "mt-1"
+  })]), _vm._v(" "), _vm.addExperienceSuccess ? _c("div", {
+    staticClass: "alert alert-success text-center"
+  }, [_vm._v("\n                                            تم اضافة الخبرة بنجاح\n                                        ")]) : _vm.addExperienceSuccess == false ? _c("div", {
+    staticClass: "alert alert-danger text-center"
+  }, [_vm._v("\n                                            الرجاء التحقق من البيانات\n                                        ")]) : _vm._e()]), _vm._v(" "), _c("div", {
+    staticClass: "modal-footer"
   }, [_c("button", {
+    staticClass: "btn btn-secondary",
+    attrs: {
+      type: "button",
+      "data-bs-dismiss": "modal"
+    }
+  }, [_vm._v("\n                                            إغلاق\n                                        ")]), _vm._v(" "), _c("button", {
     staticClass: "btn btn-success",
     attrs: {
       type: "button"
@@ -6812,11 +6908,7 @@ var render = function render() {
     on: {
       click: _vm.addExperience
     }
-  }, [_vm._v("\n                            اضافة الخبرة\n                        ")])]), _vm._v(" "), _vm.addExperienceSuccess ? _c("div", {
-    staticClass: "alert alert-success text-center"
-  }, [_vm._v("\n                        تم اضافة الخبرة بنجاح\n                    ")]) : _vm.addExperienceSuccess == false ? _c("div", {
-    staticClass: "alert alert-danger text-center"
-  }, [_vm._v("\n                        الرجاء التحقق من البيانات\n                    ")]) : _vm._e(), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n                                            إضافة\n                                        ")])])])])])]), _vm._v(" "), _c("div", {
     staticClass: "accordion",
     attrs: {
       id: "accordionExample"
@@ -6885,7 +6977,30 @@ var render = function render() {
     }, [_vm._v("\n                                                " + _vm._s(_vm.calcExp(exp.start, exp.end)) + "\n                                            ")])])])])])]);
   }), 0), _vm._v(" "), _c("div", {
     staticClass: "p-3 py-5"
-  }, [_vm._m(3), _vm._v(" "), _c("div", {
+  }, [_vm._m(5), _vm._v(" "), _c("div", {
+    staticClass: "mt-1"
+  }, [_c("button", {
+    staticClass: "btn btn-success",
+    attrs: {
+      type: "button",
+      "data-bs-toggle": "modal",
+      "data-bs-target": "#skillModal"
+    }
+  }, [_vm._v("\n                                مهارة جديدة\n                            ")]), _vm._v(" "), _c("div", {
+    staticClass: "modal fade",
+    attrs: {
+      id: "skillModal",
+      tabindex: "-1",
+      "aria-labelledby": "skillModalLabel",
+      "aria-hidden": "true"
+    }
+  }, [_c("div", {
+    staticClass: "modal-dialog modal-dialog-scrollable"
+  }, [_c("div", {
+    staticClass: "modal-content"
+  }, [_vm._m(6), _vm._v(" "), _c("div", {
+    staticClass: "modal-body"
+  }, [_c("div", {
     staticClass: "col-md-12"
   }, [_c("label", {
     staticClass: "labels"
@@ -6911,9 +7026,19 @@ var render = function render() {
         _vm.skill_name = $event.target.value;
       }
     }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "mt-1"
+  })]), _vm._v(" "), _vm.addSkillSuccess ? _c("div", {
+    staticClass: "alert alert-success text-center"
+  }, [_vm._v("\n                                                تم اضافة المهارة بنجاح\n                                            ")]) : _vm.addSkillSuccess == false ? _c("div", {
+    staticClass: "alert alert-danger text-center"
+  }, [_vm._v("\n                                                الرجاء التحقق من البيانات\n                                            ")]) : _vm._e()]), _vm._v(" "), _c("div", {
+    staticClass: "modal-footer"
   }, [_c("button", {
+    staticClass: "btn btn-secondary",
+    attrs: {
+      type: "button",
+      "data-bs-dismiss": "modal"
+    }
+  }, [_vm._v("\n                                                إغلاق\n                                            ")]), _vm._v(" "), _c("button", {
     staticClass: "btn btn-success",
     attrs: {
       type: "button"
@@ -6921,11 +7046,7 @@ var render = function render() {
     on: {
       click: _vm.addSkill
     }
-  }, [_vm._v("\n                                اضافة المهارة\n                            ")])]), _vm._v(" "), _vm.addSkillSuccess ? _c("div", {
-    staticClass: "alert alert-success text-center"
-  }, [_vm._v("\n                            تم اضافة المهارة بنجاح\n                        ")]) : _vm.addSkillSuccess == false ? _c("div", {
-    staticClass: "alert alert-danger text-center"
-  }, [_vm._v("\n                            الرجاء التحقق من البيانات\n                        ")]) : _vm._e(), _vm._v(" "), _c("ul", {
+  }, [_vm._v("\n                                                إضافة\n                                            ")])])])])])]), _vm._v(" "), _c("ul", {
     staticClass: "list-group list"
   }, _vm._l(_vm.skills, function (skill, i) {
     return _c("li", {
@@ -6940,10 +7061,20 @@ var staticRenderFns = [function () {
       _c = _vm._self._c;
 
   return _c("div", {
-    staticClass: "d-flex justify-content-between align-items-center mb-3"
-  }, [_c("h4", {
-    staticClass: "text-right"
-  }, [_vm._v("إعدادات الملف الشخصي")])]);
+    staticClass: "modal-header"
+  }, [_c("h5", {
+    staticClass: "modal-title",
+    attrs: {
+      id: "editProfileInfoLabel"
+    }
+  }, [_vm._v("\n                                            تعديل المعلومات الشخصية\n                                        ")]), _vm._v(" "), _c("button", {
+    staticClass: "btn-close",
+    attrs: {
+      type: "button",
+      "data-bs-dismiss": "modal",
+      "aria-label": "Close"
+    }
+  })]);
 }, function () {
   var _vm = this,
       _c = _vm._self._c;
@@ -6956,6 +7087,79 @@ var staticRenderFns = [function () {
       _c = _vm._self._c;
 
   return _c("div", {
+    staticClass: "col-md-5 border-right"
+  }, [_c("div", {
+    staticClass: "p-3 py-5"
+  }, [_c("h4", [_vm._v("منشوراتك")]), _vm._v(" "), _c("div", {
+    staticClass: "container mt-5 mb-5"
+  }, [_c("div", {
+    staticClass: "row d-flex align-items-center justify-content-center"
+  }, [_c("div", {
+    staticClass: "col-md-12"
+  }, [_c("div", {
+    staticClass: "card"
+  }, [_c("div", {
+    staticClass: "d-flex justify-content-between p-2 px-3"
+  }, [_c("div", {
+    staticClass: "d-flex flex-row align-items-center"
+  }, [_c("img", {
+    staticClass: "rounded-circle",
+    attrs: {
+      src: "https://i.imgur.com/UXdKE3o.jpg",
+      width: "50"
+    }
+  }), _vm._v(" "), _c("div", {
+    staticClass: "d-flex flex-column ml-2"
+  }, [_c("span", {
+    staticClass: "font-weight-bold"
+  }, [_vm._v("Jeanette Sun")]), _vm._v(" "), _c("small", {
+    staticClass: "text-primary"
+  }, [_vm._v("Collegues")])])]), _vm._v(" "), _c("div", {
+    staticClass: "d-flex flex-row mt-1 ellipsis"
+  }, [_c("small", {
+    staticClass: "mr-2"
+  }, [_vm._v("20 mins")]), _vm._v(" "), _c("i", {
+    staticClass: "fa fa-ellipsis-h"
+  })])]), _vm._v(" "), _c("img", {
+    staticClass: "img-fluid",
+    attrs: {
+      src: "https://i.imgur.com/xhzhaGA.jpg"
+    }
+  }), _vm._v(" "), _c("div", {
+    staticClass: "p-2"
+  }, [_c("p", {
+    staticClass: "text-justify"
+  }, [_vm._v("\n                                            Lorem ipsum dolor sit amet,\n                                            consectetur adipiscing elit, sed\n                                            do eiusmod tempor incididunt.\n                                        ")]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("div", {
+    staticClass: "d-flex justify-content-between align-items-center"
+  }, [_c("div", {
+    staticClass: "d-flex flex-row icons d-flex align-items-center"
+  }, [_c("i", {
+    staticClass: "fa fa-heart"
+  }), _vm._v(" "), _c("i", {
+    staticClass: "fa fa-smile-o ml-2"
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "d-flex flex-row muted-color"
+  }, [_c("span", [_vm._v("2 comments")]), _vm._v("\n                                                |\n                                                "), _c("span", {
+    staticClass: "ml-2"
+  }, [_vm._v("Share")])])]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("div", {
+    staticClass: "comments"
+  }, [_c("div", {
+    staticClass: "comment-input"
+  }, [_c("input", {
+    staticClass: "form-control",
+    attrs: {
+      type: "text"
+    }
+  }), _vm._v(" "), _c("div", {
+    staticClass: "fonts"
+  }, [_c("i", {
+    staticClass: "fa fa-camera"
+  })])])])])])])])])])]);
+}, function () {
+  var _vm = this,
+      _c = _vm._self._c;
+
+  return _c("div", {
     staticClass: "d-flex justify-content-between align-items-center experience"
   }, [_c("h3", [_vm._v("الخبرات")])]);
 }, function () {
@@ -6963,8 +7167,46 @@ var staticRenderFns = [function () {
       _c = _vm._self._c;
 
   return _c("div", {
+    staticClass: "modal-header"
+  }, [_c("h5", {
+    staticClass: "modal-title",
+    attrs: {
+      id: "exampleModalLabel"
+    }
+  }, [_vm._v("\n                                            إضافة خبرة جديدة\n                                        ")]), _vm._v(" "), _c("button", {
+    staticClass: "btn-close",
+    attrs: {
+      type: "button",
+      "data-bs-dismiss": "modal",
+      "aria-label": "Close"
+    }
+  })]);
+}, function () {
+  var _vm = this,
+      _c = _vm._self._c;
+
+  return _c("div", {
     staticClass: "d-flex justify-content-between align-items-center experience"
   }, [_c("h3", [_vm._v("المهارات")])]);
+}, function () {
+  var _vm = this,
+      _c = _vm._self._c;
+
+  return _c("div", {
+    staticClass: "modal-header"
+  }, [_c("h5", {
+    staticClass: "modal-title",
+    attrs: {
+      id: "skillModalLabel"
+    }
+  }, [_vm._v("\n                                                إضافة مهارة جديدة\n                                            ")]), _vm._v(" "), _c("button", {
+    staticClass: "btn-close",
+    attrs: {
+      type: "button",
+      "data-bs-dismiss": "modal",
+      "aria-label": "Close"
+    }
+  })]);
 }];
 render._withStripped = true;
 
@@ -7003,7 +7245,7 @@ var render = function render() {
     }
   }), _c("span", {
     staticClass: "font-weight-bold"
-  }, [_vm._v(_vm._s(_vm.firstname) + " " + _vm._s(_vm.lastname))]), _c("span", {
+  }, [_vm._v(_vm._s(_vm.firstname) + " " + _vm._s(_vm.lastname))]), _vm._v(" "), _c("span", {
     staticClass: "text-black-50"
   }, [_vm._v(_vm._s(_vm.email))]), _c("span", [_vm._v("8,000 متابع ")])]), _vm._v(" "), _c("div", [_c("textarea", {
     directives: [{
@@ -7034,44 +7276,44 @@ var render = function render() {
   }, [_vm._m(0), _vm._v(" "), _c("div", {
     staticClass: "row mt-3"
   }, [_c("div", {
-    staticClass: "col-md-12"
+    staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("تاريخ الميلاد")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.birthdate) + "\n                            ")])]), _vm._v(" "), _c("div", {
-    staticClass: "col-md-12"
+  }, [_vm._v("تاريخ الميلاد:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.birthdate) + "\n                            ")])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("الدولة")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.country) + "\n                            ")])]), _vm._v(" "), _c("div", {
-    staticClass: "col-md-12"
+  }, [_vm._v("الدولة:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.country) + "\n                            ")])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("الولاية")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.state) + "\n                            ")])]), _vm._v(" "), _c("div", {
-    staticClass: "col-md-12"
+  }, [_vm._v("الولاية:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.state) + "\n                            ")])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("المدينة")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.city) + "\n                            ")])]), _vm._v(" "), _c("div", {
-    staticClass: "col-md-12"
+  }, [_vm._v("المدينة:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.city) + "\n                            ")])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("الشارع")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.street) + "\n                            ")])]), _vm._v(" "), _c("div", {
-    staticClass: "col-md-12"
+  }, [_vm._v("الشارع:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.street) + "\n                            ")])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("الموقع الإلكتروني")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.website) + "\n                            ")])]), _vm._v(" "), _c("div", {
-    staticClass: "p-3 py-5"
+  }, [_vm._v("الموقع الإلكتروني:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.website) + "\n                            ")])]), _vm._v(" "), _c("div", {
+    staticClass: "p-3 row py-5"
   }, [_vm._m(1), _vm._v(" "), _c("div", {
-    staticClass: "col-md-12"
+    staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("الجامعة")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                    " + _vm._s(_vm.university) + "\n                                ")])]), _vm._v(" "), _c("div", {
-    staticClass: "col-md-12"
+  }, [_vm._v("الجامعة:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                    " + _vm._s(_vm.university) + "\n                                ")])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("الدرجة العلمية")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                    " + _vm._s(_vm.degree) + "\n                                ")])]), _vm._v(" "), _c("div", {
-    staticClass: "col-md-12"
+  }, [_vm._v("الدرجة العلمية:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                    " + _vm._s(_vm.degree) + "\n                                ")])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("نوع التخصص")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                    " + _vm._s(_vm.study_type) + "\n                                ")])])])])])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("نوع التخصص:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                    " + _vm._s(_vm.study_type) + "\n                                ")])])])])])]), _vm._v(" "), _c("div", {
     staticClass: "col-md-4"
   }, [_c("div", {
     staticClass: "p-3 py-5"
@@ -13304,8 +13546,9 @@ __webpack_require__.r(__webpack_exports__);
 // Imports
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-d0fe79c8] {\n    background: rgb(99, 39, 120);\n}\n.form-control[data-v-d0fe79c8]:focus {\n    box-shadow: none;\n    border-color: #ba68c8;\n}\n.profile-button[data-v-d0fe79c8] {\n    background: rgb(99, 39, 120);\n    box-shadow: none;\n    border: none;\n}\n.profile-button[data-v-d0fe79c8]:hover {\n    background: #682773;\n}\n.profile-button[data-v-d0fe79c8]:focus {\n    background: #198754;\n    box-shadow: none;\n}\n.profile-button[data-v-d0fe79c8]:active {\n    background: #682773;\n    box-shadow: none;\n}\n.back[data-v-d0fe79c8]:hover {\n    color: #682773;\n    cursor: pointer;\n}\n.labels[data-v-d0fe79c8] {\n    font-size: 11px;\n}\n.add-experience[data-v-d0fe79c8]:hover {\n    background: #ba68c8;\n    color: #fff;\n    cursor: pointer;\n    border: solid 1px #ba68c8;\n}\ntextarea[data-v-d0fe79c8] {\n    resize: none;\n}\n.alert[data-v-d0fe79c8] {\n    margin-top: 10px;\n    margin-bottom: 10px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-d0fe79c8] {\n    background: rgb(99, 39, 120);\n}\n.form-control[data-v-d0fe79c8]:focus {\n    box-shadow: none;\n    border-color: #ba68c8;\n}\n.profile-button[data-v-d0fe79c8] {\n    background: rgb(99, 39, 120);\n    box-shadow: none;\n    border: none;\n}\n.profile-button[data-v-d0fe79c8]:hover {\n    background: #682773;\n}\n.profile-button[data-v-d0fe79c8]:focus {\n    background: #198754;\n    box-shadow: none;\n}\n.profile-button[data-v-d0fe79c8]:active {\n    background: #682773;\n    box-shadow: none;\n}\n.back[data-v-d0fe79c8]:hover {\n    color: #682773;\n    cursor: pointer;\n}\n.labels[data-v-d0fe79c8] {\n    font-size: 16px;\n}\n.add-experience[data-v-d0fe79c8]:hover {\n    background: #ba68c8;\n    color: #fff;\n    cursor: pointer;\n    border: solid 1px #ba68c8;\n}\ntextarea[data-v-d0fe79c8] {\n    resize: none;\n}\n.alert[data-v-d0fe79c8] {\n    margin-top: 10px;\n    margin-bottom: 10px;\n}\nbody[data-v-d0fe79c8] {\n    background-color: #eee;\n    font-family: \"Poppins\", sans-serif;\n    font-weight: 300;\n}\n.card[data-v-d0fe79c8] {\n    border: none;\n}\n.ellipsis[data-v-d0fe79c8] {\n    color: #a09c9c;\n}\nhr[data-v-d0fe79c8] {\n    color: #a09c9c;\n    margin-top: 4px;\n    margin-bottom: 8px;\n}\n.muted-color[data-v-d0fe79c8] {\n    color: #a09c9c;\n    font-size: 13px;\n}\n.ellipsis i[data-v-d0fe79c8] {\n    margin-top: 3px;\n    cursor: pointer;\n}\n.icons i[data-v-d0fe79c8] {\n    font-size: 25px;\n}\n.icons .fa-heart[data-v-d0fe79c8] {\n    color: red;\n}\n.icons .fa-smile-o[data-v-d0fe79c8] {\n    color: yellow;\n    font-size: 29px;\n}\n.rounded-image[data-v-d0fe79c8] {\n    border-radius: 50% !important;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    height: 50px;\n    width: 50px;\n}\n.name[data-v-d0fe79c8] {\n    font-weight: 600;\n}\n.comment-text[data-v-d0fe79c8] {\n    font-size: 12px;\n}\n.status small[data-v-d0fe79c8] {\n    margin-right: 10px;\n    color: blue;\n}\n.form-control[data-v-d0fe79c8] {\n    border-radius: 26px;\n}\n.comment-input[data-v-d0fe79c8] {\n    position: relative;\n}\n.fonts[data-v-d0fe79c8] {\n    position: absolute;\n    right: 13px;\n    top: 8px;\n    color: #a09c9c;\n}\n.form-control[data-v-d0fe79c8]:focus {\n    color: #495057;\n    background-color: #fff;\n    border-color: #8bbafe;\n    outline: 0;\n    box-shadow: none;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -13329,7 +13572,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-57a055d9] {\n    background: rgb(99, 39, 120);\n}\n.form-control[data-v-57a055d9]:focus {\n    box-shadow: none;\n    border-color: #ba68c8;\n}\n.profile-button[data-v-57a055d9] {\n    background: rgb(99, 39, 120);\n    box-shadow: none;\n    border: none;\n}\n.profile-button[data-v-57a055d9]:hover {\n    background: #682773;\n}\n.profile-button[data-v-57a055d9]:focus {\n    background: #198754;\n    box-shadow: none;\n}\n.profile-button[data-v-57a055d9]:active {\n    background: #682773;\n    box-shadow: none;\n}\n.back[data-v-57a055d9]:hover {\n    color: #682773;\n    cursor: pointer;\n}\n.labels[data-v-57a055d9] {\n    font-size: 11px;\n}\n.add-experience[data-v-57a055d9]:hover {\n    background: #ba68c8;\n    color: #fff;\n    cursor: pointer;\n    border: solid 1px #ba68c8;\n}\ntextarea[data-v-57a055d9] {\n    resize: none;\n    min-height: 300px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-57a055d9] {\n    background: rgb(99, 39, 120);\n}\n.form-control[data-v-57a055d9]:focus {\n    box-shadow: none;\n    border-color: #ba68c8;\n}\n.profile-button[data-v-57a055d9] {\n    background: rgb(99, 39, 120);\n    box-shadow: none;\n    border: none;\n}\n.profile-button[data-v-57a055d9]:hover {\n    background: #682773;\n}\n.profile-button[data-v-57a055d9]:focus {\n    background: #198754;\n    box-shadow: none;\n}\n.profile-button[data-v-57a055d9]:active {\n    background: #682773;\n    box-shadow: none;\n}\n.back[data-v-57a055d9]:hover {\n    color: #682773;\n    cursor: pointer;\n}\n.labels[data-v-57a055d9] {\n    font-size: 25px;\n    font-weight: bold;\n}\n.add-experience[data-v-57a055d9]:hover {\n    background: #ba68c8;\n    color: #fff;\n    cursor: pointer;\n    border: solid 1px #ba68c8;\n}\ntextarea[data-v-57a055d9] {\n    resize: none;\n    min-height: 300px;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

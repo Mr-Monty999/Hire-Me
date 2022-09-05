@@ -25,10 +25,21 @@ class ExperienceStoreRequest extends FormRequest
     {
         return [
             "start" => "date",
-            "end" => "date",
+            "end" => "date|after:start",
             "position" => "required",
             "company_name" => "required",
             "profile_id" => "required"
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            "start.date" => "الرجاء إدخال تاريخ فقط !",
+            "end.date" => "الرجاء إدخال تاريخ فقط !",
+            "end.after" => "يجب أن يكون بداية المنصب أقل من النهاية !",
+            "position.required" => "الرجاء إدخال المنصب !",
+            "company_name.required" => "الرجاء إدخال إسم الشركة !"
         ];
     }
 }

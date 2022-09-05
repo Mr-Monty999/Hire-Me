@@ -12,7 +12,8 @@
                             src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
                         /><span class="font-weight-bold"
                             >{{ firstname }} {{ lastname }}</span
-                        ><span class="text-black-50">{{ email }}</span
+                        >
+                        <span class="text-black-50">{{ email }}</span
                         ><span>8,000 متابع </span>
                     </div>
                     <div>
@@ -35,62 +36,64 @@
                         </div>
 
                         <div class="row mt-3">
-                            <div class="col-md-12">
-                                <label class="labels">تاريخ الميلاد</label>
+                            <div class="col-md-6">
+                                <label class="labels">تاريخ الميلاد:</label>
                                 <div class="">
                                     {{ birthdate }}
                                 </div>
                             </div>
-                            <div class="col-md-12">
-                                <label class="labels">الدولة</label>
+                            <div class="col-md-6">
+                                <label class="labels">الدولة:</label>
                                 <div class="">
                                     {{ country }}
                                 </div>
                             </div>
-                            <div class="col-md-12">
-                                <label class="labels">الولاية</label>
+                            <div class="col-md-6">
+                                <label class="labels">الولاية:</label>
                                 <div class="">
                                     {{ state }}
                                 </div>
                             </div>
-                            <div class="col-md-12">
-                                <label class="labels">المدينة</label>
+                            <div class="col-md-6">
+                                <label class="labels">المدينة:</label>
                                 <div class="">
                                     {{ city }}
                                 </div>
                             </div>
-                            <div class="col-md-12">
-                                <label class="labels">الشارع</label>
+                            <div class="col-md-6">
+                                <label class="labels">الشارع:</label>
                                 <div class="">
                                     {{ street }}
                                 </div>
                             </div>
-                            <div class="col-md-12">
-                                <label class="labels">الموقع الإلكتروني</label>
+                            <div class="col-md-6">
+                                <label class="labels">الموقع الإلكتروني:</label>
                                 <div class="">
                                     {{ website }}
                                 </div>
                             </div>
-                            <div class="p-3 py-5">
+                            <div class="p-3 row py-5">
                                 <div
                                     class="d-flex justify-content-between align-items-center experience"
                                 >
                                     <h3>التعليم</h3>
                                 </div>
-                                <div class="col-md-12">
-                                    <label class="labels">الجامعة</label>
+                                <div class="col-md-6">
+                                    <label class="labels">الجامعة:</label>
                                     <div class="">
                                         {{ university }}
                                     </div>
                                 </div>
-                                <div class="col-md-12">
-                                    <label class="labels">الدرجة العلمية</label>
+                                <div class="col-md-6">
+                                    <label class="labels"
+                                        >الدرجة العلمية:</label
+                                    >
                                     <div class="">
                                         {{ degree }}
                                     </div>
                                 </div>
-                                <div class="col-md-12">
-                                    <label class="labels">نوع التخصص</label>
+                                <div class="col-md-6">
+                                    <label class="labels">نوع التخصص:</label>
                                     <div class="">
                                         {{ study_type }}
                                     </div>
@@ -351,7 +354,8 @@ body {
 }
 
 .labels {
-    font-size: 11px;
+    font-size: 25px;
+    font-weight: bold;
 }
 
 .add-experience:hover {
