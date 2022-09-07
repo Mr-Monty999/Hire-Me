@@ -28,4 +28,10 @@ class ProfilePhoneStoreRequest extends FormRequest
             "user_id" => "required"
         ];
     }
+    public function messages()
+    {
+        return [
+            "phone.required" => "رقم الهاتف مطلوب !",
+        ];
+    }
 }

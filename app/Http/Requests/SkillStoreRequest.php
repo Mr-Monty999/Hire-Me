@@ -27,4 +27,10 @@ class SkillStoreRequest extends FormRequest
             "name" => "required"
         ];
     }
+    public function messages()
+    {
+        return [
+            "name.required" => "الرجاء كتابة إسم المهارة !",
+        ];
+    }
 }

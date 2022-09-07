@@ -26,3 +26,8 @@ main {
 .bg-mine {
     background-color: #f3f2ef !important;
 }
+
+.mar-1 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

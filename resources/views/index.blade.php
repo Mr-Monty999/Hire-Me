@@ -14,6 +14,8 @@
 
     <div id="app" class="">
         <router-view></router-view>
+        <notifications position="bottom right" />
+
     </div>
 
 

@@ -20,7 +20,7 @@
             :aria-labelledby="name + 'Label'"
             aria-hidden="true"
         >
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" :id="name + 'Label'">
@@ -46,9 +46,9 @@
                         </button>
                         <button
                             v-if="confirmAndClosed"
+                            @click="$emit('confirmEvent')"
                             data-bs-dismiss="modal"
                             type="button"
-                            @click="$emit('confirmEvent')"
                             :class="confirmButtonClass"
                         >
                             {{ confirmButtonName }}
@@ -56,6 +56,7 @@
                         <button
                             v-else
                             type="button"
+                            @click="$emit('confirmEvent')"
                             :class="confirmButtonClass"
                         >
                             {{ confirmButtonName }}
@@ -73,16 +74,16 @@ import axios from "axios";
 export default {
     name: "ModalSnippet",
     components: {},
-    props: [
-        "launchButtonName",
-        "closeButtonName",
-        "confirmButtonName",
-        "confirmAndClosed",
-        "title",
-        "launchButtonClass",
-        "confirmButtonClass",
-        "name",
-    ],
+    props: {
+        launchButtonName: String,
+        closeButtonName: String,
+        confirmButtonName: String,
+        confirmAndClosed: Boolean,
+        title: String,
+        launchButtonClass: String,
+        confirmButtonClass: String,
+        name: String,
+    },
 };
 </script>
 

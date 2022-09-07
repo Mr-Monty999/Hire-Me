@@ -19,6 +19,9 @@ import "./assets/css/all.min.css";
 import HeaderBar from "./components/layouts/HeaderBar.vue";
 import FooterBar from "./components/layouts/FooterBar.vue";
 import router from "./router/index";
+import Vue from "vue";
+import Notifications from "vue-notification";
+Vue.use(Notifications);
 
 /**
  * The following block of code may be used to automatically register your

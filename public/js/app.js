@@ -5319,7 +5319,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "ModalSnippet",
   components: {},
-  props: ["launchButtonName", "closeButtonName", "confirmButtonName", "confirmAndClosed", "title", "launchButtonClass", "confirmButtonClass", "name"]
+  props: {
+    launchButtonName: String,
+    closeButtonName: String,
+    confirmButtonName: String,
+    confirmAndClosed: Boolean,
+    title: String,
+    launchButtonClass: String,
+    confirmButtonClass: String,
+    name: String
+  }
 });
 
 /***/ }),
@@ -5530,12 +5539,7 @@ __webpack_require__.r(__webpack_exports__);
       experiences: "",
       skills: "",
       user_id: 0,
-      profile_id: 0,
-      saveSuccess: null,
-      addExperienceSuccess: null,
-      addPhoneSuccess: null,
-      addSkillSuccess: null,
-      deleteSkillSuccess: null
+      profile_id: 0
     };
   },
   methods: {
@@ -5561,10 +5565,22 @@ __webpack_require__.r(__webpack_exports__);
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        vm.saveSuccess = true;
+        vm.$notify({
+          title: "نجاح",
+          text: "تم حفظ الملف الشخصي بنجاح",
+          type: "success"
+        });
       })["catch"](function (error) {
-        vm.saveSuccess = false;
         console.log(error.response);
+        var errors = error.response.data.errors;
+
+        for (var _error in errors) {
+          vm.$notify({
+            title: "خطأ",
+            text: errors[_error][0],
+            type: "error"
+          });
+        }
       });
     },
     addExperience: function addExperience() {
@@ -5584,10 +5600,22 @@ __webpack_require__.r(__webpack_exports__);
         vm.start = "";
         vm.end = "";
         vm.position = "";
-        vm.addExperienceSuccess = true;
+        vm.$notify({
+          title: "نجاح",
+          text: "تم إضافة الخبرة بنجاح",
+          type: "success"
+        });
       })["catch"](function (error) {
-        vm.addExperienceSuccess = false;
         console.log(error.response);
+        var errors = error.response.data.errors;
+
+        for (var _error2 in errors) {
+          vm.$notify({
+            title: "خطأ",
+            text: errors[_error2][0],
+            type: "error"
+          });
+        }
       });
     },
     addSkill: function addSkill() {
@@ -5606,11 +5634,29 @@ __webpack_require__.r(__webpack_exports__);
         if (!skillExist) {
           vm.skills.push(response.data);
           vm.skill_name = "";
-          vm.addSkillSuccess = true;
-        } else vm.addSkillSuccess = false;
+          vm.$notify({
+            title: "نجاح",
+            text: "تم إضافة المهارة بنجاح",
+            type: "success"
+          });
+        } else {
+          vm.$notify({
+            title: "خطأ",
+            text: "هذه المهارة موجودة بالفعل !",
+            type: "error"
+          });
+        }
       })["catch"](function (error) {
-        vm.addSkillSuccess = false;
         console.log(error.response);
+        var errors = error.response.data.errors;
+
+        for (var _error3 in errors) {
+          vm.$notify({
+            title: "خطأ",
+            text: errors[_error3][0],
+            type: "error"
+          });
+        }
       });
     },
     addPhone: function addPhone() {
@@ -5623,10 +5669,22 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         console.log(response);
         vm.phone = "";
-        vm.addPhoneSuccess = true;
+        vm.$notify({
+          title: "نجاح",
+          text: "تم إضافة رقم الهاتف بنجاح",
+          type: "success"
+        });
       })["catch"](function (error) {
-        vm.addPhoneSuccess = false;
         console.log(error.response);
+        var errors = error.response.data.errors;
+
+        for (var _error4 in errors) {
+          vm.$notify({
+            title: "خطأ",
+            text: errors[_error4][0],
+            type: "error"
+          });
+        }
       });
     },
     getProfileInfo: function getProfileInfo() {
@@ -5679,10 +5737,84 @@ __webpack_require__.r(__webpack_exports__);
           return el.id == skillId;
         });
         vm.skills.splice(index, 1);
-        vm.deleteSkillSuccess = true;
+        vm.$notify({
+          title: "نجاح",
+          text: "تم حذف المهارة بنجاح",
+          type: "success"
+        });
       })["catch"](function (error) {
         console.log(error.response);
-        vm.deleteSkillSuccess = false;
+        var errors = error.response.data.errors;
+
+        for (var _error5 in errors) {
+          vm.$notify({
+            title: "خطأ",
+            text: errors[_error5][0],
+            type: "error"
+          });
+        }
+      });
+    },
+    deleteExperience: function deleteExperience(experienceId) {
+      var vm = this;
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/experiences/" + experienceId, {
+        headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
+      }).then(function (response) {
+        console.log(response);
+        var index = vm.experiences.findIndex(function (el) {
+          return el.id == experienceId;
+        });
+        vm.experiences.splice(index, 1);
+        vm.$notify({
+          title: "نجاح",
+          text: "تم حذف الخبرة بنجاح",
+          type: "success"
+        });
+      })["catch"](function (error) {
+        console.log(error.response);
+        var errors = error.response.data.errors;
+
+        for (var _error6 in errors) {
+          vm.$notify({
+            title: "خطأ",
+            text: errors[_error6][0],
+            type: "error"
+          });
+        }
+      });
+    },
+    editExperience: function editExperience(experienceId) {
+      var vm = this;
+      axios__WEBPACK_IMPORTED_MODULE_0___default().put("/api/experiences/" + experienceId, {
+        company_name: vm.company_name,
+        start: vm.start,
+        end: vm.end,
+        position: vm.position,
+        profile_id: vm.profile_id
+      }, {
+        headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
+      }).then(function (response) {
+        console.log(response);
+        vm.company_name = "";
+        vm.start = "";
+        vm.end = "";
+        vm.position = "";
+        vm.$notify({
+          title: "نجاح",
+          text: "تم تعديل الخبرة بنجاح",
+          type: "success"
+        });
+      })["catch"](function (error) {
+        console.log(error.response);
+        var errors = error.response.data.errors;
+
+        for (var _error7 in errors) {
+          vm.$notify({
+            title: "خطأ",
+            text: errors[_error7][0],
+            type: "error"
+          });
+        }
       });
     }
   },
@@ -6085,7 +6217,7 @@ var render = function render() {
       "aria-hidden": "true"
     }
   }, [_c("div", {
-    staticClass: "modal-dialog"
+    staticClass: "modal-dialog modal-dialog-scrollable"
   }, [_c("div", {
     staticClass: "modal-content"
   }, [_c("div", {
@@ -6127,6 +6259,11 @@ var render = function render() {
     "class": _vm.confirmButtonClass,
     attrs: {
       type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.$emit("confirmEvent");
+      }
     }
   }, [_vm._v("\n                        " + _vm._s(_vm.confirmButtonName) + "\n                    ")])])])])])]);
 };
@@ -6641,28 +6778,21 @@ var render = function render() {
     }
   }), _c("span", {
     staticClass: "font-weight-bold"
-  }, [_vm._v(_vm._s(_vm.firstname) + " " + _vm._s(_vm.lastname))]), _vm._v(" "), _c("span", [_c("button", {
-    staticClass: "btn btn-warning",
+  }, [_vm._v(_vm._s(_vm.firstname) + " " + _vm._s(_vm.lastname))]), _vm._v(" "), _c("span", [_c("modal-snippet", {
     attrs: {
-      type: "button",
-      "data-bs-toggle": "modal",
-      "data-bs-target": "#editProfileInfo"
+      launchButtonName: "تعديل الملف الشخصي",
+      closeButtonName: "إغلاق",
+      confirmButtonName: "حفظ",
+      title: "تعديل الملف الشخصي",
+      launchButtonClass: "btn btn-warning",
+      confirmButtonClass: "btn btn-success",
+      name: "savePersonalInfo"
+    },
+    on: {
+      confirmEvent: function confirmEvent($event) {
+        return _vm.savePersonalInfo();
+      }
     }
-  }, [_vm._v("\n                            تعديل الملف الشخصي\n                        ")]), _vm._v(" "), _c("div", {
-    staticClass: "modal fade",
-    attrs: {
-      id: "editProfileInfo",
-      tabindex: "-1",
-      "aria-labelledby": "editProfileInfoLabel",
-      "aria-hidden": "true",
-      "data-bs-backdrop": "static"
-    }
-  }, [_c("div", {
-    staticClass: "modal-dialog modal-dialog-scrollable"
-  }, [_c("div", {
-    staticClass: "modal-content"
-  }, [_vm._m(0), _vm._v(" "), _c("div", {
-    staticClass: "modal-body"
   }, [_c("div", {}, [_c("div", {
     staticClass: "d-flex mb-3"
   }), _vm._v(" "), _c("div", {
@@ -6776,13 +6906,28 @@ var render = function render() {
         _vm.about = $event.target.value;
       }
     }
-  })]), _vm._v(" "), _vm._m(1)]), _vm._v(" "), _c("div", {
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12"
+  }, [_c("div", {
+    staticClass: "mb-3"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": "formFileSm"
+    }
+  }, [_vm._v("الصورة الشخصية")]), _vm._v(" "), _c("input", {
+    staticClass: "form-control form-control-sm",
+    attrs: {
+      id: "formFileSm",
+      type: "file"
+    }
+  })])])]), _vm._v(" "), _c("div", {
     staticClass: "row mt-3"
   }, [_c("div", {
     staticClass: "col-md-12"
   }, [_c("label", {
     staticClass: "labels form-label"
-  }, [_vm._v("\n                                                        رقم الهاتف")]), _c("input", {
+  }, [_vm._v("\n                                            رقم الهاتف")]), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -6814,15 +6959,11 @@ var render = function render() {
     on: {
       click: _vm.addPhone
     }
-  }, [_vm._v("\n                                                        اضافة رقم الهاتف\n                                                    ")])]), _vm._v(" "), _vm.addPhoneSuccess ? _c("div", {
-    staticClass: "alert alert-success text-center"
-  }, [_vm._v("\n                                                    تم اضافة الرقم بنجاح\n                                                ")]) : _vm.addPhoneSuccess == false ? _c("div", {
-    staticClass: "alert alert-danger text-center"
-  }, [_vm._v("\n                                                    الرجاء التحقق من\n                                                    البيانات\n                                                ")]) : _vm._e(), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n                                            اضافة رقم الهاتف\n                                        ")])]), _vm._v(" "), _c("div", {
     staticClass: "col-md-12"
   }, [_c("label", {
     staticClass: "labels form-label"
-  }, [_vm._v("تاريخ\n                                                        الميلاد")]), _c("input", {
+  }, [_vm._v("تاريخ الميلاد")]), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -6952,7 +7093,7 @@ var render = function render() {
     staticClass: "col-md-12"
   }, [_c("label", {
     staticClass: "labels form-label"
-  }, [_vm._v("الموقع\n                                                        الإلكتروني")]), _c("input", {
+  }, [_vm._v("الموقع الإلكتروني")]), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -6976,7 +7117,9 @@ var render = function render() {
     }
   })]), _vm._v(" "), _c("div", {
     staticClass: "p-3 py-5"
-  }, [_vm._m(2), _vm._v(" "), _c("div", {
+  }, [_c("div", {
+    staticClass: "d-flex justify-content-between align-items-center experience"
+  }, [_c("h3", [_vm._v("التعليم")])]), _vm._v(" "), _c("div", {
     staticClass: "col-md-12"
   }, [_c("label", {
     staticClass: "labels form-label"
@@ -6985,7 +7128,7 @@ var render = function render() {
       name: "model",
       rawName: "v-model",
       value: _vm.university,
-      expression: "\n                                                                university\n                                                            "
+      expression: "university"
     }],
     staticClass: "form-control",
     attrs: {
@@ -7006,7 +7149,7 @@ var render = function render() {
     staticClass: "col-md-12"
   }, [_c("label", {
     staticClass: "labels form-label"
-  }, [_vm._v("الدرجة\n                                                            العلمية")]), _c("input", {
+  }, [_vm._v("الدرجة العلمية")]), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -7032,12 +7175,12 @@ var render = function render() {
     staticClass: "col-md-12"
   }, [_c("label", {
     staticClass: "labels form-label"
-  }, [_vm._v("نوع\n                                                            التخصص")]), _c("input", {
+  }, [_vm._v("نوع التخصص")]), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
       value: _vm.study_type,
-      expression: "\n                                                                study_type\n                                                            "
+      expression: "study_type"
     }],
     staticClass: "form-control",
     attrs: {
@@ -7054,31 +7197,11 @@ var render = function render() {
         _vm.study_type = $event.target.value;
       }
     }
-  })])])]), _vm._v(" "), _vm.saveSuccess ? _c("div", {
-    staticClass: "alert alert-success text-center"
-  }, [_vm._v("\n                                                تم حفظ الملف الشخصي بنجاح\n                                            ")]) : _vm.saveSuccess == false ? _c("div", {
-    staticClass: "alert alert-danger text-center"
-  }, [_vm._v("\n                                                الرجاء التحقق من البيانات\n                                            ")]) : _vm._e()])]), _vm._v(" "), _c("div", {
-    staticClass: "modal-footer"
-  }, [_c("button", {
-    staticClass: "btn btn-secondary",
-    attrs: {
-      type: "button",
-      "data-bs-dismiss": "modal"
-    }
-  }, [_vm._v("\n                                            إغلاق\n                                        ")]), _vm._v(" "), _c("button", {
-    staticClass: "btn btn-success",
-    attrs: {
-      type: "button"
-    },
-    on: {
-      click: function click($event) {
-        return _vm.savePersonalInfo();
-      }
-    }
-  }, [_vm._v("\n                                            حفظ\n                                        ")])])])])])]), _vm._v(" "), _c("span", {
+  })])])])])])], 1), _vm._v(" "), _c("span", {
     staticClass: "text-black-50"
-  }, [_vm._v(_vm._s(_vm.email))]), _c("span", [_vm._v("8,000 متابع ")])]), _vm._v(" "), _c("div", [_c("label", {
+  }, [_vm._v(_vm._s(_vm.email))]), _c("span", [_vm._v("8,000 متابع ")]), _vm._v(" "), _c("span", [_vm._v("9,000 يتابع ")])]), _vm._v(" "), _c("div", {
+    staticClass: "mar-1"
+  }, [_c("label", {
     staticClass: "form-label",
     attrs: {
       "for": ""
@@ -7116,30 +7239,24 @@ var render = function render() {
     staticClass: "col-md-3 bg-mine"
   }, [_c("div", {
     staticClass: "p-3 py-5"
-  }, [_vm._m(3), _vm._v(" "), _c("br"), _vm._v(" "), _c("div", {
+  }, [_vm._m(0), _vm._v(" "), _c("br"), _vm._v(" "), _c("div", {
     staticClass: "mt-1"
-  }, [_c("button", {
-    staticClass: "btn btn-success",
+  }, [_c("modal-snippet", {
     attrs: {
-      type: "button",
-      "data-bs-toggle": "modal",
-      "data-bs-target": "#exampleModal"
+      launchButtonName: "خبرة جديدة",
+      closeButtonName: "إغلاق",
+      confirmButtonName: "إضافة",
+      title: "خبرة جديدة",
+      launchButtonClass: "btn btn-success",
+      confirmButtonClass: "btn btn-success",
+      name: "addExperience",
+      confirmAndClosed: ""
+    },
+    on: {
+      confirmEvent: function confirmEvent($event) {
+        return _vm.addExperience();
+      }
     }
-  }, [_vm._v("\n                            خبرة جديدة\n                        ")]), _vm._v(" "), _c("div", {
-    staticClass: "modal fade",
-    attrs: {
-      id: "exampleModal",
-      tabindex: "-1",
-      "aria-labelledby": "exampleModalLabel",
-      "aria-hidden": "true",
-      "data-bs-backdrop": "static"
-    }
-  }, [_c("div", {
-    staticClass: "modal-dialog modal-dialog-scrollable"
-  }, [_c("div", {
-    staticClass: "modal-content"
-  }, [_vm._m(4), _vm._v(" "), _c("div", {
-    staticClass: "modal-body"
   }, [_c("div", {
     staticClass: "col-md-12"
   }, [_c("label", {
@@ -7244,27 +7361,7 @@ var render = function render() {
         _vm.position = $event.target.value;
       }
     }
-  })]), _vm._v(" "), _vm.addExperienceSuccess ? _c("div", {
-    staticClass: "alert alert-success text-center"
-  }, [_vm._v("\n                                            تم اضافة الخبرة بنجاح\n                                        ")]) : _vm.addExperienceSuccess == false ? _c("div", {
-    staticClass: "alert alert-danger text-center"
-  }, [_vm._v("\n                                            الرجاء التحقق من البيانات\n                                        ")]) : _vm._e()]), _vm._v(" "), _c("div", {
-    staticClass: "modal-footer"
-  }, [_c("button", {
-    staticClass: "btn btn-secondary",
-    attrs: {
-      type: "button",
-      "data-bs-dismiss": "modal"
-    }
-  }, [_vm._v("\n                                            إغلاق\n                                        ")]), _vm._v(" "), _c("button", {
-    staticClass: "btn btn-success",
-    attrs: {
-      type: "button"
-    },
-    on: {
-      click: _vm.addExperience
-    }
-  }, [_vm._v("\n                                            إضافة\n                                        ")])])])])])]), _vm._v(" "), _c("div", {
+  })])])], 1), _vm._v(" "), _c("div", {
     staticClass: "accordion",
     attrs: {
       id: "accordionExample"
@@ -7289,7 +7386,40 @@ var render = function render() {
       }
     }, [_c("div", [_c("h5", [_vm._v(_vm._s(exp.company_name))]), _vm._v(" "), _c("p", {
       staticClass: "bold"
-    }, [_vm._v("\n                                            خبرة\n                                            " + _vm._s(_vm.calcExp(exp.start, exp.end)) + "\n                                        ")])])])]), _vm._v(" "), _c("div", {
+    }, [_vm._v("\n                                            خبرة\n                                            " + _vm._s(_vm.calcExp(exp.start, exp.end)) + "\n                                        ")]), _vm._v(" "), _c("div", {
+      staticClass: "d-flex flex-column justify-content-center align-items-center gap-1"
+    }, [_c("modal-snippet", {
+      attrs: {
+        launchButtonName: "حذف",
+        closeButtonName: "إغلاق",
+        confirmButtonName: "حذف",
+        title: "حذف خبرة",
+        launchButtonClass: "btn btn-danger",
+        confirmButtonClass: "btn btn-danger",
+        name: "deleteExperience",
+        confirmAndClosed: ""
+      },
+      on: {
+        confirmEvent: function confirmEvent($event) {
+          return _vm.deleteExperience(exp.id);
+        }
+      }
+    }, [_vm._v("\n                                                هل أنت متأكد من حذف هذه\n                                                الخبرة ؟\n                                            ")]), _vm._v(" "), _c("modal-snippet", {
+      attrs: {
+        launchButtonName: "تعديل",
+        closeButtonName: "إغلاق",
+        confirmButtonName: "تعديل",
+        title: "تعديل خبرة",
+        launchButtonClass: "btn btn-warning",
+        confirmButtonClass: "btn btn-warning",
+        name: "editExperience"
+      },
+      on: {
+        confirmEvent: function confirmEvent($event) {
+          return _vm.editExperience(exp.id);
+        }
+      }
+    })], 1)])])]), _vm._v(" "), _c("div", {
       staticClass: "accordion-collapse collapse",
       attrs: {
         id: "collapse" + i,
@@ -7333,7 +7463,7 @@ var render = function render() {
     }, [_vm._v("\n                                                " + _vm._s(_vm.calcExp(exp.start, exp.end)) + "\n                                            ")])])])])])]);
   }), 0), _vm._v(" "), _c("div", {
     staticClass: "p-3 py-5"
-  }, [_vm._m(5), _vm._v(" "), _c("div", {
+  }, [_vm._m(1), _vm._v(" "), _c("div", {
     staticClass: "mt-1"
   }, [_c("modal-snippet", {
     attrs: {
@@ -7344,7 +7474,7 @@ var render = function render() {
       launchButtonClass: "btn btn-success",
       confirmButtonClass: "btn btn-success",
       name: "addSkill",
-      confirmAndClosed: "true"
+      confirmAndClosed: ""
     },
     on: {
       confirmEvent: function confirmEvent($event) {
@@ -7377,15 +7507,7 @@ var render = function render() {
         _vm.skill_name = $event.target.value;
       }
     }
-  })])])], 1), _vm._v(" "), _vm.addSkillSuccess ? _c("div", {
-    staticClass: "alert alert-success text-center"
-  }, [_vm._v("\n                            تم اضافة المهارة بنجاح\n                        ")]) : _vm.addSkillSuccess == false ? _c("div", {
-    staticClass: "alert alert-danger text-center"
-  }, [_vm._v("\n                            الرجاء التحقق من البيانات\n                        ")]) : _vm.deleteSkillSuccess ? _c("div", {
-    staticClass: "alert alert-success text-center"
-  }, [_vm._v("\n                            تم حذف المهارة بنجاح\n                        ")]) : _vm.deleteSkillSuccess == false ? _c("div", {
-    staticClass: "alert alert-danger text-center"
-  }, [_vm._v("\n                            الرجاء التحقق من البيانات\n                        ")]) : _vm._e(), _vm._v(" "), _c("ul", {
+  })])])], 1), _vm._v(" "), _c("ul", {
     staticClass: "list-group list"
   }, _vm._l(_vm.skills, function (skill, i) {
     return _c("li", {
@@ -7400,7 +7522,7 @@ var render = function render() {
         launchButtonClass: "btn btn-danger",
         confirmButtonClass: "btn btn-success",
         name: "deleteSkill" + i,
-        confirmAndClosed: "true"
+        confirmAndClosed: ""
       },
       on: {
         confirmEvent: function confirmEvent($event) {
@@ -7416,73 +7538,8 @@ var staticRenderFns = [function () {
       _c = _vm._self._c;
 
   return _c("div", {
-    staticClass: "modal-header"
-  }, [_c("h5", {
-    staticClass: "modal-title",
-    attrs: {
-      id: "editProfileInfoLabel"
-    }
-  }, [_vm._v("\n                                            تعديل المعلومات الشخصية\n                                        ")]), _vm._v(" "), _c("button", {
-    staticClass: "btn-close",
-    attrs: {
-      type: "button",
-      "data-bs-dismiss": "modal",
-      "aria-label": "Close"
-    }
-  })]);
-}, function () {
-  var _vm = this,
-      _c = _vm._self._c;
-
-  return _c("div", {
-    staticClass: "col-md-12"
-  }, [_c("div", {
-    staticClass: "mb-3"
-  }, [_c("label", {
-    staticClass: "form-label",
-    attrs: {
-      "for": "formFileSm"
-    }
-  }, [_vm._v("الصورة\n                                                            الشخصية")]), _vm._v(" "), _c("input", {
-    staticClass: "form-control form-control-sm",
-    attrs: {
-      id: "formFileSm",
-      type: "file"
-    }
-  })])]);
-}, function () {
-  var _vm = this,
-      _c = _vm._self._c;
-
-  return _c("div", {
-    staticClass: "d-flex justify-content-between align-items-center experience"
-  }, [_c("h3", [_vm._v("التعليم")])]);
-}, function () {
-  var _vm = this,
-      _c = _vm._self._c;
-
-  return _c("div", {
     staticClass: "d-flex justify-content-between align-items-center experience"
   }, [_c("h3", [_vm._v("الخبرات")])]);
-}, function () {
-  var _vm = this,
-      _c = _vm._self._c;
-
-  return _c("div", {
-    staticClass: "modal-header"
-  }, [_c("h5", {
-    staticClass: "modal-title",
-    attrs: {
-      id: "exampleModalLabel"
-    }
-  }, [_vm._v("\n                                            إضافة خبرة جديدة\n                                        ")]), _vm._v(" "), _c("button", {
-    staticClass: "btn-close",
-    attrs: {
-      type: "button",
-      "data-bs-dismiss": "modal",
-      "aria-label": "Close"
-    }
-  })]);
 }, function () {
   var _vm = this,
       _c = _vm._self._c;
@@ -8169,6 +8226,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_layouts_HeaderBar_vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/layouts/HeaderBar.vue */ "./resources/js/components/layouts/HeaderBar.vue");
 /* harmony import */ var _components_layouts_FooterBar_vue__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/layouts/FooterBar.vue */ "./resources/js/components/layouts/FooterBar.vue");
 /* harmony import */ var _router_index__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./router/index */ "./resources/js/router/index.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vue_notification__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! vue-notification */ "./node_modules/vue-notification/dist/index.js");
+/* harmony import */ var vue_notification__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(vue_notification__WEBPACK_IMPORTED_MODULE_10__);
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -8187,6 +8247,9 @@ window.Vue = (__webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js
 
 
 
+
+
+vue__WEBPACK_IMPORTED_MODULE_11__["default"].use((vue_notification__WEBPACK_IMPORTED_MODULE_10___default()));
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -8203,7 +8266,7 @@ window.Vue = (__webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-var app = new Vue({
+var app = new vue__WEBPACK_IMPORTED_MODULE_11__["default"]({
   el: "#app",
   router: _router_index__WEBPACK_IMPORTED_MODULE_9__["default"],
   components: {
@@ -13734,7 +13797,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "* {\n    margin: 0px;\n    padding: 0px;\n    font-size: 20px;\n}\nmain {\n    min-height: 90vh;\n    padding: 50px;\n}\n\n.bg-success {\n    background-color: #20c997 !important;\n}\n\n.list {\n    margin-top: 20px;\n    margin-bottom: 20px;\n    max-height: 300px;\n    overflow-y: scroll;\n}\n\n.accordion {\n    margin-top: 20px;\n    margin-bottom: 20px;\n}\n.bg-mine {\n    background-color: #f3f2ef !important;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "* {\n    margin: 0px;\n    padding: 0px;\n    font-size: 20px;\n}\nmain {\n    min-height: 90vh;\n    padding: 50px;\n}\n\n.bg-success {\n    background-color: #20c997 !important;\n}\n\n.list {\n    margin-top: 20px;\n    margin-bottom: 20px;\n    max-height: 300px;\n    overflow-y: scroll;\n}\n\n.accordion {\n    margin-top: 20px;\n    margin-bottom: 20px;\n}\n.bg-mine {\n    background-color: #f3f2ef !important;\n}\n\n.mar-1 {\n    margin-top: 10px;\n    margin-bottom: 10px;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -44674,6 +44737,1173 @@ function normalizeComponent(
   }
 }
 
+
+/***/ }),
+
+/***/ "./node_modules/vue-notification/dist/index.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/vue-notification/dist/index.js ***!
+  \*****************************************************/
+/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
+
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(true)
+		module.exports = factory(__webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js"));
+	else {}
+})(this, function(__WEBPACK_EXTERNAL_MODULE_20__) {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __nested_webpack_require_629__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __nested_webpack_require_629__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__nested_webpack_require_629__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__nested_webpack_require_629__.c = installedModules;
+/******/
+/******/ 	// identity function for calling harmony imports with the correct context
+/******/ 	__nested_webpack_require_629__.i = function(value) { return value; };
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__nested_webpack_require_629__.d = function(exports, name, getter) {
+/******/ 		if(!__nested_webpack_require_629__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__nested_webpack_require_629__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__nested_webpack_require_629__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__nested_webpack_require_629__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__nested_webpack_require_629__.p = "/dist/";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __nested_webpack_require_629__(__nested_webpack_require_629__.s = 2);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports) {
+
+// this module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle
+
+module.exports = function normalizeComponent (
+  rawScriptExports,
+  compiledTemplate,
+  scopeId,
+  cssModules
+) {
+  var esModule
+  var scriptExports = rawScriptExports = rawScriptExports || {}
+
+  // ES6 modules interop
+  var type = typeof rawScriptExports.default
+  if (type === 'object' || type === 'function') {
+    esModule = rawScriptExports
+    scriptExports = rawScriptExports.default
+  }
+
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (compiledTemplate) {
+    options.render = compiledTemplate.render
+    options.staticRenderFns = compiledTemplate.staticRenderFns
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = scopeId
+  }
+
+  // inject cssModules
+  if (cssModules) {
+    var computed = Object.create(options.computed || null)
+    Object.keys(cssModules).forEach(function (key) {
+      var module = cssModules[key]
+      computed[key] = function () { return module }
+    })
+    options.computed = computed
+  }
+
+  return {
+    esModule: esModule,
+    exports: scriptExports,
+    options: options
+  }
+}
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __nested_webpack_require_4417__) {
+
+"use strict";
+/* harmony export (binding) */ __nested_webpack_require_4417__.d(__webpack_exports__, "a", function() { return events; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __nested_webpack_require_4417__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __nested_webpack_require_4417__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
+
+
+var events = new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({ name: 'vue-notification' });
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __nested_webpack_require_4937__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Notifications_vue__ = __nested_webpack_require_4937__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Notifications_vue___default = __nested_webpack_require_4937__.n(__WEBPACK_IMPORTED_MODULE_0__Notifications_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__events__ = __nested_webpack_require_4937__(1);
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+
+
+
+var Notify = {
+  install: function install(Vue) {
+    var args = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    if (this.installed) {
+      return;
+    }
+
+    this.installed = true;
+    this.params = args;
+
+    Vue.component(args.componentName || 'notifications', __WEBPACK_IMPORTED_MODULE_0__Notifications_vue___default.a);
+
+    var notify = function notify(params) {
+      if (typeof params === 'string') {
+        params = { title: '', text: params };
+      }
+
+      if ((typeof params === 'undefined' ? 'undefined' : _typeof(params)) === 'object') {
+        __WEBPACK_IMPORTED_MODULE_1__events__["a" /* events */].$emit('add', params);
+      }
+    };
+
+    notify.close = function (id) {
+      __WEBPACK_IMPORTED_MODULE_1__events__["a" /* events */].$emit('close', id);
+    };
+
+    var name = args.name || 'notify';
+
+    Vue.prototype['$' + name] = notify;
+    Vue[name] = notify;
+  }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Notify);
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __nested_webpack_require_6716__) {
+
+
+/* styles */
+__nested_webpack_require_6716__(17)
+
+var Component = __nested_webpack_require_6716__(0)(
+  /* script */
+  __nested_webpack_require_6716__(5),
+  /* template */
+  __nested_webpack_require_6716__(15),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'CssGroup',
+  props: ['name']
+});
+
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __nested_webpack_require_7343__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__index__ = __nested_webpack_require_7343__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__events__ = __nested_webpack_require_7343__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__util__ = __nested_webpack_require_7343__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__defaults__ = __nested_webpack_require_7343__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__VelocityGroup_vue__ = __nested_webpack_require_7343__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__VelocityGroup_vue___default = __nested_webpack_require_7343__.n(__WEBPACK_IMPORTED_MODULE_4__VelocityGroup_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__CssGroup_vue__ = __nested_webpack_require_7343__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__CssGroup_vue___default = __nested_webpack_require_7343__.n(__WEBPACK_IMPORTED_MODULE_5__CssGroup_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__parser__ = __nested_webpack_require_7343__(8);
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
+
+
+
+
+
+var STATE = {
+  IDLE: 0,
+  DESTROYED: 2
+};
+
+var Component = {
+  name: 'Notifications',
+  components: {
+    VelocityGroup: __WEBPACK_IMPORTED_MODULE_4__VelocityGroup_vue___default.a,
+    CssGroup: __WEBPACK_IMPORTED_MODULE_5__CssGroup_vue___default.a
+  },
+  props: {
+    group: {
+      type: String,
+      default: ''
+    },
+
+    width: {
+      type: [Number, String],
+      default: 300
+    },
+
+    reverse: {
+      type: Boolean,
+      default: false
+    },
+
+    position: {
+      type: [String, Array],
+      default: function _default() {
+        return __WEBPACK_IMPORTED_MODULE_3__defaults__["a" /* default */].position;
+      }
+    },
+
+    classes: {
+      type: String,
+      default: 'vue-notification'
+    },
+
+    animationType: {
+      type: String,
+      default: 'css',
+      validator: function validator(value) {
+        return value === 'css' || value === 'velocity';
+      }
+    },
+
+    animation: {
+      type: Object,
+      default: function _default() {
+        return __WEBPACK_IMPORTED_MODULE_3__defaults__["a" /* default */].velocityAnimation;
+      }
+    },
+
+    animationName: {
+      type: String,
+      default: __WEBPACK_IMPORTED_MODULE_3__defaults__["a" /* default */].cssAnimation
+    },
+
+    speed: {
+      type: Number,
+      default: 300
+    },
+
+    cooldown: {
+      type: Number,
+      default: 0
+    },
+
+    duration: {
+      type: Number,
+      default: 3000
+    },
+
+    delay: {
+      type: Number,
+      default: 0
+    },
+
+    max: {
+      type: Number,
+      default: Infinity
+    },
+
+    ignoreDuplicates: {
+      type: Boolean,
+      default: false
+    },
+
+    closeOnClick: {
+      type: Boolean,
+      default: true
+    }
+  },
+  data: function data() {
+    return {
+      list: [],
+      velocity: __WEBPACK_IMPORTED_MODULE_0__index__["default"].params.velocity
+    };
+  },
+  mounted: function mounted() {
+    __WEBPACK_IMPORTED_MODULE_1__events__["a" /* events */].$on('add', this.addItem);
+    __WEBPACK_IMPORTED_MODULE_1__events__["a" /* events */].$on('close', this.closeItem);
+  },
+
+  computed: {
+    actualWidth: function actualWidth() {
+      return __nested_webpack_require_7343__.i(__WEBPACK_IMPORTED_MODULE_6__parser__["a" /* default */])(this.width);
+    },
+    isVA: function isVA() {
+      return this.animationType === 'velocity';
+    },
+    componentName: function componentName() {
+      return this.isVA ? 'VelocityGroup' : 'CssGroup';
+    },
+    styles: function styles() {
+      var _listToDirection = __nested_webpack_require_7343__.i(__WEBPACK_IMPORTED_MODULE_2__util__["a" /* listToDirection */])(this.position),
+          x = _listToDirection.x,
+          y = _listToDirection.y;
+
+      var width = this.actualWidth.value;
+      var suffix = this.actualWidth.type;
+
+      var styles = _defineProperty({
+        width: width + suffix
+      }, y, '0px');
+
+      if (x === 'center') {
+        styles['left'] = 'calc(50% - ' + width / 2 + suffix + ')';
+      } else {
+        styles[x] = '0px';
+      }
+
+      return styles;
+    },
+    active: function active() {
+      return this.list.filter(function (v) {
+        return v.state !== STATE.DESTROYED;
+      });
+    },
+    botToTop: function botToTop() {
+      return this.styles.hasOwnProperty('bottom');
+    }
+  },
+  methods: {
+    destroyIfNecessary: function destroyIfNecessary(item) {
+      if (this.closeOnClick) {
+        this.destroy(item);
+      }
+    },
+    addItem: function addItem(event) {
+      var _this = this;
+
+      event.group = event.group || '';
+
+      if (this.group !== event.group) {
+        return;
+      }
+
+      if (event.clean || event.clear) {
+        this.destroyAll();
+        return;
+      }
+
+      var duration = typeof event.duration === 'number' ? event.duration : this.duration;
+
+      var speed = typeof event.speed === 'number' ? event.speed : this.speed;
+
+      var ignoreDuplicates = typeof event.ignoreDuplicates === 'boolean' ? event.ignoreDuplicates : this.ignoreDuplicates;
+
+      var title = event.title,
+          text = event.text,
+          type = event.type,
+          data = event.data,
+          id = event.id;
+
+
+      var item = {
+        id: id || __nested_webpack_require_7343__.i(__WEBPACK_IMPORTED_MODULE_2__util__["b" /* Id */])(),
+        title: title,
+        text: text,
+        type: type,
+        state: STATE.IDLE,
+        speed: speed,
+        length: duration + 2 * speed,
+        data: data
+      };
+
+      if (duration >= 0) {
+        item.timer = setTimeout(function () {
+          _this.destroy(item);
+        }, item.length);
+      }
+
+      var direction = this.reverse ? !this.botToTop : this.botToTop;
+
+      var indexToDestroy = -1;
+
+      var isDuplicate = this.active.some(function (item) {
+        return item.title === event.title && item.text === event.text;
+      });
+
+      var canAdd = ignoreDuplicates ? !isDuplicate : true;
+
+      if (!canAdd) return;
+
+      if (direction) {
+        this.list.push(item);
+
+        if (this.active.length > this.max) {
+          indexToDestroy = 0;
+        }
+      } else {
+        this.list.unshift(item);
+
+        if (this.active.length > this.max) {
+          indexToDestroy = this.active.length - 1;
+        }
+      }
+
+      if (indexToDestroy !== -1) {
+        this.destroy(this.active[indexToDestroy]);
+      }
+    },
+    closeItem: function closeItem(id) {
+      this.destroyById(id);
+    },
+    notifyClass: function notifyClass(item) {
+      return ['vue-notification-template', this.classes, item.type];
+    },
+    notifyWrapperStyle: function notifyWrapperStyle(item) {
+      return this.isVA ? null : { transition: 'all ' + item.speed + 'ms' };
+    },
+    destroy: function destroy(item) {
+      clearTimeout(item.timer);
+      item.state = STATE.DESTROYED;
+
+      if (!this.isVA) {
+        this.clean();
+      }
+    },
+    destroyById: function destroyById(id) {
+      var item = this.list.find(function (v) {
+        return v.id === id;
+      });
+
+      if (item) {
+        this.destroy(item);
+      }
+    },
+    destroyAll: function destroyAll() {
+      this.active.forEach(this.destroy);
+    },
+    getAnimation: function getAnimation(index, el) {
+      var animation = this.animation[index];
+
+      return typeof animation === 'function' ? animation.call(this, el) : animation;
+    },
+    enter: function enter(_ref) {
+      var el = _ref.el,
+          complete = _ref.complete;
+
+      var animation = this.getAnimation('enter', el);
+
+      this.velocity(el, animation, {
+        duration: this.speed,
+        complete: complete
+      });
+    },
+    leave: function leave(_ref2) {
+      var el = _ref2.el,
+          complete = _ref2.complete;
+
+      var animation = this.getAnimation('leave', el);
+
+      this.velocity(el, animation, {
+        duration: this.speed,
+        complete: complete
+      });
+    },
+    clean: function clean() {
+      this.list = this.list.filter(function (v) {
+        return v.state !== STATE.DESTROYED;
+      });
+    }
+  }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Component);
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'VelocityGroup',
+  methods: {
+    enter: function enter(el, complete) {
+      this.$emit('enter', { el: el, complete: complete });
+    },
+    leave: function leave(el, complete) {
+      this.$emit('leave', { el: el, complete: complete });
+    },
+    afterLeave: function afterLeave() {
+      this.$emit('afterLeave');
+    }
+  }
+});
+
+/***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = ({
+  position: ['top', 'right'],
+  cssAnimation: 'vn-fade',
+  velocityAnimation: {
+    enter: function enter(el) {
+      var height = el.clientHeight;
+
+      return {
+        height: [height, 0],
+        opacity: [1, 0]
+      };
+    },
+    leave: {
+      height: 0,
+      opacity: [0, 1]
+    }
+  }
+});
+
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export parse */
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var floatRegexp = '[-+]?[0-9]*.?[0-9]+';
+
+var types = [{
+  name: 'px',
+  regexp: new RegExp('^' + floatRegexp + 'px$')
+}, {
+  name: '%',
+  regexp: new RegExp('^' + floatRegexp + '%$')
+}, {
+  name: 'px',
+  regexp: new RegExp('^' + floatRegexp + '$')
+}];
+
+var getType = function getType(value) {
+  if (value === 'auto') {
+    return {
+      type: value,
+      value: 0
+    };
+  }
+
+  for (var i = 0; i < types.length; i++) {
+    var type = types[i];
+    if (type.regexp.test(value)) {
+      return {
+        type: type.name,
+        value: parseFloat(value)
+      };
+    }
+  }
+
+  return {
+    type: '',
+    value: value
+  };
+};
+
+var parse = function parse(value) {
+  switch (typeof value === 'undefined' ? 'undefined' : _typeof(value)) {
+    case 'number':
+      return { type: 'px', value: value };
+    case 'string':
+      return getType(value);
+    default:
+      return { type: '', value: value };
+  }
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (parse);
+
+/***/ }),
+/* 9 */
+/***/ (function(module, __webpack_exports__, __nested_webpack_require_18050__) {
+
+"use strict";
+/* harmony export (binding) */ __nested_webpack_require_18050__.d(__webpack_exports__, "b", function() { return Id; });
+/* unused harmony export split */
+/* harmony export (binding) */ __nested_webpack_require_18050__.d(__webpack_exports__, "a", function() { return listToDirection; });
+var directions = {
+  x: ['left', 'center', 'right'],
+  y: ['top', 'bottom']
+};
+
+var Id = function (i) {
+  return function () {
+    return i++;
+  };
+}(0);
+
+var split = function split(value) {
+  if (typeof value !== 'string') {
+    return [];
+  }
+
+  return value.split(/\s+/gi).filter(function (v) {
+    return v;
+  });
+};
+
+var listToDirection = function listToDirection(value) {
+  if (typeof value === 'string') {
+    value = split(value);
+  }
+
+  var x = null;
+  var y = null;
+
+  value.forEach(function (v) {
+    if (directions.y.indexOf(v) !== -1) {
+      y = v;
+    }
+    if (directions.x.indexOf(v) !== -1) {
+      x = v;
+    }
+  });
+
+  return { x: x, y: y };
+};
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __nested_webpack_require_19067__) {
+
+exports = module.exports = __nested_webpack_require_19067__(11)();
+// imports
+
+
+// module
+exports.push([module.i, ".vue-notification-group{display:block;position:fixed;z-index:5000}.vue-notification-wrapper{display:block;overflow:hidden;width:100%;margin:0;padding:0}.notification-title{font-weight:600}.vue-notification-template{background:#fff}.vue-notification,.vue-notification-template{display:block;box-sizing:border-box;text-align:left}.vue-notification{font-size:12px;padding:10px;margin:0 5px 5px;color:#fff;background:#44a4fc;border-left:5px solid #187fe7}.vue-notification.warn{background:#ffb648;border-left-color:#f48a06}.vue-notification.error{background:#e54d42;border-left-color:#b82e24}.vue-notification.success{background:#68cd86;border-left-color:#42a85f}.vn-fade-enter-active,.vn-fade-leave-active,.vn-fade-move{transition:all .5s}.vn-fade-enter,.vn-fade-leave-to{opacity:0}", ""]);
+
+// exports
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function() {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		var result = [];
+		for(var i = 0; i < this.length; i++) {
+			var item = this[i];
+			if(item[2]) {
+				result.push("@media " + item[2] + "{" + item[1] + "}");
+			} else {
+				result.push(item[1]);
+			}
+		}
+		return result.join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __nested_webpack_require_21610__) {
+
+var Component = __nested_webpack_require_21610__(0)(
+  /* script */
+  __nested_webpack_require_21610__(4),
+  /* template */
+  __nested_webpack_require_21610__(16),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __nested_webpack_require_21901__) {
+
+var Component = __nested_webpack_require_21901__(0)(
+  /* script */
+  __nested_webpack_require_21901__(6),
+  /* template */
+  __nested_webpack_require_21901__(14),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('transition-group', {
+    attrs: {
+      "css": false
+    },
+    on: {
+      "enter": _vm.enter,
+      "leave": _vm.leave,
+      "after-leave": _vm.afterLeave
+    }
+  }, [_vm._t("default")], 2)
+},staticRenderFns: []}
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "vue-notification-group",
+    style: (_vm.styles)
+  }, [_c(_vm.componentName, {
+    tag: "component",
+    attrs: {
+      "name": _vm.animationName
+    },
+    on: {
+      "enter": _vm.enter,
+      "leave": _vm.leave,
+      "after-leave": _vm.clean
+    }
+  }, _vm._l((_vm.active), function(item) {
+    return _c('div', {
+      key: item.id,
+      staticClass: "vue-notification-wrapper",
+      style: (_vm.notifyWrapperStyle(item)),
+      attrs: {
+        "data-id": item.id
+      }
+    }, [_vm._t("body", [_c('div', {
+      class: _vm.notifyClass(item),
+      on: {
+        "click": function($event) {
+          return _vm.destroyIfNecessary(item)
+        }
+      }
+    }, [(item.title) ? _c('div', {
+      staticClass: "notification-title",
+      domProps: {
+        "innerHTML": _vm._s(item.title)
+      }
+    }) : _vm._e(), _vm._v(" "), _c('div', {
+      staticClass: "notification-content",
+      domProps: {
+        "innerHTML": _vm._s(item.text)
+      }
+    })])], {
+      "item": item,
+      "close": function () { return _vm.destroy(item); }
+    })], 2)
+  }), 0)], 1)
+},staticRenderFns: []}
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('transition-group', {
+    attrs: {
+      "name": _vm.name
+    }
+  }, [_vm._t("default")], 2)
+},staticRenderFns: []}
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __nested_webpack_require_24150__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __nested_webpack_require_24150__(10);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __nested_webpack_require_24150__(18)("2901aeae", content, true);
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __nested_webpack_require_24567__) {
+
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+  Modified by Evan You @yyx990803
+*/
+
+var hasDocument = typeof document !== 'undefined'
+
+if (typeof DEBUG !== 'undefined' && DEBUG) {
+  if (!hasDocument) {
+    throw new Error(
+    'vue-style-loader cannot be used in a non-browser environment. ' +
+    "Use { target: 'node' } in your Webpack config to indicate a server-rendering environment."
+  ) }
+}
+
+var listToStyles = __nested_webpack_require_24567__(19)
+
+/*
+type StyleObject = {
+  id: number;
+  parts: Array<StyleObjectPart>
+}
+
+type StyleObjectPart = {
+  css: string;
+  media: string;
+  sourceMap: ?string
+}
+*/
+
+var stylesInDom = {/*
+  [id: number]: {
+    id: number,
+    refs: number,
+    parts: Array<(obj?: StyleObjectPart) => void>
+  }
+*/}
+
+var head = hasDocument && (document.head || document.getElementsByTagName('head')[0])
+var singletonElement = null
+var singletonCounter = 0
+var isProduction = false
+var noop = function () {}
+
+// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+// tags it will allow on a page
+var isOldIE = typeof navigator !== 'undefined' && /msie [6-9]\b/.test(navigator.userAgent.toLowerCase())
+
+module.exports = function (parentId, list, _isProduction) {
+  isProduction = _isProduction
+
+  var styles = listToStyles(parentId, list)
+  addStylesToDom(styles)
+
+  return function update (newList) {
+    var mayRemove = []
+    for (var i = 0; i < styles.length; i++) {
+      var item = styles[i]
+      var domStyle = stylesInDom[item.id]
+      domStyle.refs--
+      mayRemove.push(domStyle)
+    }
+    if (newList) {
+      styles = listToStyles(parentId, newList)
+      addStylesToDom(styles)
+    } else {
+      styles = []
+    }
+    for (var i = 0; i < mayRemove.length; i++) {
+      var domStyle = mayRemove[i]
+      if (domStyle.refs === 0) {
+        for (var j = 0; j < domStyle.parts.length; j++) {
+          domStyle.parts[j]()
+        }
+        delete stylesInDom[domStyle.id]
+      }
+    }
+  }
+}
+
+function addStylesToDom (styles /* Array<StyleObject> */) {
+  for (var i = 0; i < styles.length; i++) {
+    var item = styles[i]
+    var domStyle = stylesInDom[item.id]
+    if (domStyle) {
+      domStyle.refs++
+      for (var j = 0; j < domStyle.parts.length; j++) {
+        domStyle.parts[j](item.parts[j])
+      }
+      for (; j < item.parts.length; j++) {
+        domStyle.parts.push(addStyle(item.parts[j]))
+      }
+      if (domStyle.parts.length > item.parts.length) {
+        domStyle.parts.length = item.parts.length
+      }
+    } else {
+      var parts = []
+      for (var j = 0; j < item.parts.length; j++) {
+        parts.push(addStyle(item.parts[j]))
+      }
+      stylesInDom[item.id] = { id: item.id, refs: 1, parts: parts }
+    }
+  }
+}
+
+function createStyleElement () {
+  var styleElement = document.createElement('style')
+  styleElement.type = 'text/css'
+  head.appendChild(styleElement)
+  return styleElement
+}
+
+function addStyle (obj /* StyleObjectPart */) {
+  var update, remove
+  var styleElement = document.querySelector('style[data-vue-ssr-id~="' + obj.id + '"]')
+
+  if (styleElement) {
+    if (isProduction) {
+      // has SSR styles and in production mode.
+      // simply do nothing.
+      return noop
+    } else {
+      // has SSR styles but in dev mode.
+      // for some reason Chrome can't handle source map in server-rendered
+      // style tags - source maps in <style> only works if the style tag is
+      // created and inserted dynamically. So we remove the server rendered
+      // styles and inject new ones.
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  if (isOldIE) {
+    // use singleton mode for IE9.
+    var styleIndex = singletonCounter++
+    styleElement = singletonElement || (singletonElement = createStyleElement())
+    update = applyToSingletonTag.bind(null, styleElement, styleIndex, false)
+    remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true)
+  } else {
+    // use multi-style-tag mode in all other cases
+    styleElement = createStyleElement()
+    update = applyToTag.bind(null, styleElement)
+    remove = function () {
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  update(obj)
+
+  return function updateStyle (newObj /* StyleObjectPart */) {
+    if (newObj) {
+      if (newObj.css === obj.css &&
+          newObj.media === obj.media &&
+          newObj.sourceMap === obj.sourceMap) {
+        return
+      }
+      update(obj = newObj)
+    } else {
+      remove()
+    }
+  }
+}
+
+var replaceText = (function () {
+  var textStore = []
+
+  return function (index, replacement) {
+    textStore[index] = replacement
+    return textStore.filter(Boolean).join('\n')
+  }
+})()
+
+function applyToSingletonTag (styleElement, index, remove, obj) {
+  var css = remove ? '' : obj.css
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = replaceText(index, css)
+  } else {
+    var cssNode = document.createTextNode(css)
+    var childNodes = styleElement.childNodes
+    if (childNodes[index]) styleElement.removeChild(childNodes[index])
+    if (childNodes.length) {
+      styleElement.insertBefore(cssNode, childNodes[index])
+    } else {
+      styleElement.appendChild(cssNode)
+    }
+  }
+}
+
+function applyToTag (styleElement, obj) {
+  var css = obj.css
+  var media = obj.media
+  var sourceMap = obj.sourceMap
+
+  if (media) {
+    styleElement.setAttribute('media', media)
+  }
+
+  if (sourceMap) {
+    // https://developer.chrome.com/devtools/docs/javascript-debugging
+    // this makes source maps inside style tags work properly in Chrome
+    css += '\n/*# sourceURL=' + sourceMap.sources[0] + ' */'
+    // http://stackoverflow.com/a/26603875
+    css += '\n/*# sourceMappingURL=data:application/json;base64,' + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + ' */'
+  }
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = css
+  } else {
+    while (styleElement.firstChild) {
+      styleElement.removeChild(styleElement.firstChild)
+    }
+    styleElement.appendChild(document.createTextNode(css))
+  }
+}
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports) {
+
+/**
+ * Translates the list format produced by css-loader into something
+ * easier to manipulate.
+ */
+module.exports = function listToStyles (parentId, list) {
+  var styles = []
+  var newStyles = {}
+  for (var i = 0; i < list.length; i++) {
+    var item = list[i]
+    var id = item[0]
+    var css = item[1]
+    var media = item[2]
+    var sourceMap = item[3]
+    var part = {
+      id: parentId + ':' + i,
+      css: css,
+      media: media,
+      sourceMap: sourceMap
+    }
+    if (!newStyles[id]) {
+      styles.push(newStyles[id] = { id: id, parts: [part] })
+    } else {
+      newStyles[id].parts.push(part)
+    }
+  }
+  return styles
+}
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_20__;
+
+/***/ })
+/******/ ]);
+});
+//# sourceMappingURL=index.js.map
 
 /***/ }),
 
