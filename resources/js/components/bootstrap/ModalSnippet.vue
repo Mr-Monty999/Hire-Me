@@ -1,0 +1,89 @@
+<template>
+    <div>
+        <!-- Button trigger modal -->
+        <button
+            type="button"
+            :class="launchButtonClass"
+            data-bs-toggle="modal"
+            :data-bs-target="'#' + name"
+        >
+            {{ launchButtonName }}
+        </button>
+
+        <!-- Modal -->
+        <div
+            class="modal fade"
+            :id="name"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            tabindex="-1"
+            :aria-labelledby="name + 'Label'"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" :id="name + 'Label'">
+                            {{ title }}
+                        </h5>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                    <div class="modal-body">
+                        <slot />
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                        >
+                            {{ closeButtonName }}
+                        </button>
+                        <button
+                            v-if="confirmAndClosed"
+                            data-bs-dismiss="modal"
+                            type="button"
+                            @click="$emit('confirmEvent')"
+                            :class="confirmButtonClass"
+                        >
+                            {{ confirmButtonName }}
+                        </button>
+                        <button
+                            v-else
+                            type="button"
+                            :class="confirmButtonClass"
+                        >
+                            {{ confirmButtonName }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+import axios from "axios";
+
+export default {
+    name: "ModalSnippet",
+    components: {},
+    props: [
+        "launchButtonName",
+        "closeButtonName",
+        "confirmButtonName",
+        "confirmAndClosed",
+        "title",
+        "launchButtonClass",
+        "confirmButtonClass",
+        "name",
+    ],
+};
+</script>
+
+<style scoped></style>

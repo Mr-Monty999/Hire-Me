@@ -67,7 +67,7 @@
                         </li>
                         <li class="nav-item dropdown">
                             <a
-                                class="nav-link"
+                                class="nav-link position-relative"
                                 href="#"
                                 role="button"
                                 data-bs-toggle="dropdown"
@@ -75,6 +75,14 @@
                             >
                                 <span>
                                     <i class="fa-solid fa-bell"></i>
+                                </span>
+                                <span
+                                    class="position-absolute top-0 start-3 translate-middle badge rounded-pill bg-danger"
+                                >
+                                    1+
+                                    <span class="visually-hidden"
+                                        >unread messages</span
+                                    >
                                 </span>
                             </a>
                             <ul class="dropdown-menu">

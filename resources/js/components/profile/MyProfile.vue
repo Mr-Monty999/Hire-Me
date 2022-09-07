@@ -31,6 +31,7 @@
                                 tabindex="-1"
                                 aria-labelledby="editProfileInfoLabel"
                                 aria-hidden="true"
+                                data-bs-backdrop="static"
                             >
                                 <div
                                     class="modal-dialog modal-dialog-scrollable"
@@ -106,6 +107,21 @@
                                                             rows="5"
                                                             placeholder="عني"
                                                         ></textarea>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="mb-3">
+                                                            <label
+                                                                for="formFileSm"
+                                                                class="form-label"
+                                                                >الصورة
+                                                                الشخصية</label
+                                                            >
+                                                            <input
+                                                                class="form-control form-control-sm"
+                                                                id="formFileSm"
+                                                                type="file"
+                                                            />
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="row mt-3">
@@ -328,95 +344,8 @@
                 <div class="col-md-5 border-right bg-mine">
                     <div class="p-3 py-5">
                         <h4>منشوراتك</h4>
-                        <div class="container mt-5 mb-5">
-                            <div
-                                class="row d-flex align-items-center justify-content-center"
-                            >
-                                <div class="col-md-12">
-                                    <div class="card">
-                                        <div
-                                            class="d-flex justify-content-between p-2 px-3"
-                                        >
-                                            <div
-                                                class="d-flex flex-row align-items-center"
-                                            >
-                                                <img
-                                                    src="https://i.imgur.com/UXdKE3o.jpg"
-                                                    width="50"
-                                                    class="rounded-circle"
-                                                />
-                                                <div
-                                                    class="d-flex flex-column ml-2"
-                                                >
-                                                    <span
-                                                        class="font-weight-bold"
-                                                        >Jeanette Sun</span
-                                                    >
-                                                    <small class="text-primary"
-                                                        >Collegues</small
-                                                    >
-                                                </div>
-                                            </div>
-                                            <div
-                                                class="d-flex flex-row mt-1 ellipsis"
-                                            >
-                                                <small class="mr-2"
-                                                    >20 mins</small
-                                                >
-                                                <i class="fa fa-ellipsis-h"></i>
-                                            </div>
-                                        </div>
-                                        <img
-                                            src="https://i.imgur.com/xhzhaGA.jpg"
-                                            class="img-fluid"
-                                        />
-                                        <div class="p-2">
-                                            <p class="text-justify">
-                                                Lorem ipsum dolor sit amet,
-                                                consectetur adipiscing elit, sed
-                                                do eiusmod tempor incididunt.
-                                            </p>
-                                            <hr />
-                                            <div
-                                                class="d-flex justify-content-between align-items-center"
-                                            >
-                                                <div
-                                                    class="d-flex flex-row icons d-flex align-items-center"
-                                                >
-                                                    <i class="fa fa-heart"></i>
-                                                    <i
-                                                        class="fa fa-smile-o ml-2"
-                                                    ></i>
-                                                </div>
-                                                <div
-                                                    class="d-flex flex-row muted-color"
-                                                >
-                                                    <span>2 comments</span>
-                                                    |
-                                                    <span class="ml-2"
-                                                        >Share</span
-                                                    >
-                                                </div>
-                                            </div>
-                                            <hr />
-                                            <div class="comments">
-                                                <div class="comment-input">
-                                                    <input
-                                                        type="text"
-                                                        class="form-control"
-                                                    />
-                                                    <div class="fonts">
-                                                        <i
-                                                            class="fa fa-camera"
-                                                        ></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <create-post></create-post>
+                        <view-posts></view-posts>
                     </div>
                 </div>
                 <div class="col-md-3 bg-mine">
@@ -454,6 +383,7 @@
                                 tabindex="-1"
                                 aria-labelledby="exampleModalLabel"
                                 aria-hidden="true"
+                                data-bs-backdrop="static"
                             >
                                 <div
                                     class="modal-dialog modal-dialog-scrollable"
@@ -649,74 +579,28 @@
                             </div>
 
                             <div class="mt-1">
-                                <button
-                                    type="button"
-                                    class="btn btn-success"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#skillModal"
+                                <modal-snippet
+                                    launchButtonName="مهارة جديدة"
+                                    closeButtonName="إغلاق"
+                                    confirmButtonName="إضافة"
+                                    title="مهارة جديدة'"
+                                    launchButtonClass="btn btn-success"
+                                    confirmButtonClass="btn btn-success"
+                                    name="addSkill"
+                                    confirmAndClosed="true"
+                                    @confirmEvent="addSkill()"
                                 >
-                                    مهارة جديدة
-                                </button>
-
-                                <!-- Modal -->
-                                <div
-                                    class="modal fade"
-                                    id="skillModal"
-                                    tabindex="-1"
-                                    aria-labelledby="skillModalLabel"
-                                    aria-hidden="true"
-                                >
-                                    <div
-                                        class="modal-dialog modal-dialog-scrollable"
-                                    >
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5
-                                                    class="modal-title"
-                                                    id="skillModalLabel"
-                                                >
-                                                    إضافة مهارة جديدة
-                                                </h5>
-                                                <button
-                                                    type="button"
-                                                    class="btn-close"
-                                                    data-bs-dismiss="modal"
-                                                    aria-label="Close"
-                                                ></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="col-md-12">
-                                                    <label class="labels"
-                                                        >إسم المهارة</label
-                                                    ><input
-                                                        type="text"
-                                                        class="form-control"
-                                                        placeholder="إسم المهارة"
-                                                        name="skill_name"
-                                                        v-model="skill_name"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button
-                                                    type="button"
-                                                    class="btn btn-secondary"
-                                                    data-bs-dismiss="modal"
-                                                >
-                                                    إغلاق
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    data-bs-dismiss="modal"
-                                                    class="btn btn-success"
-                                                    @click="addSkill"
-                                                >
-                                                    إضافة
-                                                </button>
-                                            </div>
-                                        </div>
+                                    <div class="col-md-12">
+                                        <label class="labels">إسم المهارة</label
+                                        ><input
+                                            type="text"
+                                            class="form-control"
+                                            placeholder="إسم المهارة"
+                                            name="skill_name"
+                                            v-model="skill_name"
+                                        />
                                     </div>
-                                </div>
+                                </modal-snippet>
                             </div>
                             <div
                                 class="alert alert-success text-center"
@@ -730,6 +614,18 @@
                             >
                                 الرجاء التحقق من البيانات
                             </div>
+                            <div
+                                class="alert alert-success text-center"
+                                v-else-if="deleteSkillSuccess"
+                            >
+                                تم حذف المهارة بنجاح
+                            </div>
+                            <div
+                                class="alert alert-danger text-center"
+                                v-else-if="deleteSkillSuccess == false"
+                            >
+                                الرجاء التحقق من البيانات
+                            </div>
                             <ul class="list-group list">
                                 <li
                                     class="text-center list-group-item"
@@ -737,84 +633,21 @@
                                     :key="i"
                                 >
                                     <p>{{ skill.name }}</p>
-                                    <!-- <button
-
-                                        class="btn btn-danger"
-                                    >
-                                        حذف
-                                    </button> -->
-                                    <!-- Button trigger modal -->
-                                    <button
-                                        type="button"
-                                        class="btn btn-danger"
-                                        data-bs-toggle="modal"
-                                        :data-bs-target="
-                                            '#deleteSkillModal' + i
+                                    <modal-snippet
+                                        launchButtonName="حذف"
+                                        closeButtonName="إغلاق"
+                                        confirmButtonName="حذف"
+                                        :title="'حذف ' + skill.name"
+                                        launchButtonClass="btn btn-danger"
+                                        confirmButtonClass="btn btn-success"
+                                        :name="'deleteSkill' + i"
+                                        confirmAndClosed="true"
+                                        @confirmEvent="
+                                            deleteSkill(profile_id, skill.id)
                                         "
                                     >
-                                        حذف
-                                    </button>
-
-                                    <!-- Modal -->
-                                    <div
-                                        class="modal fade"
-                                        :id="'deleteSkillModal' + i"
-                                        tabindex="-1"
-                                        :aria-labelledby="
-                                            'deleteSkillModal' + i
-                                        "
-                                        aria-hidden="true"
-                                    >
-                                        <div
-                                            class="modal-dialog modal-dialog-scrollable"
-                                        >
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5
-                                                        class="modal-title"
-                                                        :id="
-                                                            'deleteSkillModal' +
-                                                            i
-                                                        "
-                                                    >
-                                                        حذف {{ skill.name }}
-                                                    </h5>
-                                                    <button
-                                                        type="button"
-                                                        class="btn-close"
-                                                        data-bs-dismiss="modal"
-                                                        aria-label="Close"
-                                                    ></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    هل أنت متاكد من حذف
-                                                    {{ skill.name }}
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button
-                                                        type="button"
-                                                        class="btn btn-secondary"
-                                                        data-bs-dismiss="modal"
-                                                    >
-                                                        لا
-                                                    </button>
-                                                    <button
-                                                        type="button"
-                                                        data-bs-dismiss="modal"
-                                                        class="btn btn-success"
-                                                        @click="
-                                                            deleteSkill(
-                                                                profile_id,
-                                                                skill.id
-                                                            )
-                                                        "
-                                                    >
-                                                        نعم
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                        هل أنت متأكد من حذف {{ skill.name }}?
+                                    </modal-snippet>
                                 </li>
                             </ul>
                         </div>
@@ -828,6 +661,9 @@
 <script>
 import axios from "axios";
 import headerAuth from "../../helpers/auth";
+import ViewPosts from "../../components/posts/ViewPosts.vue";
+import CreatePost from "../../components/posts/CreatePost.vue";
+import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
 
 export default {
     data() {
@@ -864,6 +700,7 @@ export default {
             addExperienceSuccess: null,
             addPhoneSuccess: null,
             addSkillSuccess: null,
+            deleteSkillSuccess: null,
         };
     },
     methods: {
@@ -953,10 +790,14 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
-                    vm.skills.push(response.data);
-                    vm.skill_name = "";
-
-                    vm.addSkillSuccess = true;
+                    var skillExist = vm.skills.find(
+                        (el) => el.name == response.data.name
+                    );
+                    if (!skillExist) {
+                        vm.skills.push(response.data);
+                        vm.skill_name = "";
+                        vm.addSkillSuccess = true;
+                    } else vm.addSkillSuccess = false;
                 })
                 .catch(function (error) {
                     vm.addSkillSuccess = false;
@@ -1049,11 +890,18 @@ export default {
                     console.log(response);
                     var index = vm.skills.findIndex((el) => el.id == skillId);
                     vm.skills.splice(index, 1);
+                    vm.deleteSkillSuccess = true;
                 })
                 .catch(function (error) {
                     console.log(error.response);
+                    vm.deleteSkillSuccess = false;
                 });
         },
+    },
+    components: {
+        ViewPosts,
+        CreatePost,
+        ModalSnippet,
     },
     created() {
         let userId = JSON.parse(localStorage.getItem("user")).id;
@@ -1115,78 +963,5 @@ textarea {
 .alert {
     margin-top: 10px;
     margin-bottom: 10px;
-}
-
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap");
-body {
-    background-color: #eee;
-    font-family: "Poppins", sans-serif;
-    font-weight: 300;
-}
-.card {
-    border: none;
-}
-.ellipsis {
-    color: #a09c9c;
-}
-hr {
-    color: #a09c9c;
-    margin-top: 4px;
-    margin-bottom: 8px;
-}
-.muted-color {
-    color: #a09c9c;
-    font-size: 13px;
-}
-.ellipsis i {
-    margin-top: 3px;
-    cursor: pointer;
-}
-.icons i {
-    font-size: 25px;
-}
-.icons .fa-heart {
-    color: red;
-}
-.icons .fa-smile-o {
-    color: yellow;
-    font-size: 29px;
-}
-.rounded-image {
-    border-radius: 50% !important;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 50px;
-    width: 50px;
-}
-.name {
-    font-weight: 600;
-}
-.comment-text {
-    font-size: 12px;
-}
-.status small {
-    margin-right: 10px;
-    color: blue;
-}
-.form-control {
-    border-radius: 26px;
-}
-.comment-input {
-    position: relative;
-}
-.fonts {
-    position: absolute;
-    right: 13px;
-    top: 8px;
-    color: #a09c9c;
-}
-.form-control:focus {
-    color: #495057;
-    background-color: #fff;
-    border-color: #8bbafe;
-    outline: 0;
-    box-shadow: none;
 }
 </style>
