@@ -6,6 +6,7 @@
             :class="launchButtonClass"
             data-bs-toggle="modal"
             :data-bs-target="'#' + name"
+            @click="$emit('onLaunchButtonClick')"
         >
             {{ launchButtonName }}
         </button>

@@ -73,6 +73,16 @@
                                     {{ website }}
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <label class="labels">ارقام الهواتف:</label>
+                                <div
+                                    class=""
+                                    v-for="(phone, i) in phones"
+                                    :key="i"
+                                >
+                                    {{ phone.phone }}
+                                </div>
+                            </div>
                             <div class="p-3 row py-5">
                                 <div
                                     class="d-flex justify-content-between align-items-center experience"

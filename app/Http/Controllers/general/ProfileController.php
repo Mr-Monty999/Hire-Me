@@ -104,5 +104,7 @@ class ProfileController extends Controller
     public function destroy($id)
     {
         $profile = Profile::where("user_id", $id)->first();
+        $profile->delete();
+        return ResponseService::json($profile, "تم حذف الملف الشخصي بنجاح");
     }
 }

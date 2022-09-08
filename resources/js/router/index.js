@@ -3,7 +3,8 @@ import VueRouter from "vue-router";
 import About from "../views/general/About.vue";
 import Home from "../views/general/Home.vue";
 import Login from "../views/general/Login.vue";
-import Profile from "../views/general/Profile.vue";
+import Profile from "../views/general/profile/Profile.vue";
+import EditProfile from "../views/general/profile/EditProfile.vue";
 import Register from "../views/general/Register.vue";
 import Contact from "../views/general/Contact.vue";
 
@@ -31,6 +32,11 @@ const routes = [
         component: Profile,
     },
     {
+        path: "/profile/:id/edit",
+        name: "profile.edit",
+        component: EditProfile,
+    },
+    {
         path: "/register",
         name: "register",
         component: Register,
@@ -48,7 +54,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach(function (to, from, next) {
-    const routes = ["profile"];
+    const routes = ["profile", "profile.edit"];
     if (localStorage.getItem("user") == null) {
         if (routes.includes(to.name)) next({ name: "login" });
     } else {

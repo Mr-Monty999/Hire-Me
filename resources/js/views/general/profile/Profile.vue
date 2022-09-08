@@ -12,10 +12,10 @@
 </template>
 
 <script>
-import ProfileHeaderBar from "../../components/layouts/ProfileHeaderBar.vue";
-import FooterBar from "../../components/layouts/FooterBar.vue";
-import MyProfile from "../../components/profile/MyProfile.vue";
-import OtherProfiles from "../../components/profile/OtherProfiles.vue";
+import ProfileHeaderBar from "../../../components/layouts/ProfileHeaderBar.vue";
+import FooterBar from "../../../components/layouts/FooterBar.vue";
+import MyProfile from "../../../components/profile/MyProfile.vue";
+import OtherProfiles from "../../../components/profile/OtherProfiles.vue";
 
 export default {
     data() {

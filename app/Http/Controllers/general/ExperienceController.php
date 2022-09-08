@@ -62,7 +62,7 @@ class ExperienceController extends Controller
      */
     public function show(Experience $experience)
     {
-        //
+        return ResponseService::json($experience, "تم جلب الخبرة بنجاح");
     }
 
     /**

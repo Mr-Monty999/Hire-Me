@@ -16,215 +16,17 @@
                         <span v-if="nickname" class="font-weight-bold"
                             >({{ nickname }})</span
                         >
-                        <span>
-                            <modal-snippet
-                                launchButtonName="تعديل الملف الشخصي"
-                                closeButtonName="إغلاق"
-                                confirmButtonName="حفظ"
-                                title="تعديل الملف الشخصي"
-                                launchButtonClass="btn btn-warning"
-                                confirmButtonClass="btn btn-success"
-                                name="savePersonalInfo"
-                                @confirmEvent="savePersonalInfo()"
-                                @closeEvent="getProfileInfo()"
+                        <span
+                            ><router-link
+                                :to="{
+                                    name: 'profile.edit',
+                                    params: {
+                                        id: user_id,
+                                    },
+                                }"
+                                class="btn btn-warning"
+                                >تعديل الملف الشخصي</router-link
                             >
-                                <div class="">
-                                    <div class="d-flex mb-3"></div>
-                                    <div class="row mt-2">
-                                        <div class="col-md-12">
-                                            <label class="labels form-label"
-                                                >الإسم الأول</label
-                                            ><input
-                                                type="text"
-                                                class="form-control"
-                                                placeholder="الإسم الأول"
-                                                name="firstname"
-                                                v-model="firstname"
-                                            />
-                                        </div>
-                                        <div class="col-md-12">
-                                            <label class="labels form-label"
-                                                >إسم العائلة</label
-                                            ><input
-                                                type="text"
-                                                class="form-control"
-                                                placeholder="إسم العائلة"
-                                                name="lastname"
-                                                v-model="lastname"
-                                            />
-                                        </div>
-
-                                        <div class="col-md-12">
-                                            <label class="labels form-label"
-                                                >اللقب</label
-                                            ><input
-                                                type="text"
-                                                class="form-control"
-                                                placeholder="اللقب"
-                                                name="nickname"
-                                                v-model="nickname"
-                                            />
-                                        </div>
-                                        <div class="col-md-12">
-                                            <label for="" class="form-label"
-                                                >حول</label
-                                            >
-                                            <textarea
-                                                name="about"
-                                                v-model="about"
-                                                class="form-control"
-                                                id=""
-                                                cols="50"
-                                                rows="5"
-                                                placeholder="عني"
-                                            ></textarea>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="mb-3">
-                                                <label
-                                                    for="formFileSm"
-                                                    class="form-label"
-                                                    >الصورة الشخصية</label
-                                                >
-                                                <input
-                                                    class="form-control form-control-sm"
-                                                    id="formFileSm"
-                                                    type="file"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-3">
-                                        <div class="col-md-12">
-                                            <label class="labels form-label">
-                                                رقم الهاتف</label
-                                            ><input
-                                                type="text"
-                                                class="form-control"
-                                                placeholder="رقم الهاتف"
-                                                name="phone"
-                                                v-model="phone"
-                                            />
-                                        </div>
-                                        <div class="mt-1">
-                                            <button
-                                                @click="addPhone"
-                                                class="btn btn-success"
-                                                type="button"
-                                            >
-                                                اضافة رقم الهاتف
-                                            </button>
-                                        </div>
-
-                                        <div class="col-md-12">
-                                            <label class="labels form-label"
-                                                >تاريخ الميلاد</label
-                                            ><input
-                                                type="date"
-                                                class="form-control"
-                                                placeholder="تاريخ الميلاد"
-                                                name="birthdate"
-                                                v-model="birthdate"
-                                            />
-                                        </div>
-                                        <div class="col-md-12">
-                                            <label class="labels form-label"
-                                                >الدولة</label
-                                            ><input
-                                                type="text"
-                                                class="form-control"
-                                                placeholder="الدولة"
-                                                name="country"
-                                                v-model="country"
-                                            />
-                                        </div>
-                                        <div class="col-md-12">
-                                            <label class="labels form-label"
-                                                >الولاية</label
-                                            ><input
-                                                type="text"
-                                                class="form-control"
-                                                placeholder="الولاية"
-                                                name="state"
-                                                v-model="state"
-                                            />
-                                        </div>
-                                        <div class="col-md-12">
-                                            <label class="labels form-label"
-                                                >المدينة</label
-                                            ><input
-                                                type="text"
-                                                class="form-control"
-                                                placeholder="المدينة"
-                                                name="city"
-                                                v-model="city"
-                                            />
-                                        </div>
-                                        <div class="col-md-12">
-                                            <label class="labels form-label"
-                                                >الشارع</label
-                                            ><input
-                                                type="text"
-                                                class="form-control"
-                                                placeholder="الشارع"
-                                                name="street"
-                                                v-model="street"
-                                            />
-                                        </div>
-                                        <div class="col-md-12">
-                                            <label class="labels form-label"
-                                                >الموقع الإلكتروني</label
-                                            ><input
-                                                type="text"
-                                                class="form-control"
-                                                placeholder="الموقع الإكتروني"
-                                                name="website"
-                                                v-model="website"
-                                            />
-                                        </div>
-                                        <div class="p-3 py-5">
-                                            <div
-                                                class="d-flex justify-content-between align-items-center experience"
-                                            >
-                                                <h3>التعليم</h3>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <label class="labels form-label"
-                                                    >الجامعة</label
-                                                ><input
-                                                    type="text"
-                                                    class="form-control"
-                                                    placeholder="الجامعة"
-                                                    name="university"
-                                                    v-model="university"
-                                                />
-                                            </div>
-                                            <div class="col-md-12">
-                                                <label class="labels form-label"
-                                                    >الدرجة العلمية</label
-                                                ><input
-                                                    type="text"
-                                                    class="form-control"
-                                                    placeholder="الدرجة العلمية"
-                                                    name="degree"
-                                                    v-model="degree"
-                                                />
-                                            </div>
-                                            <div class="col-md-12">
-                                                <label class="labels form-label"
-                                                    >نوع التخصص</label
-                                                ><input
-                                                    type="text"
-                                                    class="form-control"
-                                                    placeholder="نوع التخصص"
-                                                    name="study_type"
-                                                    v-model="study_type"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </modal-snippet>
                         </span>
                         <span class="text-black-50">{{ email }}</span
                         ><span>8,000 متابع </span>
@@ -271,6 +73,7 @@
                                 name="addExperience"
                                 confirmAndClosed
                                 @confirmEvent="addExperience()"
+                                @onLaunchButtonClick="clearData()"
                             >
                                 <div class="col-md-12">
                                     <label class="labels">إسم الشركة</label
@@ -368,8 +171,11 @@
                                             title="تعديل خبرة"
                                             launchButtonClass="btn btn-warning"
                                             confirmButtonClass="btn btn-warning"
-                                            :name="'editExperience' + i"
+                                            :name="'updateExperience' + i"
                                             @confirmEvent="
+                                                updateExperience(exp.id)
+                                            "
+                                            @onLaunchButtonClick="
                                                 editExperience(exp.id)
                                             "
                                         >
@@ -583,12 +389,12 @@ export default {
         };
     },
     methods: {
-        savePersonalInfo(userId = this.user_id) {
+        savePersonalInfo(profileId = this.profile_id) {
             var vm = this;
 
             axios
                 .put(
-                    "/api/profiles/" + userId + "",
+                    "/api/profiles/" + profileId + "",
                     {
                         firstname: vm.firstname,
                         lastname: vm.lastname,
@@ -650,10 +456,7 @@ export default {
                 .then(function (response) {
                     console.log(response);
                     vm.experiences.push(response.data);
-                    vm.company_name = "";
-                    vm.start = "";
-                    vm.end = "";
-                    vm.position = "";
+                    vm.clearData();
 
                     vm.$notify({
                         title: "نجاح",
@@ -869,6 +672,16 @@ export default {
         },
         editExperience(experienceId) {
             var vm = this;
+            let expIndex = vm.experiences.findIndex(
+                (el) => el.id == experienceId
+            );
+            vm.company_name = vm.experiences[expIndex].company_name;
+            vm.start = vm.experiences[expIndex].start;
+            vm.end = vm.experiences[expIndex].end;
+            vm.position = vm.experiences[expIndex].position;
+        },
+        updateExperience(experienceId) {
+            var vm = this;
 
             axios
                 .put(
@@ -887,10 +700,13 @@ export default {
                 .then(function (response) {
                     console.log(response);
 
-                    vm.company_name = "";
-                    vm.start = "";
-                    vm.end = "";
-                    vm.position = "";
+                    let expIndex = vm.experiences.findIndex(
+                        (el) => el.id == experienceId
+                    );
+                    vm.experiences[expIndex].company_name = vm.company_name;
+                    vm.experiences[expIndex].start = vm.start;
+                    vm.experiences[expIndex].end = vm.end;
+                    vm.experiences[expIndex].position = vm.position;
 
                     vm.$notify({
                         title: "نجاح",
@@ -909,6 +725,13 @@ export default {
                         });
                     }
                 });
+        },
+        clearData() {
+            this.company_name = "";
+            this.start = "";
+            this.end = "";
+            this.position = "";
+            this.skill_name = "";
         },
     },
     components: {

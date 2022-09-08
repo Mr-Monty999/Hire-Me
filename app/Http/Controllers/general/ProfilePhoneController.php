@@ -5,6 +5,7 @@ namespace App\Http\Controllers\general;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProfilePhoneStoreRequest;
 use App\Models\Profile;
+use App\Models\ProfilePhone;
 use App\Services\ResponseService;
 use Illuminate\Http\Request;
 
@@ -51,9 +52,13 @@ class ProfilePhoneController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($profileId)
     {
-        //
+    }
+    public function showProfilePhones($profileId)
+    {
+        $phones = Profile::find($profileId)->phones;
+        return ResponseService::json($phones, "تم جلب أرقام الهواتف بنجاح");
     }
 
     /**
@@ -85,8 +90,10 @@ class ProfilePhoneController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($phoneId)
     {
-        //
+        $phone = ProfilePhone::findOrFail($phoneId);
+        $phone->delete();
+        return ResponseService::json($phone, "تم حذف رقم الهاتف بنجاح");
     }
 }
