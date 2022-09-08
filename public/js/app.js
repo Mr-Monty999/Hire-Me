@@ -5576,7 +5576,7 @@ __webpack_require__.r(__webpack_exports__);
 
         for (var _error in errors) {
           vm.$notify({
-            title: "خطأ",
+            title: "خطأ:لم يتم تنفيذ",
             text: errors[_error][0],
             type: "error"
           });
@@ -5611,7 +5611,7 @@ __webpack_require__.r(__webpack_exports__);
 
         for (var _error2 in errors) {
           vm.$notify({
-            title: "خطأ",
+            title: "خطأ:لم يتم تنفيذ",
             text: errors[_error2][0],
             type: "error"
           });
@@ -5641,7 +5641,7 @@ __webpack_require__.r(__webpack_exports__);
           });
         } else {
           vm.$notify({
-            title: "خطأ",
+            title: "خطأ:لم يتم تنفيذ",
             text: "هذه المهارة موجودة بالفعل !",
             type: "error"
           });
@@ -5652,7 +5652,7 @@ __webpack_require__.r(__webpack_exports__);
 
         for (var _error3 in errors) {
           vm.$notify({
-            title: "خطأ",
+            title: "خطأ:لم يتم تنفيذ",
             text: errors[_error3][0],
             type: "error"
           });
@@ -5680,7 +5680,7 @@ __webpack_require__.r(__webpack_exports__);
 
         for (var _error4 in errors) {
           vm.$notify({
-            title: "خطأ",
+            title: "خطأ:لم يتم تنفيذ",
             text: errors[_error4][0],
             type: "error"
           });
@@ -5748,7 +5748,7 @@ __webpack_require__.r(__webpack_exports__);
 
         for (var _error5 in errors) {
           vm.$notify({
-            title: "خطأ",
+            title: "خطأ:لم يتم تنفيذ",
             text: errors[_error5][0],
             type: "error"
           });
@@ -5776,7 +5776,7 @@ __webpack_require__.r(__webpack_exports__);
 
         for (var _error6 in errors) {
           vm.$notify({
-            title: "خطأ",
+            title: "خطأ:لم يتم تنفيذ",
             text: errors[_error6][0],
             type: "error"
           });
@@ -5810,7 +5810,7 @@ __webpack_require__.r(__webpack_exports__);
 
         for (var _error7 in errors) {
           vm.$notify({
-            title: "خطأ",
+            title: "خطأ:لم يتم تنفيذ",
             text: errors[_error7][0],
             type: "error"
           });
@@ -5846,6 +5846,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _helpers_auth__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../helpers/auth */ "./resources/js/helpers/auth.js");
+/* harmony import */ var _components_posts_ViewPosts_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../components/posts/ViewPosts.vue */ "./resources/js/components/posts/ViewPosts.vue");
+
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -5926,6 +5928,9 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     this.getProfileInfo();
+  },
+  components: {
+    ViewPosts: _components_posts_ViewPosts_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
   }
 });
 
@@ -6243,6 +6248,11 @@ var render = function render() {
     attrs: {
       type: "button",
       "data-bs-dismiss": "modal"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.$emit("closeEvent");
+      }
     }
   }, [_vm._v("\n                        " + _vm._s(_vm.closeButtonName) + "\n                    ")]), _vm._v(" "), _vm.confirmAndClosed ? _c("button", {
     "class": _vm.confirmButtonClass,
@@ -6531,7 +6541,7 @@ var staticRenderFns = [function () {
   }, [_c("span", [_c("i", {
     staticClass: "fa-solid fa-bell"
   })]), _vm._v(" "), _c("span", {
-    staticClass: "position-absolute top-0 start-3 translate-middle badge rounded-pill bg-danger"
+    staticClass: "position-absolute translate-middle badge rounded-pill bg-danger notificate"
   }, [_vm._v("\n                                1+\n                                "), _c("span", {
     staticClass: "visually-hidden"
   }, [_vm._v("unread messages")])])]), _vm._v(" "), _c("ul", {
@@ -6778,7 +6788,9 @@ var render = function render() {
     }
   }), _c("span", {
     staticClass: "font-weight-bold"
-  }, [_vm._v(_vm._s(_vm.firstname) + " " + _vm._s(_vm.lastname))]), _vm._v(" "), _c("span", [_c("modal-snippet", {
+  }, [_vm._v(_vm._s(_vm.firstname) + " " + _vm._s(_vm.lastname))]), _vm._v(" "), _vm.nickname ? _c("span", {
+    staticClass: "font-weight-bold"
+  }, [_vm._v("(" + _vm._s(_vm.nickname) + ")")]) : _vm._e(), _vm._v(" "), _c("span", [_c("modal-snippet", {
     attrs: {
       launchButtonName: "تعديل الملف الشخصي",
       closeButtonName: "إغلاق",
@@ -6791,6 +6803,9 @@ var render = function render() {
     on: {
       confirmEvent: function confirmEvent($event) {
         return _vm.savePersonalInfo();
+      },
+      closeEvent: function closeEvent($event) {
+        return _vm.getProfileInfo();
       }
     }
   }, [_c("div", {}, [_c("div", {
@@ -7386,8 +7401,8 @@ var render = function render() {
       }
     }, [_c("div", [_c("h5", [_vm._v(_vm._s(exp.company_name))]), _vm._v(" "), _c("p", {
       staticClass: "bold"
-    }, [_vm._v("\n                                            خبرة\n                                            " + _vm._s(_vm.calcExp(exp.start, exp.end)) + "\n                                        ")]), _vm._v(" "), _c("div", {
-      staticClass: "d-flex flex-column justify-content-center align-items-center gap-1"
+    }, [_vm._v("\n                                            خبرة\n                                            " + _vm._s(_vm.calcExp(exp.start, exp.end)) + "\n                                        ")])])]), _vm._v(" "), _c("div", {
+      staticClass: "d-flex flex-column justify-content-center align-items-center gap-1 mar-1"
     }, [_c("modal-snippet", {
       attrs: {
         launchButtonName: "حذف",
@@ -7396,7 +7411,7 @@ var render = function render() {
         title: "حذف خبرة",
         launchButtonClass: "btn btn-danger",
         confirmButtonClass: "btn btn-danger",
-        name: "deleteExperience",
+        name: "deleteExperience" + i,
         confirmAndClosed: ""
       },
       on: {
@@ -7404,7 +7419,7 @@ var render = function render() {
           return _vm.deleteExperience(exp.id);
         }
       }
-    }, [_vm._v("\n                                                هل أنت متأكد من حذف هذه\n                                                الخبرة ؟\n                                            ")]), _vm._v(" "), _c("modal-snippet", {
+    }, [_vm._v("\n                                        هل أنت متأكد من حذف هذه الخبرة ؟\n                                    ")]), _vm._v(" "), _c("modal-snippet", {
       attrs: {
         launchButtonName: "تعديل",
         closeButtonName: "إغلاق",
@@ -7412,14 +7427,118 @@ var render = function render() {
         title: "تعديل خبرة",
         launchButtonClass: "btn btn-warning",
         confirmButtonClass: "btn btn-warning",
-        name: "editExperience"
+        name: "editExperience" + i
       },
       on: {
         confirmEvent: function confirmEvent($event) {
           return _vm.editExperience(exp.id);
         }
       }
-    })], 1)])])]), _vm._v(" "), _c("div", {
+    }, [_c("div", {
+      staticClass: "col-md-12"
+    }, [_c("label", {
+      staticClass: "labels"
+    }, [_vm._v("إسم الشركة")]), _c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: _vm.company_name,
+        expression: "company_name"
+      }],
+      staticClass: "form-control",
+      attrs: {
+        type: "text",
+        placeholder: "إسم الشركة",
+        name: "company_name"
+      },
+      domProps: {
+        value: _vm.company_name
+      },
+      on: {
+        input: function input($event) {
+          if ($event.target.composing) return;
+          _vm.company_name = $event.target.value;
+        }
+      }
+    })]), _vm._v(" "), _c("div", {
+      staticClass: "col-md-12"
+    }, [_c("label", {
+      staticClass: "labels"
+    }, [_vm._v("بداية المنصب")]), _c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: _vm.start,
+        expression: "start"
+      }],
+      staticClass: "form-control",
+      attrs: {
+        type: "date",
+        placeholder: "بداية المنصب",
+        name: "start"
+      },
+      domProps: {
+        value: _vm.start
+      },
+      on: {
+        input: function input($event) {
+          if ($event.target.composing) return;
+          _vm.start = $event.target.value;
+        }
+      }
+    })]), _vm._v(" "), _c("div", {
+      staticClass: "col-md-12"
+    }, [_c("label", {
+      staticClass: "labels"
+    }, [_vm._v("نهاية المنصب")]), _c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: _vm.end,
+        expression: "end"
+      }],
+      staticClass: "form-control",
+      attrs: {
+        type: "date",
+        placeholder: "نهاية المنصب",
+        name: "end"
+      },
+      domProps: {
+        value: _vm.end
+      },
+      on: {
+        input: function input($event) {
+          if ($event.target.composing) return;
+          _vm.end = $event.target.value;
+        }
+      }
+    })]), _vm._v(" "), _c("div", {
+      staticClass: "col-md-12"
+    }, [_c("label", {
+      staticClass: "labels"
+    }, [_vm._v("المنصب")]), _c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: _vm.position,
+        expression: "position"
+      }],
+      staticClass: "form-control",
+      attrs: {
+        type: "text",
+        placeholder: "المنصب",
+        name: "position"
+      },
+      domProps: {
+        value: _vm.position
+      },
+      on: {
+        input: function input($event) {
+          if ($event.target.composing) return;
+          _vm.position = $event.target.value;
+        }
+      }
+    })])])], 1)]), _vm._v(" "), _c("div", {
       staticClass: "accordion-collapse collapse",
       attrs: {
         id: "collapse" + i,
@@ -7572,9 +7691,9 @@ var render = function render() {
   return _c("div", [_c("main", {
     staticClass: "container rounded mt-5 mb-5"
   }, [_c("div", {
-    staticClass: "row"
+    staticClass: "row gap-4"
   }, [_c("div", {
-    staticClass: "col-md-3 border-right"
+    staticClass: "col-md-3 border-right bg-mine"
   }, [_c("div", {
     staticClass: "d-flex flex-column align-items-center text-center p-3 py-5"
   }, [_c("img", {
@@ -7587,7 +7706,7 @@ var render = function render() {
     staticClass: "font-weight-bold"
   }, [_vm._v(_vm._s(_vm.firstname) + " " + _vm._s(_vm.lastname))]), _vm._v(" "), _c("span", {
     staticClass: "text-black-50"
-  }, [_vm._v(_vm._s(_vm.email))]), _c("span", [_vm._v("8,000 متابع ")])]), _vm._v(" "), _c("div", [_c("textarea", {
+  }, [_vm._v(_vm._s(_vm.email))]), _c("span", [_vm._v("8,000 متابع ")])]), _vm._v(" "), _c("div", [_c("span", [_vm._v("حول")]), _vm._v(" "), _c("textarea", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -7610,7 +7729,7 @@ var render = function render() {
       }
     }
   })])]), _vm._v(" "), _c("div", {
-    staticClass: "col-md-5 border-right"
+    staticClass: "col-md-5 border-right bg-mine"
   }, [_c("div", {
     staticClass: "p-3 py-5"
   }, [_vm._m(0), _vm._v(" "), _c("div", {
@@ -7653,8 +7772,10 @@ var render = function render() {
     staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("نوع التخصص:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                    " + _vm._s(_vm.study_type) + "\n                                ")])])])])])]), _vm._v(" "), _c("div", {
-    staticClass: "col-md-4"
+  }, [_vm._v("نوع التخصص:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                    " + _vm._s(_vm.study_type) + "\n                                ")])])])])]), _vm._v(" "), _c("div", {
+    staticClass: "p-3 py-0"
+  }, [_c("h4", [_vm._v("منشورات " + _vm._s(_vm.firstname) + " " + _vm._s(_vm.nickname))]), _vm._v(" "), _c("view-posts")], 1)]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-3 bg-mine"
   }, [_c("div", {
     staticClass: "p-3 py-5"
   }, [_vm._m(2), _vm._v(" "), _c("div", {
@@ -13869,7 +13990,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.personal-photo[data-v-285abf4e] {\n    width: 50px;\n    height: 50px;\n    border-radius: 50%;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.personal-photo[data-v-285abf4e] {\n    width: 50px;\n    height: 50px;\n    border-radius: 50%;\n}\n.notificate[data-v-285abf4e] {\n    font-size: 10px;\n    left: 10% !important;\n    top: 30% !important;\n}\n.fa-solid.fa-bell[data-v-285abf4e] {\n    font-size: 24px;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -13966,7 +14087,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-57a055d9] {\n    background: rgb(99, 39, 120);\n}\n.form-control[data-v-57a055d9]:focus {\n    box-shadow: none;\n    border-color: #ba68c8;\n}\n.profile-button[data-v-57a055d9] {\n    background: rgb(99, 39, 120);\n    box-shadow: none;\n    border: none;\n}\n.profile-button[data-v-57a055d9]:hover {\n    background: #682773;\n}\n.profile-button[data-v-57a055d9]:focus {\n    background: #198754;\n    box-shadow: none;\n}\n.profile-button[data-v-57a055d9]:active {\n    background: #682773;\n    box-shadow: none;\n}\n.back[data-v-57a055d9]:hover {\n    color: #682773;\n    cursor: pointer;\n}\n.labels[data-v-57a055d9] {\n    font-size: 25px;\n    font-weight: bold;\n}\n.add-experience[data-v-57a055d9]:hover {\n    background: #ba68c8;\n    color: #fff;\n    cursor: pointer;\n    border: solid 1px #ba68c8;\n}\ntextarea[data-v-57a055d9] {\n    resize: none;\n    min-height: 300px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-57a055d9] {\n    /* background: rgb(99, 39, 120); */\n}\n.form-control[data-v-57a055d9]:focus {\n    box-shadow: none;\n    /* border-color: #ba68c8; */\n}\n.profile-button[data-v-57a055d9] {\n    /* background: rgb(99, 39, 120); */\n    box-shadow: none;\n    border: none;\n}\n.profile-button[data-v-57a055d9]:hover {\n    /* background: #682773; */\n}\n.profile-button[data-v-57a055d9]:focus {\n    /* background: #198754; */\n    box-shadow: none;\n}\n.profile-button[data-v-57a055d9]:active {\n    /* background: #682773; */\n    box-shadow: none;\n}\n.back[data-v-57a055d9]:hover {\n    /* color: #682773; */\n    cursor: pointer;\n}\n.labels[data-v-57a055d9] {\n    font-size: 25px;\n    font-weight: bold;\n}\n.add-experience[data-v-57a055d9]:hover {\n    background: #ba68c8;\n    color: #fff;\n    cursor: pointer;\n    border: solid 1px #ba68c8;\n}\ntextarea[data-v-57a055d9] {\n    resize: none;\n    min-height: 300px;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

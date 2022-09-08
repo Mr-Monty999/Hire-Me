@@ -77,7 +77,7 @@
                                     <i class="fa-solid fa-bell"></i>
                                 </span>
                                 <span
-                                    class="position-absolute top-0 start-3 translate-middle badge rounded-pill bg-danger"
+                                    class="position-absolute translate-middle badge rounded-pill bg-danger notificate"
                                 >
                                     1+
                                     <span class="visually-hidden"
@@ -187,5 +187,14 @@ export default {
     width: 50px;
     height: 50px;
     border-radius: 50%;
+}
+
+.notificate {
+    font-size: 10px;
+    left: 10% !important;
+    top: 30% !important;
+}
+.fa-solid.fa-bell {
+    font-size: 24px;
 }
 </style>

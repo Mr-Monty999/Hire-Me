@@ -4,6 +4,7 @@ namespace App\Http\Controllers\general;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ExperienceStoreRequest;
+use App\Http\Requests\ExperienceUpdateRequest;
 use App\Models\Company;
 use App\Models\Experience;
 use App\Services\ResponseService;
@@ -82,9 +83,12 @@ class ExperienceController extends Controller
      * @param  \App\Models\Experience  $experience
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Experience $experience)
+    public function update(ExperienceUpdateRequest $request, Experience $experience)
     {
-        //
+        $request->validated();
+        $experience->update($request->all());
+
+        return ResponseService::json($experience, "تم تعديل البيانات بنجاح");
     }
 
     /**
@@ -95,6 +99,7 @@ class ExperienceController extends Controller
      */
     public function destroy(Experience $experience)
     {
-        //
+        $experience->delete();
+        return ResponseService::json($experience, "تم جلب البيانات بنجاح");
     }
 }

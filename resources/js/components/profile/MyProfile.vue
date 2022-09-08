@@ -13,6 +13,9 @@
                         /><span class="font-weight-bold"
                             >{{ firstname }} {{ lastname }}</span
                         >
+                        <span v-if="nickname" class="font-weight-bold"
+                            >({{ nickname }})</span
+                        >
                         <span>
                             <modal-snippet
                                 launchButtonName="تعديل الملف الشخصي"
@@ -23,6 +26,7 @@
                                 confirmButtonClass="btn btn-success"
                                 name="savePersonalInfo"
                                 @confirmEvent="savePersonalInfo()"
+                                @closeEvent="getProfileInfo()"
                             >
                                 <div class="">
                                     <div class="d-flex mb-3"></div>
@@ -336,42 +340,85 @@
                                                     calcExp(exp.start, exp.end)
                                                 }}
                                             </p>
-                                            <div
-                                                class="d-flex flex-column justify-content-center align-items-center gap-1"
-                                            >
-                                                <modal-snippet
-                                                    launchButtonName="حذف"
-                                                    closeButtonName="إغلاق"
-                                                    confirmButtonName="حذف"
-                                                    title="حذف خبرة"
-                                                    launchButtonClass="btn btn-danger"
-                                                    confirmButtonClass="btn btn-danger"
-                                                    name="deleteExperience"
-                                                    confirmAndClosed
-                                                    @confirmEvent="
-                                                        deleteExperience(exp.id)
-                                                    "
-                                                >
-                                                    هل أنت متأكد من حذف هذه
-                                                    الخبرة ؟
-                                                </modal-snippet>
-
-                                                <modal-snippet
-                                                    launchButtonName="تعديل"
-                                                    closeButtonName="إغلاق"
-                                                    confirmButtonName="تعديل"
-                                                    title="تعديل خبرة"
-                                                    launchButtonClass="btn btn-warning"
-                                                    confirmButtonClass="btn btn-warning"
-                                                    name="editExperience"
-                                                    @confirmEvent="
-                                                        editExperience(exp.id)
-                                                    "
-                                                >
-                                                </modal-snippet>
-                                            </div>
                                         </div>
                                     </button>
+                                    <div
+                                        class="d-flex flex-column justify-content-center align-items-center gap-1 mar-1"
+                                    >
+                                        <modal-snippet
+                                            launchButtonName="حذف"
+                                            closeButtonName="إغلاق"
+                                            confirmButtonName="حذف"
+                                            title="حذف خبرة"
+                                            launchButtonClass="btn btn-danger"
+                                            confirmButtonClass="btn btn-danger"
+                                            :name="'deleteExperience' + i"
+                                            confirmAndClosed
+                                            @confirmEvent="
+                                                deleteExperience(exp.id)
+                                            "
+                                        >
+                                            هل أنت متأكد من حذف هذه الخبرة ؟
+                                        </modal-snippet>
+
+                                        <modal-snippet
+                                            launchButtonName="تعديل"
+                                            closeButtonName="إغلاق"
+                                            confirmButtonName="تعديل"
+                                            title="تعديل خبرة"
+                                            launchButtonClass="btn btn-warning"
+                                            confirmButtonClass="btn btn-warning"
+                                            :name="'editExperience' + i"
+                                            @confirmEvent="
+                                                editExperience(exp.id)
+                                            "
+                                        >
+                                            <div class="col-md-12">
+                                                <label class="labels"
+                                                    >إسم الشركة</label
+                                                ><input
+                                                    type="text"
+                                                    class="form-control"
+                                                    placeholder="إسم الشركة"
+                                                    name="company_name"
+                                                    v-model="company_name"
+                                                />
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label class="labels"
+                                                    >بداية المنصب</label
+                                                ><input
+                                                    type="date"
+                                                    class="form-control"
+                                                    placeholder="بداية المنصب"
+                                                    name="start"
+                                                    v-model="start"
+                                                />
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label class="labels"
+                                                    >نهاية المنصب</label
+                                                ><input
+                                                    type="date"
+                                                    class="form-control"
+                                                    placeholder="نهاية المنصب"
+                                                    name="end"
+                                                    v-model="end"
+                                                />
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label class="labels"
+                                                    >المنصب</label
+                                                ><input
+                                                    type="text"
+                                                    class="form-control"
+                                                    placeholder="المنصب"
+                                                    name="position"
+                                                    v-model="position"
+                                                />
+                                            </div>
+                                        </modal-snippet>
+                                    </div>
                                 </h2>
                                 <div
                                     :id="'collapse' + i"
@@ -575,7 +622,7 @@ export default {
                     var errors = error.response.data.errors;
                     for (const error in errors) {
                         vm.$notify({
-                            title: "خطأ",
+                            title: "خطأ:لم يتم تنفيذ",
                             text: errors[error][0],
                             type: "error",
                         });
@@ -619,7 +666,7 @@ export default {
                     var errors = error.response.data.errors;
                     for (const error in errors) {
                         vm.$notify({
-                            title: "خطأ",
+                            title: "خطأ:لم يتم تنفيذ",
                             text: errors[error][0],
                             type: "error",
                         });
@@ -656,7 +703,7 @@ export default {
                         });
                     } else {
                         vm.$notify({
-                            title: "خطأ",
+                            title: "خطأ:لم يتم تنفيذ",
                             text: "هذه المهارة موجودة بالفعل !",
                             type: "error",
                         });
@@ -667,7 +714,7 @@ export default {
                     var errors = error.response.data.errors;
                     for (const error in errors) {
                         vm.$notify({
-                            title: "خطأ",
+                            title: "خطأ:لم يتم تنفيذ",
                             text: errors[error][0],
                             type: "error",
                         });
@@ -703,7 +750,7 @@ export default {
                     var errors = error.response.data.errors;
                     for (const error in errors) {
                         vm.$notify({
-                            title: "خطأ",
+                            title: "خطأ:لم يتم تنفيذ",
                             text: errors[error][0],
                             type: "error",
                         });
@@ -782,7 +829,7 @@ export default {
                     var errors = error.response.data.errors;
                     for (const error in errors) {
                         vm.$notify({
-                            title: "خطأ",
+                            title: "خطأ:لم يتم تنفيذ",
                             text: errors[error][0],
                             type: "error",
                         });
@@ -813,7 +860,7 @@ export default {
                     var errors = error.response.data.errors;
                     for (const error in errors) {
                         vm.$notify({
-                            title: "خطأ",
+                            title: "خطأ:لم يتم تنفيذ",
                             text: errors[error][0],
                             type: "error",
                         });
@@ -856,7 +903,7 @@ export default {
                     var errors = error.response.data.errors;
                     for (const error in errors) {
                         vm.$notify({
-                            title: "خطأ",
+                            title: "خطأ:لم يتم تنفيذ",
                             text: errors[error][0],
                             type: "error",
                         });

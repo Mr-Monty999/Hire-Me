@@ -40,6 +40,7 @@
                         <button
                             type="button"
                             class="btn btn-secondary"
+                            @click="$emit('closeEvent')"
                             data-bs-dismiss="modal"
                         >
                             {{ closeButtonName }}

@@ -1,8 +1,8 @@
 <template>
     <div>
         <main class="container rounded mt-5 mb-5">
-            <div class="row">
-                <div class="col-md-3 border-right">
+            <div class="row gap-4">
+                <div class="col-md-3 border-right bg-mine">
                     <div
                         class="d-flex flex-column align-items-center text-center p-3 py-5"
                     >
@@ -17,6 +17,7 @@
                         ><span>8,000 متابع </span>
                     </div>
                     <div>
+                        <span>حول</span>
                         <textarea
                             class="form-control"
                             type="text"
@@ -27,7 +28,7 @@
                         </textarea>
                     </div>
                 </div>
-                <div class="col-md-5 border-right">
+                <div class="col-md-5 border-right bg-mine">
                     <div class="p-3 py-5">
                         <div
                             class="d-flex justify-content-between align-items-center mb-3"
@@ -101,8 +102,12 @@
                             </div>
                         </div>
                     </div>
+                    <div class="p-3 py-0">
+                        <h4>منشورات {{ firstname }} {{ nickname }}</h4>
+                        <view-posts></view-posts>
+                    </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3 bg-mine">
                     <div class="p-3 py-5">
                         <div
                             class="d-flex justify-content-between align-items-center experience"
@@ -225,6 +230,7 @@
 <script>
 import axios from "axios";
 import headerAuth from "../../helpers/auth";
+import ViewPosts from "../../components/posts/ViewPosts.vue";
 
 export default {
     data() {
@@ -315,41 +321,44 @@ export default {
     created() {
         this.getProfileInfo();
     },
+    components: {
+        ViewPosts,
+    },
 };
 </script>
 
 <style scoped>
 body {
-    background: rgb(99, 39, 120);
+    /* background: rgb(99, 39, 120); */
 }
 
 .form-control:focus {
     box-shadow: none;
-    border-color: #ba68c8;
+    /* border-color: #ba68c8; */
 }
 
 .profile-button {
-    background: rgb(99, 39, 120);
+    /* background: rgb(99, 39, 120); */
     box-shadow: none;
     border: none;
 }
 
 .profile-button:hover {
-    background: #682773;
+    /* background: #682773; */
 }
 
 .profile-button:focus {
-    background: #198754;
+    /* background: #198754; */
     box-shadow: none;
 }
 
 .profile-button:active {
-    background: #682773;
+    /* background: #682773; */
     box-shadow: none;
 }
 
 .back:hover {
-    color: #682773;
+    /* color: #682773; */
     cursor: pointer;
 }
 
