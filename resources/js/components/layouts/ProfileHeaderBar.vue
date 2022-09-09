@@ -33,7 +33,7 @@
                                     <span>{{ firstname }} {{ lastname }}</span>
                                     <img
                                         class="personal-photo"
-                                        src="https://cdn.pixabay.com/photo/2017/02/04/12/25/man-2037255_960_720.jpg"
+                                        src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
                                         alt=""
                                     />
                                 </span>

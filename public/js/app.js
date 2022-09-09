@@ -6308,7 +6308,6 @@ __webpack_require__.r(__webpack_exports__);
     },
     deletePhone: function deletePhone(phoneId) {
       var vm = this;
-      console.log(vm.phones[0]);
       var phoneIndex = vm.phones.findIndex(function (el) {
         return el.id == phoneId;
       });
@@ -6743,7 +6742,7 @@ var render = function render() {
   }, [_c("span", [_c("span", [_vm._v(_vm._s(_vm.firstname) + " " + _vm._s(_vm.lastname))]), _vm._v(" "), _c("img", {
     staticClass: "personal-photo",
     attrs: {
-      src: "https://cdn.pixabay.com/photo/2017/02/04/12/25/man-2037255_960_720.jpg",
+      src: "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg",
       alt: ""
     }
   })])]), _vm._v(" "), _c("ul", {
@@ -6929,7 +6928,7 @@ var staticRenderFns = [function () {
   }, [_c("img", {
     staticClass: "profile-pic mr-3",
     attrs: {
-      src: "https://i.imgur.com/6tPhTUn.jpg"
+      src: "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
     }
   }), _vm._v(" "), _c("div", {
     staticClass: "flex-column"
@@ -7001,7 +7000,7 @@ var staticRenderFns = [function () {
   }, [_c("img", {
     staticClass: "rounded-circle",
     attrs: {
-      src: "https://i.imgur.com/UXdKE3o.jpg",
+      src: "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg",
       width: "50"
     }
   }), _vm._v(" "), _c("div", {
@@ -7021,7 +7020,7 @@ var staticRenderFns = [function () {
   }, [_vm._v("\n                        Lorem ipsum dolor sit amet, consectetur adipiscing\n                        elit, sed do eiusmod tempor incididunt.\n                    ")]), _vm._v(" "), _c("img", {
     staticClass: "img-fluid",
     attrs: {
-      src: "https://i.imgur.com/xhzhaGA.jpg"
+      src: "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
     }
   }), _vm._v(" "), _c("hr"), _vm._v(" "), _c("div", {
     staticClass: "d-flex justify-content-between align-items-center p-2"

@@ -6,7 +6,7 @@
                     <div class="d-flex justify-content-between p-2 px-3">
                         <div class="d-flex flex-row align-items-center">
                             <img
-                                src="https://i.imgur.com/UXdKE3o.jpg"
+                                src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
                                 width="50"
                                 class="rounded-circle"
                             />
@@ -29,7 +29,7 @@
                             elit, sed do eiusmod tempor incididunt.
                         </p>
                         <img
-                            src="https://i.imgur.com/xhzhaGA.jpg"
+                            src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
                             class="img-fluid"
                         />
                         <hr />

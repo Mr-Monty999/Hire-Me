@@ -65,6 +65,7 @@ class ProfileController extends Controller
     public function getPhones($profileId)
     {
         $phones =  Profile::find($profileId)->phones;
+
         return ResponseService::json($phones, "تم جلب أرقام الهواتف بنجاح");
     }
     /**

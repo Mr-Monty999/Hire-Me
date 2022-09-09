@@ -6,7 +6,7 @@
                     <div class="row px-3">
                         <img
                             class="profile-pic mr-3"
-                            src="https://i.imgur.com/6tPhTUn.jpg"
+                            src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
                         />
                         <div class="flex-column">
                             <h3 class="mb-0 font-weight-normal">

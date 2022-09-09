@@ -433,8 +433,6 @@ export default {
         },
         deletePhone(phoneId) {
             var vm = this;
-            console.log(vm.phones[0]);
-
             var phoneIndex = vm.phones.findIndex((el) => el.id == phoneId);
             vm.phones.splice(phoneIndex, 1);
             // axios
