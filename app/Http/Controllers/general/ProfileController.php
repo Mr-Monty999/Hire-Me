@@ -5,6 +5,7 @@ namespace App\Http\Controllers\general;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProfileStoreRequest;
 use App\Http\Requests\ProfileUpdateRquest;
+use App\Http\Resources\ProfileResource;
 use App\Models\Profile;
 use App\Models\ProfilePhone;
 use App\Models\User;
@@ -61,6 +62,11 @@ class ProfileController extends Controller
         return ResponseService::json($profile, "تم جلب البيانات بنجاح");
     }
 
+    public function getPhones($profileId)
+    {
+        $phones =  Profile::find($profileId)->phones;
+        return ResponseService::json($phones, "تم جلب أرقام الهواتف بنجاح");
+    }
     /**
      * Show the form for editing the specified resource.
      *

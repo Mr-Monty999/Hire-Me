@@ -16,8 +16,7 @@ import "normalize.css";
 import "./assets/css/main.css";
 import "./assets/css/all.min.css";
 
-import HeaderBar from "./components/layouts/HeaderBar.vue";
-import FooterBar from "./components/layouts/FooterBar.vue";
+import MainLayout from "./components/layouts/MainLayout.vue";
 import router from "./router/index";
 import Vue from "vue";
 import Notifications from "vue-notification";
@@ -44,7 +43,6 @@ const app = new Vue({
     el: "#app",
     router,
     components: {
-        HeaderBar,
-        FooterBar,
+        MainLayout,
     },
 });

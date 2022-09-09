@@ -79,7 +79,7 @@
                                 <span
                                     class="position-absolute translate-middle badge rounded-pill bg-danger notificate"
                                 >
-                                    1+
+                                    99+
                                     <span class="visually-hidden"
                                         >unread messages</span
                                     >
@@ -95,9 +95,39 @@
                                 </li>
                             </ul>
                         </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">رابط</a>
+                        <li class="nav-item dropdown">
+                            <a
+                                class="nav-link position-relative"
+                                href="#"
+                                role="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                            >
+                                <span>
+                                    <i class="fa-solid fa-user-group"></i>
+                                </span>
+                                <span
+                                    class="position-absolute translate-middle badge rounded-pill bg-danger notificate"
+                                >
+                                    99+
+                                    <span class="visually-hidden"
+                                        >unread messages</span
+                                    >
+                                </span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="#"
+                                        >طلب صداقة</a
+                                    >
+                                </li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li>
+                                    <a class="dropdown-item" href="#"
+                                        >طلب صداقة</a
+                                    >
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                     <form class="d-flex" role="search">
@@ -194,7 +224,7 @@ export default {
     left: 10% !important;
     top: 30% !important;
 }
-.fa-solid.fa-bell {
+.fa-solid {
     font-size: 24px;
 }
 </style>

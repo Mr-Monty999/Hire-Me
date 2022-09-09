@@ -1,12 +1,12 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import About from "../views/general/About.vue";
-import Home from "../views/general/Home.vue";
-import Login from "../views/general/Login.vue";
-import Profile from "../views/general/profile/Profile.vue";
-import EditProfile from "../views/general/profile/EditProfile.vue";
-import Register from "../views/general/Register.vue";
-import Contact from "../views/general/Contact.vue";
+import About from "../views/guest/About.vue";
+import Home from "../views/guest/Home.vue";
+import Login from "../views/guest/Login.vue";
+import Profile from "../views/user/profile/Profile.vue";
+import EditProfile from "../views/user/profile/EditProfile.vue";
+import Register from "../views/guest/Register.vue";
+import Contact from "../views/guest/Contact.vue";
 
 Vue.use(VueRouter);
 

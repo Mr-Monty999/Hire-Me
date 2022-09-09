@@ -13,7 +13,8 @@
 
 
     <div id="app" class="">
-        <router-view></router-view>
+        {{-- <router-view></router-view> --}}
+        <main-layout></main-layout>
         <notifications position="bottom right" />
 
     </div>

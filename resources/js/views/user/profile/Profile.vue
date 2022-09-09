@@ -1,19 +1,15 @@
 <template>
     <div>
-        <profile-header-bar></profile-header-bar>
         <div v-if="myUserId == $route.params.id">
             <my-profile></my-profile>
         </div>
         <div v-else>
             <other-profiles></other-profiles>
         </div>
-        <footer-bar></footer-bar>
     </div>
 </template>
 
 <script>
-import ProfileHeaderBar from "../../../components/layouts/ProfileHeaderBar.vue";
-import FooterBar from "../../../components/layouts/FooterBar.vue";
 import MyProfile from "../../../components/profile/MyProfile.vue";
 import OtherProfiles from "../../../components/profile/OtherProfiles.vue";
 
@@ -25,8 +21,6 @@ export default {
     },
     methods: {},
     components: {
-        FooterBar,
-        ProfileHeaderBar,
         OtherProfiles,
         MyProfile,
     },

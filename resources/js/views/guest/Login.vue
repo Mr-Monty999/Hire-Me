@@ -1,7 +1,5 @@
 <template>
     <div>
-        <header-bar></header-bar>
-
         <main class="container d-flex flex-column align-items-center">
             <form @submit.prevent="login()">
                 <div class="input-group mb-3">
@@ -37,14 +35,11 @@
                 </div>
             </form>
         </main>
-        <footer-bar></footer-bar>
     </div>
 </template>
 
 <script>
 import axios from "axios";
-import HeaderBar from "../../components/layouts/HeaderBar.vue";
-import FooterBar from "../../components/layouts/FooterBar.vue";
 import headerAuth from "../../helpers/auth";
 
 export default {
@@ -55,10 +50,7 @@ export default {
             success: null,
         };
     },
-    components: {
-        HeaderBar,
-        FooterBar,
-    },
+    components: {},
     methods: {
         login() {
             var vm = this;

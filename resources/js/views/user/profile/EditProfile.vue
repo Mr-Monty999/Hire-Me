@@ -1,7 +1,5 @@
 <template>
     <div class="root-div">
-        <profile-header-bar></profile-header-bar>
-
         <main class="container rounded mt-5 mb-5">
             <div class="row gap-4">
                 <div class="col-md-3 border-right bg-mine">
@@ -118,7 +116,7 @@
                                         v-model="phone"
                                     />
                                 </div>
-                                <div class="mt-1">
+                                <div class="mt-1 d-flex gap-1">
                                     <button
                                         @click="addPhone()"
                                         class="btn btn-success"
@@ -292,7 +290,6 @@
                 </div>
             </div>
         </main>
-        <footer-bar></footer-bar>
     </div>
 </template>
 
@@ -300,8 +297,6 @@
 import axios from "axios";
 import headerAuth from "../../../helpers/auth";
 import ModalSnippet from "../../../components/bootstrap/ModalSnippet.vue";
-import ProfileHeaderBar from "../../../components/layouts/ProfileHeaderBar.vue";
-import FooterBar from "../../../components/layouts/FooterBar.vue";
 
 export default {
     data() {
@@ -328,12 +323,13 @@ export default {
             position: "",
             company_name: "",
             phone: "",
-            phones: "",
-            followers: "",
-            experiences: "",
-            skills: "",
+            phones: [],
+            followers: [],
+            experiences: [],
+            skills: [],
             user_id: 0,
             profile_id: 0,
+            deletedPhones: [],
         };
     },
     methods: {
@@ -387,7 +383,7 @@ export default {
             var vm = this;
 
             axios
-                .get("/api/profile-phones/" + profileId + "/phones", {
+                .get("/api/profiles/" + profileId + "/phones", {
                     headers: headerAuth,
                 })
                 .then(function (response) {
@@ -437,22 +433,25 @@ export default {
         },
         deletePhone(phoneId) {
             var vm = this;
+            console.log(vm.phones[0]);
 
-            axios
-                .delete(
-                    "/api/profile-phones/" + phoneId,
+            var phoneIndex = vm.phones.findIndex((el) => el.id == phoneId);
+            vm.phones.splice(phoneIndex, 1);
+            // axios
+            //     .delete(
+            //         "/api/profile-phones/" + phoneId,
 
-                    {
-                        headers: headerAuth,
-                    }
-                )
-                .then(function (response) {
-                    console.log(response);
-                })
-                .catch(function (error) {
-                    console.log(error.response);
-                    var errors = error.response.data.errors;
-                });
+            //         {
+            //             headers: headerAuth,
+            //         }
+            //     )
+            //     .then(function (response) {
+            //         console.log(response);
+            //     })
+            //     .catch(function (error) {
+            //         console.log(error.response);
+            //         var errors = error.response.data.errors;
+            //     });
         },
         updatePhones() {
             var vm = this;
@@ -531,8 +530,6 @@ export default {
     },
     components: {
         ModalSnippet,
-        FooterBar,
-        ProfileHeaderBar,
     },
     created() {
         let userId = JSON.parse(localStorage.getItem("user")).id;
@@ -594,5 +591,8 @@ textarea {
 .alert {
     margin-top: 10px;
     margin-bottom: 10px;
+}
+.list-group {
+    overflow: unset;
 }
 </style>

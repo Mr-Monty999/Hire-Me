@@ -36,10 +36,10 @@ Route::group(["namespace" => "general"], function () {
 
         //Profiles
         Route::resource("profiles", "ProfileController");
+        Route::get("profiles/{id}/phones", "ProfileController@getPhones");
 
         //Profile Phones
         Route::resource("profile-phones", "ProfilePhoneController");
-        Route::get("profile-phones/{profileId}/phones", "ProfilePhoneController@showProfilePhones");
 
         //Certificates
         Route::resource("certificates", "CertificateController");

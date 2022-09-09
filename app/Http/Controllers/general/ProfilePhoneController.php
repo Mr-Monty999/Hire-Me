@@ -55,11 +55,6 @@ class ProfilePhoneController extends Controller
     public function show($profileId)
     {
     }
-    public function showProfilePhones($profileId)
-    {
-        $phones = Profile::find($profileId)->phones;
-        return ResponseService::json($phones, "تم جلب أرقام الهواتف بنجاح");
-    }
 
     /**
      * Show the form for editing the specified resource.
