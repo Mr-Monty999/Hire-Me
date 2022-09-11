@@ -21,7 +21,7 @@
                                 :to="{
                                     name: 'profile.edit',
                                     params: {
-                                        id: user_id,
+                                        id: profile_id,
                                     },
                                 }"
                                 class="btn btn-warning"
@@ -524,42 +524,7 @@ export default {
                     }
                 });
         },
-        addPhone() {
-            var vm = this;
 
-            axios
-                .post(
-                    "/api/profile-phones",
-                    {
-                        phone: vm.phone,
-                        user_id: vm.user_id,
-                    },
-
-                    {
-                        headers: headerAuth,
-                    }
-                )
-                .then(function (response) {
-                    console.log(response);
-                    vm.phone = "";
-                    vm.$notify({
-                        title: "نجاح",
-                        text: "تم إضافة رقم الهاتف بنجاح",
-                        type: "success",
-                    });
-                })
-                .catch(function (error) {
-                    console.log(error.response);
-                    var errors = error.response.data.errors;
-                    for (const error in errors) {
-                        vm.$notify({
-                            title: "خطأ:لم يتم تنفيذ",
-                            text: errors[error][0],
-                            type: "error",
-                        });
-                    }
-                });
-        },
         getProfileInfo() {
             var vm = this;
 
@@ -569,7 +534,6 @@ export default {
                 })
                 .then(function (response) {
                     console.log(response);
-                    vm.profile_id = response.data.id;
                     vm.firstname = response.data.firstname;
                     vm.lastname = response.data.lastname;
                     vm.nickname = response.data.nickname;
@@ -740,8 +704,8 @@ export default {
         ModalSnippet,
     },
     created() {
-        let userId = JSON.parse(localStorage.getItem("user")).id;
-        this.user_id = userId;
+        this.user_id = JSON.parse(localStorage.getItem("user")).id;
+        this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
         this.getProfileInfo();
     },
 };

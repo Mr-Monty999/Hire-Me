@@ -66,7 +66,7 @@
                                     />
                                 </div>
 
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <label class="labels form-label"
                                         >اللقب</label
                                     ><input
@@ -76,6 +76,20 @@
                                         name="nickname"
                                         v-model="nickname"
                                     />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="labels form-label"
+                                        >النوع</label
+                                    >
+                                    <select
+                                        class="form-control"
+                                        name="gender"
+                                        id="gender"
+                                        v-model="gender"
+                                    >
+                                        <option value="ذكر">ذكر</option>
+                                        <option value="انثى">انثى</option>
+                                    </select>
                                 </div>
                                 <div class="col-md-12">
                                     <label for="" class="form-label">حول</label>
@@ -105,61 +119,89 @@
                                 </div>
                             </div>
                             <div class="row mt-3">
-                                <div class="col-md-12">
-                                    <label class="labels form-label">
-                                        رقم الهاتف</label
-                                    ><input
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="رقم الهاتف"
-                                        name="phone"
-                                        v-model="phone"
-                                    />
-                                </div>
-                                <div class="mt-1 d-flex gap-1">
-                                    <button
-                                        @click="addPhone()"
-                                        class="btn btn-success"
-                                        type="button"
+                                <h4>أرقام الهواتف</h4>
+
+                                <ul class="list-group list">
+                                    <li
+                                        class="text-center list-group-item"
+                                        v-for="(p, i) in phones"
+                                        :key="i"
                                     >
-                                        اضافة رقم الهاتف
-                                    </button>
-                                    <modal-snippet
-                                        launchButtonName="عرض جميع أرقام الهواتف"
-                                        closeButtonName="إغلاق"
-                                        confirmButtonName="حفظ"
-                                        title="أرقام هواتفك"
-                                        launchButtonClass="btn btn-success"
-                                        confirmButtonClass="btn btn-warning"
-                                        name="editPhones"
-                                        confirmAndClosed
-                                        @onLaunchButtonClick="
-                                            getProfilePhones(profile_id)
-                                        "
-                                    >
-                                        <ul class="list-group list">
-                                            <li
-                                                class="text-center list-group-item"
-                                                v-for="(phone, i) in phones"
-                                                :key="i"
+                                        <p>{{ p.phone }}</p>
+                                        <div
+                                            class="d-flex justify-content-center gap-1"
+                                        >
+                                            <modal-snippet
+                                                launchButtonName="حذف"
+                                                closeButtonName="إغلاق"
+                                                confirmButtonName="حذف"
+                                                title="حذف رقم الهاتف"
+                                                launchButtonClass="btn btn-danger"
+                                                confirmButtonClass="btn btn-danger"
+                                                :name="'deletePhone' + i"
+                                                confirmAndClosed
+                                                @confirmEvent="
+                                                    deletePhone(p.id)
+                                                "
                                             >
-                                                <input
-                                                    type="text"
-                                                    class="form-control"
-                                                    placeholder="رقم هاتف"
-                                                    name="phones"
-                                                    v-model="phones[i].phone"
-                                                />
-                                                <button
-                                                    @click="
-                                                        deletePhone(phone.id)
-                                                    "
-                                                    class="btn btn-danger"
-                                                >
-                                                    حذف
-                                                </button>
-                                            </li>
-                                        </ul>
+                                                هل أنت متأكد من حذف هذا الرقم
+                                                {{ p.phone }} ؟
+                                            </modal-snippet>
+                                            <modal-snippet
+                                                launchButtonName="تعديل"
+                                                closeButtonName="إغلاق"
+                                                confirmButtonName="تعديل"
+                                                title="تعديل رقم الهاتف"
+                                                launchButtonClass="btn btn-warning"
+                                                confirmButtonClass="btn btn-warning"
+                                                :name="'editPhone' + i"
+                                                @closeEvent="
+                                                    getProfilePhones(profile_id)
+                                                "
+                                                @confirmEvent="
+                                                    updatePhone(p.id, p.phone)
+                                                "
+                                            >
+                                                <div class="col-md-12">
+                                                    <label
+                                                        class="labels form-label"
+                                                    >
+                                                        رقم الهاتف</label
+                                                    ><input
+                                                        type="text"
+                                                        class="form-control"
+                                                        placeholder="رقم الهاتف"
+                                                        name="phone"
+                                                        v-model="p.phone"
+                                                    />
+                                                </div>
+                                            </modal-snippet>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <div class="mt-1 gap-1">
+                                    <modal-snippet
+                                        launchButtonName="اضافة رقم هاتف"
+                                        closeButtonName="إغلاق"
+                                        confirmButtonName="إضافة"
+                                        title="رقم هاتف جديد"
+                                        launchButtonClass="btn btn-success"
+                                        confirmButtonClass="btn btn-success"
+                                        name="addPhone"
+                                        confirmAndClosed
+                                        @confirmEvent="addPhone()"
+                                    >
+                                        <div class="col-md-12">
+                                            <label class="labels form-label">
+                                                رقم الهاتف</label
+                                            ><input
+                                                type="text"
+                                                class="form-control"
+                                                placeholder="رقم الهاتف"
+                                                name="phone"
+                                                v-model="phone"
+                                            />
+                                        </div>
                                     </modal-snippet>
                                 </div>
 
@@ -304,6 +346,7 @@ export default {
             firstname: "",
             lastname: "",
             nickname: "",
+            gender: "",
             birthdate: "",
             email: "",
             about: "",
@@ -329,20 +372,20 @@ export default {
             skills: [],
             user_id: 0,
             profile_id: 0,
-            deletedPhones: [],
         };
     },
     methods: {
-        savePersonalInfo(userId = this.user_id) {
+        savePersonalInfo(profileId = this.profile_id) {
             var vm = this;
 
             axios
                 .put(
-                    "/api/profiles/" + userId + "",
+                    "/api/profiles/" + profileId + "",
                     {
                         firstname: vm.firstname,
                         lastname: vm.lastname,
                         nickname: vm.nickname,
+                        gender: vm.gender,
                         birthdate: vm.birthdate,
                         about: vm.about,
                         avatar: vm.avatar,
@@ -388,7 +431,7 @@ export default {
                 })
                 .then(function (response) {
                     console.log(response);
-                    vm.phones = response.data;
+                    vm.phones = response.data.phones;
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -403,7 +446,7 @@ export default {
                     "/api/profile-phones",
                     {
                         phone: vm.phone,
-                        user_id: vm.user_id,
+                        profile_id: vm.profile_id,
                     },
 
                     {
@@ -412,6 +455,7 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
+                    vm.phones.push(response.data);
                     vm.phone = "";
                     vm.$notify({
                         title: "نجاح",
@@ -434,32 +478,45 @@ export default {
         deletePhone(phoneId) {
             var vm = this;
             var phoneIndex = vm.phones.findIndex((el) => el.id == phoneId);
+            // vm.deletedPhones.push(vm.phones[phoneIndex]);
             vm.phones.splice(phoneIndex, 1);
-            // axios
-            //     .delete(
-            //         "/api/profile-phones/" + phoneId,
+            axios
+                .delete(
+                    "/api/profile-phones/" + phoneId,
 
-            //         {
-            //             headers: headerAuth,
-            //         }
-            //     )
-            //     .then(function (response) {
-            //         console.log(response);
-            //     })
-            //     .catch(function (error) {
-            //         console.log(error.response);
-            //         var errors = error.response.data.errors;
-            //     });
+                    {
+                        headers: headerAuth,
+                    }
+                )
+                .then(function (response) {
+                    console.log(response);
+                    vm.phone = "";
+                    vm.$notify({
+                        title: "نجاح",
+                        text: "تم حذف رقم الهاتف بنجاح",
+                        type: "success",
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                    var errors = error.response.data.errors;
+                    for (const error in errors) {
+                        vm.$notify({
+                            title: "خطأ:لم يتم تنفيذ",
+                            text: errors[error][0],
+                            type: "error",
+                        });
+                    }
+                });
         },
-        updatePhones() {
+        updatePhone(phoneId, value) {
             var vm = this;
-
             axios
                 .put(
-                    "/api/profile-phones",
+                    "/api/profile-phones/" + phoneId,
                     {
-                        phone: vm.phone,
-                        user_id: vm.user_id,
+                        phone: value,
+                        profile_id: vm.profile_id,
                     },
 
                     {
@@ -471,7 +528,7 @@ export default {
                     vm.phone = "";
                     vm.$notify({
                         title: "نجاح",
-                        text: "تم حفظ أرقام الهواتف بنجاح",
+                        text: "تم تعديل رقم الهاتف بنجاح",
                         type: "success",
                     });
                 })
@@ -496,7 +553,6 @@ export default {
                 })
                 .then(function (response) {
                     console.log(response);
-                    vm.profile_id = response.data.id;
                     vm.firstname = response.data.firstname;
                     vm.lastname = response.data.lastname;
                     vm.nickname = response.data.nickname;
@@ -530,8 +586,8 @@ export default {
         ModalSnippet,
     },
     created() {
-        let userId = JSON.parse(localStorage.getItem("user")).id;
-        this.user_id = userId;
+        this.user_id = JSON.parse(localStorage.getItem("user")).id;
+        this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
         this.getProfileInfo();
     },
 };
@@ -589,8 +645,5 @@ textarea {
 .alert {
     margin-top: 10px;
     margin-bottom: 10px;
-}
-.list-group {
-    overflow: unset;
 }
 </style>

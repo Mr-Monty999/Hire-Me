@@ -4,6 +4,7 @@ namespace App\Http\Controllers\general;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProfilePhoneStoreRequest;
+use App\Http\Requests\ProfilePhoneUpdateRequest;
 use App\Models\Profile;
 use App\Models\ProfilePhone;
 use App\Services\ResponseService;
@@ -40,10 +41,10 @@ class ProfilePhoneController extends Controller
     public function store(ProfilePhoneStoreRequest $request)
     {
         $request->validated();
-        $profile = Profile::where("user_id", $request->user_id)->first();
-        $profile->phones()->create($request->all());
 
-        return ResponseService::json($request->all(), "تم إضافة رقم الهاتف بنجاح");
+        $phone = ProfilePhone::create($request->all());
+
+        return ResponseService::json($phone, "تم إضافة رقم الهاتف بنجاح");
     }
 
     /**
@@ -74,9 +75,13 @@ class ProfilePhoneController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ProfilePhoneUpdateRequest $request, $id)
     {
-        //
+
+        $request->validated();
+        $phone = ProfilePhone::findOrFail($id);
+        $phone->update($request->all());
+        return ResponseService::json($phone, "تم التعديل بنجاح");
     }
 
     /**

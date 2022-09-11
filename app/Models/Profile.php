@@ -14,6 +14,7 @@ class Profile extends Model
         "firstname",
         "lastname",
         "nickname",
+        "gender",
         "birthdate",
         "about",
         "avatar",

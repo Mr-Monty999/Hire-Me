@@ -23,6 +23,18 @@
                     <label for="lastname">إسم العائلة</label>
                 </div>
                 <div class="form-floating mb-3">
+                    <select
+                        class="form-control"
+                        name="gender"
+                        id="gender"
+                        v-model="gender"
+                    >
+                        <option value="ذكر">ذكر</option>
+                        <option value="انثى">انثى</option>
+                    </select>
+                    <label for="gender">النوع</label>
+                </div>
+                <div class="form-floating mb-3">
                     <input
                         type="date"
                         class="form-control"
@@ -32,6 +44,7 @@
                     />
                     <label for="birthdate">تاريخ الميلاد</label>
                 </div>
+
                 <div class="form-floating mb-3">
                     <input
                         type="text"
@@ -62,7 +75,7 @@
                         v-model="repassword"
                         id="repassword"
                     />
-                    <label for="repassword">إعادة كتابة كلمة المرور</label>
+                    <label for="repassword">تأكيد كلمة المرور</label>
                 </div>
                 <button class="btn btn-success offset-3" type="submit">
                     إنشاء حساب
@@ -95,6 +108,7 @@ export default {
             password: "",
             birthdate: "",
             repassword: "",
+            gender: "",
             success: null,
         };
     },
@@ -109,6 +123,7 @@ export default {
                         email: vm.email,
                         password: vm.password,
                         repassword: vm.repassword,
+                        gender: vm.gender,
                         firstname: vm.firstname,
                         lastname: vm.lastname,
                         birthdate: vm.birthdate,
@@ -131,9 +146,17 @@ export default {
 
                     location.reload();
                 })
-                .catch((error) => {
-                    console.log(error.response);
+                .catch(function (error) {
                     vm.success = false;
+                    console.log(error.response);
+                    var errors = error.response.data.errors;
+                    for (const error in errors) {
+                        vm.$notify({
+                            title: "خطأ:لم يتم تنفيذ",
+                            text: errors[error][0],
+                            type: "error",
+                        });
+                    }
                 });
         },
     },

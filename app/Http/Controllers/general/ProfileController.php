@@ -58,13 +58,13 @@ class ProfileController extends Controller
     public function show($id)
     {
 
-        $profile = Profile::with("phones", "skills", "experiences", "posts", "user")->where("user_id", $id)->first();
+        $profile = Profile::with("phones", "skills", "experiences", "posts", "user")->find($id);
         return ResponseService::json($profile, "تم جلب البيانات بنجاح");
     }
 
     public function getPhones($profileId)
     {
-        $phones =  Profile::find($profileId)->phones;
+        $phones =  Profile::with("phones")->find($profileId)->only("phones");
 
         return ResponseService::json($phones, "تم جلب أرقام الهواتف بنجاح");
     }

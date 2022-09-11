@@ -26,6 +26,7 @@ class ProfileStoreRequest extends FormRequest
         return [
             "firstname" => "required",
             "lastname" => "required",
+            "gender" => "required",
             "birthdate" => "date",
             "user_id" => "required"
         ];
@@ -36,7 +37,9 @@ class ProfileStoreRequest extends FormRequest
         return [
             "firstname.required" => "الرجاء كتابة الإسم الأول !",
             "lastname.required" => "الرجاء كتابة إسم العائلة !",
-            "birthdate.date" => "الرجاء إدخال تاريخ فقط !"
+            "birthdate.date" => "الرجاء إدخال تاريخ فقط !",
+            "gender.required" => "الرجاء إختيار النوع !"
+
 
         ];
     }

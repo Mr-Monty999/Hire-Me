@@ -38,6 +38,12 @@
 
                         <div class="row mt-3">
                             <div class="col-md-6">
+                                <label class="labels">النوع:</label>
+                                <div class="">
+                                    {{ gender }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
                                 <label class="labels">تاريخ الميلاد:</label>
                                 <div class="">
                                     {{ birthdate }}
@@ -248,6 +254,7 @@ export default {
             firstname: "",
             lastname: "",
             nickname: "",
+            gender: "",
             birthdate: "",
             email: "",
             about: "",
@@ -286,10 +293,10 @@ export default {
                 })
                 .then(function (response) {
                     console.log(response);
-                    vm.profile_id = response.data.id;
                     vm.firstname = response.data.firstname;
                     vm.lastname = response.data.lastname;
                     vm.nickname = response.data.nickname;
+                    vm.gender = response.data.gender;
                     vm.birthdate = response.data.birthdate;
                     vm.about = response.data.about;
                     vm.avatar = response.data.avatar;
@@ -329,6 +336,8 @@ export default {
         },
     },
     created() {
+        this.user_id = JSON.parse(localStorage.getItem("user")).id;
+        this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
         this.getProfileInfo();
     },
     components: {

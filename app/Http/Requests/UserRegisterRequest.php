@@ -27,6 +27,7 @@ class UserRegisterRequest extends FormRequest
             "firstname" => "required",
             "lastname" => "required",
             "birthdate" => "date",
+            "gender" => "required",
             "email" => "email|unique:users,email",
             "password" => "required",
             "repassword" => "same:password"
@@ -42,7 +43,9 @@ class UserRegisterRequest extends FormRequest
             "email.email" => "البريد الإلكتروني غير صالح !",
             "password.required" => "الرجاء كتابة كلمة السر !",
             "repassword.same" => "كلمة السر لاتتطابق !",
-            "birthdate.date" => "الرجاء إدخال تاريخ فقط !"
+            "birthdate.date" => "الرجاء إدخال تاريخ فقط !",
+            "gender.required" => "الرجاء إختيار النوع !"
+
 
 
         ];

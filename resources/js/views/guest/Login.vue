@@ -82,6 +82,14 @@ export default {
                 .catch(function (error) {
                     vm.success = false;
                     console.log(error.response);
+                    var errors = error.response.data.errors;
+                    for (const error in errors) {
+                        vm.$notify({
+                            title: "خطأ:لم يتم تنفيذ",
+                            text: errors[error][0],
+                            type: "error",
+                        });
+                    }
                 });
         },
     },

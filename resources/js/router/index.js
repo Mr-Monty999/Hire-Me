@@ -62,7 +62,7 @@ router.beforeEach(function (to, from, next) {
             next({
                 name: "profile",
                 params: {
-                    id: JSON.parse(localStorage.getItem("user")).id,
+                    id: JSON.parse(localStorage.getItem("user")).profile_id,
                 },
             });
     }

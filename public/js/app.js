@@ -5435,6 +5435,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       firstname: "",
       lastname: "",
+      profile_id: "",
       user_id: ""
     };
   },
@@ -5457,14 +5458,14 @@ __webpack_require__.r(__webpack_exports__);
       vm.$router.push({
         name: "profile",
         params: {
-          id: vm.user_id
+          id: vm.profile_id
         }
       });
     },
     getProfileInfo: function getProfileInfo() {
-      var userId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.user_id;
+      var profileId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.profile_id;
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + userId + "", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + profileId + "", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -5476,8 +5477,8 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
-    var userId = JSON.parse(localStorage.getItem("user")).id;
-    this.user_id = userId;
+    this.user_id = JSON.parse(localStorage.getItem("user")).id;
+    this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
     this.getProfileInfo();
   }
 });
@@ -5695,41 +5696,12 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    addPhone: function addPhone() {
-      var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/profile-phones", {
-        phone: vm.phone,
-        user_id: vm.user_id
-      }, {
-        headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
-      }).then(function (response) {
-        console.log(response);
-        vm.phone = "";
-        vm.$notify({
-          title: "نجاح",
-          text: "تم إضافة رقم الهاتف بنجاح",
-          type: "success"
-        });
-      })["catch"](function (error) {
-        console.log(error.response);
-        var errors = error.response.data.errors;
-
-        for (var _error4 in errors) {
-          vm.$notify({
-            title: "خطأ:لم يتم تنفيذ",
-            text: errors[_error4][0],
-            type: "error"
-          });
-        }
-      });
-    },
     getProfileInfo: function getProfileInfo() {
       var vm = this;
       axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + vm.$route.params.id + "", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        vm.profile_id = response.data.id;
         vm.firstname = response.data.firstname;
         vm.lastname = response.data.lastname;
         vm.nickname = response.data.nickname;
@@ -5782,10 +5754,10 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error.response);
         var errors = error.response.data.errors;
 
-        for (var _error5 in errors) {
+        for (var _error4 in errors) {
           vm.$notify({
             title: "خطأ:لم يتم تنفيذ",
-            text: errors[_error5][0],
+            text: errors[_error4][0],
             type: "error"
           });
         }
@@ -5810,10 +5782,10 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error.response);
         var errors = error.response.data.errors;
 
-        for (var _error6 in errors) {
+        for (var _error5 in errors) {
           vm.$notify({
             title: "خطأ:لم يتم تنفيذ",
-            text: errors[_error6][0],
+            text: errors[_error5][0],
             type: "error"
           });
         }
@@ -5857,10 +5829,10 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error.response);
         var errors = error.response.data.errors;
 
-        for (var _error7 in errors) {
+        for (var _error6 in errors) {
           vm.$notify({
             title: "خطأ:لم يتم تنفيذ",
-            text: errors[_error7][0],
+            text: errors[_error6][0],
             type: "error"
           });
         }
@@ -5880,8 +5852,8 @@ __webpack_require__.r(__webpack_exports__);
     ModalSnippet: _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
   },
   created: function created() {
-    var userId = JSON.parse(localStorage.getItem("user")).id;
-    this.user_id = userId;
+    this.user_id = JSON.parse(localStorage.getItem("user")).id;
+    this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
     this.getProfileInfo();
   }
 });
@@ -5912,6 +5884,7 @@ __webpack_require__.r(__webpack_exports__);
       firstname: "",
       lastname: "",
       nickname: "",
+      gender: "",
       birthdate: "",
       email: "",
       about: "",
@@ -5947,10 +5920,10 @@ __webpack_require__.r(__webpack_exports__);
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        vm.profile_id = response.data.id;
         vm.firstname = response.data.firstname;
         vm.lastname = response.data.lastname;
         vm.nickname = response.data.nickname;
+        vm.gender = response.data.gender;
         vm.birthdate = response.data.birthdate;
         vm.about = response.data.about;
         vm.avatar = response.data.avatar;
@@ -5983,6 +5956,8 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
+    this.user_id = JSON.parse(localStorage.getItem("user")).id;
+    this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
     this.getProfileInfo();
   },
   components: {
@@ -6103,6 +6078,15 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         vm.success = false;
         console.log(error.response);
+        var errors = error.response.data.errors;
+
+        for (var _error in errors) {
+          vm.$notify({
+            title: "خطأ:لم يتم تنفيذ",
+            text: errors[_error][0],
+            type: "error"
+          });
+        }
       });
     }
   },
@@ -6136,6 +6120,7 @@ __webpack_require__.r(__webpack_exports__);
       password: "",
       birthdate: "",
       repassword: "",
+      gender: "",
       success: null
     };
   },
@@ -6147,6 +6132,7 @@ __webpack_require__.r(__webpack_exports__);
         email: vm.email,
         password: vm.password,
         repassword: vm.repassword,
+        gender: vm.gender,
         firstname: vm.firstname,
         lastname: vm.lastname,
         birthdate: vm.birthdate
@@ -6164,8 +6150,17 @@ __webpack_require__.r(__webpack_exports__);
 
         location.reload();
       })["catch"](function (error) {
-        console.log(error.response);
         vm.success = false;
+        console.log(error.response);
+        var errors = error.response.data.errors;
+
+        for (var _error in errors) {
+          vm.$notify({
+            title: "خطأ:لم يتم تنفيذ",
+            text: errors[_error][0],
+            type: "error"
+          });
+        }
       });
     }
   }
@@ -6197,6 +6192,7 @@ __webpack_require__.r(__webpack_exports__);
       firstname: "",
       lastname: "",
       nickname: "",
+      gender: "",
       birthdate: "",
       email: "",
       about: "",
@@ -6221,18 +6217,18 @@ __webpack_require__.r(__webpack_exports__);
       experiences: [],
       skills: [],
       user_id: 0,
-      profile_id: 0,
-      deletedPhones: []
+      profile_id: 0
     };
   },
   methods: {
     savePersonalInfo: function savePersonalInfo() {
-      var userId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.user_id;
+      var profileId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.profile_id;
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().put("/api/profiles/" + userId + "", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().put("/api/profiles/" + profileId + "", {
         firstname: vm.firstname,
         lastname: vm.lastname,
         nickname: vm.nickname,
+        gender: vm.gender,
         birthdate: vm.birthdate,
         about: vm.about,
         avatar: vm.avatar,
@@ -6272,7 +6268,7 @@ __webpack_require__.r(__webpack_exports__);
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        vm.phones = response.data;
+        vm.phones = response.data.phones;
       })["catch"](function (error) {
         console.log(error.response);
         var errors = error.response.data.errors;
@@ -6282,11 +6278,12 @@ __webpack_require__.r(__webpack_exports__);
       var vm = this;
       axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/profile-phones", {
         phone: vm.phone,
-        user_id: vm.user_id
+        profile_id: vm.profile_id
       }, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
+        vm.phones.push(response.data);
         vm.phone = "";
         vm.$notify({
           title: "نجاح",
@@ -6310,35 +6307,17 @@ __webpack_require__.r(__webpack_exports__);
       var vm = this;
       var phoneIndex = vm.phones.findIndex(function (el) {
         return el.id == phoneId;
-      });
-      vm.phones.splice(phoneIndex, 1); // axios
-      //     .delete(
-      //         "/api/profile-phones/" + phoneId,
-      //         {
-      //             headers: headerAuth,
-      //         }
-      //     )
-      //     .then(function (response) {
-      //         console.log(response);
-      //     })
-      //     .catch(function (error) {
-      //         console.log(error.response);
-      //         var errors = error.response.data.errors;
-      //     });
-    },
-    updatePhones: function updatePhones() {
-      var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().put("/api/profile-phones", {
-        phone: vm.phone,
-        user_id: vm.user_id
-      }, {
+      }); // vm.deletedPhones.push(vm.phones[phoneIndex]);
+
+      vm.phones.splice(phoneIndex, 1);
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/profile-phones/" + phoneId, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
         vm.phone = "";
         vm.$notify({
           title: "نجاح",
-          text: "تم حفظ أرقام الهواتف بنجاح",
+          text: "تم حذف رقم الهاتف بنجاح",
           type: "success"
         });
       })["catch"](function (error) {
@@ -6354,13 +6333,40 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
+    updatePhone: function updatePhone(phoneId, value) {
+      var vm = this;
+      axios__WEBPACK_IMPORTED_MODULE_0___default().put("/api/profile-phones/" + phoneId, {
+        phone: value,
+        profile_id: vm.profile_id
+      }, {
+        headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
+      }).then(function (response) {
+        console.log(response);
+        vm.phone = "";
+        vm.$notify({
+          title: "نجاح",
+          text: "تم تعديل رقم الهاتف بنجاح",
+          type: "success"
+        });
+      })["catch"](function (error) {
+        console.log(error.response);
+        var errors = error.response.data.errors;
+
+        for (var _error4 in errors) {
+          vm.$notify({
+            title: "خطأ:لم يتم تنفيذ",
+            text: errors[_error4][0],
+            type: "error"
+          });
+        }
+      });
+    },
     getProfileInfo: function getProfileInfo() {
       var vm = this;
       axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + vm.$route.params.id + "", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        vm.profile_id = response.data.id;
         vm.firstname = response.data.firstname;
         vm.lastname = response.data.lastname;
         vm.nickname = response.data.nickname;
@@ -6393,8 +6399,8 @@ __webpack_require__.r(__webpack_exports__);
     ModalSnippet: _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   created: function created() {
-    var userId = JSON.parse(localStorage.getItem("user")).id;
-    this.user_id = userId;
+    this.user_id = JSON.parse(localStorage.getItem("user")).id;
+    this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
     this.getProfileInfo();
   }
 });
@@ -6419,7 +6425,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      myUserId: 0
+      myProfileId: 0
     };
   },
   methods: {},
@@ -6428,8 +6434,8 @@ __webpack_require__.r(__webpack_exports__);
     MyProfile: _components_profile_MyProfile_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
   created: function created() {
-    var userId = JSON.parse(localStorage.getItem("user")).id;
-    this.myUserId = userId;
+    var profileId = JSON.parse(localStorage.getItem("user")).profile_id;
+    this.myProfileId = profileId;
   }
 });
 
@@ -6753,7 +6759,7 @@ var render = function render() {
       to: {
         name: "profile",
         params: {
-          id: _vm.user_id
+          id: _vm.profile_id
         }
       }
     }
@@ -7096,7 +7102,7 @@ var render = function render() {
       to: {
         name: "profile.edit",
         params: {
-          id: _vm.user_id
+          id: _vm.profile_id
         }
       }
     }
@@ -7632,6 +7638,10 @@ var render = function render() {
     staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels"
+  }, [_vm._v("النوع:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.gender) + "\n                            ")])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
+  }, [_c("label", {
+    staticClass: "labels"
   }, [_vm._v("تاريخ الميلاد:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.birthdate) + "\n                            ")])]), _vm._v(" "), _c("div", {
     staticClass: "col-md-6"
   }, [_c("label", {
@@ -8082,6 +8092,43 @@ var render = function render() {
     }
   }, [_vm._v("إسم العائلة")])]), _vm._v(" "), _c("div", {
     staticClass: "form-floating mb-3"
+  }, [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.gender,
+      expression: "gender"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      name: "gender",
+      id: "gender"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.gender = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "ذكر"
+    }
+  }, [_vm._v("ذكر")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "انثى"
+    }
+  }, [_vm._v("انثى")])]), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "gender"
+    }
+  }, [_vm._v("النوع")])]), _vm._v(" "), _c("div", {
+    staticClass: "form-floating mb-3"
   }, [_c("input", {
     directives: [{
       name: "model",
@@ -8192,7 +8239,7 @@ var render = function render() {
     attrs: {
       "for": "repassword"
     }
-  }, [_vm._v("إعادة كتابة كلمة المرور")])]), _vm._v(" "), _c("button", {
+  }, [_vm._v("تأكيد كلمة المرور")])]), _vm._v(" "), _c("button", {
     staticClass: "btn btn-success offset-3",
     attrs: {
       type: "submit"
@@ -8348,7 +8395,7 @@ var render = function render() {
       }
     }
   })]), _vm._v(" "), _c("div", {
-    staticClass: "col-md-12"
+    staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels form-label"
   }, [_vm._v("اللقب")]), _c("input", {
@@ -8374,6 +8421,41 @@ var render = function render() {
       }
     }
   })]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
+  }, [_c("label", {
+    staticClass: "labels form-label"
+  }, [_vm._v("النوع")]), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.gender,
+      expression: "gender"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      name: "gender",
+      id: "gender"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.gender = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "ذكر"
+    }
+  }, [_vm._v("ذكر")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "انثى"
+    }
+  }, [_vm._v("انثى")])])]), _vm._v(" "), _c("div", {
     staticClass: "col-md-12"
   }, [_c("label", {
     staticClass: "form-label",
@@ -8406,11 +8488,99 @@ var render = function render() {
     }
   })]), _vm._v(" "), _vm._m(0)]), _vm._v(" "), _c("div", {
     staticClass: "row mt-3"
+  }, [_c("h4", [_vm._v("أرقام الهواتف")]), _vm._v(" "), _c("ul", {
+    staticClass: "list-group list"
+  }, _vm._l(_vm.phones, function (p, i) {
+    return _c("li", {
+      key: i,
+      staticClass: "text-center list-group-item"
+    }, [_c("p", [_vm._v(_vm._s(p.phone))]), _vm._v(" "), _c("div", {
+      staticClass: "d-flex justify-content-center gap-1"
+    }, [_c("modal-snippet", {
+      attrs: {
+        launchButtonName: "حذف",
+        closeButtonName: "إغلاق",
+        confirmButtonName: "حذف",
+        title: "حذف رقم الهاتف",
+        launchButtonClass: "btn btn-danger",
+        confirmButtonClass: "btn btn-danger",
+        name: "deletePhone" + i,
+        confirmAndClosed: ""
+      },
+      on: {
+        confirmEvent: function confirmEvent($event) {
+          return _vm.deletePhone(p.id);
+        }
+      }
+    }, [_vm._v("\n                                            هل أنت متأكد من حذف هذا الرقم\n                                            " + _vm._s(p.phone) + " ؟\n                                        ")]), _vm._v(" "), _c("modal-snippet", {
+      attrs: {
+        launchButtonName: "تعديل",
+        closeButtonName: "إغلاق",
+        confirmButtonName: "تعديل",
+        title: "تعديل رقم الهاتف",
+        launchButtonClass: "btn btn-warning",
+        confirmButtonClass: "btn btn-warning",
+        name: "editPhone" + i
+      },
+      on: {
+        closeEvent: function closeEvent($event) {
+          return _vm.getProfilePhones(_vm.profile_id);
+        },
+        confirmEvent: function confirmEvent($event) {
+          return _vm.updatePhone(p.id, p.phone);
+        }
+      }
+    }, [_c("div", {
+      staticClass: "col-md-12"
+    }, [_c("label", {
+      staticClass: "labels form-label"
+    }, [_vm._v("\n                                                    رقم الهاتف")]), _c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: p.phone,
+        expression: "p.phone"
+      }],
+      staticClass: "form-control",
+      attrs: {
+        type: "text",
+        placeholder: "رقم الهاتف",
+        name: "phone"
+      },
+      domProps: {
+        value: p.phone
+      },
+      on: {
+        input: function input($event) {
+          if ($event.target.composing) return;
+
+          _vm.$set(p, "phone", $event.target.value);
+        }
+      }
+    })])])], 1)]);
+  }), 0), _vm._v(" "), _c("div", {
+    staticClass: "mt-1 gap-1"
+  }, [_c("modal-snippet", {
+    attrs: {
+      launchButtonName: "اضافة رقم هاتف",
+      closeButtonName: "إغلاق",
+      confirmButtonName: "إضافة",
+      title: "رقم هاتف جديد",
+      launchButtonClass: "btn btn-success",
+      confirmButtonClass: "btn btn-success",
+      name: "addPhone",
+      confirmAndClosed: ""
+    },
+    on: {
+      confirmEvent: function confirmEvent($event) {
+        return _vm.addPhone();
+      }
+    }
   }, [_c("div", {
     staticClass: "col-md-12"
   }, [_c("label", {
     staticClass: "labels form-label"
-  }, [_vm._v("\n                                    رقم الهاتف")]), _c("input", {
+  }, [_vm._v("\n                                            رقم الهاتف")]), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -8432,72 +8602,7 @@ var render = function render() {
         _vm.phone = $event.target.value;
       }
     }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "mt-1 d-flex gap-1"
-  }, [_c("button", {
-    staticClass: "btn btn-success",
-    attrs: {
-      type: "button"
-    },
-    on: {
-      click: function click($event) {
-        return _vm.addPhone();
-      }
-    }
-  }, [_vm._v("\n                                    اضافة رقم الهاتف\n                                ")]), _vm._v(" "), _c("modal-snippet", {
-    attrs: {
-      launchButtonName: "عرض جميع أرقام الهواتف",
-      closeButtonName: "إغلاق",
-      confirmButtonName: "حفظ",
-      title: "أرقام هواتفك",
-      launchButtonClass: "btn btn-success",
-      confirmButtonClass: "btn btn-warning",
-      name: "editPhones",
-      confirmAndClosed: ""
-    },
-    on: {
-      onLaunchButtonClick: function onLaunchButtonClick($event) {
-        return _vm.getProfilePhones(_vm.profile_id);
-      }
-    }
-  }, [_c("ul", {
-    staticClass: "list-group list"
-  }, _vm._l(_vm.phones, function (phone, i) {
-    return _c("li", {
-      key: i,
-      staticClass: "text-center list-group-item"
-    }, [_c("input", {
-      directives: [{
-        name: "model",
-        rawName: "v-model",
-        value: _vm.phones[i].phone,
-        expression: "phones[i].phone"
-      }],
-      staticClass: "form-control",
-      attrs: {
-        type: "text",
-        placeholder: "رقم هاتف",
-        name: "phones"
-      },
-      domProps: {
-        value: _vm.phones[i].phone
-      },
-      on: {
-        input: function input($event) {
-          if ($event.target.composing) return;
-
-          _vm.$set(_vm.phones[i], "phone", $event.target.value);
-        }
-      }
-    }), _vm._v(" "), _c("button", {
-      staticClass: "btn btn-danger",
-      on: {
-        click: function click($event) {
-          return _vm.deletePhone(phone.id);
-        }
-      }
-    }, [_vm._v("\n                                                حذف\n                                            ")])]);
-  }), 0)])], 1), _vm._v(" "), _c("div", {
+  })])])], 1), _vm._v(" "), _c("div", {
     staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels form-label"
@@ -8803,7 +8908,7 @@ var render = function render() {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _c("div", [_vm.myUserId == _vm.$route.params.id ? _c("div", [_c("my-profile")], 1) : _c("div", [_c("other-profiles")], 1)]);
+  return _c("div", [_vm.myProfileId == _vm.$route.params.id ? _c("div", [_c("my-profile")], 1) : _c("div", [_c("other-profiles")], 1)]);
 };
 
 var staticRenderFns = [];
@@ -9014,7 +9119,7 @@ router.beforeEach(function (to, from, next) {
     if (!routes.includes(to.name)) next({
       name: "profile",
       params: {
-        id: JSON.parse(localStorage.getItem("user")).id
+        id: JSON.parse(localStorage.getItem("user")).profile_id
       }
     });
   }
@@ -14694,7 +14799,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-88598018] {\n    /* background: rgb(99, 39, 120); */\n}\n.form-control[data-v-88598018]:focus {\n    box-shadow: none;\n    /* border-color: #ba68c8; */\n}\n.profile-button[data-v-88598018] {\n    /* background: rgb(99, 39, 120); */\n    box-shadow: none;\n    border: none;\n}\n.profile-button[data-v-88598018]:hover {\n    /* background: #682773; */\n}\n.profile-button[data-v-88598018]:focus {\n    /* background: #198754; */\n    box-shadow: none;\n}\n.profile-button[data-v-88598018]:active {\n    /* background: #682773; */\n    box-shadow: none;\n}\n.back[data-v-88598018]:hover {\n    /* color: #682773; */\n    cursor: pointer;\n}\n.labels[data-v-88598018] {\n    font-size: 16px;\n}\n.add-experience[data-v-88598018]:hover {\n    background: #ba68c8;\n    color: #fff;\n    cursor: pointer;\n    border: solid 1px #ba68c8;\n}\ntextarea[data-v-88598018] {\n    resize: none;\n}\n.alert[data-v-88598018] {\n    margin-top: 10px;\n    margin-bottom: 10px;\n}\n.list-group[data-v-88598018] {\n    overflow: unset;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-88598018] {\n    /* background: rgb(99, 39, 120); */\n}\n.form-control[data-v-88598018]:focus {\n    box-shadow: none;\n    /* border-color: #ba68c8; */\n}\n.profile-button[data-v-88598018] {\n    /* background: rgb(99, 39, 120); */\n    box-shadow: none;\n    border: none;\n}\n.profile-button[data-v-88598018]:hover {\n    /* background: #682773; */\n}\n.profile-button[data-v-88598018]:focus {\n    /* background: #198754; */\n    box-shadow: none;\n}\n.profile-button[data-v-88598018]:active {\n    /* background: #682773; */\n    box-shadow: none;\n}\n.back[data-v-88598018]:hover {\n    /* color: #682773; */\n    cursor: pointer;\n}\n.labels[data-v-88598018] {\n    font-size: 16px;\n}\n.add-experience[data-v-88598018]:hover {\n    background: #ba68c8;\n    color: #fff;\n    cursor: pointer;\n    border: solid 1px #ba68c8;\n}\ntextarea[data-v-88598018] {\n    resize: none;\n}\n.alert[data-v-88598018] {\n    margin-top: 10px;\n    margin-bottom: 10px;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

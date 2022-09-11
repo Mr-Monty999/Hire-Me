@@ -44,7 +44,7 @@
                                         class="dropdown-item"
                                         :to="{
                                             name: 'profile',
-                                            params: { id: user_id },
+                                            params: { id: profile_id },
                                         }"
                                         >الملف الشخصي</router-link
                                     >
@@ -155,6 +155,7 @@ export default {
         return {
             firstname: "",
             lastname: "",
+            profile_id: "",
             user_id: "",
         };
     },
@@ -183,14 +184,14 @@ export default {
         viewProfile() {
             var vm = this;
 
-            vm.$router.push({ name: "profile", params: { id: vm.user_id } });
+            vm.$router.push({ name: "profile", params: { id: vm.profile_id } });
         },
 
-        getProfileInfo(userId = this.user_id) {
+        getProfileInfo(profileId = this.profile_id) {
             var vm = this;
 
             axios
-                .get("/api/profiles/" + userId + "", {
+                .get("/api/profiles/" + profileId + "", {
                     headers: headerAuth,
                 })
                 .then(function (response) {
@@ -205,8 +206,8 @@ export default {
     },
 
     created() {
-        let userId = JSON.parse(localStorage.getItem("user")).id;
-        this.user_id = userId;
+        this.user_id = JSON.parse(localStorage.getItem("user")).id;
+        this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
         this.getProfileInfo();
     },
 };

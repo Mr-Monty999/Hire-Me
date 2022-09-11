@@ -32,6 +32,7 @@ class UserController extends Controller
         if (Auth::attempt($request->only(["email", "password"]), true)) {
             // Auth::user()->tokens()->delete();
             $data = Auth::user();
+            $data["profile_id"] = Auth::user()->profile->id;
 
             $data["token"] = Auth::user()->createToken(uniqid("token_"))->plainTextToken;
 
@@ -48,7 +49,7 @@ class UserController extends Controller
         $user = User::create($data);
         $data["user_id"] =  $user->id;
         $user["token"] = $user->createToken(uniqid("token_"))->plainTextToken;
-        Profile::create($data);
+        $user["profile_id"] = Profile::create($data)->id;
         return ResponseService::json($user, "تم إنشاء الحساب بنجاح");
     }
     public function logout()

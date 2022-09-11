@@ -15,7 +15,7 @@ class CreateProfilePhonesTable extends Migration
     {
         Schema::create('profile_phones', function (Blueprint $table) {
             $table->id();
-            $table->string("phone", 255);
+            $table->string("phone", 255)->unique();
             $table->bigInteger("profile_id")->unsigned();
             $table->timestamps();
 

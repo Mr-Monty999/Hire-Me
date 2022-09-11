@@ -18,6 +18,7 @@ class CreateProfilesTable extends Migration
             $table->string("firstname", 255);
             $table->string("lastname", 255);
             $table->string("nickname", 255)->nullable();
+            $table->string("gender", 50);
             $table->date("birthdate")->nullable();
             $table->text("about")->nullable();
             $table->string("avatar", 255)->nullable();
