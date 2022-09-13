@@ -27,7 +27,8 @@ class ProfileUpdateRquest extends FormRequest
             "firstname" => "required",
             "lastname" => "required",
             "gender" => "required",
-            "birthdate" => "date"
+            "birthdate" => "date",
+            "avatar" => "image|nullable"
         ];
     }
 
@@ -37,7 +38,8 @@ class ProfileUpdateRquest extends FormRequest
             "firstname.required" => "الرجاء كتابة الإسم الأول !",
             "lastname.required" => "الرجاء كتابة الإسم الثاني !",
             "birthdate.date" => "الرجاء إدخال تاريخ فقط !",
-            "gender.required" => "الرجاء إختيار النوع !"
+            "gender.required" => "الرجاء إختيار النوع !",
+            "avatar.image" => "الرجاء إختيار صورة فقط"
 
         ];
     }

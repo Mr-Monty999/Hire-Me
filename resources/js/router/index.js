@@ -55,6 +55,7 @@ const router = new VueRouter({
 
 router.beforeEach(function (to, from, next) {
     const routes = ["profile", "profile.edit"];
+    const profileId = JSON.parse(localStorage.getItem("user")).profile_id;
     if (localStorage.getItem("user") == null) {
         if (routes.includes(to.name)) next({ name: "login" });
     } else {
@@ -62,7 +63,14 @@ router.beforeEach(function (to, from, next) {
             next({
                 name: "profile",
                 params: {
-                    id: JSON.parse(localStorage.getItem("user")).profile_id,
+                    id: profileId,
+                },
+            });
+        if (to.name == "profile.edit" && to.params["id"] != profileId)
+            return next({
+                name: "profile.edit",
+                params: {
+                    id: profileId,
                 },
             });
     }

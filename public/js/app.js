@@ -5436,6 +5436,7 @@ __webpack_require__.r(__webpack_exports__);
       firstname: "",
       lastname: "",
       profile_id: "",
+      avatar: "",
       user_id: ""
     };
   },
@@ -5471,6 +5472,7 @@ __webpack_require__.r(__webpack_exports__);
         console.log(response);
         vm.firstname = response.data.firstname;
         vm.lastname = response.data.lastname;
+        vm.avatar = response.data.avatar;
       })["catch"](function (error) {
         console.log(error.response);
       });
@@ -6182,7 +6184,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _helpers_auth__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../helpers/auth */ "./resources/js/helpers/auth.js");
-/* harmony import */ var _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../components/bootstrap/ModalSnippet.vue */ "./resources/js/components/bootstrap/ModalSnippet.vue");
+/* harmony import */ var _helpers_formAuth__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../helpers/formAuth */ "./resources/js/helpers/formAuth.js");
+/* harmony import */ var _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../components/bootstrap/ModalSnippet.vue */ "./resources/js/components/bootstrap/ModalSnippet.vue");
+
 
 
 
@@ -6197,6 +6201,7 @@ __webpack_require__.r(__webpack_exports__);
       email: "",
       about: "",
       avatar: "",
+      previewAvatar: "",
       background_photo: "",
       website: "",
       country: "",
@@ -6220,29 +6225,41 @@ __webpack_require__.r(__webpack_exports__);
       profile_id: 0
     };
   },
+  computed: {
+    getAvatar: function getAvatar() {
+      if (this.previewAvatar) return URL.createObjectURL(this.previewAvatar);else if (this.avatar) return this.avatar;
+    }
+  },
   methods: {
+    getFile: function getFile(e) {
+      this.previewAvatar = e.target.files[0];
+      if (this.previewAvatar == undefined) this.previewAvatar = "";
+    },
     savePersonalInfo: function savePersonalInfo() {
       var profileId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.profile_id;
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().put("/api/profiles/" + profileId + "", {
-        firstname: vm.firstname,
-        lastname: vm.lastname,
-        nickname: vm.nickname,
-        gender: vm.gender,
-        birthdate: vm.birthdate,
-        about: vm.about,
-        avatar: vm.avatar,
-        website: vm.website,
-        country: vm.country,
-        city: vm.city,
-        state: vm.state,
-        street: vm.street,
-        university: vm.university,
-        degree: vm.degree,
-        study_type: vm.study_type
-      }, {
-        headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
+      var data = new FormData();
+      console.log(this.previewAvatar);
+      data.append("firstname", vm.firstname);
+      data.append("lastname", vm.lastname);
+      data.append("nickname", vm.nickname);
+      data.append("gender", vm.gender);
+      data.append("birthdate", vm.birthdate);
+      data.append("about", vm.about);
+      data.append("avatar", vm.previewAvatar);
+      data.append("website", vm.website);
+      data.append("country", vm.country);
+      data.append("city", vm.city);
+      data.append("state", vm.state);
+      data.append("street", vm.street);
+      data.append("university", vm.university);
+      data.append("degree", vm.degree);
+      data.append("study_type", vm.study_type);
+      data.append("_method", "put");
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/profiles/" + profileId + "", data, {
+        headers: _helpers_formAuth__WEBPACK_IMPORTED_MODULE_2__["default"]
       }).then(function (response) {
+        vm.avatar = response.data.avatar;
         console.log(response);
         vm.$notify({
           title: "نجاح",
@@ -6372,6 +6389,7 @@ __webpack_require__.r(__webpack_exports__);
         vm.nickname = response.data.nickname;
         vm.birthdate = response.data.birthdate;
         vm.about = response.data.about;
+        vm.gender = response.data.gender;
         vm.avatar = response.data.avatar;
         vm.background_photo = response.data.background_photo;
         vm.website = response.data.website;
@@ -6396,7 +6414,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   components: {
-    ModalSnippet: _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
+    ModalSnippet: _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
   },
   created: function created() {
     this.user_id = JSON.parse(localStorage.getItem("user")).id;
@@ -6748,7 +6766,7 @@ var render = function render() {
   }, [_c("span", [_c("span", [_vm._v(_vm._s(_vm.firstname) + " " + _vm._s(_vm.lastname))]), _vm._v(" "), _c("img", {
     staticClass: "personal-photo",
     attrs: {
-      src: "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg",
+      src: _vm.avatar,
       alt: ""
     }
   })])]), _vm._v(" "), _c("ul", {
@@ -7090,7 +7108,7 @@ var render = function render() {
     staticClass: "rounded-circle mt-5",
     attrs: {
       width: "150px",
-      src: "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+      src: _vm.avatar
     }
   }), _c("span", {
     staticClass: "font-weight-bold"
@@ -7600,7 +7618,7 @@ var render = function render() {
     staticClass: "rounded-circle mt-5",
     attrs: {
       width: "150px",
-      src: "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+      src: _vm.avatar
     }
   }), _c("span", {
     staticClass: "font-weight-bold"
@@ -8294,7 +8312,7 @@ var render = function render() {
     staticClass: "rounded-circle mt-5",
     attrs: {
       width: "150px",
-      src: "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+      src: _vm.getAvatar
     }
   }), _c("span", {
     staticClass: "font-weight-bold"
@@ -8447,15 +8465,25 @@ var render = function render() {
         _vm.gender = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
       }
     }
-  }, [_c("option", {
+  }, [_vm.gender == "ذكر" ? _c("option", {
+    attrs: {
+      value: "ذكر",
+      selected: ""
+    }
+  }, [_vm._v("\n                                        ذكر\n                                    ")]) : _c("option", {
     attrs: {
       value: "ذكر"
     }
-  }, [_vm._v("ذكر")]), _vm._v(" "), _c("option", {
+  }, [_vm._v("ذكر")]), _vm._v(" "), _vm.gender == "أنثى" ? _c("option", {
     attrs: {
-      value: "انثى"
+      value: "أنثى",
+      selected: ""
     }
-  }, [_vm._v("انثى")])])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n                                        انثى\n                                    ")]) : _c("option", {
+    attrs: {
+      value: "أنثى"
+    }
+  }, [_vm._v("\n                                        أنثى\n                                    ")])])]), _vm._v(" "), _c("div", {
     staticClass: "col-md-12"
   }, [_c("label", {
     staticClass: "form-label",
@@ -8486,7 +8514,26 @@ var render = function render() {
         _vm.about = $event.target.value;
       }
     }
-  })]), _vm._v(" "), _vm._m(0)]), _vm._v(" "), _c("div", {
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12"
+  }, [_c("div", {
+    staticClass: "mb-3"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": "formFileSm"
+    }
+  }, [_vm._v("الصورة الشخصية")]), _vm._v(" "), _c("input", {
+    staticClass: "form-control form-control-sm",
+    attrs: {
+      id: "formFileSm",
+      type: "file",
+      name: "avatar"
+    },
+    on: {
+      change: _vm.getFile
+    }
+  })])])]), _vm._v(" "), _c("div", {
     staticClass: "row mt-3"
   }, [_c("h4", [_vm._v("أرقام الهواتف")]), _vm._v(" "), _c("ul", {
     staticClass: "list-group list"
@@ -8760,7 +8807,7 @@ var render = function render() {
     }
   })]), _vm._v(" "), _c("div", {
     staticClass: "p-3 py-5 row"
-  }, [_vm._m(1), _vm._v(" "), _c("div", {
+  }, [_vm._m(0), _vm._v(" "), _c("div", {
     staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels form-label"
@@ -8860,26 +8907,6 @@ var render = function render() {
 };
 
 var staticRenderFns = [function () {
-  var _vm = this,
-      _c = _vm._self._c;
-
-  return _c("div", {
-    staticClass: "col-md-12"
-  }, [_c("div", {
-    staticClass: "mb-3"
-  }, [_c("label", {
-    staticClass: "form-label",
-    attrs: {
-      "for": "formFileSm"
-    }
-  }, [_vm._v("الصورة الشخصية")]), _vm._v(" "), _c("input", {
-    staticClass: "form-control form-control-sm",
-    attrs: {
-      id: "formFileSm",
-      type: "file"
-    }
-  })])]);
-}, function () {
   var _vm = this,
       _c = _vm._self._c;
 
@@ -9045,6 +9072,31 @@ var header = {
 
 /***/ }),
 
+/***/ "./resources/js/helpers/formAuth.js":
+/*!******************************************!*\
+  !*** ./resources/js/helpers/formAuth.js ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function getToken() {
+  var token = null;
+  if (localStorage.getItem("user") != null) token = JSON.parse(localStorage.getItem("user")).token;
+  return token;
+}
+
+var header = {
+  "Content-Type": "multipart/form-data",
+  Authorization: "Bearer " + getToken()
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (header);
+
+/***/ }),
+
 /***/ "./resources/js/router/index.js":
 /*!**************************************!*\
   !*** ./resources/js/router/index.js ***!
@@ -9110,6 +9162,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_8__["default"]({
 });
 router.beforeEach(function (to, from, next) {
   var routes = ["profile", "profile.edit"];
+  var profileId = JSON.parse(localStorage.getItem("user")).profile_id;
 
   if (localStorage.getItem("user") == null) {
     if (routes.includes(to.name)) next({
@@ -9119,7 +9172,13 @@ router.beforeEach(function (to, from, next) {
     if (!routes.includes(to.name)) next({
       name: "profile",
       params: {
-        id: JSON.parse(localStorage.getItem("user")).profile_id
+        id: profileId
+      }
+    });
+    if (to.name == "profile.edit" && to.params["id"] != profileId) return next({
+      name: "profile.edit",
+      params: {
+        id: profileId
       }
     });
   }

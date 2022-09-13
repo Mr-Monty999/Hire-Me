@@ -7,8 +7,7 @@ function getToken() {
 }
 
 const header = {
-    "Content-Type": "application/json",
-
+    "Content-Type": "multipart/form-data",
     Authorization: "Bearer " + getToken(),
 };
 export default header;

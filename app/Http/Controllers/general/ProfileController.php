@@ -9,6 +9,7 @@ use App\Http\Resources\ProfileResource;
 use App\Models\Profile;
 use App\Models\ProfilePhone;
 use App\Models\User;
+use App\Services\FileUploadService;
 use App\Services\ResponseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -93,13 +94,18 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRquest $request, $id)
     {
 
-        $request->validated();
-        $data = $request->all();
 
+        $data = $request->all();
         $profile = Profile::where("user_id", $id)->first();
+        if ($request->file("avatar") != null) {
+            $data["avatar"] = FileUploadService::uploadImage($request->file("avatar"), "/images/profiles");
+            FileUploadService::deleteImageIfExists(public_path($profile->avatar));
+        } else
+            $data["avatar"] = $profile->avatar;
+
         $profile->update($data);
 
-        return ResponseService::json($data, "تم حفظ الملف الشخصي بنجاح");
+        return ResponseService::json($profile, "تم حفظ الملف الشخصي بنجاح");
     }
 
     /**

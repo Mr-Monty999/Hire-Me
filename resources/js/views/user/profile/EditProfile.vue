@@ -12,7 +12,7 @@
                         <img
                             class="rounded-circle mt-5"
                             width="150px"
-                            src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                            :src="getAvatar"
                         /><span class="font-weight-bold"
                             >{{ firstname }} {{ lastname }}</span
                         >
@@ -87,8 +87,25 @@
                                         id="gender"
                                         v-model="gender"
                                     >
-                                        <option value="ذكر">ذكر</option>
-                                        <option value="انثى">انثى</option>
+                                        <option
+                                            value="ذكر"
+                                            v-if="gender == 'ذكر'"
+                                            selected
+                                        >
+                                            ذكر
+                                        </option>
+                                        <option value="ذكر" v-else>ذكر</option>
+
+                                        <option
+                                            value="أنثى"
+                                            v-if="gender == 'أنثى'"
+                                            selected
+                                        >
+                                            انثى
+                                        </option>
+                                        <option value="أنثى" v-else>
+                                            أنثى
+                                        </option>
                                     </select>
                                 </div>
                                 <div class="col-md-12">
@@ -114,6 +131,8 @@
                                             class="form-control form-control-sm"
                                             id="formFileSm"
                                             type="file"
+                                            name="avatar"
+                                            @change="getFile"
                                         />
                                     </div>
                                 </div>
@@ -338,6 +357,8 @@
 <script>
 import axios from "axios";
 import headerAuth from "../../../helpers/auth";
+import headerFormAuth from "../../../helpers/formAuth";
+
 import ModalSnippet from "../../../components/bootstrap/ModalSnippet.vue";
 
 export default {
@@ -351,6 +372,7 @@ export default {
             email: "",
             about: "",
             avatar: "",
+            previewAvatar: "",
             background_photo: "",
             website: "",
             country: "",
@@ -374,35 +396,45 @@ export default {
             profile_id: 0,
         };
     },
+    computed: {
+        getAvatar() {
+            if (this.previewAvatar)
+                return URL.createObjectURL(this.previewAvatar);
+            else if (this.avatar) return this.avatar;
+        },
+    },
     methods: {
+        getFile(e) {
+            this.previewAvatar = e.target.files[0];
+            if (this.previewAvatar == undefined) this.previewAvatar = "";
+        },
         savePersonalInfo(profileId = this.profile_id) {
             var vm = this;
+            var data = new FormData();
+            console.log(this.previewAvatar);
 
+            data.append("firstname", vm.firstname);
+            data.append("lastname", vm.lastname);
+            data.append("nickname", vm.nickname);
+            data.append("gender", vm.gender);
+            data.append("birthdate", vm.birthdate);
+            data.append("about", vm.about);
+            data.append("avatar", vm.previewAvatar);
+            data.append("website", vm.website);
+            data.append("country", vm.country);
+            data.append("city", vm.city);
+            data.append("state", vm.state);
+            data.append("street", vm.street);
+            data.append("university", vm.university);
+            data.append("degree", vm.degree);
+            data.append("study_type", vm.study_type);
+            data.append("_method", "put");
             axios
-                .put(
-                    "/api/profiles/" + profileId + "",
-                    {
-                        firstname: vm.firstname,
-                        lastname: vm.lastname,
-                        nickname: vm.nickname,
-                        gender: vm.gender,
-                        birthdate: vm.birthdate,
-                        about: vm.about,
-                        avatar: vm.avatar,
-                        website: vm.website,
-                        country: vm.country,
-                        city: vm.city,
-                        state: vm.state,
-                        street: vm.street,
-                        university: vm.university,
-                        degree: vm.degree,
-                        study_type: vm.study_type,
-                    },
-                    {
-                        headers: headerAuth,
-                    }
-                )
+                .post("/api/profiles/" + profileId + "", data, {
+                    headers: headerFormAuth,
+                })
                 .then(function (response) {
+                    vm.avatar = response.data.avatar;
                     console.log(response);
                     vm.$notify({
                         title: "نجاح",
@@ -558,6 +590,7 @@ export default {
                     vm.nickname = response.data.nickname;
                     vm.birthdate = response.data.birthdate;
                     vm.about = response.data.about;
+                    vm.gender = response.data.gender;
                     vm.avatar = response.data.avatar;
                     vm.background_photo = response.data.background_photo;
                     vm.website = response.data.website;

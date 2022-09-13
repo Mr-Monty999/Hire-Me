@@ -33,7 +33,7 @@
                                     <span>{{ firstname }} {{ lastname }}</span>
                                     <img
                                         class="personal-photo"
-                                        src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                                        :src="avatar"
                                         alt=""
                                     />
                                 </span>
@@ -156,6 +156,7 @@ export default {
             firstname: "",
             lastname: "",
             profile_id: "",
+            avatar: "",
             user_id: "",
         };
     },
@@ -198,6 +199,7 @@ export default {
                     console.log(response);
                     vm.firstname = response.data.firstname;
                     vm.lastname = response.data.lastname;
+                    vm.avatar = response.data.avatar;
                 })
                 .catch(function (error) {
                     console.log(error.response);
