@@ -100,6 +100,6 @@ class ExperienceController extends Controller
     public function destroy(Experience $experience)
     {
         $experience->delete();
-        return ResponseService::json($experience, "تم جلب البيانات بنجاح");
+        return ResponseService::json($experience, "تم حذف البيانات بنجاح");
     }
 }

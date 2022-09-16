@@ -2,36 +2,34 @@
     <div class="container mt-5 mb-5">
         <div class="row d-flex align-items-center justify-content-center">
             <div class="col-md-12">
-                <div class="card">
+                <div class="card" v-for="(post, i) in posts" :key="i">
                     <div class="d-flex justify-content-between p-2 px-3">
                         <div class="d-flex flex-row align-items-center">
                             <img
-                                src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                                :src="post.profile.avatar"
                                 width="50"
                                 class="rounded-circle"
                             />
                             <div class="d-flex flex-column ml-2">
                                 <span class="font-weight-bold"
-                                    >Jeanette Sun</span
+                                    >{{ post.profile.firstname }}
+                                    {{ post.profile.lastname }}</span
                                 >
-                                <small class="text-primary">Collegues</small>
+                                <small class="mr-2">2 min ago</small>
                             </div>
                         </div>
                         <div class="d-flex flex-row mt-1 ellipsis">
-                            <small class="mr-2">20 mins</small>
                             <i class="fa fa-ellipsis-h"></i>
                         </div>
                     </div>
 
                     <div>
                         <p class="text-justify p-2">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit, sed do eiusmod tempor incididunt.
+                            {{ post.content }}
                         </p>
-                        <img
-                            src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
-                            class="img-fluid"
-                        />
+                        <div class="d-flex justify-content-center">
+                            <img :src="post.photo" class="img-fluid" />
+                        </div>
                         <hr />
                         <div
                             class="d-flex justify-content-between align-items-center p-2"
@@ -43,7 +41,7 @@
                                 <i class="fa fa-smile-o ml-2"></i>
                             </div>
                             <div class="d-flex flex-row muted-color">
-                                <span>2 comments</span>
+                                <span>{{ post.comments.length }} comments</span>
                                 |
                                 <span class="ml-2">Share</span>
                             </div>
@@ -66,10 +64,17 @@
 
 <script>
 import axios from "axios";
+import headerAuth from "../../helpers/auth";
 
 export default {
     name: "ViewPosts",
+    data() {
+        return {};
+    },
     components: {},
+    methods: {},
+    props: ["posts"],
+    created() {},
 };
 </script>
 
@@ -82,6 +87,8 @@ body {
 }
 .card {
     border: none;
+    /* margin-top: 10px; */
+    margin-bottom: 100px;
 }
 .ellipsis {
     color: #a09c9c;

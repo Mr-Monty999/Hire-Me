@@ -14,7 +14,8 @@
                             >{{ firstname }} {{ lastname }}</span
                         >
                         <span class="text-black-50">{{ email }}</span
-                        ><span>8,000 متابع </span>
+                        ><span>{{ followers.length }} متابع </span>
+                        <span>{{ followings.length }} يتابع </span>
                     </div>
                     <div>
                         <span>حول</span>
@@ -275,7 +276,8 @@ export default {
             company_name: "",
             phone: "",
             phones: "",
-            followers: "",
+            followers: [],
+            followings: [],
             experiences: "",
             skills: "",
             user_id: 0,
@@ -313,6 +315,8 @@ export default {
                     vm.skills = response.data.skills;
                     vm.experiences = response.data.experiences;
                     vm.email = response.data.user.email;
+                    vm.followers = response.data.followers;
+                    vm.followings = response.data.followings;
                 })
                 .catch(function (error) {
                     console.log(error.response);

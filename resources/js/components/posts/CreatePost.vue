@@ -4,14 +4,11 @@
             <div class="row d-flex justify-content-center">
                 <div class="card">
                     <div class="row px-3">
-                        <img
-                            class="profile-pic mr-3"
-                            src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
-                        />
-                        <div class="flex-column">
-                            <h3 class="mb-0 font-weight-normal">
-                                Camilla Perez
-                            </h3>
+                        <img class="profile-pic mr-3" :src="profile.avatar" />
+                        <div class="flex-column col-9">
+                            <h5 class="mb-0 font-weight-normal">
+                                {{ profile.firstname }} {{ profile.lastname }}
+                            </h5>
                             <select hidden name="privacy" class="privacy">
                                 <option>Public post</option>
                                 <option>Private post</option>
@@ -21,14 +18,42 @@
                     <div class="row px-3 form-group">
                         <textarea
                             class="text-muted bg-light mt-4 mb-3"
-                            placeholder="مرحبا,ماذا يدور في بالك اليوم؟"
+                            :placeholder="
+                                'مرحبا ' +
+                                profile.firstname +
+                                ' ' +
+                                profile.lastname +
+                                ' ماذا يدور في بالك ؟'
+                            "
+                            v-model="content"
                         ></textarea>
                     </div>
-                    <div class="row px-3">
-                        <p class="fa fa-image options mr-4 col-1"></p>
+                    <div class="">
+                        <img :src="getPhoto" class="img-fluid" alt="" />
+                    </div>
+                    <div class="row px-3 mar-1">
+                        <!-- <div> -->
+                        <label
+                            class="fa fa-image options mr-4 col-1"
+                            for="photo"
+                        >
+                            <input
+                                type="file"
+                                name="photo"
+                                hidden
+                                id="photo"
+                                @change="getFile"
+                            />
+                        </label>
+                        <!-- </div> -->
                         <i class="options fa fa-ellipsis-h col-1"> </i>
                     </div>
-                    <div class="btn btn-success ml-auto">نشر</div>
+                    <div
+                        class="btn btn-success col-lg-4 ml-auto"
+                        @click="createPost"
+                    >
+                        نشر
+                    </div>
                 </div>
             </div>
         </div>
@@ -37,10 +62,83 @@
 
 <script>
 import axios from "axios";
+import headerFormAuth from "../../helpers/formAuth";
 
 export default {
     name: "CreatePost",
+    data() {
+        return {
+            profile: {},
+            content: "",
+            photo: "",
+            previewPhoto: "",
+            profile_id: "",
+        };
+    },
     components: {},
+    methods: {
+        getProfileInfo() {
+            var vm = this;
+
+            axios
+                .get("/api/profiles/" + vm.profile_id + "", {
+                    headers: headerFormAuth,
+                })
+                .then(function (response) {
+                    console.log(response);
+                    vm.profile = response.data;
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                });
+        },
+        createPost() {
+            var vm = this;
+            let data = new FormData();
+            data.append("content", vm.content);
+            data.append("photo", vm.previewPhoto);
+            data.append("profile_id", vm.profile_id);
+            axios
+                .post("/api/posts/", data, {
+                    headers: headerFormAuth,
+                })
+                .then(function (response) {
+                    console.log(response);
+                    vm.$notify({
+                        title: "نجاح",
+                        text: "تم نشر المنشور بنجاح",
+                        type: "success",
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                    var errors = error.response.data.errors;
+                    for (const error in errors) {
+                        vm.$notify({
+                            title: "خطأ:لم يتم تنفيذ",
+                            text: errors[error][0],
+                            type: "error",
+                        });
+                    }
+                });
+        },
+        getFile(e) {
+            this.previewPhoto = e.target.files[0];
+            if (this.previewPhoto == undefined) this.previewPhoto = "";
+        },
+    },
+    computed: {
+        getPhoto() {
+            if (this.previewPhoto)
+                return URL.createObjectURL(this.previewPhoto);
+            else if (this.photo) return this.photo;
+        },
+    },
+    created() {
+        this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
+
+        this.getProfileInfo();
+    },
 };
 </script>
 
@@ -116,8 +214,8 @@ select:focus {
 }
 
 .btn-success {
-    border-radius: 50px;
-    padding: 4px 40px;
+    /* border-radius: 50px; */
+    align-self: flex-end;
 }
 
 .options {

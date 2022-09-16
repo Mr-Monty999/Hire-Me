@@ -37,6 +37,7 @@ Route::group(["namespace" => "general"], function () {
         //Profiles
         Route::resource("profiles", "ProfileController");
         Route::get("profiles/{id}/phones", "ProfileController@getPhones");
+        Route::get("profiles/{id}/posts", "ProfileController@getPosts");
 
         //Profile Phones
         Route::resource("profile-phones", "ProfilePhoneController");

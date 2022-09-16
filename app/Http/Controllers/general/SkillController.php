@@ -69,6 +69,9 @@ class SkillController extends Controller
      */
     public function show(Skill $skill)
     {
+
+        // $skill = $skill->with("profiles")->get();
+
         return ResponseService::json($skill, "تم عرض المهارة بنجاح");
     }
 

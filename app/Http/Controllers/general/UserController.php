@@ -33,7 +33,6 @@ class UserController extends Controller
             // Auth::user()->tokens()->delete();
             $data = Auth::user();
             $data["profile_id"] = Auth::user()->profile->id;
-
             $data["token"] = Auth::user()->createToken(uniqid("token_"))->plainTextToken;
 
             return ResponseService::json($data, "تم تسجيل الدخول بنجاح");

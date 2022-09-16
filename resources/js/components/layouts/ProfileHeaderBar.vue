@@ -43,6 +43,15 @@
                                     <router-link
                                         class="dropdown-item"
                                         :to="{
+                                            name: 'feed',
+                                        }"
+                                        >الصفحة الرئيسية</router-link
+                                    >
+                                </li>
+                                <li>
+                                    <router-link
+                                        class="dropdown-item"
+                                        :to="{
                                             name: 'profile',
                                             params: { id: profile_id },
                                         }"

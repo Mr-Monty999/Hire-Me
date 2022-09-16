@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ProfileStoreRequest;
 use App\Http\Requests\ProfileUpdateRquest;
 use App\Http\Resources\ProfileResource;
+use App\Models\Post;
 use App\Models\Profile;
 use App\Models\ProfilePhone;
 use App\Models\User;
@@ -59,13 +60,34 @@ class ProfileController extends Controller
     public function show($id)
     {
 
-        $profile = Profile::with("phones", "skills", "experiences", "posts", "user")->find($id);
+        $profile = Profile::with([
+            "phones",
+            "skills",
+            "experiences",
+            "posts" => function ($q) {
+                $q->latest();
+            },
+            "posts.comments.replies",
+            "posts.profile:id,firstname,lastname,avatar",
+            "posts.likes",
+            "posts.tags",
+            "user",
+            "followers",
+            "followings"
+        ])->find($id);
         return ResponseService::json($profile, "تم جلب البيانات بنجاح");
     }
 
     public function getPhones($profileId)
     {
         $phones =  Profile::with("phones")->find($profileId)->only("phones");
+        // $phones = ProfilePhone::where("profile_id", $profileId)->get();
+
+        return ResponseService::json($phones, "تم جلب أرقام الهواتف بنجاح");
+    }
+    public function getPosts($profileId)
+    {
+        $phones =  Post::with("comments", "likes", "profile", "tags")->where("profile_id", $profileId)->get();
 
         return ResponseService::json($phones, "تم جلب أرقام الهواتف بنجاح");
     }

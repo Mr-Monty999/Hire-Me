@@ -7,6 +7,7 @@ import Profile from "../views/user/profile/Profile.vue";
 import EditProfile from "../views/user/profile/EditProfile.vue";
 import Register from "../views/guest/Register.vue";
 import Contact from "../views/guest/Contact.vue";
+import Feed from "../views/user/Feed.vue";
 
 Vue.use(VueRouter);
 
@@ -32,6 +33,11 @@ const routes = [
         component: Profile,
     },
     {
+        path: "/feed",
+        name: "feed",
+        component: Feed,
+    },
+    {
         path: "/profile/:id/edit",
         name: "profile.edit",
         component: EditProfile,
@@ -54,11 +60,12 @@ const router = new VueRouter({
 });
 
 router.beforeEach(function (to, from, next) {
-    const routes = ["profile", "profile.edit"];
-    const profileId = JSON.parse(localStorage.getItem("user")).profile_id;
+    const routes = ["profile", "profile.edit", "feed"];
     if (localStorage.getItem("user") == null) {
         if (routes.includes(to.name)) next({ name: "login" });
     } else {
+        const profileId = JSON.parse(localStorage.getItem("user")).profile_id;
+
         if (!routes.includes(to.name))
             next({
                 name: "profile",

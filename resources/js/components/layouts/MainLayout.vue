@@ -20,7 +20,7 @@ export default {
     },
     methods: {
         isUser() {
-            var routes = ["profile", "profile.edit"];
+            var routes = ["profile", "profile.edit", "feed"];
             if (routes.includes(this.$route.name)) return true;
 
             return false;

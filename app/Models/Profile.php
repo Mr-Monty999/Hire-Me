@@ -67,11 +67,11 @@ class Profile extends Model
 
     public function followings()
     {
-        return $this->belongsToMany(Profile::class, "profile_follow", "profile1_id");
+        return $this->belongsToMany(Profile::class, "profile_follow", "profile1_id", "profile1_id");
     }
     public function followers()
     {
-        return $this->belongsToMany(Profile::class, "profile_follow", "profile2_id");
+        return $this->belongsToMany(Profile::class, "profile_follow", "profile2_id", "profile2_id");
     }
     public function experiences()
     {

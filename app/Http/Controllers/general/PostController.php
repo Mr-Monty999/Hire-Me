@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\general;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PostStoreRequest;
+use App\Http\Requests\PostUpdateRequest;
 use App\Models\Post;
+use App\Services\FileUploadService;
+use App\Services\ResponseService;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -15,7 +19,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $posts = Post::with("comments", "likes", "tags", "profile")->latest()->get();
+
+        return ResponseService::json($posts, "تم جلب جميع المنشورات بنجاح");
     }
 
     /**
@@ -34,8 +40,17 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request  $request)
+    public function store(PostStoreRequest  $request)
     {
+
+        $data = $request->all();
+        if ($request->file("photo") != null)
+            $data["photo"] = FileUploadService::uploadImage($request->file("photo"), "/images/posts");
+
+        $post = Post::create($data);
+
+
+        return ResponseService::json($post, "تم إنشاء المنشور بنجاح");
     }
 
     /**
@@ -46,7 +61,9 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+
+        $post = $post->with("comments", "likes", "tags", "profile");
+        return ResponseService::json($post, "تم عرض المنشور بنجاح");
     }
 
     /**
@@ -67,9 +84,16 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update(PostUpdateRequest $request, Post $post)
     {
-        //
+        $data = $request->all();
+        if ($request->file("photo") != null) {
+            $data["photo"] = FileUploadService::uploadImage($request->file("photo"), "/images/posts");
+            FileUploadService::deleteImageIfExists(public_path($post->photo));
+        } else
+            $data["photo"] = $post->photo;
+        $post->update($data);
+        return ResponseService::json($post, "تم تعديل المنشور بنجاح");
     }
 
     /**
@@ -80,6 +104,8 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $post->delete();
+
+        return ResponseService::json($post, "تم حذف المنشور بنجاح");
     }
 }

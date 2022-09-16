@@ -9,12 +9,13 @@
                         <img
                             class="rounded-circle mt-5"
                             width="150px"
-                            :src="avatar"
+                            :src="profile.avatar"
                         /><span class="font-weight-bold"
-                            >{{ firstname }} {{ lastname }}</span
+                            >{{ profile.firstname }}
+                            {{ profile.lastname }}</span
                         >
-                        <span v-if="nickname" class="font-weight-bold"
-                            >({{ nickname }})</span
+                        <span v-if="profile.nickname" class="font-weight-bold"
+                            >({{ profile.nickname }})</span
                         >
                         <span
                             ><router-link
@@ -28,15 +29,15 @@
                                 >تعديل الملف الشخصي</router-link
                             >
                         </span>
-                        <span class="text-black-50">{{ email }}</span
-                        ><span>8,000 متابع </span>
-                        <span>9,000 يتابع </span>
+                        <span class="text-black-50">{{ profile.email }}</span
+                        ><span>{{ profile.followers }} متابع </span>
+                        <span>{{ profile.followings }} يتابع </span>
                     </div>
                     <div class="mar-1">
                         <label for="" class="form-label">حول</label>
                         <textarea
-                            name="about"
-                            v-model="about"
+                            name="profile.about"
+                            v-model="profile.about"
                             class="form-control"
                             id=""
                             cols="50"
@@ -50,7 +51,7 @@
                     <div class="p-3 py-5">
                         <h4>منشوراتك</h4>
                         <create-post></create-post>
-                        <view-posts></view-posts>
+                        <view-posts :posts="profile.posts"></view-posts>
                     </div>
                 </div>
                 <div class="col-md-3 bg-mine">
@@ -119,7 +120,7 @@
                         </div>
                         <div class="accordion" id="accordionExample">
                             <div
-                                v-for="(exp, i) in experiences"
+                                v-for="(exp, i) in profile.experiences"
                                 :key="i"
                                 class="accordion-item"
                             >
@@ -319,7 +320,7 @@
                             <ul class="list-group list">
                                 <li
                                     class="text-center list-group-item"
-                                    v-for="(skill, i) in skills"
+                                    v-for="(skill, i) in profile.skills"
                                     :key="i"
                                 >
                                     <p>{{ skill.name }}</p>
@@ -358,33 +359,13 @@ import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
 export default {
     data() {
         return {
-            firstname: "",
-            lastname: "",
-            nickname: "",
-            birthdate: "",
-            email: "",
-            about: "",
-            avatar: "",
-            background_photo: "",
-            website: "",
-            country: "",
-            state: "",
-            city: "",
-            street: "",
-            university: "",
-            degree: "",
-            study_type: "",
+            profile: "",
             skill_name: "",
             start: "",
             end: "",
             position: "",
             company_name: "",
             phone: "",
-            phones: [],
-            followers: [],
-            experiences: [],
-            skills: [],
-            user_id: 0,
             profile_id: 0,
         };
     },
@@ -396,20 +377,20 @@ export default {
                 .put(
                     "/api/profiles/" + profileId + "",
                     {
-                        firstname: vm.firstname,
-                        lastname: vm.lastname,
-                        nickname: vm.nickname,
-                        birthdate: vm.birthdate,
-                        about: vm.about,
-                        avatar: vm.avatar,
-                        website: vm.website,
-                        country: vm.country,
-                        city: vm.city,
-                        state: vm.state,
-                        street: vm.street,
-                        university: vm.university,
-                        degree: vm.degree,
-                        study_type: vm.study_type,
+                        firstname: vm.profile.firstname,
+                        lastname: vm.profile.lastname,
+                        nickname: vm.profile.nickname,
+                        birthdate: vm.profile.birthdate,
+                        about: vm.profile.about,
+                        avatar: vm.profile.avatar,
+                        website: vm.profile.website,
+                        country: vm.profile.country,
+                        city: vm.profile.city,
+                        state: vm.profile.state,
+                        street: vm.profile.street,
+                        university: vm.profile.university,
+                        degree: vm.profile.degree,
+                        study_type: vm.profile.study_type,
                     },
                     {
                         headers: headerAuth,
@@ -455,7 +436,7 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
-                    vm.experiences.push(response.data);
+                    vm.profile.experiences.push(response.data);
                     vm.clearData();
 
                     vm.$notify({
@@ -493,11 +474,11 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
-                    var skillExist = vm.skills.find(
+                    var skillExist = vm.profile.skills.find(
                         (el) => el.name == response.data.name
                     );
                     if (!skillExist) {
-                        vm.skills.push(response.data);
+                        vm.profile.skills.push(response.data);
                         vm.skill_name = "";
                         vm.$notify({
                             title: "نجاح",
@@ -534,25 +515,7 @@ export default {
                 })
                 .then(function (response) {
                     console.log(response);
-                    vm.firstname = response.data.firstname;
-                    vm.lastname = response.data.lastname;
-                    vm.nickname = response.data.nickname;
-                    vm.birthdate = response.data.birthdate;
-                    vm.about = response.data.about;
-                    vm.avatar = response.data.avatar;
-                    vm.background_photo = response.data.background_photo;
-                    vm.website = response.data.website;
-                    vm.country = response.data.country;
-                    vm.city = response.data.city;
-                    vm.state = response.data.state;
-                    vm.street = response.data.street;
-                    vm.university = response.data.university;
-                    vm.degree = response.data.degree;
-                    vm.study_type = response.data.study_type;
-                    vm.phones = response.data.phones;
-                    vm.skills = response.data.skills;
-                    vm.experiences = response.data.experiences;
-                    vm.email = response.data.user.email;
+                    vm.profile = response.data;
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -583,8 +546,10 @@ export default {
                 })
                 .then(function (response) {
                     console.log(response);
-                    var index = vm.skills.findIndex((el) => el.id == skillId);
-                    vm.skills.splice(index, 1);
+                    var index = vm.profile.skills.findIndex(
+                        (el) => el.id == skillId
+                    );
+                    vm.profile.skills.splice(index, 1);
                     vm.$notify({
                         title: "نجاح",
                         text: "تم حذف المهارة بنجاح",
@@ -612,10 +577,10 @@ export default {
                 })
                 .then(function (response) {
                     console.log(response);
-                    var index = vm.experiences.findIndex(
+                    var index = vm.profile.experiences.findIndex(
                         (el) => el.id == experienceId
                     );
-                    vm.experiences.splice(index, 1);
+                    vm.profile.experiences.splice(index, 1);
                     vm.$notify({
                         title: "نجاح",
                         text: "تم حذف الخبرة بنجاح",
@@ -636,13 +601,13 @@ export default {
         },
         editExperience(experienceId) {
             var vm = this;
-            let expIndex = vm.experiences.findIndex(
+            let expIndex = vm.profile.experiences.findIndex(
                 (el) => el.id == experienceId
             );
-            vm.company_name = vm.experiences[expIndex].company_name;
-            vm.start = vm.experiences[expIndex].start;
-            vm.end = vm.experiences[expIndex].end;
-            vm.position = vm.experiences[expIndex].position;
+            vm.company_name = vm.profile.experiences[expIndex].company_name;
+            vm.start = vm.profile.experiences[expIndex].start;
+            vm.end = vm.profile.experiences[expIndex].end;
+            vm.position = vm.profile.experiences[expIndex].position;
         },
         updateExperience(experienceId) {
             var vm = this;
@@ -664,13 +629,14 @@ export default {
                 .then(function (response) {
                     console.log(response);
 
-                    let expIndex = vm.experiences.findIndex(
+                    let expIndex = vm.profile.experiences.findIndex(
                         (el) => el.id == experienceId
                     );
-                    vm.experiences[expIndex].company_name = vm.company_name;
-                    vm.experiences[expIndex].start = vm.start;
-                    vm.experiences[expIndex].end = vm.end;
-                    vm.experiences[expIndex].position = vm.position;
+                    vm.profile.experiences[expIndex].company_name =
+                        vm.company_name;
+                    vm.profile.experiences[expIndex].start = vm.start;
+                    vm.profile.experiences[expIndex].end = vm.end;
+                    vm.profile.experiences[expIndex].position = vm.position;
 
                     vm.$notify({
                         title: "نجاح",
@@ -697,6 +663,21 @@ export default {
             this.position = "";
             this.skill_name = "";
         },
+        // getProfilePosts() {
+        //     var vm = this;
+
+        //     axios
+        //         .get("/api/profiles/" + vm.$route.params.id + "/posts", {
+        //             headers: headerAuth,
+        //         })
+        //         .then(function (response) {
+        //             console.log(response);
+        //             vm.posts = response.data;
+        //         })
+        //         .catch(function (error) {
+        //             console.log(error.response);
+        //         });
+        // },
     },
     components: {
         ViewPosts,
@@ -704,9 +685,9 @@ export default {
         ModalSnippet,
     },
     created() {
-        this.user_id = JSON.parse(localStorage.getItem("user")).id;
         this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
         this.getProfileInfo();
+        // this.getProfilePosts();
     },
 };
 </script>

@@ -19,9 +19,7 @@
                         <span v-if="nickname" class="font-weight-bold"
                             >({{ nickname }})</span
                         >
-                        <span class="text-black-50">{{ email }}</span
-                        ><span>8,000 متابع </span>
-                        <span>9,000 يتابع </span>
+                        <span class="text-black-50">{{ email }}</span>
                     </div>
                     <div class="mar-1">
                         <label for="" class="form-label">حول</label>
@@ -390,9 +388,6 @@ export default {
             phone: "",
             phones: [],
             followers: [],
-            experiences: [],
-            skills: [],
-            user_id: 0,
             profile_id: 0,
         };
     },
@@ -602,8 +597,7 @@ export default {
                     vm.degree = response.data.degree;
                     vm.study_type = response.data.study_type;
                     vm.phones = response.data.phones;
-                    vm.skills = response.data.skills;
-                    vm.experiences = response.data.experiences;
+
                     vm.email = response.data.user.email;
                 })
                 .catch(function (error) {
@@ -619,7 +613,6 @@ export default {
         ModalSnippet,
     },
     created() {
-        this.user_id = JSON.parse(localStorage.getItem("user")).id;
         this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
         this.getProfileInfo();
     },
