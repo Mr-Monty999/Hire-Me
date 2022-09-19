@@ -5466,13 +5466,13 @@ __webpack_require__.r(__webpack_exports__);
     getProfileInfo: function getProfileInfo() {
       var profileId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.profile_id;
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + profileId + "", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + profileId + "/info", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        vm.firstname = response.data.firstname;
-        vm.lastname = response.data.lastname;
-        vm.avatar = response.data.avatar;
+        vm.firstname = response.data.data.firstname;
+        vm.lastname = response.data.data.lastname;
+        vm.avatar = response.data.data.avatar;
       })["catch"](function (error) {
         console.log(error.response);
       });
@@ -5501,6 +5501,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _helpers_formAuth__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../helpers/formAuth */ "./resources/js/helpers/formAuth.js");
+/* harmony import */ var _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../components/bootstrap/ModalSnippet.vue */ "./resources/js/components/bootstrap/ModalSnippet.vue");
+
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -5514,15 +5516,18 @@ __webpack_require__.r(__webpack_exports__);
       profile_id: ""
     };
   },
-  components: {},
+  props: ["posts"],
+  components: {
+    ModalSnippet: _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
+  },
   methods: {
     getProfileInfo: function getProfileInfo() {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + vm.profile_id + "", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + vm.profile_id + "/info", {
         headers: _helpers_formAuth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        vm.profile = response.data;
+        vm.profile = response.data.data;
       })["catch"](function (error) {
         console.log(error.response);
       });
@@ -5542,6 +5547,10 @@ __webpack_require__.r(__webpack_exports__);
           text: "تم نشر المنشور بنجاح",
           type: "success"
         });
+        vm.posts.data.unshift(response.data.data);
+        vm.content = "";
+        vm.photo = "";
+        vm.previewPhoto = "";
       })["catch"](function (error) {
         console.log(error.response);
         var errors = error.response.data.errors;
@@ -5587,6 +5596,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _helpers_auth__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../helpers/auth */ "./resources/js/helpers/auth.js");
+/* harmony import */ var _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../components/bootstrap/ModalSnippet.vue */ "./resources/js/components/bootstrap/ModalSnippet.vue");
+/* harmony import */ var vuejs_paginate__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vuejs-paginate */ "./node_modules/vuejs-paginate/dist/index.js");
+/* harmony import */ var vuejs_paginate__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vuejs_paginate__WEBPACK_IMPORTED_MODULE_3__);
+
+
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -5594,10 +5608,46 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {};
   },
-  components: {},
-  methods: {},
-  props: ["posts"],
-  created: function created() {}
+  components: {
+    ModalSnippet: _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
+    Paginate: (vuejs_paginate__WEBPACK_IMPORTED_MODULE_3___default())
+  },
+  methods: {
+    deletePost: function deletePost(postId) {
+      var vm = this;
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/posts/" + postId, {
+        headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
+      }).then(function (response) {
+        console.log(response);
+        var index = vm.posts.findIndex(function (el) {
+          return el.id == postId;
+        });
+        vm.posts.splice(index, 1);
+        vm.$notify({
+          title: "نجاح",
+          text: "تم حذف المنشور بنجاح",
+          type: "success"
+        });
+      })["catch"](function (error) {
+        console.log(error.response);
+        var errors = error.response.data.errors;
+
+        for (var _error in errors) {
+          vm.$notify({
+            title: "خطأ:لم يتم تنفيذ",
+            text: errors[_error][0],
+            type: "error"
+          });
+        }
+      });
+    }
+  },
+  computed: {},
+  props: ["posts", "onPageClick"],
+  created: function created() {
+    console.log("View Posts");
+    console.log(this.posts);
+  }
 });
 
 /***/ }),
@@ -5627,7 +5677,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      profile: "",
+      profile: {},
       skill_name: "",
       start: "",
       end: "",
@@ -5690,7 +5740,7 @@ __webpack_require__.r(__webpack_exports__);
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        vm.profile.experiences.push(response.data);
+        vm.profile.experiences.push(response.data.data);
         vm.clearData();
         vm.$notify({
           title: "نجاح",
@@ -5720,11 +5770,11 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         console.log(response);
         var skillExist = vm.profile.skills.find(function (el) {
-          return el.name == response.data.name;
+          return el.name == response.data.data.name;
         });
 
         if (!skillExist) {
-          vm.profile.skills.push(response.data);
+          vm.profile.skills.push(response.data.data);
           vm.skill_name = "";
           vm.$notify({
             title: "نجاح",
@@ -5753,11 +5803,11 @@ __webpack_require__.r(__webpack_exports__);
     },
     getProfileInfo: function getProfileInfo() {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + vm.$route.params.id + "", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + vm.profile_id + "", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        vm.profile = response.data;
+        vm.profile = response.data.data;
       })["catch"](function (error) {
         console.log(error.response);
       });
@@ -5881,21 +5931,19 @@ __webpack_require__.r(__webpack_exports__);
       this.end = "";
       this.position = "";
       this.skill_name = "";
-    } // getProfilePosts() {
-    //     var vm = this;
-    //     axios
-    //         .get("/api/profiles/" + vm.$route.params.id + "/posts", {
-    //             headers: headerAuth,
-    //         })
-    //         .then(function (response) {
-    //             console.log(response);
-    //             vm.posts = response.data;
-    //         })
-    //         .catch(function (error) {
-    //             console.log(error.response);
-    //         });
-    // },
-
+    },
+    getProfilePosts: function getProfilePosts() {
+      var pageNumber = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      var vm = this;
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + vm.$route.params.id + "/posts?page=" + pageNumber, {
+        headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
+      }).then(function (response) {
+        console.log(response);
+        vm.profile.posts = response.data.data;
+      })["catch"](function (error) {
+        console.log(error.response);
+      });
+    }
   },
   components: {
     ViewPosts: _components_posts_ViewPosts_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
@@ -5904,7 +5952,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
-    this.getProfileInfo(); // this.getProfilePosts();
+    this.getProfileInfo();
+    this.getProfilePosts();
   }
 });
 
@@ -5971,28 +6020,28 @@ __webpack_require__.r(__webpack_exports__);
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        vm.firstname = response.data.firstname;
-        vm.lastname = response.data.lastname;
-        vm.nickname = response.data.nickname;
-        vm.gender = response.data.gender;
-        vm.birthdate = response.data.birthdate;
-        vm.about = response.data.about;
-        vm.avatar = response.data.avatar;
-        vm.background_photo = response.data.background_photo;
-        vm.website = response.data.website;
-        vm.country = response.data.country;
-        vm.city = response.data.city;
-        vm.state = response.data.state;
-        vm.street = response.data.street;
-        vm.university = response.data.university;
-        vm.degree = response.data.degree;
-        vm.study_type = response.data.study_type;
-        vm.phones = response.data.phones;
-        vm.skills = response.data.skills;
-        vm.experiences = response.data.experiences;
-        vm.email = response.data.user.email;
-        vm.followers = response.data.followers;
-        vm.followings = response.data.followings;
+        vm.firstname = response.data.data.firstname;
+        vm.lastname = response.data.data.lastname;
+        vm.nickname = response.data.data.nickname;
+        vm.gender = response.data.data.gender;
+        vm.birthdate = response.data.data.birthdate;
+        vm.about = response.data.data.about;
+        vm.avatar = response.data.data.avatar;
+        vm.background_photo = response.data.data.background_photo;
+        vm.website = response.data.data.website;
+        vm.country = response.data.data.country;
+        vm.city = response.data.data.city;
+        vm.state = response.data.data.state;
+        vm.street = response.data.data.street;
+        vm.university = response.data.data.university;
+        vm.degree = response.data.data.degree;
+        vm.study_type = response.data.data.study_type;
+        vm.phones = response.data.data.phones;
+        vm.skills = response.data.data.skills;
+        vm.experiences = response.data.data.experiences;
+        vm.email = response.data.data.user.email;
+        vm.followers = response.data.data.followers;
+        vm.followings = response.data.data.followings;
       })["catch"](function (error) {
         console.log(error.response);
       });
@@ -6236,14 +6285,43 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _helpers_auth__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../helpers/auth */ "./resources/js/helpers/auth.js");
 /* harmony import */ var _components_posts_CreatePost_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../components/posts/CreatePost.vue */ "./resources/js/components/posts/CreatePost.vue");
+/* harmony import */ var _components_posts_ViewPosts_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../components/posts/ViewPosts.vue */ "./resources/js/components/posts/ViewPosts.vue");
+
+
 
 
  // import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
-    CreatePost: _components_posts_CreatePost_vue__WEBPACK_IMPORTED_MODULE_2__["default"] // ModalSnippet,
+    CreatePost: _components_posts_CreatePost_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
+    ViewPosts: _components_posts_ViewPosts_vue__WEBPACK_IMPORTED_MODULE_3__["default"] // ModalSnippet,
 
+  },
+  data: function data() {
+    return {
+      profile_id: 0,
+      posts: {}
+    };
+  },
+  methods: {
+    getPosts: function getPosts() {
+      var pageNumber = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      var vm = this;
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/posts?page=" + pageNumber, {
+        headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
+      }).then(function (response) {
+        console.log(response);
+        vm.posts = response.data.data;
+        scrollTo(0, 200);
+      })["catch"](function (error) {
+        console.log(error.response);
+      });
+    }
+  },
+  created: function created() {
+    this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
+    this.getPosts();
   }
 });
 
@@ -6335,7 +6413,7 @@ __webpack_require__.r(__webpack_exports__);
       axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/profiles/" + profileId + "", data, {
         headers: _helpers_formAuth__WEBPACK_IMPORTED_MODULE_2__["default"]
       }).then(function (response) {
-        vm.avatar = response.data.avatar;
+        vm.avatar = response.data.data.avatar;
         console.log(response);
         vm.$notify({
           title: "نجاح",
@@ -6361,7 +6439,7 @@ __webpack_require__.r(__webpack_exports__);
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        vm.phones = response.data.phones;
+        vm.phones = response.data.data.phones;
       })["catch"](function (error) {
         console.log(error.response);
         var errors = error.response.data.errors;
@@ -6376,7 +6454,7 @@ __webpack_require__.r(__webpack_exports__);
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        vm.phones.push(response.data);
+        vm.phones.push(response.data.data);
         vm.phone = "";
         vm.$notify({
           title: "نجاح",
@@ -6460,24 +6538,24 @@ __webpack_require__.r(__webpack_exports__);
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        vm.firstname = response.data.firstname;
-        vm.lastname = response.data.lastname;
-        vm.nickname = response.data.nickname;
-        vm.birthdate = response.data.birthdate;
-        vm.about = response.data.about;
-        vm.gender = response.data.gender;
-        vm.avatar = response.data.avatar;
-        vm.background_photo = response.data.background_photo;
-        vm.website = response.data.website;
-        vm.country = response.data.country;
-        vm.city = response.data.city;
-        vm.state = response.data.state;
-        vm.street = response.data.street;
-        vm.university = response.data.university;
-        vm.degree = response.data.degree;
-        vm.study_type = response.data.study_type;
-        vm.phones = response.data.phones;
-        vm.email = response.data.user.email;
+        vm.firstname = response.data.data.firstname;
+        vm.lastname = response.data.data.lastname;
+        vm.nickname = response.data.data.nickname;
+        vm.birthdate = response.data.data.birthdate;
+        vm.about = response.data.data.about;
+        vm.gender = response.data.data.gender;
+        vm.avatar = response.data.data.avatar;
+        vm.background_photo = response.data.data.background_photo;
+        vm.website = response.data.data.website;
+        vm.country = response.data.data.country;
+        vm.city = response.data.data.city;
+        vm.state = response.data.data.state;
+        vm.street = response.data.data.street;
+        vm.university = response.data.data.university;
+        vm.degree = response.data.data.degree;
+        vm.study_type = response.data.data.study_type;
+        vm.phones = response.data.data.phones;
+        vm.email = response.data.data.user.email;
       })["catch"](function (error) {
         console.log(error.response);
       });
@@ -7021,9 +7099,9 @@ var render = function render() {
   }, [_c("div", {
     staticClass: "card"
   }, [_c("div", {
-    staticClass: "row px-3"
+    staticClass: "row"
   }, [_c("img", {
-    staticClass: "profile-pic mr-3",
+    staticClass: "profile-pic",
     attrs: {
       src: _vm.profile.avatar
     }
@@ -7079,11 +7157,24 @@ var render = function render() {
   })]), _vm._v(" "), _c("i", {
     staticClass: "options fa fa-ellipsis-h col-1"
   })]), _vm._v(" "), _c("div", {
-    staticClass: "btn btn-success col-lg-4 ml-auto",
+    staticClass: "d-flex justify-content-end"
+  }, [_c("modal-snippet", {
+    attrs: {
+      launchButtonName: "نشر",
+      closeButtonName: "إغلاق",
+      confirmButtonName: "نشر",
+      title: "نشر منشور",
+      launchButtonClass: "btn btn-success",
+      confirmButtonClass: "btn btn-success",
+      name: "createPost",
+      confirmAndClosed: ""
+    },
     on: {
-      click: _vm.createPost
+      confirmEvent: function confirmEvent($event) {
+        return _vm.createPost();
+      }
     }
-  }, [_vm._v("\n                    نشر\n                ")])])])])]);
+  }, [_vm._v("\n                        هل أنت متأكد من نشر هذا المنشور؟\n                    ")])], 1)])])])]);
 };
 
 var staticRenderFns = [function () {
@@ -7125,14 +7216,14 @@ var render = function render() {
     staticClass: "row d-flex align-items-center justify-content-center"
   }, [_c("div", {
     staticClass: "col-md-12"
-  }, _vm._l(_vm.posts, function (post, i) {
+  }, _vm._l(_vm.posts.data, function (post, i) {
     return _c("div", {
       key: i,
       staticClass: "card"
     }, [_c("div", {
       staticClass: "d-flex justify-content-between p-2 px-3"
     }, [_c("div", {
-      staticClass: "d-flex flex-row align-items-center"
+      staticClass: "d-flex flex-row align-items-center gap-2"
     }, [_c("img", {
       staticClass: "rounded-circle",
       attrs: {
@@ -7142,10 +7233,32 @@ var render = function render() {
     }), _vm._v(" "), _c("div", {
       staticClass: "d-flex flex-column ml-2"
     }, [_c("span", {
-      staticClass: "font-weight-bold"
+      staticClass: "text-break name"
     }, [_vm._v(_vm._s(post.profile.firstname) + "\n                                " + _vm._s(post.profile.lastname))]), _vm._v(" "), _c("small", {
-      staticClass: "mr-2"
-    }, [_vm._v("2 min ago")])])]), _vm._v(" "), _vm._m(0, true)]), _vm._v(" "), _c("div", [_c("p", {
+      staticClass: "mr-2 date"
+    }, [_vm._v("2 min ago")])])]), _vm._v(" "), _c("div", {
+      staticClass: "d-flex flex-row mt-1 ellipsis"
+    }, [_c("div", {
+      staticClass: "dropdown"
+    }, [_vm._m(0, true), _vm._v(" "), _c("ul", {
+      staticClass: "dropdown-menu"
+    }, [_vm._m(1, true), _vm._v(" "), _c("li", [_c("modal-snippet", {
+      attrs: {
+        launchButtonName: "حذف",
+        closeButtonName: "إغلاق",
+        confirmButtonName: "حذف",
+        title: "حذف منشورك",
+        launchButtonClass: "dropdown-item",
+        confirmButtonClass: "btn btn-danger",
+        name: "deletePost" + i,
+        confirmAndClosed: ""
+      },
+      on: {
+        confirmEvent: function confirmEvent($event) {
+          return _vm.deletePost(post.id);
+        }
+      }
+    }, [_vm._v("\n                                        هل أنت متأكد من حذف هذا المنشور؟\n                                    ")])], 1)])])])]), _vm._v(" "), _c("div", [_c("p", {
       staticClass: "text-justify p-2"
     }, [_vm._v("\n                        " + _vm._s(post.content) + "\n                    ")]), _vm._v(" "), _c("div", {
       staticClass: "d-flex justify-content-center"
@@ -7156,23 +7269,51 @@ var render = function render() {
       }
     })]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("div", {
       staticClass: "d-flex justify-content-between align-items-center p-2"
-    }, [_vm._m(1, true), _vm._v(" "), _c("div", {
+    }, [_vm._m(2, true), _vm._v(" "), _c("div", {
       staticClass: "d-flex flex-row muted-color"
     }, [_c("span", [_vm._v(_vm._s(post.comments.length) + " comments")]), _vm._v("\n                            |\n                            "), _c("span", {
       staticClass: "ml-2"
-    }, [_vm._v("Share")])])]), _vm._v(" "), _c("hr"), _vm._v(" "), _vm._m(2, true)])]);
-  }), 0)])]);
+    }, [_vm._v("Share")])])]), _vm._v(" "), _c("hr"), _vm._v(" "), _vm._m(3, true)])]);
+  }), 0), _vm._v(" "), _c("paginate", {
+    attrs: {
+      "page-count": _vm.posts.last_page,
+      "prev-text": "السابق",
+      "per-page": _vm.posts.per_page,
+      "click-handler": _vm.onPageClick,
+      "page-range": 3,
+      "margin-pages": 2,
+      "next-text": "التالي",
+      "page-link-class": "page-link",
+      "prev-link-class": "page-link",
+      "next-link-class": "page-link",
+      "container-class": "pagination",
+      "page-class": "page-item"
+    }
+  })], 1)]);
 };
 
 var staticRenderFns = [function () {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _c("div", {
-    staticClass: "d-flex flex-row mt-1 ellipsis"
+  return _c("a", {
+    staticClass: "text-dark",
+    attrs: {
+      href: "#",
+      role: "button",
+      "data-bs-toggle": "dropdown",
+      "aria-expanded": "false"
+    }
   }, [_c("i", {
     staticClass: "fa fa-ellipsis-h"
   })]);
+}, function () {
+  var _vm = this,
+      _c = _vm._self._c;
+
+  return _c("li", [_c("button", {
+    staticClass: "dropdown-item"
+  }, [_vm._v("\n                                        تعديل\n                                    ")])]);
 }, function () {
   var _vm = this,
       _c = _vm._self._c;
@@ -7293,8 +7434,13 @@ var render = function render() {
     staticClass: "col-md-5 border-right bg-mine"
   }, [_c("div", {
     staticClass: "p-3 py-5"
-  }, [_c("h4", [_vm._v("منشوراتك")]), _vm._v(" "), _c("create-post"), _vm._v(" "), _c("view-posts", {
+  }, [_c("h4", [_vm._v("منشوراتك")]), _vm._v(" "), _c("create-post", {
     attrs: {
+      posts: _vm.profile.posts
+    }
+  }), _vm._v(" "), _c("view-posts", {
+    attrs: {
+      onPageClick: _vm.getProfilePosts,
       posts: _vm.profile.posts
     }
   })], 1)]), _vm._v(" "), _c("div", {
@@ -7642,7 +7788,7 @@ var render = function render() {
       launchButtonName: "مهارة جديدة",
       closeButtonName: "إغلاق",
       confirmButtonName: "إضافة",
-      title: "مهارة جديدة'",
+      title: "مهارة جديدة",
       launchButtonClass: "btn btn-success",
       confirmButtonClass: "btn btn-success",
       name: "addSkill",
@@ -8434,7 +8580,16 @@ var render = function render() {
     staticClass: "col-md-7 border-right bg-mine"
   }, [_c("div", {
     staticClass: "p-3 py-5"
-  }, [_c("h3", [_vm._v("المنشورات")]), _vm._v(" "), _c("create-post")], 1)]), _vm._v(" "), _vm._m(1)])])]);
+  }, [_c("h3", [_vm._v("المنشورات")]), _vm._v(" "), _c("create-post", {
+    attrs: {
+      posts: _vm.posts
+    }
+  }), _vm._v(" "), _c("view-posts", {
+    attrs: {
+      onPageClick: _vm.getPosts,
+      posts: _vm.posts
+    }
+  })], 1)]), _vm._v(" "), _vm._m(1)])])]);
 };
 
 var staticRenderFns = [function () {
@@ -14857,7 +15012,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n/* your CSS goes here*/\nbody[data-v-e09d7c3a] {\n    color: #000;\n    overflow-x: hidden;\n    height: 100%;\n    background-color: #00c853;\n    background-repeat: no-repeat;\n}\n.card[data-v-e09d7c3a] {\n    border-radius: 10px;\n    width: 500px;\n    padding: 20px;\n    margin-top: 50px;\n    margin-bottom: 50px;\n}\n.profile-pic[data-v-e09d7c3a] {\n    width: 60px;\n    height: 60px;\n    border-radius: 50%;\n    -o-object-fit: contain;\n       object-fit: contain;\n    background-color: #e0e0e0;\n}\ntextarea[data-v-e09d7c3a] {\n    padding: 15px 20px;\n    border-radius: 10px;\n    box-sizing: border-box;\n    color: #616161;\n    border: 1px solid #f5f5f5;\n    font-size: 16px;\n    letter-spacing: 1px;\n    height: 120px !important;\n    width: 100%;\n}\ntextarea[data-v-e09d7c3a]:focus {\n    box-shadow: none !important;\n    border: 1px solid #00c853 !important;\n    outline-width: 0 !important;\n}\nselect[data-v-e09d7c3a] {\n    border: none;\n    font-size: 15px;\n    background-color: #fff !important;\n}\nselect[data-v-e09d7c3a]:focus {\n    box-shadow: none !important;\n    outline-width: 0 !important;\n}\n[data-v-e09d7c3a]::-moz-placeholder {\n    color: #bdbdbd;\n}\n[data-v-e09d7c3a]::placeholder {\n    color: #bdbdbd;\n}\n[data-v-e09d7c3a]:-ms-input-placeholder {\n    color: #bdbdbd;\n}\n[data-v-e09d7c3a]::-ms-input-placeholder {\n    color: #bdbdbd;\n}\n.btn-success[data-v-e09d7c3a] {\n    /* border-radius: 50px; */\n    align-self: flex-end;\n}\n.options[data-v-e09d7c3a] {\n    font-size: 23px;\n    color: #757575;\n    cursor: pointer;\n}\n.options[data-v-e09d7c3a]:hover {\n    color: #000;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n/* your CSS goes here*/\nbody[data-v-e09d7c3a] {\n    color: #000;\n    overflow-x: hidden;\n    height: 100%;\n    background-color: #00c853;\n    background-repeat: no-repeat;\n}\n.card[data-v-e09d7c3a] {\n    border-radius: 10px;\n    width: 500px;\n    padding: 20px;\n    margin-top: 50px;\n    margin-bottom: 50px;\n}\n.profile-pic[data-v-e09d7c3a] {\n    width: 88px;\n    height: 60px;\n    border-radius: 50%;\n    /* object-fit: contain;\n    background-color: #e0e0e0; */\n}\ntextarea[data-v-e09d7c3a] {\n    padding: 15px 20px;\n    border-radius: 10px;\n    box-sizing: border-box;\n    color: #616161;\n    border: 1px solid #f5f5f5;\n    font-size: 16px;\n    letter-spacing: 1px;\n    height: 120px !important;\n    width: 100%;\n}\ntextarea[data-v-e09d7c3a]:focus {\n    box-shadow: none !important;\n    border: 1px solid #00c853 !important;\n    outline-width: 0 !important;\n}\nselect[data-v-e09d7c3a] {\n    border: none;\n    font-size: 15px;\n    background-color: #fff !important;\n}\nselect[data-v-e09d7c3a]:focus {\n    box-shadow: none !important;\n    outline-width: 0 !important;\n}\n[data-v-e09d7c3a]::-moz-placeholder {\n    color: #bdbdbd;\n}\n[data-v-e09d7c3a]::placeholder {\n    color: #bdbdbd;\n}\n[data-v-e09d7c3a]:-ms-input-placeholder {\n    color: #bdbdbd;\n}\n[data-v-e09d7c3a]::-ms-input-placeholder {\n    color: #bdbdbd;\n}\n.btn-success[data-v-e09d7c3a] {\n    /* border-radius: 50px; */\n    align-self: flex-end;\n}\n.options[data-v-e09d7c3a] {\n    font-size: 23px;\n    color: #757575;\n    cursor: pointer;\n}\n.options[data-v-e09d7c3a]:hover {\n    color: #000;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -14882,7 +15037,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-665bb057] {\n    background-color: #eee;\n    font-family: \"Poppins\", sans-serif;\n    font-weight: 300;\n}\n.card[data-v-665bb057] {\n    border: none;\n    /* margin-top: 10px; */\n    margin-bottom: 100px;\n}\n.ellipsis[data-v-665bb057] {\n    color: #a09c9c;\n}\nhr[data-v-665bb057] {\n    color: #a09c9c;\n    margin-top: 4px;\n    margin-bottom: 8px;\n}\n.muted-color[data-v-665bb057] {\n    color: #a09c9c;\n    font-size: 13px;\n}\n.ellipsis i[data-v-665bb057] {\n    margin-top: 3px;\n    cursor: pointer;\n}\n.icons i[data-v-665bb057] {\n    font-size: 25px;\n}\n.icons .fa-heart[data-v-665bb057] {\n    color: red;\n}\n.icons .fa-smile-o[data-v-665bb057] {\n    color: yellow;\n    font-size: 29px;\n}\n.rounded-image[data-v-665bb057] {\n    border-radius: 50% !important;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    height: 50px;\n    width: 50px;\n}\n.name[data-v-665bb057] {\n    font-weight: 600;\n}\n.comment-text[data-v-665bb057] {\n    font-size: 12px;\n}\n.status small[data-v-665bb057] {\n    margin-right: 10px;\n    color: blue;\n}\n.form-control[data-v-665bb057] {\n    border-radius: 26px;\n}\n.comment-input[data-v-665bb057] {\n    position: relative;\n}\n.fonts[data-v-665bb057] {\n    position: absolute;\n    left: 13px;\n    top: 8px;\n    color: #a09c9c;\n}\n.form-control[data-v-665bb057]:focus {\n    color: #495057;\n    background-color: #fff;\n    border-color: #8bbafe;\n    outline: 0;\n    box-shadow: none;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-665bb057] {\n    background-color: #eee;\n    font-family: \"Poppins\", sans-serif;\n    font-weight: 300;\n}\n.card[data-v-665bb057] {\n    border: none;\n    /* margin-top: 10px; */\n    margin-bottom: 100px;\n}\n.ellipsis[data-v-665bb057] {\n    color: #a09c9c;\n}\nhr[data-v-665bb057] {\n    color: #a09c9c;\n    margin-top: 4px;\n    margin-bottom: 8px;\n}\n.muted-color[data-v-665bb057] {\n    color: #a09c9c;\n    font-size: 13px;\n}\n.ellipsis i[data-v-665bb057] {\n    margin-top: 3px;\n    cursor: pointer;\n}\n.icons i[data-v-665bb057] {\n    font-size: 25px;\n}\n.icons .fa-heart[data-v-665bb057] {\n    color: red;\n}\n.icons .fa-smile-o[data-v-665bb057] {\n    color: yellow;\n    font-size: 29px;\n}\n.rounded-image[data-v-665bb057] {\n    border-radius: 50% !important;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    height: 50px;\n    width: 50px;\n}\n.name[data-v-665bb057] {\n    font-weight: bold;\n}\n.date[data-v-665bb057] {\n    color: #65676b !important;\n}\n.comment-text[data-v-665bb057] {\n    font-size: 12px;\n}\n.status small[data-v-665bb057] {\n    margin-right: 10px;\n    color: blue;\n}\n.form-control[data-v-665bb057] {\n    border-radius: 26px;\n}\n.comment-input[data-v-665bb057] {\n    position: relative;\n}\n.fonts[data-v-665bb057] {\n    position: absolute;\n    left: 13px;\n    top: 8px;\n    color: #a09c9c;\n}\n.form-control[data-v-665bb057]:focus {\n    color: #495057;\n    background-color: #fff;\n    border-color: #8bbafe;\n    outline: 0;\n    box-shadow: none;\n}\na[data-v-665bb057] {\n    text-decoration: none;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -62228,6 +62383,16 @@ Vue.compile = compileToFunctions;
 
 
 
+
+/***/ }),
+
+/***/ "./node_modules/vuejs-paginate/dist/index.js":
+/*!***************************************************!*\
+  !*** ./node_modules/vuejs-paginate/dist/index.js ***!
+  \***************************************************/
+/***/ (function(module) {
+
+!function(e,t){ true?module.exports=t():0}(this,function(){return function(e){function t(s){if(n[s])return n[s].exports;var a=n[s]={exports:{},id:s,loaded:!1};return e[s].call(a.exports,a,a.exports,t),a.loaded=!0,a.exports}var n={};return t.m=e,t.c=n,t.p="",t(0)}([function(e,t,n){"use strict";function s(e){return e&&e.__esModule?e:{default:e}}var a=n(1),i=s(a);e.exports=i.default},function(e,t,n){n(2);var s=n(6)(n(7),n(8),"data-v-82963a40",null);e.exports=s.exports},function(e,t,n){var s=n(3);"string"==typeof s&&(s=[[e.id,s,""]]);n(5)(s,{});s.locals&&(e.exports=s.locals)},function(e,t,n){t=e.exports=n(4)(),t.push([e.id,"a[data-v-82963a40]{cursor:pointer}",""])},function(e,t){e.exports=function(){var e=[];return e.toString=function(){for(var e=[],t=0;t<this.length;t++){var n=this[t];n[2]?e.push("@media "+n[2]+"{"+n[1]+"}"):e.push(n[1])}return e.join("")},e.i=function(t,n){"string"==typeof t&&(t=[[null,t,""]]);for(var s={},a=0;a<this.length;a++){var i=this[a][0];"number"==typeof i&&(s[i]=!0)}for(a=0;a<t.length;a++){var r=t[a];"number"==typeof r[0]&&s[r[0]]||(n&&!r[2]?r[2]=n:n&&(r[2]="("+r[2]+") and ("+n+")"),e.push(r))}},e}},function(e,t,n){function s(e,t){for(var n=0;n<e.length;n++){var s=e[n],a=c[s.id];if(a){a.refs++;for(var i=0;i<a.parts.length;i++)a.parts[i](s.parts[i]);for(;i<s.parts.length;i++)a.parts.push(l(s.parts[i],t))}else{for(var r=[],i=0;i<s.parts.length;i++)r.push(l(s.parts[i],t));c[s.id]={id:s.id,refs:1,parts:r}}}}function a(e){for(var t=[],n={},s=0;s<e.length;s++){var a=e[s],i=a[0],r=a[1],o=a[2],l=a[3],u={css:r,media:o,sourceMap:l};n[i]?n[i].parts.push(u):t.push(n[i]={id:i,parts:[u]})}return t}function i(e,t){var n=g(),s=C[C.length-1];if("top"===e.insertAt)s?s.nextSibling?n.insertBefore(t,s.nextSibling):n.appendChild(t):n.insertBefore(t,n.firstChild),C.push(t);else{if("bottom"!==e.insertAt)throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");n.appendChild(t)}}function r(e){e.parentNode.removeChild(e);var t=C.indexOf(e);t>=0&&C.splice(t,1)}function o(e){var t=document.createElement("style");return t.type="text/css",i(e,t),t}function l(e,t){var n,s,a;if(t.singleton){var i=v++;n=h||(h=o(t)),s=u.bind(null,n,i,!1),a=u.bind(null,n,i,!0)}else n=o(t),s=d.bind(null,n),a=function(){r(n)};return s(e),function(t){if(t){if(t.css===e.css&&t.media===e.media&&t.sourceMap===e.sourceMap)return;s(e=t)}else a()}}function u(e,t,n,s){var a=n?"":s.css;if(e.styleSheet)e.styleSheet.cssText=b(t,a);else{var i=document.createTextNode(a),r=e.childNodes;r[t]&&e.removeChild(r[t]),r.length?e.insertBefore(i,r[t]):e.appendChild(i)}}function d(e,t){var n=t.css,s=t.media,a=t.sourceMap;if(s&&e.setAttribute("media",s),a&&(n+="\n/*# sourceURL="+a.sources[0]+" */",n+="\n/*# sourceMappingURL=data:application/json;base64,"+btoa(unescape(encodeURIComponent(JSON.stringify(a))))+" */"),e.styleSheet)e.styleSheet.cssText=n;else{for(;e.firstChild;)e.removeChild(e.firstChild);e.appendChild(document.createTextNode(n))}}var c={},p=function(e){var t;return function(){return"undefined"==typeof t&&(t=e.apply(this,arguments)),t}},f=p(function(){return/msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase())}),g=p(function(){return document.head||document.getElementsByTagName("head")[0]}),h=null,v=0,C=[];e.exports=function(e,t){t=t||{},"undefined"==typeof t.singleton&&(t.singleton=f()),"undefined"==typeof t.insertAt&&(t.insertAt="bottom");var n=a(e);return s(n,t),function(e){for(var i=[],r=0;r<n.length;r++){var o=n[r],l=c[o.id];l.refs--,i.push(l)}if(e){var u=a(e);s(u,t)}for(var r=0;r<i.length;r++){var l=i[r];if(0===l.refs){for(var d=0;d<l.parts.length;d++)l.parts[d]();delete c[l.id]}}}};var b=function(){var e=[];return function(t,n){return e[t]=n,e.filter(Boolean).join("\n")}}()},function(e,t){e.exports=function(e,t,n,s){var a,i=e=e||{},r=typeof e.default;"object"!==r&&"function"!==r||(a=e,i=e.default);var o="function"==typeof i?i.options:i;if(t&&(o.render=t.render,o.staticRenderFns=t.staticRenderFns),n&&(o._scopeId=n),s){var l=o.computed||(o.computed={});Object.keys(s).forEach(function(e){var t=s[e];l[e]=function(){return t}})}return{esModule:a,exports:i,options:o}}},function(e,t){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.default={props:{value:{type:Number},pageCount:{type:Number,required:!0},forcePage:{type:Number},clickHandler:{type:Function,default:function(){}},pageRange:{type:Number,default:3},marginPages:{type:Number,default:1},prevText:{type:String,default:"Prev"},nextText:{type:String,default:"Next"},breakViewText:{type:String,default:"…"},containerClass:{type:String},pageClass:{type:String},pageLinkClass:{type:String},prevClass:{type:String},prevLinkClass:{type:String},nextClass:{type:String},nextLinkClass:{type:String},breakViewClass:{type:String},breakViewLinkClass:{type:String},activeClass:{type:String,default:"active"},disabledClass:{type:String,default:"disabled"},noLiSurround:{type:Boolean,default:!1},firstLastButton:{type:Boolean,default:!1},firstButtonText:{type:String,default:"First"},lastButtonText:{type:String,default:"Last"},hidePrevNext:{type:Boolean,default:!1}},beforeUpdate:function(){void 0!==this.forcePage&&this.forcePage!==this.selected&&(this.selected=this.forcePage)},computed:{selected:{get:function(){return this.value||this.innerValue},set:function(e){this.innerValue=e}},pages:function(){var e=this,t={};if(this.pageCount<=this.pageRange)for(var n=0;n<this.pageCount;n++){var s={index:n,content:n+1,selected:n===this.selected-1};t[n]=s}else{for(var a=Math.floor(this.pageRange/2),i=function(n){var s={index:n,content:n+1,selected:n===e.selected-1};t[n]=s},r=function(e){var n={disabled:!0,breakView:!0};t[e]=n},o=0;o<this.marginPages;o++)i(o);var l=0;this.selected-a>0&&(l=this.selected-1-a);var u=l+this.pageRange-1;u>=this.pageCount&&(u=this.pageCount-1,l=u-this.pageRange+1);for(var d=l;d<=u&&d<=this.pageCount-1;d++)i(d);l>this.marginPages&&r(l-1),u+1<this.pageCount-this.marginPages&&r(u+1);for(var c=this.pageCount-1;c>=this.pageCount-this.marginPages;c--)i(c)}return t}},data:function(){return{innerValue:1}},methods:{handlePageSelected:function(e){this.selected!==e&&(this.innerValue=e,this.$emit("input",e),this.clickHandler(e))},prevPage:function(){this.selected<=1||this.handlePageSelected(this.selected-1)},nextPage:function(){this.selected>=this.pageCount||this.handlePageSelected(this.selected+1)},firstPageSelected:function(){return 1===this.selected},lastPageSelected:function(){return this.selected===this.pageCount||0===this.pageCount},selectFirstPage:function(){this.selected<=1||this.handlePageSelected(1)},selectLastPage:function(){this.selected>=this.pageCount||this.handlePageSelected(this.pageCount)}}}},function(e,t){e.exports={render:function(){var e=this,t=e.$createElement,n=e._self._c||t;return e.noLiSurround?n("div",{class:e.containerClass},[e.firstLastButton?n("a",{class:[e.pageLinkClass,e.firstPageSelected()?e.disabledClass:""],attrs:{tabindex:"0"},domProps:{innerHTML:e._s(e.firstButtonText)},on:{click:function(t){e.selectFirstPage()},keyup:function(t){return"button"in t||!e._k(t.keyCode,"enter",13)?void e.selectFirstPage():null}}}):e._e(),e._v(" "),e.firstPageSelected()&&e.hidePrevNext?e._e():n("a",{class:[e.prevLinkClass,e.firstPageSelected()?e.disabledClass:""],attrs:{tabindex:"0"},domProps:{innerHTML:e._s(e.prevText)},on:{click:function(t){e.prevPage()},keyup:function(t){return"button"in t||!e._k(t.keyCode,"enter",13)?void e.prevPage():null}}}),e._v(" "),e._l(e.pages,function(t){return[t.breakView?n("a",{class:[e.pageLinkClass,e.breakViewLinkClass,t.disabled?e.disabledClass:""],attrs:{tabindex:"0"}},[e._t("breakViewContent",[e._v(e._s(e.breakViewText))])],2):t.disabled?n("a",{class:[e.pageLinkClass,t.selected?e.activeClass:"",e.disabledClass],attrs:{tabindex:"0"}},[e._v(e._s(t.content))]):n("a",{class:[e.pageLinkClass,t.selected?e.activeClass:""],attrs:{tabindex:"0"},on:{click:function(n){e.handlePageSelected(t.index+1)},keyup:function(n){return"button"in n||!e._k(n.keyCode,"enter",13)?void e.handlePageSelected(t.index+1):null}}},[e._v(e._s(t.content))])]}),e._v(" "),e.lastPageSelected()&&e.hidePrevNext?e._e():n("a",{class:[e.nextLinkClass,e.lastPageSelected()?e.disabledClass:""],attrs:{tabindex:"0"},domProps:{innerHTML:e._s(e.nextText)},on:{click:function(t){e.nextPage()},keyup:function(t){return"button"in t||!e._k(t.keyCode,"enter",13)?void e.nextPage():null}}}),e._v(" "),e.firstLastButton?n("a",{class:[e.pageLinkClass,e.lastPageSelected()?e.disabledClass:""],attrs:{tabindex:"0"},domProps:{innerHTML:e._s(e.lastButtonText)},on:{click:function(t){e.selectLastPage()},keyup:function(t){return"button"in t||!e._k(t.keyCode,"enter",13)?void e.selectLastPage():null}}}):e._e()],2):n("ul",{class:e.containerClass},[e.firstLastButton?n("li",{class:[e.pageClass,e.firstPageSelected()?e.disabledClass:""]},[n("a",{class:e.pageLinkClass,attrs:{tabindex:e.firstPageSelected()?-1:0},domProps:{innerHTML:e._s(e.firstButtonText)},on:{click:function(t){e.selectFirstPage()},keyup:function(t){return"button"in t||!e._k(t.keyCode,"enter",13)?void e.selectFirstPage():null}}})]):e._e(),e._v(" "),e.firstPageSelected()&&e.hidePrevNext?e._e():n("li",{class:[e.prevClass,e.firstPageSelected()?e.disabledClass:""]},[n("a",{class:e.prevLinkClass,attrs:{tabindex:e.firstPageSelected()?-1:0},domProps:{innerHTML:e._s(e.prevText)},on:{click:function(t){e.prevPage()},keyup:function(t){return"button"in t||!e._k(t.keyCode,"enter",13)?void e.prevPage():null}}})]),e._v(" "),e._l(e.pages,function(t){return n("li",{class:[e.pageClass,t.selected?e.activeClass:"",t.disabled?e.disabledClass:"",t.breakView?e.breakViewClass:""]},[t.breakView?n("a",{class:[e.pageLinkClass,e.breakViewLinkClass],attrs:{tabindex:"0"}},[e._t("breakViewContent",[e._v(e._s(e.breakViewText))])],2):t.disabled?n("a",{class:e.pageLinkClass,attrs:{tabindex:"0"}},[e._v(e._s(t.content))]):n("a",{class:e.pageLinkClass,attrs:{tabindex:"0"},on:{click:function(n){e.handlePageSelected(t.index+1)},keyup:function(n){return"button"in n||!e._k(n.keyCode,"enter",13)?void e.handlePageSelected(t.index+1):null}}},[e._v(e._s(t.content))])])}),e._v(" "),e.lastPageSelected()&&e.hidePrevNext?e._e():n("li",{class:[e.nextClass,e.lastPageSelected()?e.disabledClass:""]},[n("a",{class:e.nextLinkClass,attrs:{tabindex:e.lastPageSelected()?-1:0},domProps:{innerHTML:e._s(e.nextText)},on:{click:function(t){e.nextPage()},keyup:function(t){return"button"in t||!e._k(t.keyCode,"enter",13)?void e.nextPage():null}}})]),e._v(" "),e.firstLastButton?n("li",{class:[e.pageClass,e.lastPageSelected()?e.disabledClass:""]},[n("a",{class:e.pageLinkClass,attrs:{tabindex:e.lastPageSelected()?-1:0},domProps:{innerHTML:e._s(e.lastButtonText)},on:{click:function(t){e.selectLastPage()},keyup:function(t){return"button"in t||!e._k(t.keyCode,"enter",13)?void e.selectLastPage():null}}})]):e._e()],2)},staticRenderFns:[]}}])});
 
 /***/ }),
 

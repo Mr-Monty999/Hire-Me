@@ -2,24 +2,64 @@
     <div class="container mt-5 mb-5">
         <div class="row d-flex align-items-center justify-content-center">
             <div class="col-md-12">
-                <div class="card" v-for="(post, i) in posts" :key="i">
+                <div class="card" v-for="(post, i) in posts.data" :key="i">
                     <div class="d-flex justify-content-between p-2 px-3">
-                        <div class="d-flex flex-row align-items-center">
+                        <div class="d-flex flex-row align-items-center gap-2">
                             <img
                                 :src="post.profile.avatar"
                                 width="50"
                                 class="rounded-circle"
                             />
                             <div class="d-flex flex-column ml-2">
-                                <span class="font-weight-bold"
+                                <span class="text-break name"
                                     >{{ post.profile.firstname }}
                                     {{ post.profile.lastname }}</span
                                 >
-                                <small class="mr-2">2 min ago</small>
+                                <small class="mr-2 date">2 min ago</small>
                             </div>
                         </div>
                         <div class="d-flex flex-row mt-1 ellipsis">
-                            <i class="fa fa-ellipsis-h"></i>
+                            <!-- <i class="fa fa-ellipsis-h"></i> -->
+                            <div class="dropdown">
+                                <a
+                                    class="text-dark"
+                                    href="#"
+                                    role="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                >
+                                    <i class="fa fa-ellipsis-h"></i>
+                                </a>
+
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <button class="dropdown-item">
+                                            تعديل
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <!-- <button
+                                            class="dropdown-item"
+                                            @click.prevent="deletePost(post.id)"
+                                        >
+                                            حذف
+                                        </button> -->
+                                        <modal-snippet
+                                            launchButtonName="حذف"
+                                            closeButtonName="إغلاق"
+                                            confirmButtonName="حذف"
+                                            title="حذف منشورك"
+                                            launchButtonClass="dropdown-item"
+                                            confirmButtonClass="btn btn-danger"
+                                            :name="'deletePost' + i"
+                                            confirmAndClosed
+                                            @confirmEvent="deletePost(post.id)"
+                                        >
+                                            هل أنت متأكد من حذف هذا المنشور؟
+                                        </modal-snippet>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
 
@@ -58,6 +98,20 @@
                     </div>
                 </div>
             </div>
+            <paginate
+                :page-count="posts.last_page"
+                :prev-text="'السابق'"
+                :per-page="posts.per_page"
+                :click-handler="onPageClick"
+                :page-range="3"
+                :margin-pages="2"
+                :next-text="'التالي'"
+                :page-link-class="'page-link'"
+                :prev-link-class="'page-link'"
+                :next-link-class="'page-link'"
+                :container-class="'pagination'"
+                :page-class="'page-item'"
+            ></paginate>
         </div>
     </div>
 </template>
@@ -65,16 +119,55 @@
 <script>
 import axios from "axios";
 import headerAuth from "../../helpers/auth";
+import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
+import Paginate from "vuejs-paginate";
 
 export default {
     name: "ViewPosts",
     data() {
         return {};
     },
-    components: {},
-    methods: {},
-    props: ["posts"],
-    created() {},
+    components: {
+        ModalSnippet,
+        Paginate,
+    },
+    methods: {
+        deletePost(postId) {
+            var vm = this;
+
+            axios
+                .delete("/api/posts/" + postId, {
+                    headers: headerAuth,
+                })
+                .then(function (response) {
+                    console.log(response);
+                    var index = vm.posts.findIndex((el) => el.id == postId);
+                    vm.posts.splice(index, 1);
+                    vm.$notify({
+                        title: "نجاح",
+                        text: "تم حذف المنشور بنجاح",
+                        type: "success",
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                    var errors = error.response.data.errors;
+                    for (const error in errors) {
+                        vm.$notify({
+                            title: "خطأ:لم يتم تنفيذ",
+                            text: errors[error][0],
+                            type: "error",
+                        });
+                    }
+                });
+        },
+    },
+    computed: {},
+    props: ["posts", "onPageClick"],
+    created() {
+        console.log("View Posts");
+        console.log(this.posts);
+    },
 };
 </script>
 
@@ -125,7 +218,10 @@ hr {
     width: 50px;
 }
 .name {
-    font-weight: 600;
+    font-weight: bold;
+}
+.date {
+    color: #65676b !important;
 }
 .comment-text {
     font-size: 12px;
@@ -152,5 +248,8 @@ hr {
     border-color: #8bbafe;
     outline: 0;
     box-shadow: none;
+}
+a {
+    text-decoration: none;
 }
 </style>

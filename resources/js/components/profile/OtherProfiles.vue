@@ -295,28 +295,28 @@ export default {
                 })
                 .then(function (response) {
                     console.log(response);
-                    vm.firstname = response.data.firstname;
-                    vm.lastname = response.data.lastname;
-                    vm.nickname = response.data.nickname;
-                    vm.gender = response.data.gender;
-                    vm.birthdate = response.data.birthdate;
-                    vm.about = response.data.about;
-                    vm.avatar = response.data.avatar;
-                    vm.background_photo = response.data.background_photo;
-                    vm.website = response.data.website;
-                    vm.country = response.data.country;
-                    vm.city = response.data.city;
-                    vm.state = response.data.state;
-                    vm.street = response.data.street;
-                    vm.university = response.data.university;
-                    vm.degree = response.data.degree;
-                    vm.study_type = response.data.study_type;
-                    vm.phones = response.data.phones;
-                    vm.skills = response.data.skills;
-                    vm.experiences = response.data.experiences;
-                    vm.email = response.data.user.email;
-                    vm.followers = response.data.followers;
-                    vm.followings = response.data.followings;
+                    vm.firstname = response.data.data.firstname;
+                    vm.lastname = response.data.data.lastname;
+                    vm.nickname = response.data.data.nickname;
+                    vm.gender = response.data.data.gender;
+                    vm.birthdate = response.data.data.birthdate;
+                    vm.about = response.data.data.about;
+                    vm.avatar = response.data.data.avatar;
+                    vm.background_photo = response.data.data.background_photo;
+                    vm.website = response.data.data.website;
+                    vm.country = response.data.data.country;
+                    vm.city = response.data.data.city;
+                    vm.state = response.data.data.state;
+                    vm.street = response.data.data.street;
+                    vm.university = response.data.data.university;
+                    vm.degree = response.data.data.degree;
+                    vm.study_type = response.data.data.study_type;
+                    vm.phones = response.data.data.phones;
+                    vm.skills = response.data.data.skills;
+                    vm.experiences = response.data.data.experiences;
+                    vm.email = response.data.data.user.email;
+                    vm.followers = response.data.data.followers;
+                    vm.followings = response.data.data.followings;
                 })
                 .catch(function (error) {
                     console.log(error.response);

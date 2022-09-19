@@ -64,13 +64,13 @@ class ProfileController extends Controller
             "phones",
             "skills",
             "experiences",
-            "posts" => function ($q) {
-                $q->latest();
-            },
-            "posts.comments.replies",
-            "posts.profile:id,firstname,lastname,avatar",
-            "posts.likes",
-            "posts.tags",
+            // "posts" => function ($q) {
+            //     $q->latest();
+            // },
+            // "posts.comments.replies",
+            // "posts.profile:id,firstname,lastname,avatar",
+            // "posts.likes",
+            // "posts.tags",
             "user",
             "followers",
             "followings"
@@ -78,18 +78,25 @@ class ProfileController extends Controller
         return ResponseService::json($profile, "تم جلب البيانات بنجاح");
     }
 
-    public function getPhones($profileId)
+    public function showProfileOnly($id)
+    {
+
+        $profile = Profile::find($id);
+        return ResponseService::json($profile, "تم جلب البيانات بنجاح");
+    }
+
+    public function showPhones($profileId)
     {
         $phones =  Profile::with("phones")->find($profileId)->only("phones");
         // $phones = ProfilePhone::where("profile_id", $profileId)->get();
 
         return ResponseService::json($phones, "تم جلب أرقام الهواتف بنجاح");
     }
-    public function getPosts($profileId)
+    public function showPosts($profileId)
     {
-        $phones =  Post::with("comments", "likes", "profile", "tags")->where("profile_id", $profileId)->get();
+        $posts =  Post::with("comments", "likes", "profile:id,firstname,lastname,avatar", "tags")->where("profile_id", $profileId)->latest()->paginate(5);
 
-        return ResponseService::json($phones, "تم جلب أرقام الهواتف بنجاح");
+        return ResponseService::json($posts, "تم جلب المنشورات بنجاح");
     }
     /**
      * Show the form for editing the specified resource.

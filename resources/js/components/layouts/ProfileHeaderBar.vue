@@ -201,14 +201,14 @@ export default {
             var vm = this;
 
             axios
-                .get("/api/profiles/" + profileId + "", {
+                .get("/api/profiles/" + profileId + "/info", {
                     headers: headerAuth,
                 })
                 .then(function (response) {
                     console.log(response);
-                    vm.firstname = response.data.firstname;
-                    vm.lastname = response.data.lastname;
-                    vm.avatar = response.data.avatar;
+                    vm.firstname = response.data.data.firstname;
+                    vm.lastname = response.data.data.lastname;
+                    vm.avatar = response.data.data.avatar;
                 })
                 .catch(function (error) {
                     console.log(error.response);

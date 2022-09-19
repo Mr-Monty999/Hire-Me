@@ -36,8 +36,9 @@ Route::group(["namespace" => "general"], function () {
 
         //Profiles
         Route::resource("profiles", "ProfileController");
-        Route::get("profiles/{id}/phones", "ProfileController@getPhones");
-        Route::get("profiles/{id}/posts", "ProfileController@getPosts");
+        Route::get("profiles/{id}/phones", "ProfileController@showPhones");
+        Route::get("profiles/{id}/posts", "ProfileController@showPosts");
+        Route::get("profiles/{id}/info", "ProfileController@showProfileOnly");
 
         //Profile Phones
         Route::resource("profile-phones", "ProfilePhoneController");
@@ -52,7 +53,7 @@ Route::group(["namespace" => "general"], function () {
         Route::resource("companies", "CompanyController");
 
         //Company Phones
-        Route::resource("companies-phones", "CompanyPhoneController");
+        Route::resource("companies.phones", "CompanyPhoneController");
 
         //Experiences
         Route::resource("experiences", "ExperienceController");

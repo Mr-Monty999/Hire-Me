@@ -19,7 +19,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with("comments", "likes", "tags", "profile")->latest()->get();
+        $posts = Post::with("comments", "likes", "tags", "profile")->latest()->paginate(5);
 
         return ResponseService::json($posts, "تم جلب جميع المنشورات بنجاح");
     }
@@ -48,7 +48,7 @@ class PostController extends Controller
             $data["photo"] = FileUploadService::uploadImage($request->file("photo"), "/images/posts");
 
         $post = Post::create($data);
-
+        $post = $post->with("likes", "comments", "profile:id,firstname,lastname,avatar", "tags")->find($post->id);
 
         return ResponseService::json($post, "تم إنشاء المنشور بنجاح");
     }
@@ -104,6 +104,8 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        FileUploadService::deleteImageIfExists(public_path($post->photo));
+
         $post->delete();
 
         return ResponseService::json($post, "تم حذف المنشور بنجاح");

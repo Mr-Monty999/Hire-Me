@@ -50,8 +50,11 @@
                 <div class="col-md-5 border-right bg-mine">
                     <div class="p-3 py-5">
                         <h4>منشوراتك</h4>
-                        <create-post></create-post>
-                        <view-posts :posts="profile.posts"></view-posts>
+                        <create-post :posts="profile.posts"></create-post>
+                        <view-posts
+                            :onPageClick="getProfilePosts"
+                            :posts="profile.posts"
+                        ></view-posts>
                     </div>
                 </div>
                 <div class="col-md-3 bg-mine">
@@ -297,7 +300,7 @@
                                     launchButtonName="مهارة جديدة"
                                     closeButtonName="إغلاق"
                                     confirmButtonName="إضافة"
-                                    title="مهارة جديدة'"
+                                    title="مهارة جديدة"
                                     launchButtonClass="btn btn-success"
                                     confirmButtonClass="btn btn-success"
                                     name="addSkill"
@@ -359,7 +362,7 @@ import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
 export default {
     data() {
         return {
-            profile: "",
+            profile: {},
             skill_name: "",
             start: "",
             end: "",
@@ -436,7 +439,7 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
-                    vm.profile.experiences.push(response.data);
+                    vm.profile.experiences.push(response.data.data);
                     vm.clearData();
 
                     vm.$notify({
@@ -475,10 +478,10 @@ export default {
                 .then(function (response) {
                     console.log(response);
                     var skillExist = vm.profile.skills.find(
-                        (el) => el.name == response.data.name
+                        (el) => el.name == response.data.data.name
                     );
                     if (!skillExist) {
-                        vm.profile.skills.push(response.data);
+                        vm.profile.skills.push(response.data.data);
                         vm.skill_name = "";
                         vm.$notify({
                             title: "نجاح",
@@ -510,12 +513,12 @@ export default {
             var vm = this;
 
             axios
-                .get("/api/profiles/" + vm.$route.params.id + "", {
+                .get("/api/profiles/" + vm.profile_id + "", {
                     headers: headerAuth,
                 })
                 .then(function (response) {
                     console.log(response);
-                    vm.profile = response.data;
+                    vm.profile = response.data.data;
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -656,6 +659,7 @@ export default {
                     }
                 });
         },
+
         clearData() {
             this.company_name = "";
             this.start = "";
@@ -663,21 +667,27 @@ export default {
             this.position = "";
             this.skill_name = "";
         },
-        // getProfilePosts() {
-        //     var vm = this;
+        getProfilePosts(pageNumber = 1) {
+            var vm = this;
 
-        //     axios
-        //         .get("/api/profiles/" + vm.$route.params.id + "/posts", {
-        //             headers: headerAuth,
-        //         })
-        //         .then(function (response) {
-        //             console.log(response);
-        //             vm.posts = response.data;
-        //         })
-        //         .catch(function (error) {
-        //             console.log(error.response);
-        //         });
-        // },
+            axios
+                .get(
+                    "/api/profiles/" +
+                        vm.$route.params.id +
+                        "/posts?page=" +
+                        pageNumber,
+                    {
+                        headers: headerAuth,
+                    }
+                )
+                .then(function (response) {
+                    console.log(response);
+                    vm.profile.posts = response.data.data;
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                });
+        },
     },
     components: {
         ViewPosts,
@@ -687,7 +697,7 @@ export default {
     created() {
         this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
         this.getProfileInfo();
-        // this.getProfilePosts();
+        this.getProfilePosts();
     },
 };
 </script>

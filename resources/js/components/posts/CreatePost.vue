@@ -3,8 +3,8 @@
         <div class="container px-4 py-5 mx-auto">
             <div class="row d-flex justify-content-center">
                 <div class="card">
-                    <div class="row px-3">
-                        <img class="profile-pic mr-3" :src="profile.avatar" />
+                    <div class="row">
+                        <img class="profile-pic" :src="profile.avatar" />
                         <div class="flex-column col-9">
                             <h5 class="mb-0 font-weight-normal">
                                 {{ profile.firstname }} {{ profile.lastname }}
@@ -48,11 +48,20 @@
                         <!-- </div> -->
                         <i class="options fa fa-ellipsis-h col-1"> </i>
                     </div>
-                    <div
-                        class="btn btn-success col-lg-4 ml-auto"
-                        @click="createPost"
-                    >
-                        نشر
+                    <div class="d-flex justify-content-end">
+                        <modal-snippet
+                            launchButtonName="نشر"
+                            closeButtonName="إغلاق"
+                            confirmButtonName="نشر"
+                            title="نشر منشور"
+                            launchButtonClass="btn btn-success"
+                            confirmButtonClass="btn btn-success"
+                            name="createPost"
+                            confirmAndClosed
+                            @confirmEvent="createPost()"
+                        >
+                            هل أنت متأكد من نشر هذا المنشور؟
+                        </modal-snippet>
                     </div>
                 </div>
             </div>
@@ -63,6 +72,7 @@
 <script>
 import axios from "axios";
 import headerFormAuth from "../../helpers/formAuth";
+import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
 
 export default {
     name: "CreatePost",
@@ -75,18 +85,21 @@ export default {
             profile_id: "",
         };
     },
-    components: {},
+    props: ["posts"],
+    components: {
+        ModalSnippet,
+    },
     methods: {
         getProfileInfo() {
             var vm = this;
 
             axios
-                .get("/api/profiles/" + vm.profile_id + "", {
+                .get("/api/profiles/" + vm.profile_id + "/info", {
                     headers: headerFormAuth,
                 })
                 .then(function (response) {
                     console.log(response);
-                    vm.profile = response.data;
+                    vm.profile = response.data.data;
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -104,11 +117,16 @@ export default {
                 })
                 .then(function (response) {
                     console.log(response);
+
                     vm.$notify({
                         title: "نجاح",
                         text: "تم نشر المنشور بنجاح",
                         type: "success",
                     });
+                    vm.posts.data.unshift(response.data.data);
+                    vm.content = "";
+                    vm.photo = "";
+                    vm.previewPhoto = "";
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -161,11 +179,11 @@ body {
 }
 
 .profile-pic {
-    width: 60px;
+    width: 88px;
     height: 60px;
     border-radius: 50%;
-    object-fit: contain;
-    background-color: #e0e0e0;
+    /* object-fit: contain;
+    background-color: #e0e0e0; */
 }
 
 textarea {
