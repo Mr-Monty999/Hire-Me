@@ -68,7 +68,10 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
-                    localStorage.setItem("user", JSON.stringify(response.data));
+                    localStorage.setItem(
+                        "user",
+                        JSON.stringify(response.data.data)
+                    );
 
                     vm.success = true;
                     // vm.$router.push({

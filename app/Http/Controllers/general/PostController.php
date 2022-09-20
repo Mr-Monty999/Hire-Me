@@ -19,7 +19,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with("comments", "likes", "tags", "profile")->latest()->paginate(5);
+        $posts = Post::with("comments.replies", "likes", "tags", "profile")->latest()->paginate(5);
 
         return ResponseService::json($posts, "تم جلب جميع المنشورات بنجاح");
     }

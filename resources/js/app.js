@@ -20,6 +20,9 @@ import MainLayout from "./components/layouts/MainLayout.vue";
 import router from "./router/index";
 import Vue from "vue";
 import Notifications from "vue-notification";
+import VModal from "vue-js-modal";
+
+Vue.use(VModal);
 Vue.use(Notifications);
 
 /**

@@ -9,8 +9,8 @@
                 </div>
                 <div class="col-md-7 border-right bg-mine">
                     <div class="p-3 py-5">
-                        <h3>المنشورات</h3>
                         <create-post :posts="posts"></create-post>
+                        <h3>المنشورات</h3>
                         <view-posts
                             :onPageClick="getPosts"
                             :posts="posts"
@@ -30,7 +30,6 @@ import axios from "axios";
 import headerAuth from "../../helpers/auth";
 import CreatePost from "../../components/posts/CreatePost.vue";
 import ViewPosts from "../../components/posts/ViewPosts.vue";
-import { watch } from "vue";
 
 // import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
 

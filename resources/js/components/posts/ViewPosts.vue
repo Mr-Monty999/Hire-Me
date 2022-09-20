@@ -18,9 +18,76 @@
                                 <small class="mr-2 date">2 min ago</small>
                             </div>
                         </div>
-                        <div class="d-flex flex-row mt-1 ellipsis">
+                        <div
+                            class="d-flex flex-row mt-1 gap-1"
+                            v-if="post.profile_id == profile_id"
+                        >
                             <!-- <i class="fa fa-ellipsis-h"></i> -->
-                            <div class="dropdown">
+                            <modal-snippet
+                                launchButtonName="تعديل"
+                                closeButtonName="إغلاق"
+                                confirmButtonName="تعديل"
+                                title="تعديل منشورك"
+                                launchButtonClass="btn btn-warning"
+                                confirmButtonClass="btn btn-warning"
+                                :name="'editPost' + i"
+                                @confirmEvent="updatePost(post.id)"
+                                @onLaunchButtonClick="editPost(post.id)"
+                            >
+                                <div class="col-md-12">
+                                    <textarea
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="محتوى المنشور"
+                                        name="content"
+                                        cols="100px"
+                                        v-model="content"
+                                    ></textarea>
+                                    <div
+                                        class="d-flex justify-content-center mar-1"
+                                    >
+                                        <img
+                                            :src="getPhoto"
+                                            class="img-fluid"
+                                            alt=""
+                                        />
+                                    </div>
+                                    <div class="row px-3 mar-1">
+                                        <!-- <div> -->
+                                        <label
+                                            class="fa fa-image options mr-4 col-1"
+                                            :for="'photo' + i"
+                                        >
+                                            <input
+                                                type="file"
+                                                :name="'photo' + i"
+                                                hidden
+                                                :id="'photo' + i"
+                                                @change="getFile"
+                                            />
+                                        </label>
+                                        <!-- </div> -->
+                                        <i
+                                            class="options fa fa-ellipsis-h col-1"
+                                        >
+                                        </i>
+                                    </div>
+                                </div>
+                            </modal-snippet>
+                            <modal-snippet
+                                launchButtonName="حذف"
+                                closeButtonName="إغلاق"
+                                confirmButtonName="حذف"
+                                title="حذف منشورك"
+                                launchButtonClass="btn btn-danger"
+                                confirmButtonClass="btn btn-danger"
+                                :name="'deletePost' + i"
+                                confirmAndClosed
+                                @confirmEvent="deletePost(post.id)"
+                            >
+                                هل أنت متأكد من حذف هذا المنشور؟
+                            </modal-snippet>
+                            <!-- <div class="dropdown">
                                 <a
                                     class="text-dark"
                                     href="#"
@@ -38,12 +105,12 @@
                                         </button>
                                     </li>
                                     <li>
-                                        <!-- <button
+                                        <button
                                             class="dropdown-item"
-                                            @click.prevent="deletePost(post.id)"
+                                            @click.prevent="showModal()"
                                         >
                                             حذف
-                                        </button> -->
+                                        </button>
                                         <modal-snippet
                                             launchButtonName="حذف"
                                             closeButtonName="إغلاق"
@@ -59,7 +126,7 @@
                                         </modal-snippet>
                                     </li>
                                 </ul>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
 
@@ -81,9 +148,9 @@
                                 <i class="fa fa-smile-o ml-2"></i>
                             </div>
                             <div class="d-flex flex-row muted-color">
-                                <span>{{ post.comments.length }} comments</span>
-                                |
-                                <span class="ml-2">Share</span>
+                                <span
+                                    >التعليقات {{ post.comments.length }}</span
+                                >
                             </div>
                         </div>
                         <hr />
@@ -99,6 +166,7 @@
                 </div>
             </div>
             <paginate
+                v-if="posts.last_page > 1"
                 :page-count="posts.last_page"
                 :prev-text="'السابق'"
                 :per-page="posts.per_page"
@@ -113,25 +181,79 @@
                 :page-class="'page-item'"
             ></paginate>
         </div>
+        <!-- <modal name="my-modal">hello</modal> -->
     </div>
 </template>
 
 <script>
 import axios from "axios";
 import headerAuth from "../../helpers/auth";
+import headerFormAuth from "../../helpers/formAuth";
 import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
 import Paginate from "vuejs-paginate";
 
 export default {
     name: "ViewPosts",
     data() {
-        return {};
+        return {
+            content: "",
+            photo: "",
+            previewPhoto: "",
+            profile_id: 0,
+        };
     },
     components: {
         ModalSnippet,
         Paginate,
     },
     methods: {
+        getFile(e) {
+            this.previewPhoto = e.target.files[0];
+            if (this.previewPhoto == undefined) this.previewPhoto = "";
+        },
+        editPost(postId) {
+            var vm = this;
+            vm.clearData();
+            let postIndex = vm.posts.data.findIndex((el) => el.id == postId);
+            vm.content = vm.posts.data[postIndex].content;
+            vm.photo = vm.posts.data[postIndex].photo;
+        },
+        updatePost(postId) {
+            var vm = this;
+            let data = new FormData();
+            data.append("content", vm.content);
+            data.append("photo", vm.previewPhoto);
+            data.append("_method", "put");
+            axios
+                .post("/api/posts/" + postId, data, {
+                    headers: headerFormAuth,
+                })
+                .then(function (response) {
+                    console.log(response);
+                    let postIndex = vm.posts.data.findIndex(
+                        (el) => el.id == postId
+                    );
+                    vm.posts.data[postIndex].content =
+                        response.data.data.content;
+                    vm.posts.data[postIndex].photo = response.data.data.photo;
+                    vm.$notify({
+                        title: "نجاح",
+                        text: "تم تعديل المنشور بنجاح",
+                        type: "success",
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                    var errors = error.response.data.errors;
+                    for (const error in errors) {
+                        vm.$notify({
+                            title: "خطأ:لم يتم تنفيذ",
+                            text: errors[error][0],
+                            type: "error",
+                        });
+                    }
+                });
+        },
         deletePost(postId) {
             var vm = this;
 
@@ -141,8 +263,10 @@ export default {
                 })
                 .then(function (response) {
                     console.log(response);
-                    var index = vm.posts.findIndex((el) => el.id == postId);
-                    vm.posts.splice(index, 1);
+                    var index = vm.posts.data.findIndex(
+                        (el) => el.id == postId
+                    );
+                    vm.posts.data.splice(index, 1);
                     vm.$notify({
                         title: "نجاح",
                         text: "تم حذف المنشور بنجاح",
@@ -161,10 +285,32 @@ export default {
                     }
                 });
         },
+        clearData() {
+            this.content = "";
+            this.photo = "";
+            this.previewPhoto = "";
+        },
+        showModal() {
+            this.$modal.show("my-modal");
+        },
+        hideModal() {
+            this.$modal.hide("my-modal");
+        },
     },
-    computed: {},
+    computed: {
+        calcPageCount() {
+            return this.posts.total / this.posts.per_page;
+        },
+        getPhoto() {
+            if (this.previewPhoto)
+                return URL.createObjectURL(this.previewPhoto);
+            else if (this.photo) return this.photo;
+        },
+    },
     props: ["posts", "onPageClick"],
     created() {
+        this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
+
         console.log("View Posts");
         console.log(this.posts);
     },
@@ -249,7 +395,19 @@ hr {
     outline: 0;
     box-shadow: none;
 }
+.options {
+    font-size: 23px;
+    color: #757575;
+    cursor: pointer;
+}
+
+.options:hover {
+    color: #000;
+}
 a {
     text-decoration: none;
+}
+textarea {
+    height: 200px;
 }
 </style>

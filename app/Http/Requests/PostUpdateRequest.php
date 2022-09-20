@@ -26,7 +26,6 @@ class PostUpdateRequest extends FormRequest
         return [
             "content" => "required",
             "photo" => "image|nullable",
-            "profile_id" => "required"
         ];
     }
 

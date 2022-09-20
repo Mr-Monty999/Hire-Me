@@ -9,13 +9,14 @@
                         <img
                             class="rounded-circle mt-5"
                             width="150px"
-                            :src="avatar"
+                            :src="profile.avatar"
                         /><span class="font-weight-bold"
-                            >{{ firstname }} {{ lastname }}</span
+                            >{{ profile.firstname }}
+                            {{ profile.lastname }}</span
                         >
-                        <span class="text-black-50">{{ email }}</span
-                        ><span>{{ followers.length }} متابع </span>
-                        <span>{{ followings.length }} يتابع </span>
+                        <span class="text-black-50">{{ profile.email }}</span
+                        ><span>{{ profile.followers.length }} متابع </span>
+                        <span>{{ profile.followings.length }} يتابع </span>
                     </div>
                     <div>
                         <span>حول</span>
@@ -24,7 +25,7 @@
                             type="text"
                             aria-label="readonly input example"
                             readonly
-                            v-model="about"
+                            v-model="profile.about"
                         >
                         </textarea>
                     </div>
@@ -41,50 +42,50 @@
                             <div class="col-md-6">
                                 <label class="labels">النوع:</label>
                                 <div class="">
-                                    {{ gender }}
+                                    {{ profile.gender }}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">تاريخ الميلاد:</label>
                                 <div class="">
-                                    {{ birthdate }}
+                                    {{ profile.birthdate }}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">الدولة:</label>
                                 <div class="">
-                                    {{ country }}
+                                    {{ profile.country }}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">الولاية:</label>
                                 <div class="">
-                                    {{ state }}
+                                    {{ profile.state }}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">المدينة:</label>
                                 <div class="">
-                                    {{ city }}
+                                    {{ profile.city }}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">الشارع:</label>
                                 <div class="">
-                                    {{ street }}
+                                    {{ profile.street }}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">الموقع الإلكتروني:</label>
                                 <div class="">
-                                    {{ website }}
+                                    {{ profile.website }}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">ارقام الهواتف:</label>
                                 <div
                                     class=""
-                                    v-for="(phone, i) in phones"
+                                    v-for="(phone, i) in profile.phones"
                                     :key="i"
                                 >
                                     {{ phone.phone }}
@@ -99,7 +100,7 @@
                                 <div class="col-md-6">
                                     <label class="labels">الجامعة:</label>
                                     <div class="">
-                                        {{ university }}
+                                        {{ profile.university }}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -107,21 +108,27 @@
                                         >الدرجة العلمية:</label
                                     >
                                     <div class="">
-                                        {{ degree }}
+                                        {{ profile.degree }}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="labels">نوع التخصص:</label>
                                     <div class="">
-                                        {{ study_type }}
+                                        {{ profile.study_type }}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="p-3 py-0">
-                        <h4>منشورات {{ firstname }} {{ nickname }}</h4>
-                        <view-posts></view-posts>
+                        <h4>
+                            منشورات {{ profile.firstname }}
+                            {{ profile.nickname }}
+                        </h4>
+                        <view-posts
+                            :onPageClick="getProfilePosts"
+                            :posts="posts"
+                        ></view-posts>
                     </div>
                 </div>
                 <div class="col-md-3 bg-mine">
@@ -134,7 +141,7 @@
                         <!-- <br /> -->
                         <div class="accordion" id="accordionExample">
                             <div
-                                v-for="(exp, i) in experiences"
+                                v-for="(exp, i) in profile.experiences"
                                 :key="i"
                                 class="accordion-item"
                             >
@@ -230,7 +237,7 @@
                             <ul class="list-group list">
                                 <li
                                     class="text-center list-group-item"
-                                    v-for="(skill, i) in skills"
+                                    v-for="(skill, i) in profile.skills"
                                     :key="i"
                                 >
                                     {{ skill.name }}
@@ -252,37 +259,15 @@ import ViewPosts from "../../components/posts/ViewPosts.vue";
 export default {
     data() {
         return {
-            firstname: "",
-            lastname: "",
-            nickname: "",
-            gender: "",
-            birthdate: "",
-            email: "",
-            about: "",
-            avatar: "",
-            background_photo: "",
-            website: "",
-            country: "",
-            state: "",
-            city: "",
-            street: "",
-            university: "",
-            degree: "",
-            study_type: "",
             skill_name: "",
             start: "",
             end: "",
+            profile: {},
             position: "",
             company_name: "",
             phone: "",
-            phones: "",
-            followers: [],
-            followings: [],
-            experiences: "",
-            skills: "",
-            user_id: 0,
+            posts: {},
             profile_id: 0,
-            success: null,
         };
     },
     methods: {
@@ -295,28 +280,7 @@ export default {
                 })
                 .then(function (response) {
                     console.log(response);
-                    vm.firstname = response.data.data.firstname;
-                    vm.lastname = response.data.data.lastname;
-                    vm.nickname = response.data.data.nickname;
-                    vm.gender = response.data.data.gender;
-                    vm.birthdate = response.data.data.birthdate;
-                    vm.about = response.data.data.about;
-                    vm.avatar = response.data.data.avatar;
-                    vm.background_photo = response.data.data.background_photo;
-                    vm.website = response.data.data.website;
-                    vm.country = response.data.data.country;
-                    vm.city = response.data.data.city;
-                    vm.state = response.data.data.state;
-                    vm.street = response.data.data.street;
-                    vm.university = response.data.data.university;
-                    vm.degree = response.data.data.degree;
-                    vm.study_type = response.data.data.study_type;
-                    vm.phones = response.data.data.phones;
-                    vm.skills = response.data.data.skills;
-                    vm.experiences = response.data.data.experiences;
-                    vm.email = response.data.data.user.email;
-                    vm.followers = response.data.data.followers;
-                    vm.followings = response.data.data.followings;
+                    vm.profile = response.data.data;
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -338,11 +302,34 @@ export default {
 
             if (diff > 0) return diff + " يوم";
         },
+        getProfilePosts(pageNumber = 1) {
+            var vm = this;
+
+            axios
+                .get(
+                    "/api/profiles/" +
+                        vm.$route.params.id +
+                        "/posts?page=" +
+                        pageNumber,
+                    {
+                        headers: headerAuth,
+                    }
+                )
+                .then(function (response) {
+                    console.log(response);
+
+                    vm.posts = response.data.data;
+                    scrollTo(0, 300);
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                });
+        },
     },
     created() {
-        this.user_id = JSON.parse(localStorage.getItem("user")).id;
         this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
         this.getProfileInfo();
+        this.getProfilePosts();
     },
     components: {
         ViewPosts,

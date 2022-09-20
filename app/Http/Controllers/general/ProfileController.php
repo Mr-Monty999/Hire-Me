@@ -72,8 +72,12 @@ class ProfileController extends Controller
             // "posts.likes",
             // "posts.tags",
             "user",
-            "followers",
-            "followings"
+            "followers" => function ($q) {
+                $q->count();
+            },
+            "followings" => function ($q) {
+                $q->count();
+            }
         ])->find($id);
         return ResponseService::json($profile, "تم جلب البيانات بنجاح");
     }

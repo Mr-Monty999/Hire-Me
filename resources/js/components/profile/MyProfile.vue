@@ -31,7 +31,7 @@
                         </span>
                         <span class="text-black-50">{{ profile.email }}</span
                         ><span>{{ profile.followers }} متابع </span>
-                        <span>{{ profile.followings }} يتابع </span>
+                        <span>{{ profile.following }} يتابع </span>
                     </div>
                     <div class="mar-1">
                         <label for="" class="form-label">حول</label>
@@ -50,10 +50,10 @@
                 <div class="col-md-5 border-right bg-mine">
                     <div class="p-3 py-5">
                         <h4>منشوراتك</h4>
-                        <create-post :posts="profile.posts"></create-post>
+                        <create-post :posts="posts"></create-post>
                         <view-posts
                             :onPageClick="getProfilePosts"
-                            :posts="profile.posts"
+                            :posts="posts"
                         ></view-posts>
                     </div>
                 </div>
@@ -363,6 +363,7 @@ export default {
     data() {
         return {
             profile: {},
+            posts: {},
             skill_name: "",
             start: "",
             end: "",
@@ -682,7 +683,9 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
-                    vm.profile.posts = response.data.data;
+
+                    vm.posts = response.data.data;
+                    scrollTo(0, 300);
                 })
                 .catch(function (error) {
                     console.log(error.response);

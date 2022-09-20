@@ -135,7 +135,10 @@ export default {
                 .then((response) => {
                     console.log(response);
                     vm.success = true;
-                    localStorage.setItem("user", JSON.stringify(response.data));
+                    localStorage.setItem(
+                        "user",
+                        JSON.stringify(response.data.data)
+                    );
 
                     // vm.$router.push({
                     //     name: "profile",
