@@ -73,12 +73,16 @@ class ProfileController extends Controller
             // "posts.tags",
             "user",
             "followers" => function ($q) {
-                $q->count();
+                $q->paginate(5);
             },
             "followings" => function ($q) {
-                $q->count();
+                $q->paginate(5);
             }
         ])->find($id);
+        // $data = $profile;
+        $profile["followersCount"] = $profile->followers()->count();
+        $profile["followingsCount"] = $profile->followings()->count();
+
         return ResponseService::json($profile, "تم جلب البيانات بنجاح");
     }
 
@@ -101,6 +105,24 @@ class ProfileController extends Controller
         $posts =  Post::with("comments", "likes", "profile:id,firstname,lastname,avatar", "tags")->where("profile_id", $profileId)->latest()->paginate(5);
 
         return ResponseService::json($posts, "تم جلب المنشورات بنجاح");
+    }
+    public function followProfile($myProfileId, $targetProfileId)
+    {
+        $profile = Profile::findOrFail($myProfileId);
+        $profile->followings()->syncWithoutDetaching($targetProfileId);
+        return ResponseService::json($profile, "تم المتابعة بنجاح");
+    }
+    public function unFollowProfile($myProfileId, $targetProfileId)
+    {
+        $profile = Profile::findOrFail($myProfileId);
+        $profile->followings()->detach($targetProfileId);
+        return ResponseService::json($profile, "تم إلغاء المتابعة بنجاح");
+    }
+    public function isFollowed($myProfileId, $targetProfileId)
+    {
+        $profile = Profile::findOrFail($myProfileId);
+        $exist =  $profile->followings()->wherePivot("profile2_id", "=", $targetProfileId)->exists();
+        return ResponseService::json($exist, "تمت العملية بنجاح");
     }
     /**
      * Show the form for editing the specified resource.

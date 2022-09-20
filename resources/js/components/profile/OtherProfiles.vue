@@ -14,9 +14,28 @@
                             >{{ profile.firstname }}
                             {{ profile.lastname }}</span
                         >
-                        <span class="text-black-50">{{ profile.email }}</span
-                        ><span>{{ profile.followers.length }} متابع </span>
-                        <span>{{ profile.followings.length }} يتابع </span>
+                        <span class="text-black-50">{{ profile.email }}</span>
+                        <span
+                            class="btn btn-primary"
+                            v-if="!followed"
+                            @click="followProfile(profile_id, $route.params.id)"
+                            >متابعة <i class="fa-solid fa-plus"></i
+                        ></span>
+                        <span
+                            class="btn btn-danger"
+                            v-else
+                            @click="
+                                unFollowProfile(profile_id, $route.params.id)
+                            "
+                            >الغاء متابعة <i class="fa-solid fa-minus"></i
+                        ></span>
+                        <span
+                            >{{ profile.followersCount | toNumber }} مُتَابَع
+                        </span>
+                        <span
+                            >{{ profile.followingsCount | toNumber }}
+                            يتابع
+                        </span>
                     </div>
                     <div>
                         <span>حول</span>
@@ -265,6 +284,7 @@ export default {
             profile: {},
             position: "",
             company_name: "",
+            followed: false,
             phone: "",
             posts: {},
             profile_id: 0,
@@ -281,6 +301,101 @@ export default {
                 .then(function (response) {
                     console.log(response);
                     vm.profile = response.data.data;
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                });
+        },
+        followProfile(profileId, targetProfileId) {
+            var vm = this;
+
+            axios
+                .post(
+                    "/api/profiles/" +
+                        profileId +
+                        "/follow/" +
+                        targetProfileId +
+                        "",
+                    {},
+                    {
+                        headers: headerAuth,
+                    }
+                )
+                .then(function (response) {
+                    console.log(response);
+                    vm.followed = true;
+                    vm.profile.followersCount += 1;
+                    vm.$notify({
+                        title: "نجاح",
+                        text: response.data.message,
+                        type: "success",
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                    var errors = error.response.data.errors;
+                    for (const error in errors) {
+                        vm.$notify({
+                            title: "خطأ:لم يتم تنفيذ",
+                            text: errors[error][0],
+                            type: "error",
+                        });
+                    }
+                });
+        },
+        unFollowProfile(profileId, targetProfileId) {
+            var vm = this;
+
+            axios
+                .post(
+                    "/api/profiles/" +
+                        profileId +
+                        "/unfollow/" +
+                        targetProfileId +
+                        "",
+                    {},
+                    {
+                        headers: headerAuth,
+                    }
+                )
+                .then(function (response) {
+                    console.log(response);
+                    vm.followed = false;
+                    vm.profile.followersCount -= 1;
+                    vm.$notify({
+                        title: "نجاح",
+                        text: response.data.message,
+                        type: "success",
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                    var errors = error.response.data.errors;
+                    for (const error in errors) {
+                        vm.$notify({
+                            title: "خطأ:لم يتم تنفيذ",
+                            text: errors[error][0],
+                            type: "error",
+                        });
+                    }
+                });
+        },
+        isFollowed(profileId, targetProfileId) {
+            var vm = this;
+
+            axios
+                .get(
+                    "/api/profiles/" +
+                        profileId +
+                        "/followed/" +
+                        targetProfileId,
+                    {
+                        headers: headerAuth,
+                    }
+                )
+                .then(function (response) {
+                    console.log(response);
+                    vm.followed = response.data.data;
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -326,10 +441,12 @@ export default {
                 });
         },
     },
+    computed: {},
     created() {
         this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
         this.getProfileInfo();
         this.getProfilePosts();
+        this.isFollowed(this.profile_id, this.$route.params.id);
     },
     components: {
         ViewPosts,

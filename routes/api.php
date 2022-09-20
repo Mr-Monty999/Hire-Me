@@ -39,6 +39,9 @@ Route::group(["namespace" => "general"], function () {
         Route::get("profiles/{id}/phones", "ProfileController@showPhones");
         Route::get("profiles/{id}/posts", "ProfileController@showPosts");
         Route::get("profiles/{id}/info", "ProfileController@showProfileOnly");
+        Route::post("profiles/{id}/follow/{targetId}", "ProfileController@followProfile");
+        Route::post("profiles/{id}/unfollow/{targetId}", "ProfileController@unFollowProfile");
+        Route::get("profiles/{id}/followed/{targetId}", "ProfileController@isFollowed");
 
         //Profile Phones
         Route::resource("profile-phones", "ProfilePhoneController");

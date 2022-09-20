@@ -1,8 +1,16 @@
 <template>
     <div>
         <!-- Button trigger modal -->
+
+        <i
+            v-if="iconLaunchButton"
+            :class="launchButtonClass"
+            data-bs-toggle="modal"
+            :data-bs-target="'#' + name"
+            @click="$emit('onLaunchButtonClick')"
+        ></i>
         <button
-            type="button"
+            v-else
             :class="launchButtonClass"
             data-bs-toggle="modal"
             :data-bs-target="'#' + name"
@@ -85,8 +93,13 @@ export default {
         launchButtonClass: String,
         confirmButtonClass: String,
         name: String,
+        iconLaunchButton: Boolean,
     },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+i {
+    cursor: pointer !important;
+}
+</style>

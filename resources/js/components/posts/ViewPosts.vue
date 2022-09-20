@@ -15,11 +15,13 @@
                                     >{{ post.profile.firstname }}
                                     {{ post.profile.lastname }}</span
                                 >
-                                <small class="mr-2 date">2 min ago</small>
+                                <small class="mr-2 date">{{
+                                    post.created_at
+                                }}</small>
                             </div>
                         </div>
                         <div
-                            class="d-flex flex-row mt-1 gap-1"
+                            class="d-flex flex-row mt-1 gap-2"
                             v-if="post.profile_id == profile_id"
                         >
                             <!-- <i class="fa fa-ellipsis-h"></i> -->
@@ -28,7 +30,8 @@
                                 closeButtonName="إغلاق"
                                 confirmButtonName="تعديل"
                                 title="تعديل منشورك"
-                                launchButtonClass="btn btn-warning"
+                                iconLaunchButton
+                                launchButtonClass="fa-solid fa-pen-to-square text-warning"
                                 confirmButtonClass="btn btn-warning"
                                 :name="'editPost' + i"
                                 @confirmEvent="updatePost(post.id)"
@@ -75,11 +78,12 @@
                                 </div>
                             </modal-snippet>
                             <modal-snippet
-                                launchButtonName="حذف"
                                 closeButtonName="إغلاق"
+                                launchButtonName="حذف"
+                                iconLaunchButton
                                 confirmButtonName="حذف"
                                 title="حذف منشورك"
-                                launchButtonClass="btn btn-danger"
+                                launchButtonClass="fa-solid fa-trash text-danger"
                                 confirmButtonClass="btn btn-danger"
                                 :name="'deletePost' + i"
                                 confirmAndClosed

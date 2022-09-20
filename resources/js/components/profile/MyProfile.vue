@@ -30,8 +30,14 @@
                             >
                         </span>
                         <span class="text-black-50">{{ profile.email }}</span
-                        ><span>{{ profile.followers }} متابع </span>
-                        <span>{{ profile.following }} يتابع </span>
+                        ><span
+                            >{{ profile.followersCount | toNumber }}
+                            مُتَابَع
+                        </span>
+                        <span
+                            >{{ profile.followingsCount | toNumber }}
+                            يتابع
+                        </span>
                     </div>
                     <div class="mar-1">
                         <label for="" class="form-label">حول</label>
