@@ -44,13 +44,13 @@ class Profile extends Model
     {
         return $this->hasMany(Post::class);
     }
-    public function commentsLikes()
+    public function commentsReacts()
     {
-        return $this->belongsToMany(Comment::class, "comment_like");
+        return $this->belongsToMany(Comment::class, "comment_react");
     }
-    public function postsLikes()
+    public function postsReacts()
     {
-        return $this->belongsToMany(Post::class, "post_like");
+        return $this->belongsToMany(Post::class, "post_react")->withPivot("type");
     }
     public function phones()
     {

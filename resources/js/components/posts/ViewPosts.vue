@@ -149,8 +149,30 @@
                             <div
                                 class="d-flex flex-row icons d-flex align-items-center"
                             >
-                                <i class="fa fa-heart"></i>
-                                <i class="fa fa-smile-o ml-2"></i>
+                                <i
+                                    v-if="reactType(post, profile_id) == 1"
+                                    class="fa-solid fa-thumbs-up text-primary"
+                                    @click="
+                                        removeReactFromPost(profile_id, post.id)
+                                    "
+                                ></i>
+                                <i
+                                    v-else
+                                    class="fa-solid fa-thumbs-up"
+                                    @click="reactToPost(profile_id, post.id, 1)"
+                                ></i>
+                                <i
+                                    v-if="reactType(post, profile_id) == 2"
+                                    class="fa-solid fa-thumbs-down text-primary"
+                                    @click="
+                                        removeReactFromPost(profile_id, post.id)
+                                    "
+                                ></i>
+                                <i
+                                    v-else
+                                    class="fa-solid fa-thumbs-down"
+                                    @click="reactToPost(profile_id, post.id, 2)"
+                                ></i>
                             </div>
                             <div class="d-flex flex-row muted-color">
                                 <span
@@ -161,7 +183,10 @@
                         <hr />
                         <div class="comments">
                             <div class="comment-input">
-                                <input type="text" class="form-control" />
+                                <textarea
+                                    type="text"
+                                    class="form-control"
+                                ></textarea>
                                 <div class="fonts">
                                     <i class="fa fa-camera"></i>
                                 </div>
@@ -311,6 +336,118 @@ export default {
                 });
             }
         },
+        reactToPost(profileId, postId, reactType) {
+            var vm = this;
+
+            axios
+                .post(
+                    "/api/posts/react/" +
+                        postId +
+                        "/" +
+                        profileId +
+                        "/" +
+                        reactType,
+                    {},
+                    {
+                        headers: headerAuth,
+                    }
+                )
+                .then(function (response) {
+                    console.log(response);
+
+                    var postIndex = vm.posts.data.findIndex(
+                        (el) => el.id == postId
+                    );
+                    var reactIndex = vm.posts.data[postIndex].reacts.findIndex(
+                        (el) => el.id == profileId
+                    );
+                    vm.posts.data[postIndex].reacts.splice(reactIndex, 1);
+                    vm.posts.data[postIndex].reacts.push(response.data.data);
+
+                    vm.$notify({
+                        title: "نجاح",
+                        text: response.data.message,
+                        type: "success",
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                    var errors = error.response.data.errors;
+                    for (const error in errors) {
+                        vm.$notify({
+                            title: "خطأ:لم يتم تنفيذ",
+                            text: errors[error][0],
+                            type: "error",
+                        });
+                    }
+                });
+        },
+        removeReactFromPost(profileId, postId) {
+            var vm = this;
+
+            axios
+                .post(
+                    "/api/posts/unreact/" + postId + "/" + profileId,
+                    {},
+                    {
+                        headers: headerAuth,
+                    }
+                )
+                .then(function (response) {
+                    console.log(response);
+
+                    var postIndex = vm.posts.data.findIndex(
+                        (el) => el.id == postId
+                    );
+
+                    var reactIndex = vm.posts.data[postIndex].reacts.findIndex(
+                        (el) => el.id == profileId
+                    );
+                    vm.posts.data[postIndex].reacts.splice(reactIndex, 1);
+
+                    vm.$notify({
+                        title: "نجاح",
+                        text: response.data.message,
+                        type: "success",
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                    var errors = error.response.data.errors;
+                    for (const error in errors) {
+                        vm.$notify({
+                            title: "خطأ:لم يتم تنفيذ",
+                            text: errors[error][0],
+                            type: "error",
+                        });
+                    }
+                });
+        },
+        // reactType(profileId, postId) {
+        //     var vm = this;
+
+        //     axios
+        //         .get("/api/posts/react-type/" + postId + "/" + profileId, {
+        //             headers: headerAuth,
+        //         })
+        //         .then(function (response) {
+        //             console.log(response);
+        //             return response.data.data;
+        //         })
+        //         .catch(function (error) {
+        //             console.log(error.response);
+        //             return false;
+        //         });
+        //     return false;
+        // },
+        reactType(post, profileId) {
+            var reactIndex = post.reacts.findIndex((el) => el.id == profileId);
+
+            if (reactIndex >= 0) {
+                return post.reacts[reactIndex].pivot.type;
+            }
+            return 0;
+        },
     },
     computed: {
         calcPageCount() {
@@ -363,12 +500,16 @@ hr {
 .icons i {
     font-size: 25px;
 }
-.icons .fa-heart {
-    color: red;
+
+.icons i:hover {
+    color: #0d6efd;
 }
-.icons .fa-smile-o {
-    color: yellow;
-    font-size: 29px;
+
+.icons .fa-solid.fa-thumbs-up {
+}
+.icons .fa-solid.fa-thumbs-down {
+    margin-top: 4px;
+    margin-right: 10px;
 }
 .rounded-image {
     border-radius: 50% !important;
@@ -397,6 +538,9 @@ hr {
 .comment-input {
     position: relative;
 }
+.comment-input textarea {
+    height: 50px;
+}
 .fonts {
     position: absolute;
     left: 13px;
@@ -423,9 +567,12 @@ a {
     text-decoration: none;
 }
 textarea {
-    height: 200px !important;
+    resize: none !important;
 }
 img {
+    cursor: pointer;
+}
+i {
     cursor: pointer;
 }
 </style>

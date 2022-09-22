@@ -19,9 +19,9 @@ class Post extends Model
     {
         return $this->hasMany(Comment::class);
     }
-    public function likes()
+    public function reacts()
     {
-        return $this->belongsToMany(Profile::class, "post_like");
+        return $this->belongsToMany(Profile::class, "post_react")->withPivot("type");
     }
     public function tags()
     {

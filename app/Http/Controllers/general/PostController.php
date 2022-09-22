@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
 use App\Models\Post;
+use App\Models\Profile;
 use App\Services\FileUploadService;
 use App\Services\ResponseService;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with("comments.replies", "likes", "tags", "profile:id,firstname,lastname,avatar")->latest()->paginate(5);
+        $posts = Post::with("comments.replies", "reacts", "tags", "profile:id,firstname,lastname,avatar")->latest()->paginate(5);
 
         return ResponseService::json($posts, "تم جلب جميع المنشورات بنجاح");
     }
@@ -48,7 +49,7 @@ class PostController extends Controller
             $data["photo"] = FileUploadService::uploadImage($request->file("photo"), "/images/posts");
 
         $post = Post::create($data);
-        $post = $post->with("likes", "comments", "profile:id,firstname,lastname,avatar", "tags")->find($post->id);
+        $post = $post->with("reacts", "comments", "profile:id,firstname,lastname,avatar", "tags")->find($post->id);
 
         return ResponseService::json($post, "تم إنشاء المنشور بنجاح");
     }
@@ -62,8 +63,36 @@ class PostController extends Controller
     public function show(Post $post)
     {
 
-        $post = $post->with("comments", "likes", "tags", "profile:id,firstname,lastname,avatar");
+        $post = $post->with("comments", "reacts", "tags", "profile:id,firstname,lastname,avatar");
         return ResponseService::json($post, "تم عرض المنشور بنجاح");
+    }
+
+    public function react($postId, $profileId, $type)
+    {
+        $post = Post::findOrFail($postId);
+        $post->reacts()->syncWithoutDetaching([
+            $profileId => ["type" => $type]
+        ]);
+        $reacted = $post->reacts()->wherePivot("profile_id", "=", $profileId)->first();
+        return ResponseService::json($reacted, "تم التفاعل مع المنشور بنجاح");
+    }
+    public function unReact($postId, $profileId)
+    {
+        $post = Post::findOrFail($postId);
+        $post->reacts()->detach($profileId);
+        $reacted = $post->reacts()->wherePivot("profile_id", "=", $profileId)->first();
+        return ResponseService::json($reacted, "تم التفاعل مع المنشور بنجاح");
+    }
+
+    public function isReacted($postId, $profileId)
+    {
+        $post = Post::findOrFail($postId);
+        $reacted =  $post->reacts()->wherePivot("profile_id", "=", $profileId)->first();
+
+        if ($reacted != null)
+            $reacted = $reacted->pivot->type;
+
+        return ResponseService::json($reacted, "تمت العملية بنجاح");
     }
 
     /**

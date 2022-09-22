@@ -32,8 +32,8 @@ class Comment extends Model
         return $this->belongsTo(Comment::class);
     }
 
-    public function likes()
+    public function reacts()
     {
-        return $this->belongsToMany(Profile::class, "comment_like");
+        return $this->belongsToMany(Profile::class, "comment_react")->withPivot("type");
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePostLikeTable extends Migration
+class CreateCommentReactTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,15 @@ class CreatePostLikeTable extends Migration
      */
     public function up()
     {
-        Schema::create('post_like', function (Blueprint $table) {
-            $table->bigInteger("post_id")->unsigned();
+        Schema::create('comment_react', function (Blueprint $table) {
+            $table->bigInteger("comment_id")->unsigned();
             $table->bigInteger("profile_id")->unsigned();
+            $table->integer("type")->unsigned();
+
             $table->timestamps();
 
-            $table->primary(["post_id", "profile_id"]);
-            $table->foreign("post_id")->references("id")->on("posts")->cascadeOnDelete()->cascadeOnUpdate();
+            $table->primary(["profile_id", "comment_id"]);
+            $table->foreign("comment_id")->references("id")->on("comments")->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreign("profile_id")->references("id")->on("profiles")->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
@@ -31,6 +33,6 @@ class CreatePostLikeTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('post_like');
+        Schema::dropIfExists('comment_react');
     }
 }

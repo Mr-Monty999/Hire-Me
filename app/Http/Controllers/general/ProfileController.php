@@ -69,7 +69,7 @@ class ProfileController extends Controller
             // },
             // "posts.comments.replies",
             // "posts.profile:id,firstname,lastname,avatar",
-            // "posts.likes",
+            // "posts.reacts",
             // "posts.tags",
             "user",
             "followers" => function ($q) {
@@ -102,7 +102,7 @@ class ProfileController extends Controller
     }
     public function showPosts($profileId)
     {
-        $posts =  Post::with("comments", "likes", "profile:id,firstname,lastname,avatar", "tags")->where("profile_id", $profileId)->latest()->paginate(5);
+        $posts =  Post::with("comments", "reacts", "profile:id,firstname,lastname,avatar", "tags")->where("profile_id", $profileId)->latest()->paginate(5);
 
         return ResponseService::json($posts, "تم جلب المنشورات بنجاح");
     }

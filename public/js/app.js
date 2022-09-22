@@ -5715,6 +5715,96 @@ __webpack_require__.r(__webpack_exports__);
           }
         });
       }
+    },
+    reactToPost: function reactToPost(profileId, postId, reactType) {
+      var vm = this;
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/posts/react/" + postId + "/" + profileId + "/" + reactType, {}, {
+        headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
+      }).then(function (response) {
+        console.log(response);
+        var postIndex = vm.posts.data.findIndex(function (el) {
+          return el.id == postId;
+        });
+        var reactIndex = vm.posts.data[postIndex].reacts.findIndex(function (el) {
+          return el.id == profileId;
+        });
+        vm.posts.data[postIndex].reacts.splice(reactIndex, 1);
+        vm.posts.data[postIndex].reacts.push(response.data.data);
+        vm.$notify({
+          title: "نجاح",
+          text: response.data.message,
+          type: "success"
+        });
+      })["catch"](function (error) {
+        console.log(error.response);
+        var errors = error.response.data.errors;
+
+        for (var _error3 in errors) {
+          vm.$notify({
+            title: "خطأ:لم يتم تنفيذ",
+            text: errors[_error3][0],
+            type: "error"
+          });
+        }
+      });
+    },
+    removeReactFromPost: function removeReactFromPost(profileId, postId) {
+      var vm = this;
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/posts/unreact/" + postId + "/" + profileId, {}, {
+        headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
+      }).then(function (response) {
+        console.log(response);
+        var postIndex = vm.posts.data.findIndex(function (el) {
+          return el.id == postId;
+        });
+        var reactIndex = vm.posts.data[postIndex].reacts.findIndex(function (el) {
+          return el.id == profileId;
+        });
+        vm.posts.data[postIndex].reacts.splice(reactIndex, 1);
+        vm.$notify({
+          title: "نجاح",
+          text: response.data.message,
+          type: "success"
+        });
+      })["catch"](function (error) {
+        console.log(error.response);
+        var errors = error.response.data.errors;
+
+        for (var _error4 in errors) {
+          vm.$notify({
+            title: "خطأ:لم يتم تنفيذ",
+            text: errors[_error4][0],
+            type: "error"
+          });
+        }
+      });
+    },
+    // reactType(profileId, postId) {
+    //     var vm = this;
+    //     axios
+    //         .get("/api/posts/react-type/" + postId + "/" + profileId, {
+    //             headers: headerAuth,
+    //         })
+    //         .then(function (response) {
+    //             console.log(response);
+    //             return response.data.data;
+    //         })
+    //         .catch(function (error) {
+    //             console.log(error.response);
+    //             return false;
+    //         });
+    //     return false;
+    // },
+    reactType: function reactType(post, profileId) {
+      var reactIndex = post.reacts.findIndex(function (el) {
+        return el.id == profileId;
+      });
+
+      if (reactIndex >= 0) {
+        return post.reacts[reactIndex].pivot.type;
+      }
+
+      return 0;
     }
   },
   computed: {
@@ -7484,9 +7574,39 @@ var render = function render() {
       }
     })]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("div", {
       staticClass: "d-flex justify-content-between align-items-center p-2"
-    }, [_vm._m(0, true), _vm._v(" "), _c("div", {
+    }, [_c("div", {
+      staticClass: "d-flex flex-row icons d-flex align-items-center"
+    }, [_vm.reactType(post, _vm.profile_id) == 1 ? _c("i", {
+      staticClass: "fa-solid fa-thumbs-up text-primary",
+      on: {
+        click: function click($event) {
+          return _vm.removeReactFromPost(_vm.profile_id, post.id);
+        }
+      }
+    }) : _c("i", {
+      staticClass: "fa-solid fa-thumbs-up",
+      on: {
+        click: function click($event) {
+          return _vm.reactToPost(_vm.profile_id, post.id, 1);
+        }
+      }
+    }), _vm._v(" "), _vm.reactType(post, _vm.profile_id) == 2 ? _c("i", {
+      staticClass: "fa-solid fa-thumbs-down text-primary",
+      on: {
+        click: function click($event) {
+          return _vm.removeReactFromPost(_vm.profile_id, post.id);
+        }
+      }
+    }) : _c("i", {
+      staticClass: "fa-solid fa-thumbs-down",
+      on: {
+        click: function click($event) {
+          return _vm.reactToPost(_vm.profile_id, post.id, 2);
+        }
+      }
+    })]), _vm._v(" "), _c("div", {
       staticClass: "d-flex flex-row muted-color"
-    }, [_c("span", [_vm._v("التعليقات " + _vm._s(post.comments.length))])])]), _vm._v(" "), _c("hr"), _vm._v(" "), _vm._m(1, true)])]);
+    }, [_c("span", [_vm._v("التعليقات " + _vm._s(post.comments.length))])])]), _vm._v(" "), _c("hr"), _vm._v(" "), _vm._m(0, true)])]);
   }), 0), _vm._v(" "), _vm.posts.last_page > 1 ? _c("paginate", {
     attrs: {
       "page-count": _vm.posts.last_page,
@@ -7510,21 +7630,10 @@ var staticRenderFns = [function () {
       _c = _vm._self._c;
 
   return _c("div", {
-    staticClass: "d-flex flex-row icons d-flex align-items-center"
-  }, [_c("i", {
-    staticClass: "fa fa-heart"
-  }), _vm._v(" "), _c("i", {
-    staticClass: "fa fa-smile-o ml-2"
-  })]);
-}, function () {
-  var _vm = this,
-      _c = _vm._self._c;
-
-  return _c("div", {
     staticClass: "comments"
   }, [_c("div", {
     staticClass: "comment-input"
-  }, [_c("input", {
+  }, [_c("textarea", {
     staticClass: "form-control",
     attrs: {
       type: "text"
@@ -15299,7 +15408,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-665bb057] {\n    background-color: #eee;\n    font-family: \"Poppins\", sans-serif;\n    font-weight: 300;\n}\n.card[data-v-665bb057] {\n    border: none;\n    /* margin-top: 10px; */\n    margin-bottom: 100px;\n}\n.ellipsis[data-v-665bb057] {\n    color: #a09c9c;\n}\nhr[data-v-665bb057] {\n    color: #a09c9c;\n    margin-top: 4px;\n    margin-bottom: 8px;\n}\n.muted-color[data-v-665bb057] {\n    color: #a09c9c;\n    font-size: 13px;\n}\n.ellipsis i[data-v-665bb057] {\n    margin-top: 3px;\n    cursor: pointer;\n}\n.icons i[data-v-665bb057] {\n    font-size: 25px;\n}\n.icons .fa-heart[data-v-665bb057] {\n    color: red;\n}\n.icons .fa-smile-o[data-v-665bb057] {\n    color: yellow;\n    font-size: 29px;\n}\n.rounded-image[data-v-665bb057] {\n    border-radius: 50% !important;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    height: 50px;\n    width: 50px;\n}\n.name[data-v-665bb057] {\n    font-weight: bold;\n}\n.date[data-v-665bb057] {\n    color: #65676b !important;\n}\n.comment-text[data-v-665bb057] {\n    font-size: 12px;\n}\n.status small[data-v-665bb057] {\n    margin-right: 10px;\n    color: blue;\n}\n.form-control[data-v-665bb057] {\n    border-radius: 26px;\n}\n.comment-input[data-v-665bb057] {\n    position: relative;\n}\n.fonts[data-v-665bb057] {\n    position: absolute;\n    left: 13px;\n    top: 8px;\n    color: #a09c9c;\n}\n.form-control[data-v-665bb057]:focus {\n    color: #495057;\n    background-color: #fff;\n    border-color: #8bbafe;\n    outline: 0;\n    box-shadow: none;\n}\n.options[data-v-665bb057] {\n    font-size: 23px;\n    color: #757575;\n    cursor: pointer;\n}\n.options[data-v-665bb057]:hover {\n    color: #000;\n}\na[data-v-665bb057] {\n    text-decoration: none;\n}\ntextarea[data-v-665bb057] {\n    height: 200px !important;\n}\nimg[data-v-665bb057] {\n    cursor: pointer;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-665bb057] {\n    background-color: #eee;\n    font-family: \"Poppins\", sans-serif;\n    font-weight: 300;\n}\n.card[data-v-665bb057] {\n    border: none;\n    /* margin-top: 10px; */\n    margin-bottom: 100px;\n}\n.ellipsis[data-v-665bb057] {\n    color: #a09c9c;\n}\nhr[data-v-665bb057] {\n    color: #a09c9c;\n    margin-top: 4px;\n    margin-bottom: 8px;\n}\n.muted-color[data-v-665bb057] {\n    color: #a09c9c;\n    font-size: 13px;\n}\n.ellipsis i[data-v-665bb057] {\n    margin-top: 3px;\n    cursor: pointer;\n}\n.icons i[data-v-665bb057] {\n    font-size: 25px;\n}\n.icons i[data-v-665bb057]:hover {\n    color: #0d6efd;\n}\n.icons .fa-solid.fa-thumbs-up[data-v-665bb057] {\n}\n.icons .fa-solid.fa-thumbs-down[data-v-665bb057] {\n    margin-top: 4px;\n    margin-right: 10px;\n}\n.rounded-image[data-v-665bb057] {\n    border-radius: 50% !important;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    height: 50px;\n    width: 50px;\n}\n.name[data-v-665bb057] {\n    font-weight: bold;\n}\n.date[data-v-665bb057] {\n    color: #65676b !important;\n}\n.comment-text[data-v-665bb057] {\n    font-size: 12px;\n}\n.status small[data-v-665bb057] {\n    margin-right: 10px;\n    color: blue;\n}\n.form-control[data-v-665bb057] {\n    border-radius: 26px;\n}\n.comment-input[data-v-665bb057] {\n    position: relative;\n}\n.comment-input textarea[data-v-665bb057] {\n    height: 50px;\n}\n.fonts[data-v-665bb057] {\n    position: absolute;\n    left: 13px;\n    top: 8px;\n    color: #a09c9c;\n}\n.form-control[data-v-665bb057]:focus {\n    color: #495057;\n    background-color: #fff;\n    border-color: #8bbafe;\n    outline: 0;\n    box-shadow: none;\n}\n.options[data-v-665bb057] {\n    font-size: 23px;\n    color: #757575;\n    cursor: pointer;\n}\n.options[data-v-665bb057]:hover {\n    color: #000;\n}\na[data-v-665bb057] {\n    text-decoration: none;\n}\ntextarea[data-v-665bb057] {\n    resize: none !important;\n}\nimg[data-v-665bb057] {\n    cursor: pointer;\n}\ni[data-v-665bb057] {\n    cursor: pointer;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
