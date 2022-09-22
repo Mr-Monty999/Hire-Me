@@ -19,7 +19,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with("comments.replies", "likes", "tags", "profile")->latest()->paginate(5);
+        $posts = Post::with("comments.replies", "likes", "tags", "profile:id,firstname,lastname,avatar")->latest()->paginate(5);
 
         return ResponseService::json($posts, "تم جلب جميع المنشورات بنجاح");
     }
@@ -62,7 +62,7 @@ class PostController extends Controller
     public function show(Post $post)
     {
 
-        $post = $post->with("comments", "likes", "tags", "profile");
+        $post = $post->with("comments", "likes", "tags", "profile:id,firstname,lastname,avatar");
         return ResponseService::json($post, "تم عرض المنشور بنجاح");
     }
 

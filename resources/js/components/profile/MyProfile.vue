@@ -321,7 +321,17 @@
                                             placeholder="إسم المهارة"
                                             name="skill_name"
                                             v-model="skill_name"
+                                            list="skillListOptions"
+                                            id="skill"
+                                            @keyup="searchForSkill(skill_name)"
                                         />
+                                        <datalist id="skillListOptions">
+                                            <option
+                                                v-for="skill in suggestSkills"
+                                                :key="skill.id"
+                                                :value="skill.name"
+                                            ></option>
+                                        </datalist>
                                     </div>
                                 </modal-snippet>
                             </div>
@@ -374,6 +384,7 @@ export default {
             start: "",
             end: "",
             position: "",
+            suggestSkills: [],
             company_name: "",
             phone: "",
             profile_id: 0,
@@ -515,7 +526,21 @@ export default {
                     }
                 });
         },
+        searchForSkill(skillName) {
+            var vm = this;
 
+            axios
+                .get("/api/skills/search/" + skillName + "", {
+                    headers: headerAuth,
+                })
+                .then(function (response) {
+                    console.log(response);
+                    vm.suggestSkills = response.data.data;
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                });
+        },
         getProfileInfo() {
             var vm = this;
 

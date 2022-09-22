@@ -5705,6 +5705,16 @@ __webpack_require__.r(__webpack_exports__);
     },
     hideModal: function hideModal() {
       this.$modal.hide("my-modal");
+    },
+    goToProfile: function goToProfile(profileId) {
+      if (profileId != this.$route.params.id) {
+        this.$router.push({
+          name: "profile",
+          params: {
+            id: profileId
+          }
+        });
+      }
     }
   },
   computed: {
@@ -5756,6 +5766,7 @@ __webpack_require__.r(__webpack_exports__);
       start: "",
       end: "",
       position: "",
+      suggestSkills: [],
       company_name: "",
       phone: "",
       profile_id: 0
@@ -5873,6 +5884,17 @@ __webpack_require__.r(__webpack_exports__);
             type: "error"
           });
         }
+      });
+    },
+    searchForSkill: function searchForSkill(skillName) {
+      var vm = this;
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/skills/search/" + skillName + "", {
+        headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
+      }).then(function (response) {
+        console.log(response);
+        vm.suggestSkills = response.data.data;
+      })["catch"](function (error) {
+        console.log(error.response);
       });
     },
     getProfileInfo: function getProfileInfo() {
@@ -7349,6 +7371,11 @@ var render = function render() {
       attrs: {
         src: post.profile.avatar,
         width: "50"
+      },
+      on: {
+        click: function click($event) {
+          return _vm.goToProfile(post.profile.id);
+        }
       }
     }), _vm._v(" "), _c("div", {
       staticClass: "d-flex flex-column ml-2"
@@ -7978,18 +8005,34 @@ var render = function render() {
     attrs: {
       type: "text",
       placeholder: "إسم المهارة",
-      name: "skill_name"
+      name: "skill_name",
+      list: "skillListOptions",
+      id: "skill"
     },
     domProps: {
       value: _vm.skill_name
     },
     on: {
+      keyup: function keyup($event) {
+        return _vm.searchForSkill(_vm.skill_name);
+      },
       input: function input($event) {
         if ($event.target.composing) return;
         _vm.skill_name = $event.target.value;
       }
     }
-  })])])], 1), _vm._v(" "), _c("ul", {
+  }), _vm._v(" "), _c("datalist", {
+    attrs: {
+      id: "skillListOptions"
+    }
+  }, _vm._l(_vm.suggestSkills, function (skill) {
+    return _c("option", {
+      key: skill.id,
+      domProps: {
+        value: skill.name
+      }
+    });
+  }), 0)])])], 1), _vm._v(" "), _c("ul", {
     staticClass: "list-group list"
   }, _vm._l(_vm.profile.skills, function (skill, i) {
     return _c("li", {
@@ -15256,7 +15299,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-665bb057] {\n    background-color: #eee;\n    font-family: \"Poppins\", sans-serif;\n    font-weight: 300;\n}\n.card[data-v-665bb057] {\n    border: none;\n    /* margin-top: 10px; */\n    margin-bottom: 100px;\n}\n.ellipsis[data-v-665bb057] {\n    color: #a09c9c;\n}\nhr[data-v-665bb057] {\n    color: #a09c9c;\n    margin-top: 4px;\n    margin-bottom: 8px;\n}\n.muted-color[data-v-665bb057] {\n    color: #a09c9c;\n    font-size: 13px;\n}\n.ellipsis i[data-v-665bb057] {\n    margin-top: 3px;\n    cursor: pointer;\n}\n.icons i[data-v-665bb057] {\n    font-size: 25px;\n}\n.icons .fa-heart[data-v-665bb057] {\n    color: red;\n}\n.icons .fa-smile-o[data-v-665bb057] {\n    color: yellow;\n    font-size: 29px;\n}\n.rounded-image[data-v-665bb057] {\n    border-radius: 50% !important;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    height: 50px;\n    width: 50px;\n}\n.name[data-v-665bb057] {\n    font-weight: bold;\n}\n.date[data-v-665bb057] {\n    color: #65676b !important;\n}\n.comment-text[data-v-665bb057] {\n    font-size: 12px;\n}\n.status small[data-v-665bb057] {\n    margin-right: 10px;\n    color: blue;\n}\n.form-control[data-v-665bb057] {\n    border-radius: 26px;\n}\n.comment-input[data-v-665bb057] {\n    position: relative;\n}\n.fonts[data-v-665bb057] {\n    position: absolute;\n    left: 13px;\n    top: 8px;\n    color: #a09c9c;\n}\n.form-control[data-v-665bb057]:focus {\n    color: #495057;\n    background-color: #fff;\n    border-color: #8bbafe;\n    outline: 0;\n    box-shadow: none;\n}\n.options[data-v-665bb057] {\n    font-size: 23px;\n    color: #757575;\n    cursor: pointer;\n}\n.options[data-v-665bb057]:hover {\n    color: #000;\n}\na[data-v-665bb057] {\n    text-decoration: none;\n}\ntextarea[data-v-665bb057] {\n    height: 200px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-665bb057] {\n    background-color: #eee;\n    font-family: \"Poppins\", sans-serif;\n    font-weight: 300;\n}\n.card[data-v-665bb057] {\n    border: none;\n    /* margin-top: 10px; */\n    margin-bottom: 100px;\n}\n.ellipsis[data-v-665bb057] {\n    color: #a09c9c;\n}\nhr[data-v-665bb057] {\n    color: #a09c9c;\n    margin-top: 4px;\n    margin-bottom: 8px;\n}\n.muted-color[data-v-665bb057] {\n    color: #a09c9c;\n    font-size: 13px;\n}\n.ellipsis i[data-v-665bb057] {\n    margin-top: 3px;\n    cursor: pointer;\n}\n.icons i[data-v-665bb057] {\n    font-size: 25px;\n}\n.icons .fa-heart[data-v-665bb057] {\n    color: red;\n}\n.icons .fa-smile-o[data-v-665bb057] {\n    color: yellow;\n    font-size: 29px;\n}\n.rounded-image[data-v-665bb057] {\n    border-radius: 50% !important;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    height: 50px;\n    width: 50px;\n}\n.name[data-v-665bb057] {\n    font-weight: bold;\n}\n.date[data-v-665bb057] {\n    color: #65676b !important;\n}\n.comment-text[data-v-665bb057] {\n    font-size: 12px;\n}\n.status small[data-v-665bb057] {\n    margin-right: 10px;\n    color: blue;\n}\n.form-control[data-v-665bb057] {\n    border-radius: 26px;\n}\n.comment-input[data-v-665bb057] {\n    position: relative;\n}\n.fonts[data-v-665bb057] {\n    position: absolute;\n    left: 13px;\n    top: 8px;\n    color: #a09c9c;\n}\n.form-control[data-v-665bb057]:focus {\n    color: #495057;\n    background-color: #fff;\n    border-color: #8bbafe;\n    outline: 0;\n    box-shadow: none;\n}\n.options[data-v-665bb057] {\n    font-size: 23px;\n    color: #757575;\n    cursor: pointer;\n}\n.options[data-v-665bb057]:hover {\n    color: #000;\n}\na[data-v-665bb057] {\n    text-decoration: none;\n}\ntextarea[data-v-665bb057] {\n    height: 200px !important;\n}\nimg[data-v-665bb057] {\n    cursor: pointer;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

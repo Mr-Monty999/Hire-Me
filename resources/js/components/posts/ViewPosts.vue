@@ -9,6 +9,7 @@
                                 :src="post.profile.avatar"
                                 width="50"
                                 class="rounded-circle"
+                                @click="goToProfile(post.profile.id)"
                             />
                             <div class="d-flex flex-column ml-2">
                                 <span class="text-break name"
@@ -300,6 +301,16 @@ export default {
         hideModal() {
             this.$modal.hide("my-modal");
         },
+        goToProfile(profileId) {
+            if (profileId != this.$route.params.id) {
+                this.$router.push({
+                    name: "profile",
+                    params: {
+                        id: profileId,
+                    },
+                });
+            }
+        },
     },
     computed: {
         calcPageCount() {
@@ -412,6 +423,9 @@ a {
     text-decoration: none;
 }
 textarea {
-    height: 200px;
+    height: 200px !important;
+}
+img {
+    cursor: pointer;
 }
 </style>

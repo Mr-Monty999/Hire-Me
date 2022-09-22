@@ -23,6 +23,11 @@ class SkillController extends Controller
         return ResponseService::json($data, "تم جلب البيانات بنجاح");
     }
 
+    public function search($skillName)
+    {
+        $skills = Skill::where("name", "LIKE", "%$skillName%")->limit(10)->get();
+        return ResponseService::json($skills, "تم جلب البيانات بنجاح");
+    }
     /**
      * Show the form for creating a new resource.
      *
