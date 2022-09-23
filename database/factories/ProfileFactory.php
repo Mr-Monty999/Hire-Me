@@ -19,6 +19,7 @@ class ProfileFactory extends Factory
             "lastname" => $this->faker->lastName,
             "nickname" => $this->faker->name,
             "gender" => $this->faker->randomElement(["ذكر", "أنثى"]),
+            "about" => $this->faker->text(),
             "birthdate" => $this->faker->date,
             "background_photo" => $this->faker->imageUrl,
             "website" => $this->faker->domainName,
