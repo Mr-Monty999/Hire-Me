@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\ProfilePhone;
+use DB;
 use Illuminate\Database\Seeder;
 
 class ProfilePhoneSeeder extends Seeder
@@ -13,6 +15,8 @@ class ProfilePhoneSeeder extends Seeder
      */
     public function run()
     {
-        //
+        DB::table("profile_phones")->delete();
+
+        ProfilePhone::factory(30)->create();
     }
 }

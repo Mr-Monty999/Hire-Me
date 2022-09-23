@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Experience;
+use DB;
 use Illuminate\Database\Seeder;
 
 class ExperienceSeeder extends Seeder
@@ -13,6 +15,8 @@ class ExperienceSeeder extends Seeder
      */
     public function run()
     {
-        //
+        DB::table("experiences")->delete();
+
+        Experience::factory(30)->create();
     }
 }

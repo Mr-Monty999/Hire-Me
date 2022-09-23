@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Certificate;
+use Database\Factories\CertificateFactory;
 use Illuminate\Database\Seeder;
 
 class CertificateSeeder extends Seeder
@@ -13,6 +15,5 @@ class CertificateSeeder extends Seeder
      */
     public function run()
     {
-        //
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Profile;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ProfilePhoneFactory extends Factory
@@ -14,7 +15,8 @@ class ProfilePhoneFactory extends Factory
     public function definition()
     {
         return [
-            //
+            "phone" => $this->faker->phoneNumber,
+            "profile_id" => $this->faker->randomElement(Profile::pluck("id"))
         ];
     }
 }

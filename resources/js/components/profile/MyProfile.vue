@@ -9,7 +9,7 @@
                         <img
                             class="rounded-circle mt-5"
                             width="150px"
-                            :src="profile.avatar"
+                            :src="previewAvatar"
                         /><span class="font-weight-bold"
                             >{{ profile.firstname }}
                             {{ profile.lastname }}</span
@@ -389,6 +389,14 @@ export default {
             phone: "",
             profile_id: 0,
         };
+    },
+    computed: {
+        previewAvatar() {
+            if (!this.profile.avatar) {
+                return "/images/assets/personal.jpg";
+            }
+            return this.profile.avatar;
+        },
     },
     methods: {
         savePersonalInfo(profileId = this.profile_id) {

@@ -5479,6 +5479,15 @@ __webpack_require__.r(__webpack_exports__);
       });
     }
   },
+  computed: {
+    previewAvatar: function previewAvatar() {
+      if (!this.avatar) {
+        return "/images/assets/personal.jpg";
+      }
+
+      return this.avatar;
+    }
+  },
   created: function created() {
     this.user_id = JSON.parse(localStorage.getItem("user")).id;
     this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
@@ -5573,6 +5582,13 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     getPhoto: function getPhoto() {
       if (this.previewPhoto) return URL.createObjectURL(this.previewPhoto);else if (this.photo) return this.photo;
+    },
+    previewAvatar: function previewAvatar() {
+      if (!this.profile.avatar) {
+        return "/images/assets/personal.jpg";
+      }
+
+      return this.profile.avatar;
     }
   },
   created: function created() {
@@ -5805,6 +5821,13 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return 0;
+    },
+    previewAvatar: function previewAvatar(avatar) {
+      if (!avatar) {
+        return "/images/assets/personal.jpg";
+      }
+
+      return avatar;
     }
   },
   computed: {
@@ -5861,6 +5884,15 @@ __webpack_require__.r(__webpack_exports__);
       phone: "",
       profile_id: 0
     };
+  },
+  computed: {
+    previewAvatar: function previewAvatar() {
+      if (!this.profile.avatar) {
+        return "/images/assets/personal.jpg";
+      }
+
+      return this.profile.avatar;
+    }
   },
   methods: {
     savePersonalInfo: function savePersonalInfo() {
@@ -6276,6 +6308,13 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         console.log(error.response);
       });
+    },
+    previewAvatar: function previewAvatar(avatar) {
+      if (!avatar) {
+        return "/images/assets/personal.jpg";
+      }
+
+      return avatar;
     }
   },
   computed: {},
@@ -6603,7 +6642,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     getAvatar: function getAvatar() {
-      if (this.previewAvatar) return URL.createObjectURL(this.previewAvatar);else if (this.avatar) return this.avatar;
+      if (this.previewAvatar) return URL.createObjectURL(this.previewAvatar);else if (this.avatar) return this.avatar;else return "/images/assets/personal.jpg";
     }
   },
   methods: {
@@ -7149,7 +7188,7 @@ var render = function render() {
   }, [_c("span", [_c("span", [_vm._v(_vm._s(_vm.firstname) + " " + _vm._s(_vm.lastname))]), _vm._v(" "), _c("img", {
     staticClass: "personal-photo",
     attrs: {
-      src: _vm.avatar,
+      src: _vm.previewAvatar,
       alt: ""
     }
   })])]), _vm._v(" "), _c("ul", {
@@ -7335,7 +7374,7 @@ var render = function render() {
   }, [_c("img", {
     staticClass: "profile-pic",
     attrs: {
-      src: _vm.profile.avatar
+      src: _vm.previewAvatar
     }
   }), _vm._v(" "), _c("div", {
     staticClass: "flex-column col-9"
@@ -7459,7 +7498,7 @@ var render = function render() {
     }, [_c("img", {
       staticClass: "rounded-circle",
       attrs: {
-        src: post.profile.avatar,
+        src: _vm.previewAvatar(post.profile.avatar),
         width: "50"
       },
       on: {
@@ -7679,7 +7718,7 @@ var render = function render() {
     staticClass: "rounded-circle mt-5",
     attrs: {
       width: "150px",
-      src: _vm.profile.avatar
+      src: _vm.previewAvatar
     }
   }), _c("span", {
     staticClass: "font-weight-bold"
@@ -8215,7 +8254,7 @@ var render = function render() {
     staticClass: "rounded-circle mt-5",
     attrs: {
       width: "150px",
-      src: _vm.profile.avatar
+      src: _vm.previewAvatar(_vm.profile.avatar)
     }
   }), _c("span", {
     staticClass: "font-weight-bold"

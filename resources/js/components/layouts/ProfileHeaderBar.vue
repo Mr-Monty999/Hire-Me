@@ -33,7 +33,7 @@
                                     <span>{{ firstname }} {{ lastname }}</span>
                                     <img
                                         class="personal-photo"
-                                        :src="avatar"
+                                        :src="previewAvatar"
                                         alt=""
                                     />
                                 </span>
@@ -215,7 +215,14 @@ export default {
                 });
         },
     },
-
+    computed: {
+        previewAvatar() {
+            if (!this.avatar) {
+                return "/images/assets/personal.jpg";
+            }
+            return this.avatar;
+        },
+    },
     created() {
         this.user_id = JSON.parse(localStorage.getItem("user")).id;
         this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;

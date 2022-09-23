@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
+use DB;
 use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
@@ -13,6 +15,8 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        //
+        DB::table("users")->delete();
+
+        User::factory(10)->create();
     }
 }

@@ -65,7 +65,6 @@ Route::group(["namespace" => "general"], function () {
         Route::resource("posts", "PostController");
         Route::post("posts/react/{id}/{profileId}/{type}", "PostController@react");
         Route::post("posts/unreact/{id}/{profileId}", "PostController@unReact");
-
         Route::get("posts/react-type/{id}/{profileId}", "PostController@isReacted");
 
         //Skills

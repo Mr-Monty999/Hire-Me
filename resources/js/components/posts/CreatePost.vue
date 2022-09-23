@@ -4,7 +4,7 @@
             <div class="row d-flex justify-content-center">
                 <div class="card">
                     <div class="row">
-                        <img class="profile-pic" :src="profile.avatar" />
+                        <img class="profile-pic" :src="previewAvatar" />
                         <div class="flex-column col-9">
                             <h5 class="mb-0 font-weight-normal">
                                 {{ profile.firstname }} {{ profile.lastname }}
@@ -89,6 +89,7 @@ export default {
     components: {
         ModalSnippet,
     },
+
     methods: {
         getProfileInfo() {
             var vm = this;
@@ -150,6 +151,12 @@ export default {
             if (this.previewPhoto)
                 return URL.createObjectURL(this.previewPhoto);
             else if (this.photo) return this.photo;
+        },
+        previewAvatar() {
+            if (!this.profile.avatar) {
+                return "/images/assets/personal.jpg";
+            }
+            return this.profile.avatar;
         },
     },
     created() {

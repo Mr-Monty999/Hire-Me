@@ -9,7 +9,7 @@
                         <img
                             class="rounded-circle mt-5"
                             width="150px"
-                            :src="profile.avatar"
+                            :src="previewAvatar(profile.avatar)"
                         /><span class="font-weight-bold"
                             >{{ profile.firstname }}
                             {{ profile.lastname }}</span
@@ -439,6 +439,12 @@ export default {
                 .catch(function (error) {
                     console.log(error.response);
                 });
+        },
+        previewAvatar(avatar) {
+            if (!avatar) {
+                return "/images/assets/personal.jpg";
+            }
+            return avatar;
         },
     },
     computed: {},

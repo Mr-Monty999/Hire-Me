@@ -6,7 +6,7 @@
                     <div class="d-flex justify-content-between p-2 px-3">
                         <div class="d-flex flex-row align-items-center gap-2">
                             <img
-                                :src="post.profile.avatar"
+                                :src="previewAvatar(post.profile.avatar)"
                                 width="50"
                                 class="rounded-circle"
                                 @click="goToProfile(post.profile.id)"
@@ -447,6 +447,12 @@ export default {
                 return post.reacts[reactIndex].pivot.type;
             }
             return 0;
+        },
+        previewAvatar(avatar) {
+            if (!avatar) {
+                return "/images/assets/personal.jpg";
+            }
+            return avatar;
         },
     },
     computed: {

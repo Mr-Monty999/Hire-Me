@@ -154,9 +154,13 @@ class ProfileController extends Controller
         $profile = Profile::where("user_id", $id)->first();
         if ($request->file("avatar") != null) {
             $data["avatar"] = FileUploadService::uploadImage($request->file("avatar"), "/images/profiles");
+
             FileUploadService::deleteImageIfExists(public_path($profile->avatar));
-        } else
+        } else {
             $data["avatar"] = $profile->avatar;
+        }
+
+
 
         $profile->update($data);
 

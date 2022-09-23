@@ -396,6 +396,7 @@ export default {
             if (this.previewAvatar)
                 return URL.createObjectURL(this.previewAvatar);
             else if (this.avatar) return this.avatar;
+            else return "/images/assets/personal.jpg";
         },
     },
     methods: {
