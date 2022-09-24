@@ -1,7 +1,7 @@
 <template>
     <div>
         <main class="container d-flex flex-column align-items-center">
-            <img src="../../assets/images/about.png" alt="" />
+            <img src="/images/assets/about.png" alt="" />
 
             <h1>
                 مشروع شغلني هو موقع يساعدك في إيجاد وعرض الوظائف بمختلف أنواعها

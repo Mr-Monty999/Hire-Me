@@ -313,7 +313,7 @@ export default {
                 .post(
                     "/api/profiles/" +
                         profileId +
-                        "/follow/" +
+                        "/follow/profiles/" +
                         targetProfileId +
                         "",
                     {},
@@ -350,7 +350,7 @@ export default {
                 .post(
                     "/api/profiles/" +
                         profileId +
-                        "/unfollow/" +
+                        "/unfollow/profiles/" +
                         targetProfileId +
                         "",
                     {},
@@ -387,7 +387,7 @@ export default {
                 .get(
                     "/api/profiles/" +
                         profileId +
-                        "/followed/" +
+                        "/is-followed/profiles/" +
                         targetProfileId,
                     {
                         headers: headerAuth,

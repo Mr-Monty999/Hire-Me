@@ -59,7 +59,7 @@ class SkillController extends Controller
 
         return ResponseService::json($skill, "تم إضافة المهارة بنجاح");
     }
-    public function detach($profileId, $skillId)
+    public function detach($skillId, $profileId)
     {
         $skill = Skill::find($skillId);
         $skill->profiles()->detach($profileId);

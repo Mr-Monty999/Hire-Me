@@ -84,16 +84,16 @@ class PostController extends Controller
         return ResponseService::json($reacted, "تم التفاعل مع المنشور بنجاح");
     }
 
-    // public function isReacted($postId, $profileId)
-    // {
-    //     $post = Post::findOrFail($postId);
-    //     $reacted =  $post->reacts()->wherePivot("profile_id", "=", $profileId)->first();
+    public function isReacted($postId, $profileId)
+    {
+        $post = Post::findOrFail($postId);
+        $reacted =  $post->reacts()->wherePivot("profile_id", "=", $profileId)->first();
 
-    //     if ($reacted != null)
-    //         $reacted = $reacted->pivot->type;
+        if ($reacted != null)
+            $reacted = $reacted->pivot->type;
 
-    //     return ResponseService::json($reacted, "تمت العملية بنجاح");
-    // }
+        return ResponseService::json($reacted, "تمت العملية بنجاح");
+    }
 
     /**
      * Show the form for editing the specified resource.

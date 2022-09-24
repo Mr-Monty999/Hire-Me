@@ -25,7 +25,6 @@ class ProfilePhoneUpdateRequest extends FormRequest
     {
         return [
             "phone" => "required|unique:profile_phones,phone," . $this->route("profile_phone"),
-            "profile_id" => "required"
         ];
     }
     public function messages()

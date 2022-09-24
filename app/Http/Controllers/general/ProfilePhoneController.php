@@ -17,9 +17,12 @@ class ProfilePhoneController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($profileId)
     {
-        //
+        $phones =  Profile::with("phones")->find($profileId)->only("phones");
+        // $phones = ProfilePhone::where("profile_id", $profileId)->get();
+
+        return ResponseService::json($phones, "تم جلب أرقام الهواتف بنجاح");
     }
 
     /**
@@ -38,11 +41,11 @@ class ProfilePhoneController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ProfilePhoneStoreRequest $request)
+    public function store(ProfilePhoneStoreRequest $request, $profileId)
     {
-        $request->validated();
-
-        $phone = ProfilePhone::create($request->all());
+        $data = $request->all();
+        $data["profile_id"] = $profileId;
+        $phone = ProfilePhone::create($data);
 
         return ResponseService::json($phone, "تم إضافة رقم الهاتف بنجاح");
     }
@@ -75,12 +78,13 @@ class ProfilePhoneController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ProfilePhoneUpdateRequest $request, $id)
+    public function update(ProfilePhoneUpdateRequest $request, $profileId, $id)
     {
 
-        $request->validated();
+        $data = $request->all();
+        $data["profile_id"] = $profileId;
         $phone = ProfilePhone::findOrFail($id);
-        $phone->update($request->all());
+        $phone->update($data);
         return ResponseService::json($phone, "تم التعديل بنجاح");
     }
 
@@ -90,9 +94,9 @@ class ProfilePhoneController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($phoneId)
+    public function destroy($profileId, $phoneId)
     {
-        $phone = ProfilePhone::findOrFail($phoneId);
+        $phone = ProfilePhone::where("profile_id", $profileId)->where("id", $phoneId);
         $phone->delete();
         return ResponseService::json($phone, "تم حذف رقم الهاتف بنجاح");
     }

@@ -538,7 +538,7 @@ export default {
             var vm = this;
 
             axios
-                .get("/api/skills/search/" + skillName + "", {
+                .get("/api/skills/" + skillName + "/search", {
                     headers: headerAuth,
                 })
                 .then(function (response) {
@@ -584,9 +584,16 @@ export default {
             var vm = this;
 
             axios
-                .delete("/api/skills/detach/" + profileId + "/" + skillId, {
-                    headers: headerAuth,
-                })
+                .delete(
+                    "/api/skills/" +
+                        skillId +
+                        "/profiles/" +
+                        profileId +
+                        "/detach",
+                    {
+                        headers: headerAuth,
+                    }
+                )
                 .then(function (response) {
                     console.log(response);
                     var index = vm.profile.skills.findIndex(

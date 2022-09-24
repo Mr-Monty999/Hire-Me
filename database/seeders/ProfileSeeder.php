@@ -23,13 +23,12 @@ class ProfileSeeder extends Seeder
 
         Profile::factory(10)->create();
 
-        Profile::each(function ($row) {
+        foreach (Profile::all() as $key => $row) {
+            # code...
             $ids = Profile::pluck("id")->toArray();
 
-            if (array_search($row->id, $ids) < 0) {
-                $row->followings()->attach($ids);
-                $row->followers()->attach($ids);
-            }
-        }, Profile::count());
+            $row->followings()->sync($ids);
+            $row->followers()->sync($ids);
+        }
     }
 }

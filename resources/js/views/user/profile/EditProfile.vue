@@ -158,7 +158,10 @@
                                                 :name="'deletePhone' + i"
                                                 confirmAndClosed
                                                 @confirmEvent="
-                                                    deletePhone(p.id)
+                                                    deletePhone(
+                                                        profile_id,
+                                                        p.id
+                                                    )
                                                 "
                                             >
                                                 هل أنت متأكد من حذف هذا الرقم
@@ -176,7 +179,11 @@
                                                     getProfilePhones(profile_id)
                                                 "
                                                 @confirmEvent="
-                                                    updatePhone(p.id, p.phone)
+                                                    updatePhone(
+                                                        profile_id,
+                                                        p.id,
+                                                        p.phone
+                                                    )
                                                 "
                                             >
                                                 <div class="col-md-12">
@@ -206,7 +213,9 @@
                                         confirmButtonClass="btn btn-success"
                                         name="addPhone"
                                         confirmAndClosed
-                                        @confirmEvent="addPhone()"
+                                        @confirmEvent="
+                                            addPhone(profile_id, phone)
+                                        "
                                     >
                                         <div class="col-md-12">
                                             <label class="labels form-label">
@@ -466,15 +475,14 @@ export default {
                     var errors = error.response.data.errors;
                 });
         },
-        addPhone() {
+        addPhone(profileId, myPhone) {
             var vm = this;
 
             axios
                 .post(
-                    "/api/profile-phones",
+                    "/api/profiles/" + profileId + "/phones",
                     {
-                        phone: vm.phone,
-                        profile_id: vm.profile_id,
+                        phone: myPhone,
                     },
 
                     {
@@ -503,14 +511,14 @@ export default {
                     }
                 });
         },
-        deletePhone(phoneId) {
+        deletePhone(profileId, phoneId) {
             var vm = this;
             var phoneIndex = vm.phones.findIndex((el) => el.id == phoneId);
             // vm.deletedPhones.push(vm.phones[phoneIndex]);
             vm.phones.splice(phoneIndex, 1);
             axios
                 .delete(
-                    "/api/profile-phones/" + phoneId,
+                    "/api/profiles/" + profileId + "/phones/" + phoneId,
 
                     {
                         headers: headerAuth,
@@ -537,14 +545,13 @@ export default {
                     }
                 });
         },
-        updatePhone(phoneId, value) {
+        updatePhone(profileId, phoneId, value) {
             var vm = this;
             axios
                 .put(
-                    "/api/profile-phones/" + phoneId,
+                    "/api/profiles/" + profileId + "/phones/" + phoneId,
                     {
                         phone: value,
-                        profile_id: vm.profile_id,
                     },
 
                     {

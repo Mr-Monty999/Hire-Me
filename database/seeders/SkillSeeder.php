@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Profile;
 use App\Models\Skill;
 use App\Models\User;
 use DB;
@@ -19,10 +20,9 @@ class SkillSeeder extends Seeder
         DB::table("skills")->delete();
         Skill::factory(10)->create();
 
-        User::each(function ($row) {
+        foreach (Profile::all() as $key => $row) {
             $ids = Skill::pluck("id")->toArray();
-            if (array_search($row->id, $ids) < 0)
-                $row->skills()->attach($ids);
-        }, User::count());
+            $row->skills()->sync($ids);
+        }
     }
 }

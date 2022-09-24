@@ -5734,7 +5734,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     reactToPost: function reactToPost(profileId, postId, reactType) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/posts/react/" + postId + "/" + profileId + "/" + reactType, {}, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/posts/" + postId + "/profiles/" + profileId + "/react/" + reactType, {}, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -5766,7 +5766,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     removeReactFromPost: function removeReactFromPost(profileId, postId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/posts/unreact/" + postId + "/" + profileId, {}, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/posts/" + postId + "/profiles/" + profileId + "/unreact", {}, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -5798,7 +5798,7 @@ __webpack_require__.r(__webpack_exports__);
     // reactType(profileId, postId) {
     //     var vm = this;
     //     axios
-    //         .get("/api/posts/react-type/" + postId + "/" + profileId, {
+    //         .get("/api/posts/" + postId + "/profiles/" + profileId+"/react-type", {
     //             headers: headerAuth,
     //         })
     //         .then(function (response) {
@@ -6010,7 +6010,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     searchForSkill: function searchForSkill(skillName) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/skills/search/" + skillName + "", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/skills/" + skillName + "/search", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -6042,7 +6042,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     deleteSkill: function deleteSkill(profileId, skillId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/skills/detach/" + profileId + "/" + skillId, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/skills/" + skillId + "/profiles/" + profileId + "/detach", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -6225,7 +6225,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     followProfile: function followProfile(profileId, targetProfileId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/profiles/" + profileId + "/follow/" + targetProfileId + "", {}, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/profiles/" + profileId + "/follow/profiles/" + targetProfileId + "", {}, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -6251,7 +6251,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     unFollowProfile: function unFollowProfile(profileId, targetProfileId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/profiles/" + profileId + "/unfollow/" + targetProfileId + "", {}, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/profiles/" + profileId + "/unfollow/profiles/" + targetProfileId + "", {}, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -6277,7 +6277,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     isFollowed: function isFollowed(profileId, targetProfileId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + profileId + "/followed/" + targetProfileId, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + profileId + "/is-followed/profiles/" + targetProfileId, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -6706,11 +6706,10 @@ __webpack_require__.r(__webpack_exports__);
         var errors = error.response.data.errors;
       });
     },
-    addPhone: function addPhone() {
+    addPhone: function addPhone(profileId, myPhone) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/profile-phones", {
-        phone: vm.phone,
-        profile_id: vm.profile_id
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/profiles/" + profileId + "/phones", {
+        phone: myPhone
       }, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
@@ -6735,14 +6734,14 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    deletePhone: function deletePhone(phoneId) {
+    deletePhone: function deletePhone(profileId, phoneId) {
       var vm = this;
       var phoneIndex = vm.phones.findIndex(function (el) {
         return el.id == phoneId;
       }); // vm.deletedPhones.push(vm.phones[phoneIndex]);
 
       vm.phones.splice(phoneIndex, 1);
-      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/profile-phones/" + phoneId, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/profiles/" + profileId + "/phones/" + phoneId, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -6765,11 +6764,10 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    updatePhone: function updatePhone(phoneId, value) {
+    updatePhone: function updatePhone(profileId, phoneId, value) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().put("/api/profile-phones/" + phoneId, {
-        phone: value,
-        profile_id: vm.profile_id
+      axios__WEBPACK_IMPORTED_MODULE_0___default().put("/api/profiles/" + profileId + "/phones/" + phoneId, {
+        phone: value
       }, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
@@ -8510,7 +8508,7 @@ var staticRenderFns = [function () {
     staticClass: "container d-flex flex-column align-items-center"
   }, [_c("img", {
     attrs: {
-      src: __webpack_require__(/*! ../../assets/images/about.png */ "./resources/js/assets/images/about.png"),
+      src: "/images/assets/about.png",
       alt: ""
     }
   }), _vm._v(" "), _c("h1", [_vm._v("\n            مشروع شغلني هو موقع يساعدك في إيجاد وعرض الوظائف بمختلف أنواعها\n        ")])])]);
@@ -8572,7 +8570,7 @@ var render = function render() {
     staticClass: "container d-flex flex-column align-items-center"
   }, [_c("img", {
     attrs: {
-      src: __webpack_require__(/*! ../../assets/images/hello2.png */ "./resources/js/assets/images/hello2.png"),
+      src: "/images/assets/hello2.png",
       alt: ""
     }
   }), _vm._v(" "), _c("h1", [_vm._v("مرحبا بكم في موقع شغلني")]), _vm._v(" "), _c("h3", [_vm._v("سجل الأن وأحصل على وظيفة")]), _vm._v(" "), _c("div", [_c("router-link", {
@@ -9276,7 +9274,7 @@ var render = function render() {
       },
       on: {
         confirmEvent: function confirmEvent($event) {
-          return _vm.deletePhone(p.id);
+          return _vm.deletePhone(_vm.profile_id, p.id);
         }
       }
     }, [_vm._v("\n                                            هل أنت متأكد من حذف هذا الرقم\n                                            " + _vm._s(p.phone) + " ؟\n                                        ")]), _vm._v(" "), _c("modal-snippet", {
@@ -9294,7 +9292,7 @@ var render = function render() {
           return _vm.getProfilePhones(_vm.profile_id);
         },
         confirmEvent: function confirmEvent($event) {
-          return _vm.updatePhone(p.id, p.phone);
+          return _vm.updatePhone(_vm.profile_id, p.id, p.phone);
         }
       }
     }, [_c("div", {
@@ -9340,7 +9338,7 @@ var render = function render() {
     },
     on: {
       confirmEvent: function confirmEvent($event) {
-        return _vm.addPhone();
+        return _vm.addPhone(_vm.profile_id, _vm.phone);
       }
     }
   }, [_c("div", {
@@ -15763,26 +15761,6 @@ module.exports = function (url, options) {
 
   return url;
 };
-
-/***/ }),
-
-/***/ "./resources/js/assets/images/about.png":
-/*!**********************************************!*\
-  !*** ./resources/js/assets/images/about.png ***!
-  \**********************************************/
-/***/ ((module) => {
-
-module.exports = "/images/about.png?1ff6499ea7620fc827638e2e3178cbe9";
-
-/***/ }),
-
-/***/ "./resources/js/assets/images/hello2.png":
-/*!***********************************************!*\
-  !*** ./resources/js/assets/images/hello2.png ***!
-  \***********************************************/
-/***/ ((module) => {
-
-module.exports = "/images/hello2.png?788b7888d4e9732ff4615afe6166c481";
 
 /***/ }),
 

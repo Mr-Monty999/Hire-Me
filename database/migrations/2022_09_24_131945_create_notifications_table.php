@@ -15,7 +15,7 @@ class CreateNotificationsTable extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->string('type'); //follow ,comments etc
+            $table->integer('type')->unsigned(); //follow ,comments etc
             $table->string('data'); //follow id ,comment id etc ,you can set relationship in model about this
             $table->bigInteger('profile_id')->unsigned(); // set relationship in profile model
             $table->bigInteger('profile_to_notify')->unsigned(); //the profile who will recive this notification

@@ -36,15 +36,15 @@ Route::group(["namespace" => "general"], function () {
 
         //Profiles
         Route::resource("profiles", "ProfileController");
-        Route::get("profiles/{id}/phones", "ProfileController@showPhones");
+        // Route::get("profiles/{id}/phones", "ProfileController@showPhones");
         Route::get("profiles/{id}/posts", "ProfileController@showPosts");
         Route::get("profiles/{id}/info", "ProfileController@showProfileOnly");
-        Route::post("profiles/{id}/follow/{targetId}", "ProfileController@followProfile");
-        Route::post("profiles/{id}/unfollow/{targetId}", "ProfileController@unFollowProfile");
-        Route::get("profiles/{id}/followed/{targetId}", "ProfileController@isFollowed");
+        Route::post("profiles/{id}/follow/profiles/{targetId}", "ProfileController@followProfile");
+        Route::post("profiles/{id}/unfollow/profiles/{targetId}", "ProfileController@unFollowProfile");
+        Route::get("profiles/{id}/is-followed/profiles/{targetId}", "ProfileController@isFollowed");
 
         //Profile Phones
-        Route::resource("profile-phones", "ProfilePhoneController");
+        Route::resource("profiles.phones", "ProfilePhoneController");
 
         //Certificates
         Route::resource("certificates", "CertificateController");
@@ -63,14 +63,14 @@ Route::group(["namespace" => "general"], function () {
 
         //Posts
         Route::resource("posts", "PostController");
-        Route::post("posts/react/{id}/{profileId}/{type}", "PostController@react");
-        Route::post("posts/unreact/{id}/{profileId}", "PostController@unReact");
-        Route::get("posts/react-type/{id}/{profileId}", "PostController@isReacted");
+        Route::post("posts/{id}/profiles/{profileId}/react/{type}", "PostController@react");
+        Route::post("posts/{id}/profiles/{profileId}/unreact", "PostController@unReact");
+        Route::get("posts/{id}/profiles/{profileId}/react-type", "PostController@isReacted");
 
         //Skills
         Route::resource("skills", "SkillController");
-        Route::delete("skills/detach/{profileId}/{skillId}", "SkillController@detach");
-        Route::get("skills/search/{name}", "SkillController@search");
+        Route::delete("skills/{skillId}/profiles/{profileId}/detach", "SkillController@detach");
+        Route::get("skills/{name}/search", "SkillController@search");
 
         //Tags
         Route::resource("tags", "TagController");

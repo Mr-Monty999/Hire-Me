@@ -341,11 +341,11 @@ export default {
 
             axios
                 .post(
-                    "/api/posts/react/" +
+                    "/api/posts/" +
                         postId +
-                        "/" +
+                        "/profiles/" +
                         profileId +
-                        "/" +
+                        "/react/" +
                         reactType,
                     {},
                     {
@@ -387,7 +387,11 @@ export default {
 
             axios
                 .post(
-                    "/api/posts/unreact/" + postId + "/" + profileId,
+                    "/api/posts/" +
+                        postId +
+                        "/profiles/" +
+                        profileId +
+                        "/unreact",
                     {},
                     {
                         headers: headerAuth,
@@ -427,7 +431,7 @@ export default {
         //     var vm = this;
 
         //     axios
-        //         .get("/api/posts/react-type/" + postId + "/" + profileId, {
+        //         .get("/api/posts/" + postId + "/profiles/" + profileId+"/react-type", {
         //             headers: headerAuth,
         //         })
         //         .then(function (response) {
