@@ -5438,7 +5438,8 @@ __webpack_require__.r(__webpack_exports__);
       lastname: "",
       profile_id: "",
       avatar: "",
-      user_id: ""
+      user_id: "",
+      unreadedNotifications: 0
     };
   },
   methods: {
@@ -5477,6 +5478,17 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         console.log(error.response);
       });
+    },
+    getNotifications: function getNotifications(profileId) {
+      var vm = this;
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + profileId + "/notifications", {
+        headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
+      }).then(function (response) {
+        console.log(response);
+        vm.unreadedNotifications = response.data.data.unreaded_notifications_count;
+      })["catch"](function (error) {
+        console.log(error.response);
+      });
     }
   },
   computed: {
@@ -5492,6 +5504,7 @@ __webpack_require__.r(__webpack_exports__);
     this.user_id = JSON.parse(localStorage.getItem("user")).id;
     this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
     this.getProfileInfo();
+    this.getNotifications(this.profile_id);
   }
 });
 
@@ -5511,7 +5524,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _helpers_formAuth__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../helpers/formAuth */ "./resources/js/helpers/formAuth.js");
-/* harmony import */ var _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../components/bootstrap/ModalSnippet.vue */ "./resources/js/components/bootstrap/ModalSnippet.vue");
+/* harmony import */ var _helpers_auth__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../helpers/auth */ "./resources/js/helpers/auth.js");
+/* harmony import */ var _helpers_services__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../helpers/services */ "./resources/js/helpers/services.js");
+/* harmony import */ var _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../components/bootstrap/ModalSnippet.vue */ "./resources/js/components/bootstrap/ModalSnippet.vue");
+
+
 
 
 
@@ -5528,7 +5545,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   props: ["posts"],
   components: {
-    ModalSnippet: _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
+    ModalSnippet: _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
   },
   methods: {
     getProfileInfo: function getProfileInfo() {
@@ -5561,6 +5578,11 @@ __webpack_require__.r(__webpack_exports__);
         vm.content = "";
         vm.photo = "";
         vm.previewPhoto = "";
+        _helpers_services__WEBPACK_IMPORTED_MODULE_3__["default"].sendNotification({
+          type: 1,
+          profile_id: vm.profile_id,
+          post_id: response.data.data.id
+        });
       })["catch"](function (error) {
         console.log(error.response);
         var errors = error.response.data.errors;
@@ -5617,6 +5639,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../components/bootstrap/ModalSnippet.vue */ "./resources/js/components/bootstrap/ModalSnippet.vue");
 /* harmony import */ var vuejs_paginate__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vuejs-paginate */ "./node_modules/vuejs-paginate/dist/index.js");
 /* harmony import */ var vuejs_paginate__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(vuejs_paginate__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _helpers_services__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../helpers/services */ "./resources/js/helpers/services.js");
+
 
 
 
@@ -5734,7 +5758,10 @@ __webpack_require__.r(__webpack_exports__);
     },
     reactToPost: function reactToPost(profileId, postId, reactType) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/posts/" + postId + "/profiles/" + profileId + "/react/" + reactType, {}, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/posts/" + postId + "/profiles", {
+        profile_id: profileId,
+        type: reactType
+      }, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -5751,6 +5778,12 @@ __webpack_require__.r(__webpack_exports__);
           text: response.data.message,
           type: "success"
         });
+        _helpers_services__WEBPACK_IMPORTED_MODULE_5__["default"].sendNotification({
+          type: 2,
+          profile_id: vm.profile_id,
+          post_id: postId,
+          react_type: reactType
+        });
       })["catch"](function (error) {
         console.log(error.response);
         var errors = error.response.data.errors;
@@ -5766,7 +5799,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     removeReactFromPost: function removeReactFromPost(profileId, postId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/posts/" + postId + "/profiles/" + profileId + "/unreact", {}, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/posts/" + postId + "/profiles/" + profileId, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -6042,7 +6075,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     deleteSkill: function deleteSkill(profileId, skillId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/skills/" + skillId + "/profiles/" + profileId + "/detach", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/skills/" + skillId + "/profiles/" + profileId, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -6225,7 +6258,9 @@ __webpack_require__.r(__webpack_exports__);
     },
     followProfile: function followProfile(profileId, targetProfileId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/profiles/" + profileId + "/follow/profiles/" + targetProfileId + "", {}, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/profiles/" + profileId + "/follows", {
+        profile_id: targetProfileId
+      }, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -6251,7 +6286,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     unFollowProfile: function unFollowProfile(profileId, targetProfileId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/profiles/" + profileId + "/unfollow/profiles/" + targetProfileId + "", {}, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/profiles/" + profileId + "/profiles/" + targetProfileId + "/follows", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -6277,7 +6312,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     isFollowed: function isFollowed(profileId, targetProfileId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + profileId + "/is-followed/profiles/" + targetProfileId, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + profileId + "/profiles/" + targetProfileId + "/is-followed", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -7215,7 +7250,21 @@ var render = function render() {
         return _vm.logout();
       }
     }
-  }, [_vm._v("\n                                    تسجيل خروج\n                                ")])])])]), _vm._v(" "), _vm._m(3), _vm._v(" "), _vm._m(4)]), _vm._v(" "), _vm._m(5)])])])]);
+  }, [_vm._v("\n                                    تسجيل خروج\n                                ")])])])]), _vm._v(" "), _c("li", {
+    staticClass: "nav-item dropdown"
+  }, [_c("a", {
+    staticClass: "nav-link position-relative",
+    attrs: {
+      href: "#",
+      role: "button",
+      "data-bs-toggle": "dropdown",
+      "aria-expanded": "false"
+    }
+  }, [_vm._m(3), _vm._v(" "), _c("span", {
+    staticClass: "position-absolute translate-middle badge rounded-pill bg-danger notificate"
+  }, [_vm._v("\n                                " + _vm._s(_vm.unreadedNotifications) + "+\n                                "), _c("span", {
+    staticClass: "visually-hidden"
+  }, [_vm._v("unread notifications")])])]), _vm._v(" "), _vm._m(4)]), _vm._v(" "), _vm._m(5)]), _vm._v(" "), _vm._m(6)])])])]);
 };
 
 var staticRenderFns = [function () {
@@ -7256,23 +7305,14 @@ var staticRenderFns = [function () {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _c("li", {
-    staticClass: "nav-item dropdown"
-  }, [_c("a", {
-    staticClass: "nav-link position-relative",
-    attrs: {
-      href: "#",
-      role: "button",
-      "data-bs-toggle": "dropdown",
-      "aria-expanded": "false"
-    }
-  }, [_c("span", [_c("i", {
+  return _c("span", [_c("i", {
     staticClass: "fa-solid fa-bell"
-  })]), _vm._v(" "), _c("span", {
-    staticClass: "position-absolute translate-middle badge rounded-pill bg-danger notificate"
-  }, [_vm._v("\n                                99+\n                                "), _c("span", {
-    staticClass: "visually-hidden"
-  }, [_vm._v("unread messages")])])]), _vm._v(" "), _c("ul", {
+  })]);
+}, function () {
+  var _vm = this,
+      _c = _vm._self._c;
+
+  return _c("ul", {
     staticClass: "dropdown-menu"
   }, [_c("li", [_c("a", {
     staticClass: "dropdown-item",
@@ -7286,7 +7326,7 @@ var staticRenderFns = [function () {
     attrs: {
       href: "#"
     }
-  }, [_vm._v("إشعار")])])])]);
+  }, [_vm._v("إشعار")])])]);
 }, function () {
   var _vm = this,
       _c = _vm._self._c;
@@ -7719,9 +7759,9 @@ var render = function render() {
       src: _vm.previewAvatar
     }
   }), _c("span", {
-    staticClass: "font-weight-bold"
+    staticClass: "font-weight-bold text-break"
   }, [_vm._v(_vm._s(_vm.profile.firstname) + "\n                        " + _vm._s(_vm.profile.lastname))]), _vm._v(" "), _vm.profile.nickname ? _c("span", {
-    staticClass: "font-weight-bold"
+    staticClass: "font-weight-bold text-break"
   }, [_vm._v("(" + _vm._s(_vm.profile.nickname) + ")")]) : _vm._e(), _vm._v(" "), _c("span", [_c("router-link", {
     staticClass: "btn btn-warning",
     attrs: {
@@ -7734,7 +7774,7 @@ var render = function render() {
     }
   }, [_vm._v("تعديل الملف الشخصي")])], 1), _vm._v(" "), _c("span", {
     staticClass: "text-black-50"
-  }, [_vm._v(_vm._s(_vm.profile.email))]), _c("span", [_vm._v(_vm._s(_vm._f("toNumber")(_vm.profile.followersCount)) + "\n                        مُتَابَع\n                    ")]), _vm._v(" "), _c("span", [_vm._v(_vm._s(_vm._f("toNumber")(_vm.profile.followingsCount)) + "\n                        يتابع\n                    ")])]), _vm._v(" "), _c("div", {
+  }, [_vm._v(_vm._s(_vm.profile.email))]), _c("span", [_vm._v(_vm._s(_vm._f("toNumber")(_vm.profile.followers_count)) + "\n                        مُتَابَع\n                    ")]), _vm._v(" "), _c("span", [_vm._v(_vm._s(_vm._f("toNumber")(_vm.profile.followings_count)) + "\n                        يتابع\n                    ")])]), _vm._v(" "), _c("div", {
     staticClass: "mar-1"
   }, [_c("label", {
     staticClass: "form-label",
@@ -8255,10 +8295,10 @@ var render = function render() {
       src: _vm.previewAvatar(_vm.profile.avatar)
     }
   }), _c("span", {
-    staticClass: "font-weight-bold"
+    staticClass: "font-weight-bold text-break"
   }, [_vm._v(_vm._s(_vm.profile.firstname) + "\n                        " + _vm._s(_vm.profile.lastname))]), _vm._v(" "), _c("span", {
-    staticClass: "text-black-50"
-  }, [_vm._v(_vm._s(_vm.profile.email))]), _vm._v(" "), !_vm.followed ? _c("span", {
+    staticClass: "text-black-50 text-break"
+  }, [_vm._v(_vm._s(_vm.profile.nickname))]), _vm._v(" "), !_vm.followed ? _c("span", {
     staticClass: "btn btn-primary",
     on: {
       click: function click($event) {
@@ -8276,7 +8316,7 @@ var render = function render() {
     }
   }, [_vm._v("الغاء متابعة "), _c("i", {
     staticClass: "fa-solid fa-minus"
-  })]), _vm._v(" "), _c("span", [_vm._v(_vm._s(_vm._f("toNumber")(_vm.profile.followersCount)) + " مُتَابَع\n                    ")]), _vm._v(" "), _c("span", [_vm._v(_vm._s(_vm._f("toNumber")(_vm.profile.followingsCount)) + "\n                        يتابع\n                    ")])]), _vm._v(" "), _c("div", [_c("span", [_vm._v("حول")]), _vm._v(" "), _c("textarea", {
+  })]), _vm._v(" "), _c("span", [_vm._v(_vm._s(_vm._f("toNumber")(_vm.profile.followers_count)) + " مُتَابَع\n                    ")]), _vm._v(" "), _c("span", [_vm._v(_vm._s(_vm._f("toNumber")(_vm.profile.followings_count)) + "\n                        يتابع\n                    ")])]), _vm._v(" "), _c("div", [_c("span", [_vm._v("حول")]), _vm._v(" "), _c("textarea", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -9033,11 +9073,11 @@ var render = function render() {
       src: _vm.getAvatar
     }
   }), _c("span", {
-    staticClass: "font-weight-bold"
+    staticClass: "font-weight-bold text-break"
   }, [_vm._v(_vm._s(_vm.firstname) + " " + _vm._s(_vm.lastname))]), _vm._v(" "), _vm.nickname ? _c("span", {
-    staticClass: "font-weight-bold"
+    staticClass: "font-weight-bold text-break"
   }, [_vm._v("(" + _vm._s(_vm.nickname) + ")")]) : _vm._e(), _vm._v(" "), _c("span", {
-    staticClass: "text-black-50"
+    staticClass: "text-black-50 text-break"
   }, [_vm._v(_vm._s(_vm.email))])]), _vm._v(" "), _c("div", {
     staticClass: "mar-1"
   }, [_c("label", {
@@ -9822,6 +9862,39 @@ var header = {
 
 /***/ }),
 
+/***/ "./resources/js/helpers/services.js":
+/*!******************************************!*\
+  !*** ./resources/js/helpers/services.js ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _helpers_auth__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../helpers/auth */ "./resources/js/helpers/auth.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+
+
+var functions = {
+  sendNotification: function sendNotification(data) {
+    axios__WEBPACK_IMPORTED_MODULE_1___default().post("/api/notifications", data, {
+      headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_0__["default"]
+    }).then(function (response) {
+      console.log(response);
+    })["catch"](function (error) {
+      console.log(error.response);
+      var errors = error.response.data.errors;
+    });
+  },
+  getNotifications: function getNotifications(profileId) {}
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (functions);
+
+/***/ }),
+
 /***/ "./resources/js/router/index.js":
 /*!**************************************!*\
   !*** ./resources/js/router/index.js ***!
@@ -9901,10 +9974,10 @@ router.beforeEach(function (to, from, next) {
   } else {
     var profileId = JSON.parse(localStorage.getItem("user")).profile_id;
     if (!routes.includes(to.name)) next({
-      name: "profile",
-      params: {
-        id: profileId
-      }
+      name: "feed" // params: {
+      //     id: profileId,
+      // },
+
     });
     if (to.name == "profile.edit" && to.params["id"] != profileId) return next({
       name: "profile.edit",

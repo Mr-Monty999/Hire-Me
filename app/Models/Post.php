@@ -21,10 +21,10 @@ class Post extends Model
     }
     public function reacts()
     {
-        return $this->belongsToMany(Profile::class, "post_react")->withPivot("type");
+        return $this->belongsToMany(Profile::class, "post_react")->withPivot("type")->withTimestamps();
     }
     public function tags()
     {
-        return $this->belongsToMany(Tag::class, "post_tag");
+        return $this->belongsToMany(Tag::class, "post_tag")->withTimestamps();
     }
 }

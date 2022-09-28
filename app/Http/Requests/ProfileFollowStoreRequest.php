@@ -24,7 +24,7 @@ class ProfileFollowStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            "profile_id" => "required"
         ];
     }
 }

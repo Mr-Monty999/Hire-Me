@@ -72,6 +72,10 @@
 <script>
 import axios from "axios";
 import headerFormAuth from "../../helpers/formAuth";
+import headerAuth from "../../helpers/auth";
+
+import services from "../../helpers/services";
+
 import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
 
 export default {
@@ -128,6 +132,11 @@ export default {
                     vm.content = "";
                     vm.photo = "";
                     vm.previewPhoto = "";
+                    services.sendNotification({
+                        type: 1,
+                        profile_id: vm.profile_id,
+                        post_id: response.data.data.id,
+                    });
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -141,6 +150,7 @@ export default {
                     }
                 });
         },
+
         getFile(e) {
             this.previewPhoto = e.target.files[0];
             if (this.previewPhoto == undefined) this.previewPhoto = "";
@@ -161,7 +171,6 @@ export default {
     },
     created() {
         this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
-
         this.getProfileInfo();
     },
 };

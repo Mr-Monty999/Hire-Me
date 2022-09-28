@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Notification;
 
 class Profile extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $fillable = [
         "firstname",
@@ -46,11 +48,11 @@ class Profile extends Model
     }
     public function commentsReacts()
     {
-        return $this->belongsToMany(Comment::class, "comment_react");
+        return $this->belongsToMany(Comment::class, "comment_react")->withTimestamps();
     }
     public function postsReacts()
     {
-        return $this->belongsToMany(Post::class, "post_react")->withPivot("type");
+        return $this->belongsToMany(Post::class, "post_react")->withPivot("type")->withTimestamps();
     }
     public function phones()
     {
@@ -58,20 +60,20 @@ class Profile extends Model
     }
     public function connectionsTo()
     {
-        return $this->belongsToMany(Profile::class, "profile_connection", "profile1_id");
+        return $this->belongsToMany(Profile::class, "profile_connection", "profile1_id")->withTimestamps();
     }
     public function connectionsFrom()
     {
-        return $this->belongsToMany(Profile::class, "profile_connection", "profile2_id");
+        return $this->belongsToMany(Profile::class, "profile_connection", "profile2_id")->withTimestamps();
     }
 
     public function followings()
     {
-        return $this->belongsToMany(Profile::class, "profile_follow", "profile1_id", "profile2_id");
+        return $this->belongsToMany(Profile::class, "profile_follow", "profile1_id", "profile2_id")->withTimestamps();
     }
     public function followers()
     {
-        return $this->belongsToMany(Profile::class, "profile_follow", "profile2_id", "profile1_id");
+        return $this->belongsToMany(Profile::class, "profile_follow", "profile2_id", "profile1_id")->withTimestamps();
     }
     public function experiences()
     {
@@ -79,16 +81,16 @@ class Profile extends Model
     }
     public function certificates()
     {
-        return $this->belongsToMany(Certificate::class, "profile_certificate");
+        return $this->belongsToMany(Certificate::class, "profile_certificate")->withTimestamps();
     }
 
     public function managementCompanies()
     {
-        return $this->belongsToMany(Company::class, "company_management");
+        return $this->belongsToMany(Company::class, "company_management")->withTimestamps();
     }
 
     public function skills()
     {
-        return $this->belongsToMany(Skill::class, "profile_skill");
+        return $this->belongsToMany(Skill::class, "profile_skill")->withTimestamps();
     }
 }

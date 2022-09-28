@@ -14,11 +14,11 @@ class CreateNotificationsTable extends Migration
     public function up()
     {
         Schema::create('notifications', function (Blueprint $table) {
-            $table->id();
-            $table->integer('type')->unsigned(); //follow ,comments etc
-            $table->string('data'); //follow id ,comment id etc ,you can set relationship in model about this
-            $table->bigInteger('profile_id')->unsigned(); // set relationship in profile model
-            $table->bigInteger('profile_to_notify')->unsigned(); //the profile who will recive this notification
+            $table->uuid('id')->primary();
+            $table->string('type');
+            $table->morphs('notifiable');
+            $table->text('data');
+            $table->timestamp('read_at')->nullable();
             $table->timestamps();
         });
     }

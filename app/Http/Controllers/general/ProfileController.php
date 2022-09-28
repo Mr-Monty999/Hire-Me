@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\general;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProfileFollowStoreRequest;
 use App\Http\Requests\ProfileStoreRequest;
 use App\Http\Requests\ProfileUpdateRquest;
 use App\Http\Resources\ProfileResource;
@@ -11,9 +12,12 @@ use App\Models\Profile;
 use App\Models\ProfilePhone;
 use App\Models\User;
 use App\Services\FileUploadService;
+use App\Services\NotificationService;
+use App\Services\ProfileService;
 use App\Services\ResponseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Notification;
 
 class ProfileController extends Controller
 {
@@ -25,6 +29,7 @@ class ProfileController extends Controller
     public function index()
     {
         $data = Profile::with("phones", "skills", "experiences", "posts")->get();
+
         return ResponseService::json($data, "تم جلب البيانات بنجاح");
     }
 
@@ -60,28 +65,7 @@ class ProfileController extends Controller
     public function show($id)
     {
 
-        $profile = Profile::with([
-            "phones",
-            "skills",
-            "experiences",
-            // "posts" => function ($q) {
-            //     $q->latest();
-            // },
-            // "posts.comments.replies",
-            // "posts.profile:id,firstname,lastname,avatar",
-            // "posts.reacts",
-            // "posts.tags",
-            "user",
-            "followers" => function ($q) {
-                $q->paginate(5);
-            },
-            "followings" => function ($q) {
-                $q->paginate(5);
-            }
-        ])->find($id);
-        // $data = $profile;
-        $profile["followersCount"] = $profile->followers()->count();
-        $profile["followingsCount"] = $profile->followings()->count();
+        $profile = ProfileService::showProfileWithRelations($id);
 
         return ResponseService::json($profile, "تم جلب البيانات بنجاح");
     }
@@ -89,40 +73,47 @@ class ProfileController extends Controller
     public function showProfileOnly($id)
     {
 
-        $profile = Profile::find($id);
+        $profile = ProfileService::showProfileOnly($id);
         return ResponseService::json($profile, "تم جلب البيانات بنجاح");
     }
 
     public function showPhones($profileId)
     {
-        $phones =  Profile::with("phones")->find($profileId)->only("phones");
+        $phones =  ProfileService::showPhones($profileId);
         // $phones = ProfilePhone::where("profile_id", $profileId)->get();
 
         return ResponseService::json($phones, "تم جلب أرقام الهواتف بنجاح");
     }
     public function showPosts($profileId)
     {
-        $posts =  Post::with("comments", "reacts", "profile:id,firstname,lastname,avatar", "tags")->where("profile_id", $profileId)->latest()->paginate(5);
+        $posts =  ProfileService::showPosts($profileId);
 
         return ResponseService::json($posts, "تم جلب المنشورات بنجاح");
     }
-    public function followProfile($myProfileId, $targetProfileId)
+    public function followProfile(ProfileFollowStoreRequest $request, $myProfileId)
     {
-        $profile = Profile::findOrFail($myProfileId);
-        $profile->followings()->syncWithoutDetaching($targetProfileId);
+        $profile = ProfileService::followProfile($request, $myProfileId);
+
         return ResponseService::json($profile, "تم المتابعة بنجاح");
     }
     public function unFollowProfile($myProfileId, $targetProfileId)
     {
-        $profile = Profile::findOrFail($myProfileId);
-        $profile->followings()->detach($targetProfileId);
+        $profile = ProfileService::unFollowProfile($myProfileId, $targetProfileId);
         return ResponseService::json($profile, "تم إلغاء المتابعة بنجاح");
     }
     public function isFollowed($myProfileId, $targetProfileId)
     {
-        $profile = Profile::findOrFail($myProfileId);
-        $exist =  $profile->followings()->wherePivot("profile2_id", "=", $targetProfileId)->exists();
+        $exist =  ProfileService::isFollowed($myProfileId, $targetProfileId);
         return ResponseService::json($exist, "تمت العملية بنجاح");
+    }
+
+    public function getNotifications($id)
+    {
+
+        $notifications = NotificationService::getProfileReceivedNotificationsFromFollowings($id);
+        $data["notifications"] = $notifications;
+        $data["unreaded_notifications_count"] = NotificationService::getProfileUnReadedNotificationsCount($id);
+        return ResponseService::json($data, "تمت العملية بنجاح");
     }
     /**
      * Show the form for editing the specified resource.

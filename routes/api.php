@@ -39,9 +39,10 @@ Route::group(["namespace" => "general"], function () {
         // Route::get("profiles/{id}/phones", "ProfileController@showPhones");
         Route::get("profiles/{id}/posts", "ProfileController@showPosts");
         Route::get("profiles/{id}/info", "ProfileController@showProfileOnly");
-        Route::post("profiles/{id}/follow/profiles/{targetId}", "ProfileController@followProfile");
-        Route::post("profiles/{id}/unfollow/profiles/{targetId}", "ProfileController@unFollowProfile");
-        Route::get("profiles/{id}/is-followed/profiles/{targetId}", "ProfileController@isFollowed");
+        Route::post("profiles/{id}/follows", "ProfileController@followProfile");
+        Route::delete("profiles/{id}/profiles/{targetId}/follows", "ProfileController@unFollowProfile");
+        Route::get("profiles/{id}/profiles/{targetId}/is-followed", "ProfileController@isFollowed");
+        Route::get("profiles/{id}/notifications", "ProfileController@getNotifications");
 
         //Profile Phones
         Route::resource("profiles.phones", "ProfilePhoneController");
@@ -63,16 +64,19 @@ Route::group(["namespace" => "general"], function () {
 
         //Posts
         Route::resource("posts", "PostController");
-        Route::post("posts/{id}/profiles/{profileId}/react/{type}", "PostController@react");
-        Route::post("posts/{id}/profiles/{profileId}/unreact", "PostController@unReact");
+        Route::post("posts/{id}/profiles", "PostController@react");
+        Route::delete("posts/{id}/profiles/{profileId}", "PostController@unReact");
         Route::get("posts/{id}/profiles/{profileId}/react-type", "PostController@isReacted");
 
         //Skills
         Route::resource("skills", "SkillController");
-        Route::delete("skills/{skillId}/profiles/{profileId}/detach", "SkillController@detach");
+        Route::delete("skills/{skillId}/profiles/{profileId}", "SkillController@detach");
         Route::get("skills/{name}/search", "SkillController@search");
 
         //Tags
         Route::resource("tags", "TagController");
+
+        //Noctifications
+        Route::resource("notifications", "NotificationController");
     });
 });

@@ -10,11 +10,13 @@
                             class="rounded-circle mt-5"
                             width="150px"
                             :src="previewAvatar"
-                        /><span class="font-weight-bold"
+                        /><span class="font-weight-bold text-break"
                             >{{ profile.firstname }}
                             {{ profile.lastname }}</span
                         >
-                        <span v-if="profile.nickname" class="font-weight-bold"
+                        <span
+                            v-if="profile.nickname"
+                            class="font-weight-bold text-break"
                             >({{ profile.nickname }})</span
                         >
                         <span
@@ -31,11 +33,11 @@
                         </span>
                         <span class="text-black-50">{{ profile.email }}</span
                         ><span
-                            >{{ profile.followersCount | toNumber }}
+                            >{{ profile.followers_count | toNumber }}
                             مُتَابَع
                         </span>
                         <span
-                            >{{ profile.followingsCount | toNumber }}
+                            >{{ profile.followings_count | toNumber }}
                             يتابع
                         </span>
                     </div>
@@ -584,16 +586,9 @@ export default {
             var vm = this;
 
             axios
-                .delete(
-                    "/api/skills/" +
-                        skillId +
-                        "/profiles/" +
-                        profileId +
-                        "/detach",
-                    {
-                        headers: headerAuth,
-                    }
-                )
+                .delete("/api/skills/" + skillId + "/profiles/" + profileId, {
+                    headers: headerAuth,
+                })
                 .then(function (response) {
                     console.log(response);
                     var index = vm.profile.skills.findIndex(

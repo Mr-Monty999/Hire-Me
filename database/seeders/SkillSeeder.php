@@ -22,6 +22,8 @@ class SkillSeeder extends Seeder
 
         foreach (Profile::all() as $key => $row) {
             $ids = Skill::pluck("id")->toArray();
+            foreach ($ids as $key => $value)
+                $ids[$value] = ["created_at" => now(), "updated_at" => now()];
             $row->skills()->sync($ids);
         }
     }

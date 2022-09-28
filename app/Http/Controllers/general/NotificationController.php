@@ -5,8 +5,12 @@ namespace App\Http\Controllers\general;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreNotificationRequest;
 use App\Http\Requests\UpdateNotificationRequest;
-use App\Models\Notification;
-
+use App\Models\Profile;
+use App\Notifications\PostNotification;
+use App\Notifications\ProfileNotification;
+use App\Notifications\ReactNotification;
+use App\Services\ResponseService;
+use Response;
 
 class NotificationController extends Controller
 {
@@ -17,7 +21,6 @@ class NotificationController extends Controller
      */
     public function index()
     {
-        //
     }
 
     /**
@@ -38,7 +41,19 @@ class NotificationController extends Controller
      */
     public function store(StoreNotificationRequest $request)
     {
-        //
+        /*
+        notifications types :
+            1 = Posts notifications
+            2 = Reacts notifcations
+        */
+        $data = $request->all();
+        $profile = Profile::find($request->profile_id);
+        if ($request->type == 1)
+            $profile->notify(new PostNotification($data));
+        else if ($request->type == 2)
+            $profile->notify(new ReactNotification($data));
+
+        return ResponseService::json($request->all(), "تم إرسال الإشعار بنجاح");
     }
 
     /**
@@ -47,7 +62,7 @@ class NotificationController extends Controller
      * @param  \App\Models\Notification  $notification
      * @return \Illuminate\Http\Response
      */
-    public function show(Notification $notification)
+    public function show($notification)
     {
         //
     }
@@ -58,7 +73,7 @@ class NotificationController extends Controller
      * @param  \App\Models\Notification  $notification
      * @return \Illuminate\Http\Response
      */
-    public function edit(Notification $notification)
+    public function edit($notification)
     {
         //
     }
@@ -70,7 +85,7 @@ class NotificationController extends Controller
      * @param  \App\Models\Notification  $notification
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateNotificationRequest $request, Notification $notification)
+    public function update(UpdateNotificationRequest $request,  $notification)
     {
         //
     }
@@ -81,7 +96,7 @@ class NotificationController extends Controller
      * @param  \App\Models\Notification  $notification
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Notification $notification)
+    public function destroy($notification)
     {
         //
     }

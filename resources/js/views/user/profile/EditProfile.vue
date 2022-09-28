@@ -13,13 +13,17 @@
                             class="rounded-circle mt-5"
                             width="150px"
                             :src="getAvatar"
-                        /><span class="font-weight-bold"
+                        /><span class="font-weight-bold text-break"
                             >{{ firstname }} {{ lastname }}</span
                         >
-                        <span v-if="nickname" class="font-weight-bold"
+                        <span
+                            v-if="nickname"
+                            class="font-weight-bold text-break"
                             >({{ nickname }})</span
                         >
-                        <span class="text-black-50">{{ email }}</span>
+                        <span class="text-black-50 text-break">{{
+                            email
+                        }}</span>
                     </div>
                     <div class="mar-1">
                         <label for="" class="form-label">حول</label>

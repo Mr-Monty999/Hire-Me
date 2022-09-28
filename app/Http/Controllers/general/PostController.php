@@ -8,6 +8,7 @@ use App\Http\Requests\PostUpdateRequest;
 use App\Models\Post;
 use App\Models\Profile;
 use App\Services\FileUploadService;
+use App\Services\PostService;
 use App\Services\ResponseService;
 use Illuminate\Http\Request;
 
@@ -20,7 +21,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with("comments.replies", "reacts", "tags", "profile:id,firstname,lastname,avatar")->latest()->paginate(5);
+        $posts = PostService::getAllPosts();
 
         return ResponseService::json($posts, "تم جلب جميع المنشورات بنجاح");
     }
@@ -67,13 +68,13 @@ class PostController extends Controller
         return ResponseService::json($post, "تم عرض المنشور بنجاح");
     }
 
-    public function react($postId, $profileId, $type)
+    public function react(Request $request, $postId)
     {
         $post = Post::findOrFail($postId);
         $post->reacts()->syncWithoutDetaching([
-            $profileId => ["type" => $type]
+            $request->profile_id => ["type" => $request->type]
         ]);
-        $reacted = $post->reacts()->wherePivot("profile_id", "=", $profileId)->first();
+        $reacted = $post->reacts()->wherePivot("profile_id", "=", $request->profile_id)->first();
         return ResponseService::json($reacted, "تم التفاعل مع المنشور بنجاح");
     }
     public function unReact($postId, $profileId)

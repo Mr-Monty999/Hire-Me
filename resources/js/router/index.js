@@ -68,10 +68,10 @@ router.beforeEach(function (to, from, next) {
 
         if (!routes.includes(to.name))
             next({
-                name: "profile",
-                params: {
-                    id: profileId,
-                },
+                name: "feed",
+                // params: {
+                //     id: profileId,
+                // },
             });
         if (to.name == "profile.edit" && to.params["id"] != profileId)
             return next({

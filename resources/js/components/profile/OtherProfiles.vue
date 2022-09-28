@@ -10,11 +10,13 @@
                             class="rounded-circle mt-5"
                             width="150px"
                             :src="previewAvatar(profile.avatar)"
-                        /><span class="font-weight-bold"
+                        /><span class="font-weight-bold text-break"
                             >{{ profile.firstname }}
                             {{ profile.lastname }}</span
                         >
-                        <span class="text-black-50">{{ profile.email }}</span>
+                        <span class="text-black-50 text-break">{{
+                            profile.nickname
+                        }}</span>
                         <span
                             class="btn btn-primary"
                             v-if="!followed"
@@ -30,10 +32,10 @@
                             >الغاء متابعة <i class="fa-solid fa-minus"></i
                         ></span>
                         <span
-                            >{{ profile.followersCount | toNumber }} مُتَابَع
+                            >{{ profile.followers_count | toNumber }} مُتَابَع
                         </span>
                         <span
-                            >{{ profile.followingsCount | toNumber }}
+                            >{{ profile.followings_count | toNumber }}
                             يتابع
                         </span>
                     </div>
@@ -311,12 +313,10 @@ export default {
 
             axios
                 .post(
-                    "/api/profiles/" +
-                        profileId +
-                        "/follow/profiles/" +
-                        targetProfileId +
-                        "",
-                    {},
+                    "/api/profiles/" + profileId + "/follows",
+                    {
+                        profile_id: targetProfileId,
+                    },
                     {
                         headers: headerAuth,
                     }
@@ -347,13 +347,12 @@ export default {
             var vm = this;
 
             axios
-                .post(
+                .delete(
                     "/api/profiles/" +
                         profileId +
-                        "/unfollow/profiles/" +
+                        "/profiles/" +
                         targetProfileId +
-                        "",
-                    {},
+                        "/follows",
                     {
                         headers: headerAuth,
                     }
@@ -387,8 +386,9 @@ export default {
                 .get(
                     "/api/profiles/" +
                         profileId +
-                        "/is-followed/profiles/" +
-                        targetProfileId,
+                        "/profiles/" +
+                        targetProfileId +
+                        "/is-followed",
                     {
                         headers: headerAuth,
                     }

@@ -42,7 +42,6 @@ namespace App\Models{
  * App\Models\Comment
  *
  * @property int $id
- * @property string $title
  * @property string $content
  * @property string|null $photo
  * @property int $post_id
@@ -50,11 +49,11 @@ namespace App\Models{
  * @property int|null $comment_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Profile[] $likes
- * @property-read int|null $likes_count
  * @property-read Comment|null $parentComment
  * @property-read \App\Models\Post $post
  * @property-read \App\Models\Profile $profile
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Profile[] $reacts
+ * @property-read int|null $reacts_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Comment[] $replies
  * @property-read int|null $replies_count
  * @method static \Database\Factories\CommentFactory factory(...$parameters)
@@ -68,7 +67,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Comment wherePhoto($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment wherePostId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereProfileId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereUpdatedAt($value)
  */
 	class Comment extends \Eloquent {}
@@ -178,7 +176,6 @@ namespace App\Models{
  * App\Models\Post
  *
  * @property int $id
- * @property string $title
  * @property string $content
  * @property string|null $photo
  * @property int $profile_id
@@ -186,9 +183,9 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Comment[] $comments
  * @property-read int|null $comments_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Profile[] $likes
- * @property-read int|null $likes_count
  * @property-read \App\Models\Profile $profile
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Profile[] $reacts
+ * @property-read int|null $reacts_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tag[] $tags
  * @property-read int|null $tags_count
  * @method static \Database\Factories\PostFactory factory(...$parameters)
@@ -200,7 +197,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post wherePhoto($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereProfileId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereUpdatedAt($value)
  */
 	class Post extends \Eloquent {}
@@ -214,6 +210,7 @@ namespace App\Models{
  * @property string $firstname
  * @property string $lastname
  * @property string|null $nickname
+ * @property string $gender
  * @property string|null $birthdate
  * @property string|null $about
  * @property string|null $avatar
@@ -233,8 +230,8 @@ namespace App\Models{
  * @property-read int|null $certificates_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Comment[] $comments
  * @property-read int|null $comments_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Comment[] $commentsLikes
- * @property-read int|null $comments_likes_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Comment[] $commentsReacts
+ * @property-read int|null $comments_reacts_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Profile[] $connectionsFrom
  * @property-read int|null $connections_from_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Profile[] $connectionsTo
@@ -247,12 +244,14 @@ namespace App\Models{
  * @property-read int|null $followings_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Company[] $managementCompanies
  * @property-read int|null $management_companies_count
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProfilePhone[] $phones
  * @property-read int|null $phones_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Post[] $posts
  * @property-read int|null $posts_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Post[] $postsLikes
- * @property-read int|null $posts_likes_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Post[] $postsReacts
+ * @property-read int|null $posts_reacts_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Skill[] $skills
  * @property-read int|null $skills_count
  * @property-read \App\Models\User $user
@@ -269,6 +268,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Profile whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Profile whereDegree($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Profile whereFirstname($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Profile whereGender($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Profile whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Profile whereLastname($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Profile whereNickname($value)

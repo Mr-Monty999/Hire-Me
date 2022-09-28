@@ -26,7 +26,8 @@ class ProfileSeeder extends Seeder
         foreach (Profile::all() as $key => $row) {
             # code...
             $ids = Profile::pluck("id")->toArray();
-
+            foreach ($ids as $key => $value)
+                $ids[$value] =  ["created_at" => now(), "updated_at" => now()];
             $row->followings()->sync($ids);
             $row->followers()->sync($ids);
         }

@@ -88,9 +88,9 @@
                                 <span
                                     class="position-absolute translate-middle badge rounded-pill bg-danger notificate"
                                 >
-                                    99+
+                                    {{ unreadedNotifications }}+
                                     <span class="visually-hidden"
-                                        >unread messages</span
+                                        >unread notifications</span
                                     >
                                 </span>
                             </a>
@@ -167,6 +167,7 @@ export default {
             profile_id: "",
             avatar: "",
             user_id: "",
+            unreadedNotifications: 0,
         };
     },
     methods: {
@@ -214,6 +215,22 @@ export default {
                     console.log(error.response);
                 });
         },
+        getNotifications(profileId) {
+            var vm = this;
+
+            axios
+                .get("/api/profiles/" + profileId + "/notifications", {
+                    headers: headerAuth,
+                })
+                .then(function (response) {
+                    console.log(response);
+                    vm.unreadedNotifications =
+                        response.data.data.unreaded_notifications_count;
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                });
+        },
     },
     computed: {
         previewAvatar() {
@@ -227,6 +244,7 @@ export default {
         this.user_id = JSON.parse(localStorage.getItem("user")).id;
         this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
         this.getProfileInfo();
+        this.getNotifications(this.profile_id);
     },
 };
 </script>

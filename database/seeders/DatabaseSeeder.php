@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Notification;
 use App\Models\Skill;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -29,6 +30,7 @@ class DatabaseSeeder extends Seeder
             CertificateSeeder::class,
             CommentSeeder::class,
             PostSeeder::class,
+            // NotificationSeeder::class
         ]);
     }
 }

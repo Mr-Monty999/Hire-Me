@@ -221,6 +221,7 @@ import headerAuth from "../../helpers/auth";
 import headerFormAuth from "../../helpers/formAuth";
 import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
 import Paginate from "vuejs-paginate";
+import services from "../../helpers/services";
 
 export default {
     name: "ViewPosts",
@@ -341,13 +342,11 @@ export default {
 
             axios
                 .post(
-                    "/api/posts/" +
-                        postId +
-                        "/profiles/" +
-                        profileId +
-                        "/react/" +
-                        reactType,
-                    {},
+                    "/api/posts/" + postId + "/profiles",
+                    {
+                        profile_id: profileId,
+                        type: reactType,
+                    },
                     {
                         headers: headerAuth,
                     }
@@ -369,6 +368,12 @@ export default {
                         text: response.data.message,
                         type: "success",
                     });
+                    services.sendNotification({
+                        type: 2,
+                        profile_id: vm.profile_id,
+                        post_id: postId,
+                        react_type: reactType,
+                    });
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -386,17 +391,9 @@ export default {
             var vm = this;
 
             axios
-                .post(
-                    "/api/posts/" +
-                        postId +
-                        "/profiles/" +
-                        profileId +
-                        "/unreact",
-                    {},
-                    {
-                        headers: headerAuth,
-                    }
-                )
+                .delete("/api/posts/" + postId + "/profiles/" + profileId, {
+                    headers: headerAuth,
+                })
                 .then(function (response) {
                     console.log(response);
 
