@@ -2,8 +2,14 @@
 
 namespace App\Services;
 
-use Carbon\Carbon;
-use DB;
+use App\Models\Profile;
+use App\Notifications\PostNotification;
+use App\Notifications\ReactNotification;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Notification;
+use Laravel\Ui\Presets\React;
+use PhpParser\ErrorHandler\Collecting;
+use stdClass;
 
 /**
  * Class NotificationService.
@@ -12,70 +18,42 @@ class NotificationService
 {
 
 
-    public static function getProfileReceivedNotificationsFromFollowings($profileId)
-    {
 
-        return DB::table("notifications")
-            ->join(
-                "profile_follow",
-                "profile_follow.profile2_id",
-                "=",
-                "notifications.notifiable_id"
-            )
-            ->where("profile_follow.profile1_id", "=", $profileId)
-            ->where("notifications.notifiable_id", "!=", $profileId)
-            // ->whereRaw("notifications.created_at > profile_follow.created_at")
-            ->orWhereNotNull("notifications.read_at")
-            ->where("profile_follow.profile1_id", "=", $profileId)
-            ->where("notifications.notifiable_id", "!=", $profileId)
 
-            ->orderByDesc("notifications.created_at")
-            ->get();
-    }
-
-    public static function getProfileReceivedNotificationsFromConnections($profileId)
-    {
-
-        return DB::table("notifications")
-            ->join(
-                "profile_connection",
-                "profile_connection.profile2_id",
-                "=",
-                "notifications.notifiable_id"
-            )
-            ->where("profile_connection.profile1_id", "=", $profileId)
-            ->where("notifications.notifiable_id", "!=", $profileId)
-            ->orWhereNotNull("notifications.read_at")
-            ->where("profile_connection.profile1_id", "=", $profileId)
-            ->where("notifications.notifiable_id", "!=", $profileId)
-            ->orderByDesc("notifications.created_at")
-            ->get();
-    }
 
     public static function getProfileAllReceivedNotifications($profileId)
     {
-        $followingsNotifications = self::getProfileReceivedNotificationsFromFollowings($profileId);
-        $connectionsNotifications = self::getProfileReceivedNotificationsFromFollowings($profileId);
+        return Profile::find($profileId)->notifications()->get();
+    }
 
-        $merged = array_merge($followingsNotifications, $connectionsNotifications);
-        return $merged;
+    public static function sendNotifications($request)
+    {
+
+        /*
+        notifications types :
+            1 = Posts notifications
+            2 = Reacts notifcations
+        */
+
+        $profile = Profile::find($request->profile_id);
+        $followings = $profile->followings()->get()->except($request->profile_id);
+        $connetions = $profile->connectionsTo()->get()->except($request->profile_id);
+
+
+        $targets =  $followings->merge($connetions)->unique("id");
+
+        if ($request->type == 1)
+            Notification::send($targets, new PostNotification($request->all()));
+        else if ($request->type == 2) {
+            if ($request->post_author != $request->profile_id)
+                Profile::find($request->post_author)->notify(new ReactNotification($request->all()));
+        }
+
+        return $targets;
     }
 
     public static function getProfileUnReadedNotificationsCount($profileId)
     {
-
-        return DB::table("notifications")
-            ->join(
-                "profile_follow",
-                "profile_follow.profile2_id",
-                "=",
-                "notifications.notifiable_id"
-            )
-            ->where("profile_follow.profile1_id", "=", $profileId)
-            ->where("notifications.notifiable_id", "!=", $profileId)
-            ->whereNull("notifications.read_at")
-
-            ->orderByDesc("notifications.created_at")
-            ->count();
+        return Profile::find($profileId)->unreadNotifications()->count();
     }
 }

@@ -60,11 +60,11 @@ class Profile extends Model
     }
     public function connectionsTo()
     {
-        return $this->belongsToMany(Profile::class, "profile_connection", "profile1_id")->withTimestamps();
+        return $this->belongsToMany(Profile::class, "profile_connection", "profile1_id", "profile2_id")->withTimestamps();
     }
     public function connectionsFrom()
     {
-        return $this->belongsToMany(Profile::class, "profile_connection", "profile2_id")->withTimestamps();
+        return $this->belongsToMany(Profile::class, "profile_connection", "profile2_id", "profile1_id")->withTimestamps();
     }
 
     public function followings()

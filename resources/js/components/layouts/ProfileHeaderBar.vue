@@ -74,18 +74,18 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a
+                        <li class="nav-item">
+                            <router-link
                                 class="nav-link position-relative"
-                                href="#"
-                                role="button"
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
+                                :to="{
+                                    name: 'notifications',
+                                }"
                             >
                                 <span>
                                     <i class="fa-solid fa-bell"></i>
                                 </span>
                                 <span
+                                    v-if="unreadedNotifications > 0"
                                     class="position-absolute translate-middle badge rounded-pill bg-danger notificate"
                                 >
                                     {{ unreadedNotifications }}+
@@ -93,16 +93,7 @@
                                         >unread notifications</span
                                     >
                                 </span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a class="dropdown-item" href="#">إشعار</a>
-                                </li>
-                                <li><hr class="dropdown-divider" /></li>
-                                <li>
-                                    <a class="dropdown-item" href="#">إشعار</a>
-                                </li>
-                            </ul>
+                            </router-link>
                         </li>
                         <li class="nav-item dropdown">
                             <a

@@ -9,7 +9,9 @@ use App\Models\Profile;
 use App\Notifications\PostNotification;
 use App\Notifications\ProfileNotification;
 use App\Notifications\ReactNotification;
+use App\Services\NotificationService;
 use App\Services\ResponseService;
+use Illuminate\Support\Facades\Notification;
 use Response;
 
 class NotificationController extends Controller
@@ -41,19 +43,10 @@ class NotificationController extends Controller
      */
     public function store(StoreNotificationRequest $request)
     {
-        /*
-        notifications types :
-            1 = Posts notifications
-            2 = Reacts notifcations
-        */
-        $data = $request->all();
-        $profile = Profile::find($request->profile_id);
-        if ($request->type == 1)
-            $profile->notify(new PostNotification($data));
-        else if ($request->type == 2)
-            $profile->notify(new ReactNotification($data));
 
-        return ResponseService::json($request->all(), "تم إرسال الإشعار بنجاح");
+        $data = NotificationService::sendNotifications($request);
+
+        return ResponseService::json($data, "تم إرسال جميع الإشعارات بنجاح");
     }
 
     /**

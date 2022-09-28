@@ -8,6 +8,8 @@ import EditProfile from "../views/user/profile/EditProfile.vue";
 import Register from "../views/guest/Register.vue";
 import Contact from "../views/guest/Contact.vue";
 import Feed from "../views/user/Feed.vue";
+import Notifications from "../views/user/profile/Notifications.vue";
+import Connections from "../views/user/profile/Connections.vue";
 
 Vue.use(VueRouter);
 
@@ -38,6 +40,16 @@ const routes = [
         component: Feed,
     },
     {
+        path: "/notifications",
+        name: "notifications",
+        component: Notifications,
+    },
+    {
+        path: "/connections",
+        name: "connections",
+        component: Connections,
+    },
+    {
         path: "/profile/:id/edit",
         name: "profile.edit",
         component: EditProfile,
@@ -60,7 +72,13 @@ const router = new VueRouter({
 });
 
 router.beforeEach(function (to, from, next) {
-    const routes = ["profile", "profile.edit", "feed"];
+    const routes = [
+        "profile",
+        "profile.edit",
+        "feed",
+        "notifications",
+        "connections",
+    ];
     if (localStorage.getItem("user") == null) {
         if (routes.includes(to.name)) next({ name: "login" });
     } else {

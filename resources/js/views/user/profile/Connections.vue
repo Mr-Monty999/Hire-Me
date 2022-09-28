@@ -1,0 +1,70 @@
+<template>
+    <div>Connections</div>
+</template>
+
+<script>
+export default {
+    data() {
+        return {
+            myProfileId: 0,
+        };
+    },
+    methods: {},
+    components: {},
+    created() {
+        let profileId = JSON.parse(localStorage.getItem("user")).profile_id;
+        this.myProfileId = profileId;
+    },
+};
+</script>
+
+<style scoped>
+body {
+    background: rgb(99, 39, 120);
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #ba68c8;
+}
+
+.profile-button {
+    background: rgb(99, 39, 120);
+    box-shadow: none;
+    border: none;
+}
+
+.profile-button:hover {
+    background: #682773;
+}
+
+.profile-button:focus {
+    background: #198754;
+    box-shadow: none;
+}
+
+.profile-button:active {
+    background: #682773;
+    box-shadow: none;
+}
+
+.back:hover {
+    color: #682773;
+    cursor: pointer;
+}
+
+.labels {
+    font-size: 11px;
+}
+
+.add-experience:hover {
+    background: #ba68c8;
+    color: #fff;
+    cursor: pointer;
+    border: solid 1px #ba68c8;
+}
+
+textarea {
+    resize: none;
+}
+</style>

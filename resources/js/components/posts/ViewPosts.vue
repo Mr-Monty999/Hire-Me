@@ -373,6 +373,7 @@ export default {
                         profile_id: vm.profile_id,
                         post_id: postId,
                         react_type: reactType,
+                        post_author: vm.posts.data[postIndex].profile_id,
                     });
                 })
                 .catch(function (error) {

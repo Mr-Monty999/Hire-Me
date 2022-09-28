@@ -31,3 +31,11 @@ main {
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
+.height-v90 {
+    min-height: 90vh;
+}
+
+.max-width {
+    width: 100%;
+}
