@@ -1,13 +1,14 @@
 <template>
     <main class="contrainer-fluid">
-        <div class="row">
+        <loading v-if="!loaded"></loading>
+        <div v-if="loaded" class="row">
             <div class="bg-mine col-md-2 offset-md-1 mar-1"></div>
             <div
                 class="bg-mine height-v90 col-md-5 d-flex flex-column align-items-center mar-1"
             >
                 <h1>الإشعارات</h1>
                 <div
-                    v-for="(notification, index) in notifications"
+                    v-for="(notification, index) in notifications.data"
                     :key="index"
                     class="max-width"
                 >
@@ -15,12 +16,14 @@
                         @click="goToPost(notification.data.post_id)"
                         :class="'alert ' + getAlertClass(notification)"
                     >
-                        <div v-if="profiles[index]">
+                        <div v-if="notification.data.profile">
                             <div>
                                 <img
-                                    v-if="profiles[index].avatar != null"
+                                    v-if="
+                                        notification.data.profile.avatar != null
+                                    "
                                     class="photo"
-                                    :src="profiles[index].avatar"
+                                    :src="notification.data.profile.avatar"
                                     alt=""
                                     @click="
                                         goToProfile(
@@ -47,8 +50,8 @@
                                         )
                                     "
                                 >
-                                    {{ profiles[index].firstname }}
-                                    {{ profiles[index].lastname }}
+                                    {{ notification.data.profile.firstname }}
+                                    {{ notification.data.profile.lastname }}
                                 </b>
                                 <div
                                     v-if="
@@ -58,9 +61,9 @@
                                     class="text-break"
                                 >
                                     <b>قام بنشر منشور جديد </b>
-                                    <span
-                                        >"{{ notification.data.content }}"</span
-                                    >
+                                    <div class="limited">
+                                        "{{ notification.data.content }}"
+                                    </div>
                                 </div>
                                 <div
                                     v-else-if="
@@ -85,6 +88,21 @@
                         </div>
                     </div>
                 </div>
+                <paginate
+                    v-if="notifications.last_page > 1"
+                    :page-count="notifications.last_page"
+                    :prev-text="'السابق'"
+                    :per-page="notifications.per_page"
+                    :click-handler="getNotifications"
+                    :page-range="3"
+                    :margin-pages="2"
+                    :next-text="'التالي'"
+                    :page-link-class="'page-link'"
+                    :prev-link-class="'page-link'"
+                    :next-link-class="'page-link'"
+                    :container-class="'pagination'"
+                    :page-class="'page-item'"
+                ></paginate>
             </div>
         </div>
     </main>
@@ -93,56 +111,39 @@
 <script>
 import axios from "axios";
 import headerAuth from "../../../helpers/auth";
+import Paginate from "vuejs-paginate";
+import Loading from "../../../components/bootstrap/Loading.vue";
+
 export default {
     data() {
         return {
             profile_id: 0,
             notifications: {},
             profiles: [],
+            loaded: false,
         };
     },
     methods: {
-        getNotifications(profileId) {
+        getNotifications(pageNumber = 1) {
             var vm = this;
 
             axios
-                .get("/api/profiles/" + profileId + "/notifications", {
-                    headers: headerAuth,
-                })
-                .then(async function (response) {
-                    console.log(response);
-                    vm.notifications = response.data.data.notifications;
-
-                    for (const notification in vm.notifications) {
-                        const id =
-                            vm.notifications[notification].data.profile_id;
-
-                        // vm.notifications[notification].data.profile =
-                        //     await vm.getProfileInfo(id);
-
-                        vm.profiles.push(await vm.getProfileInfo(id));
+                .get(
+                    "/api/profiles/" +
+                        this.profile_id +
+                        "/notifications?page=" +
+                        pageNumber,
+                    {
+                        headers: headerAuth,
                     }
-                })
-                .catch(function (error) {
-                    console.log(error.response);
-                });
-        },
-        async getProfileInfo(profileId) {
-            var vm = this;
-            var data = null;
-            await axios
-                .get("/api/profiles/" + profileId + "/info", {
-                    headers: headerAuth,
-                })
+                )
                 .then(function (response) {
                     console.log(response);
-                    data = response.data.data;
+                    vm.notifications = response.data.data.notifications;
                 })
                 .catch(function (error) {
                     console.log(error.response);
                 });
-
-            return data;
         },
         goToProfile(profileId) {
             this.$router.push({
@@ -165,12 +166,23 @@ export default {
             else return "alert-light";
         },
     },
-    components: {},
+    components: {
+        Paginate,
+        Loading,
+    },
     created() {
         var vm = this;
         let profileId = JSON.parse(localStorage.getItem("user")).profile_id;
         vm.profile_id = profileId;
-        vm.getNotifications(vm.profile_id);
+        vm.getNotifications();
+    },
+    mounted: function () {
+        let vm = this;
+        this.$nextTick(function () {
+            setTimeout(function () {
+                vm.loaded = true;
+            }, 1000);
+        });
     },
 };
 </script>
@@ -201,5 +213,9 @@ img,
 }
 .alert:hover {
     background-color: #eceded;
+}
+.limited {
+    overflow: hidden;
+    max-height: 100px;
 }
 </style>

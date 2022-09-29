@@ -211,11 +211,15 @@ export default {
         },
         getNotifications(profileId) {
             var vm = this;
-
             axios
-                .get("/api/profiles/" + profileId + "/notifications", {
-                    headers: headerAuth,
-                })
+                .get(
+                    "/api/profiles/" +
+                        profileId +
+                        "/notifications/unreaded/count",
+                    {
+                        headers: headerAuth,
+                    }
+                )
                 .then(function (response) {
                     console.log(response);
                     vm.unreadedNotifications =

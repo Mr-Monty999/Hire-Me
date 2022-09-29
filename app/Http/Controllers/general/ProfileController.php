@@ -115,6 +115,11 @@ class ProfileController extends Controller
         $data["unreaded_notifications_count"] = NotificationService::getProfileUnReadedNotificationsCount($id);
         return ResponseService::json($data, "تمت العملية بنجاح");
     }
+    public function getUnReadedNotificationsCount($id)
+    {
+        $data["unreaded_notifications_count"] = NotificationService::getProfileUnReadedNotificationsCount($id);
+        return ResponseService::json($data, "تمت العملية بنجاح");
+    }
     public function readAllNotifications($profileId)
     {
         NotificationService::readAllNotifications($profileId);

@@ -43,6 +43,7 @@ Route::group(["namespace" => "general"], function () {
         Route::delete("profiles/{id}/profiles/{targetId}/follows", "ProfileController@unFollowProfile");
         Route::get("profiles/{id}/profiles/{targetId}/is-followed", "ProfileController@isFollowed");
         Route::get("profiles/{id}/notifications", "ProfileController@getNotifications");
+        Route::get("profiles/{id}/notifications/unreaded/count", "ProfileController@getUnReadedNotificationsCount");
         Route::post("profiles/{id}/notifications/readall", "ProfileController@readAllNotifications");
 
 

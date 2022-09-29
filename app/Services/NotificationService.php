@@ -9,7 +9,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Notification;
 use Laravel\Ui\Presets\React;
 use PhpParser\ErrorHandler\Collecting;
-use stdClass;
 
 /**
  * Class NotificationService.
@@ -17,13 +16,15 @@ use stdClass;
 class NotificationService
 {
 
-
-
-
-
     public static function getProfileAllReceivedNotifications($profileId)
     {
-        return Profile::find($profileId)->notifications()->get();
+        $notifications =  Profile::find($profileId)->notifications()->paginate(10);
+        foreach ($notifications as $key => $value) {
+            $temp = $value->data;
+            $temp["profile"] = Profile::find($value->data["profile_id"]);
+            $value->data = $temp;
+        }
+        return $notifications;
     }
     public static function readAllNotifications($profileId)
     {

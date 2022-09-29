@@ -576,6 +576,7 @@ a {
 }
 textarea {
     resize: none !important;
+    height: 300px;
 }
 img {
     cursor: pointer;
