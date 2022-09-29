@@ -7,10 +7,11 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ReactNotification extends Notification
+class CreatePostNotification extends Notification
 {
     use Queueable;
-    private $reactData;
+    private $postData;
+
 
     /**
      * Create a new notification instance.
@@ -19,7 +20,7 @@ class ReactNotification extends Notification
      */
     public function __construct($data)
     {
-        $this->reactData = $data;
+        $this->postData = $data;
     }
 
     /**
@@ -56,9 +57,9 @@ class ReactNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            "react_type" => $this->reactData["react_type"],
-            "post_id" => $this->reactData["post_id"],
-            "profile_id" => $this->reactData["profile_id"]
+            "profile_id" => $this->postData["profile_id"],
+            "post_id" => $this->postData["post_id"],
+            "content" => $this->postData["content"]
         ];
     }
 }

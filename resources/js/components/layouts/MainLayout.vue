@@ -26,6 +26,7 @@ export default {
                 "feed",
                 "notifications",
                 "connections",
+                "post",
             ];
             if (routes.includes(this.$route.name)) return true;
 

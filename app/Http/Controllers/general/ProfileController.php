@@ -115,6 +115,11 @@ class ProfileController extends Controller
         $data["unreaded_notifications_count"] = NotificationService::getProfileUnReadedNotificationsCount($id);
         return ResponseService::json($data, "تمت العملية بنجاح");
     }
+    public function readAllNotifications($profileId)
+    {
+        NotificationService::readAllNotifications($profileId);
+        return ResponseService::json(null, "تمت العملية بنجاح");
+    }
     /**
      * Show the form for editing the specified resource.
      *
@@ -142,7 +147,7 @@ class ProfileController extends Controller
 
 
         $data = $request->all();
-        $profile = Profile::where("user_id", $id)->first();
+        $profile = Profile::find($id);
         if ($request->file("avatar") != null) {
             $data["avatar"] = FileUploadService::uploadImage($request->file("avatar"), "/images/profiles");
 

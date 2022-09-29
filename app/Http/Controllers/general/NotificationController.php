@@ -12,6 +12,7 @@ use App\Notifications\ReactNotification;
 use App\Services\NotificationService;
 use App\Services\ResponseService;
 use Illuminate\Support\Facades\Notification;
+use Request;
 use Response;
 
 class NotificationController extends Controller
@@ -48,7 +49,6 @@ class NotificationController extends Controller
 
         return ResponseService::json($data, "تم إرسال جميع الإشعارات بنجاح");
     }
-
     /**
      * Display the specified resource.
      *

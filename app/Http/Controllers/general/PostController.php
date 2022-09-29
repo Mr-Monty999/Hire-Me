@@ -61,38 +61,27 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function show(Post $post)
+    public function show($postId)
     {
 
-        $post = $post->with("comments", "reacts", "tags", "profile:id,firstname,lastname,avatar");
+        $post = PostService::getPost($postId);
         return ResponseService::json($post, "تم عرض المنشور بنجاح");
     }
 
     public function react(Request $request, $postId)
     {
-        $post = Post::findOrFail($postId);
-        $post->reacts()->syncWithoutDetaching([
-            $request->profile_id => ["type" => $request->type]
-        ]);
-        $reacted = $post->reacts()->wherePivot("profile_id", "=", $request->profile_id)->first();
+        $reacted = PostService::react($request, $postId);
         return ResponseService::json($reacted, "تم التفاعل مع المنشور بنجاح");
     }
     public function unReact($postId, $profileId)
     {
-        $post = Post::findOrFail($postId);
-        $post->reacts()->detach($profileId);
-        $reacted = $post->reacts()->wherePivot("profile_id", "=", $profileId)->first();
+        $reacted = PostService::unReact($postId, $profileId);
         return ResponseService::json($reacted, "تم التفاعل مع المنشور بنجاح");
     }
 
     public function isReacted($postId, $profileId)
     {
-        $post = Post::findOrFail($postId);
-        $reacted =  $post->reacts()->wherePivot("profile_id", "=", $profileId)->first();
-
-        if ($reacted != null)
-            $reacted = $reacted->pivot->type;
-
+        $reacted = PostService::isReacted($postId, $profileId);
         return ResponseService::json($reacted, "تمت العملية بنجاح");
     }
 

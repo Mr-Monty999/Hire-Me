@@ -74,7 +74,10 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="nav-item">
+                        <li
+                            class="nav-item"
+                            @click="readAllNotifications(profile_id)"
+                        >
                             <router-link
                                 class="nav-link position-relative"
                                 :to="{
@@ -217,6 +220,24 @@ export default {
                     console.log(response);
                     vm.unreadedNotifications =
                         response.data.data.unreaded_notifications_count;
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                });
+        },
+        readAllNotifications(profileId) {
+            var vm = this;
+            axios
+                .post(
+                    "/api/profiles/" + profileId + "/notifications/readall",
+                    {},
+                    {
+                        headers: headerAuth,
+                    }
+                )
+                .then(function (response) {
+                    console.log(response);
+                    vm.unreadedNotifications = 0;
                 })
                 .catch(function (error) {
                     console.log(error.response);

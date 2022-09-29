@@ -352,7 +352,7 @@
                                     confirmButtonClass="btn btn-warning"
                                     name="savePersonalInfo"
                                     confirmAndClosed
-                                    @confirmEvent="savePersonalInfo()"
+                                    @confirmEvent="savePersonalInfo(profile_id)"
                                 >
                                     هل أنت متأكد من حفظ الملف الشخصي
                                 </modal-snippet>
@@ -417,7 +417,7 @@ export default {
             this.previewAvatar = e.target.files[0];
             if (this.previewAvatar == undefined) this.previewAvatar = "";
         },
-        savePersonalInfo(profileId = this.profile_id) {
+        savePersonalInfo(profileId) {
             var vm = this;
             var data = new FormData();
             console.log(this.previewAvatar);

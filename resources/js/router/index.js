@@ -10,6 +10,7 @@ import Contact from "../views/guest/Contact.vue";
 import Feed from "../views/user/Feed.vue";
 import Notifications from "../views/user/profile/Notifications.vue";
 import Connections from "../views/user/profile/Connections.vue";
+import Post from "../views/user/Post.vue";
 
 Vue.use(VueRouter);
 
@@ -50,6 +51,11 @@ const routes = [
         component: Connections,
     },
     {
+        path: "/post/:id",
+        name: "post",
+        component: Post,
+    },
+    {
         path: "/profile/:id/edit",
         name: "profile.edit",
         component: EditProfile,
@@ -78,6 +84,7 @@ router.beforeEach(function (to, from, next) {
         "feed",
         "notifications",
         "connections",
+        "post",
     ];
     if (localStorage.getItem("user") == null) {
         if (routes.includes(to.name)) next({ name: "login" });

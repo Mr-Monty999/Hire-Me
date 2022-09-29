@@ -9,10 +9,81 @@
                 <div
                     v-for="(notification, index) in notifications"
                     :key="index"
-                    class="alert alert-info max-width"
+                    class="max-width"
                 >
-                    {{ notification.data }}
-                    {{ notification.data }}
+                    <div
+                        @click="goToPost(notification.data.post_id)"
+                        :class="'alert ' + getAlertClass(notification)"
+                    >
+                        <div v-if="profiles[index]">
+                            <div>
+                                <img
+                                    v-if="profiles[index].avatar != null"
+                                    class="photo"
+                                    :src="profiles[index].avatar"
+                                    alt=""
+                                    @click="
+                                        goToProfile(
+                                            notification.data.profile_id
+                                        )
+                                    "
+                                />
+                                <img
+                                    v-else
+                                    class="photo"
+                                    src="/images/assets/personal.jpg"
+                                    alt=""
+                                    @click="
+                                        goToProfile(
+                                            notification.data.profile_id
+                                        )
+                                    "
+                                />
+                                <b
+                                    class="text-break fullname"
+                                    @click="
+                                        goToProfile(
+                                            notification.data.profile_id
+                                        )
+                                    "
+                                >
+                                    {{ profiles[index].firstname }}
+                                    {{ profiles[index].lastname }}
+                                </b>
+                                <div
+                                    v-if="
+                                        notification.type ==
+                                        'App\\Notifications\\CreatePostNotification'
+                                    "
+                                    class="text-break"
+                                >
+                                    <b>قام بنشر منشور جديد </b>
+                                    <span
+                                        >"{{ notification.data.content }}"</span
+                                    >
+                                </div>
+                                <div
+                                    v-else-if="
+                                        notification.type ==
+                                        'App\\Notifications\\ReactToPostNotification'
+                                    "
+                                    class="text-break"
+                                >
+                                    <span>قام بالتفاعل مع منشورك</span>
+                                    <i
+                                        v-if="notification.data.react_type == 1"
+                                        class="fa-solid fa-thumbs-up text-primary"
+                                    ></i>
+                                    <i
+                                        v-else-if="
+                                            notification.data.react_type == 2
+                                        "
+                                        class="fa-solid fa-thumbs-down text-primary"
+                                    ></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -27,13 +98,14 @@ export default {
         return {
             profile_id: 0,
             notifications: {},
+            profiles: [],
         };
     },
     methods: {
-        async getNotifications(profileId) {
+        getNotifications(profileId) {
             var vm = this;
 
-            await axios
+            axios
                 .get("/api/profiles/" + profileId + "/notifications", {
                     headers: headerAuth,
                 })
@@ -44,8 +116,11 @@ export default {
                     for (const notification in vm.notifications) {
                         const id =
                             vm.notifications[notification].data.profile_id;
-                        vm.notifications[notification].data.profile =
-                            await vm.getProfileInfo(id);
+
+                        // vm.notifications[notification].data.profile =
+                        //     await vm.getProfileInfo(id);
+
+                        vm.profiles.push(await vm.getProfileInfo(id));
                     }
                 })
                 .catch(function (error) {
@@ -69,6 +144,26 @@ export default {
 
             return data;
         },
+        goToProfile(profileId) {
+            this.$router.push({
+                name: "profile",
+                params: {
+                    id: profileId,
+                },
+            });
+        },
+        goToPost(postId) {
+            this.$router.push({
+                name: "post",
+                params: {
+                    id: postId,
+                },
+            });
+        },
+        getAlertClass(notification) {
+            if (notification.read_at == null) return "alert-info";
+            else return "alert-light";
+        },
     },
     components: {},
     created() {
@@ -87,5 +182,24 @@ main {
 }
 .alert {
     margin-bottom: 5px !important;
+}
+.alert * {
+    font-size: 16px;
+}
+.photo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-left: 5px;
+}
+img,
+.fullname {
+    cursor: pointer;
+}
+.fullname {
+    font-size: 25px;
+}
+.alert:hover {
+    background-color: #eceded;
 }
 </style>

@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
             CertificateSeeder::class,
             CommentSeeder::class,
             PostSeeder::class,
-            // NotificationSeeder::class
+            NotificationSeeder::class
         ]);
     }
 }
