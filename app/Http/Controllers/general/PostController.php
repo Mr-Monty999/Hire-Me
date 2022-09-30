@@ -8,6 +8,7 @@ use App\Http\Requests\PostUpdateRequest;
 use App\Models\Post;
 use App\Models\Profile;
 use App\Services\FileUploadService;
+use App\Services\NotificationService;
 use App\Services\PostService;
 use App\Services\ResponseService;
 use Illuminate\Http\Request;
@@ -50,6 +51,8 @@ class PostController extends Controller
             $data["photo"] = FileUploadService::uploadImage($request->file("photo"), "/images/posts");
 
         $post = Post::create($data);
+        $data["post_id"] = $post->id;
+        NotificationService::sendCreatePostNotification($data);
         $post = $post->with("reacts", "comments", "profile:id,firstname,lastname,avatar", "tags")->find($post->id);
 
         return ResponseService::json($post, "تم إنشاء المنشور بنجاح");
@@ -71,6 +74,7 @@ class PostController extends Controller
     public function react(Request $request, $postId)
     {
         $reacted = PostService::react($request, $postId);
+        NotificationService::sendReactToPostNotification($request->all());
         return ResponseService::json($reacted, "تم التفاعل مع المنشور بنجاح");
     }
     public function unReact($postId, $profileId)

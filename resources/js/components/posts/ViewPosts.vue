@@ -340,12 +340,19 @@ export default {
         reactToPost(profileId, postId, reactType) {
             var vm = this;
 
+            var postIndex = vm.posts.data.findIndex((el) => el.id == postId);
+            var reactIndex = vm.posts.data[postIndex].reacts.findIndex(
+                (el) => el.id == profileId
+            );
+
             axios
                 .post(
                     "/api/posts/" + postId + "/profiles",
                     {
                         profile_id: profileId,
                         type: reactType,
+                        post_author: vm.posts.data[postIndex].profile_id,
+                        post_id: postId,
                     },
                     {
                         headers: headerAuth,
@@ -354,12 +361,6 @@ export default {
                 .then(function (response) {
                     console.log(response);
 
-                    var postIndex = vm.posts.data.findIndex(
-                        (el) => el.id == postId
-                    );
-                    var reactIndex = vm.posts.data[postIndex].reacts.findIndex(
-                        (el) => el.id == profileId
-                    );
                     vm.posts.data[postIndex].reacts.splice(reactIndex, 1);
                     vm.posts.data[postIndex].reacts.push(response.data.data);
 
@@ -368,13 +369,13 @@ export default {
                         text: response.data.message,
                         type: "success",
                     });
-                    services.sendNotification({
-                        type: 2,
-                        profile_id: vm.profile_id,
-                        post_id: postId,
-                        react_type: reactType,
-                        post_author: vm.posts.data[postIndex].profile_id,
-                    });
+                    // services.sendNotification({
+                    //     type: 2,
+                    //     profile_id: vm.profile_id,
+                    //     post_id: postId,
+                    //     react_type: reactType,
+                    //     post_author: vm.posts.data[postIndex].profile_id,
+                    // });
                 })
                 .catch(function (error) {
                     console.log(error.response);

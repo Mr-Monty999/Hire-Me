@@ -3,8 +3,12 @@
 namespace App\Services;
 
 use App\Models\Profile;
+use App\Notifications\ConnectionRequestNotification;
 use App\Notifications\CreatePostNotification;
 use App\Notifications\ReactToPostNotification;
+use App\Notifications\SendConnectiondataNotification;
+use App\Notifications\SendConnectionRequestNotification;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Notification;
 use Laravel\Ui\Presets\React;
@@ -26,38 +30,37 @@ class NotificationService
         }
         return $notifications;
     }
-    public static function readAllNotifications($profileId)
+    public static function readAllNotifications($profileId, $except = [])
     {
         $notifications = Profile::find($profileId)->unreadNotifications;
         foreach ($notifications as  $value) {
-            $value->markAsRead();
+            if (!in_array($value->type, $except))
+                $value->markAsRead();
         }
     }
-    public static function sendNotifications($request)
+    public static function sendCreatePostNotification($data)
+    {
+        $profile = Profile::find($data["profile_id"]);
+        $followings = $profile->followings()->get()->except($data["profile_id"]);
+        $connections = ProfileService::getAllAcceptedConnections($data["profile_id"]);
+        $targets =  $followings->merge($connections)->unique("id");
+
+        Notification::send($targets, new CreatePostNotification($data));
+
+        return true;
+    }
+    public static function sendReactToPostNotification($data)
     {
 
-        /*
-        notifications types :
-            1 = Posts notifications
-            2 = Reacts notifcations
-        */
+        if ($data["post_author"] != $data["profile_id"])
+            Profile::find($data["post_author"])->notify(new ReactToPostNotification($data));
 
-        $profile = Profile::find($request->profile_id);
-        $followings = $profile->followings()->get()->except($request->profile_id);
-        $connetions = $profile->connectionsTo()->get()->except($request->profile_id);
-
-
-        $targets =  $followings->merge($connetions)->unique("id");
-
-        if ($request->type == 1)
-
-            Notification::send($targets, new CreatePostNotification($request->all()));
-        else if ($request->type == 2) {
-            if ($request->post_author != $request->profile_id)
-                Profile::find($request->post_author)->notify(new ReactToPostNotification($request->all()));
-        }
-
-        return $targets;
+        return true;
+    }
+    public static function sendConnectionRequestNotification($data)
+    {
+        Profile::find($data["notifiable_id"])->notify(new ConnectionRequestNotification($data));
+        return true;
     }
 
     public static function getProfileUnReadedNotificationsCount($profileId)

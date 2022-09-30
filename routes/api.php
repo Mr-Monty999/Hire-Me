@@ -43,8 +43,14 @@ Route::group(["namespace" => "general"], function () {
         Route::delete("profiles/{id}/profiles/{targetId}/follows", "ProfileController@unFollowProfile");
         Route::get("profiles/{id}/profiles/{targetId}/is-followed", "ProfileController@isFollowed");
         Route::get("profiles/{id}/notifications", "ProfileController@getNotifications");
-        Route::get("profiles/{id}/notifications/unreaded/count", "ProfileController@getUnReadedNotificationsCount");
+        Route::get("profiles/{id}/header/counts", "ProfileController@getHeaderCounts");
         Route::post("profiles/{id}/notifications/readall", "ProfileController@readAllNotifications");
+        Route::post("profiles/{id}/connections/request", "ProfileController@sendConnectionRequest");
+        Route::post("profiles/{id}/connections/accept", "ProfileController@acceptConnectionRequest");
+        Route::delete("profiles/{id}/profiles/{targetId}/connections/remove", "ProfileController@removeConnection");
+        Route::get("profiles/{id}/connections", "ProfileController@getAllAcceptedConnections");
+        Route::get("profiles/{id}/connections/incomming", "ProfileController@getAllIncommingConnections");
+        Route::get("profiles/{id}/profiles/{targetId}/connection-status", "ProfileController@getConnectionStatus");
 
 
         //Profile Phones

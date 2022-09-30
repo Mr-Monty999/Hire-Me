@@ -44,10 +44,6 @@ class NotificationController extends Controller
      */
     public function store(StoreNotificationRequest $request)
     {
-
-        $data = NotificationService::sendNotifications($request);
-
-        return ResponseService::json($data, "تم إرسال جميع الإشعارات بنجاح");
     }
     /**
      * Display the specified resource.

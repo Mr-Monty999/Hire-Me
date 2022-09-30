@@ -58,7 +58,7 @@
                                         >الملف الشخصي</router-link
                                     >
                                 </li>
-                                <li>
+                                <li hidden>
                                     <a class="dropdown-item" href="#"
                                         >الشركات</a
                                     >
@@ -98,39 +98,26 @@
                                 </span>
                             </router-link>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a
+                        <li class="nav-item">
+                            <router-link
                                 class="nav-link position-relative"
-                                href="#"
-                                role="button"
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
+                                :to="{
+                                    name: 'connections',
+                                }"
                             >
                                 <span>
                                     <i class="fa-solid fa-user-group"></i>
                                 </span>
                                 <span
+                                    v-if="incommingConnections > 0"
                                     class="position-absolute translate-middle badge rounded-pill bg-danger notificate"
                                 >
-                                    99+
+                                    {{ incommingConnections }}+
                                     <span class="visually-hidden"
                                         >unread messages</span
                                     >
                                 </span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a class="dropdown-item" href="#"
-                                        >طلب صداقة</a
-                                    >
-                                </li>
-                                <li><hr class="dropdown-divider" /></li>
-                                <li>
-                                    <a class="dropdown-item" href="#"
-                                        >طلب صداقة</a
-                                    >
-                                </li>
-                            </ul>
+                            </router-link>
                         </li>
                     </ul>
                     <form class="d-flex" role="search">
@@ -162,6 +149,7 @@ export default {
             avatar: "",
             user_id: "",
             unreadedNotifications: 0,
+            incommingConnections: 0,
         };
     },
     methods: {
@@ -209,21 +197,18 @@ export default {
                     console.log(error.response);
                 });
         },
-        getNotifications(profileId) {
+        getHeaderCounts(profileId) {
             var vm = this;
             axios
-                .get(
-                    "/api/profiles/" +
-                        profileId +
-                        "/notifications/unreaded/count",
-                    {
-                        headers: headerAuth,
-                    }
-                )
+                .get("/api/profiles/" + profileId + "/header/counts", {
+                    headers: headerAuth,
+                })
                 .then(function (response) {
                     console.log(response);
                     vm.unreadedNotifications =
                         response.data.data.unreaded_notifications_count;
+                    vm.incommingConnections =
+                        response.data.data.incoming_connections_count;
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -260,7 +245,7 @@ export default {
         this.user_id = JSON.parse(localStorage.getItem("user")).id;
         this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
         this.getProfileInfo();
-        this.getNotifications(this.profile_id);
+        this.getHeaderCounts(this.profile_id);
     },
 };
 </script>

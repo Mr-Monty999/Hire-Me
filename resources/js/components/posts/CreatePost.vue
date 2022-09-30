@@ -132,12 +132,12 @@ export default {
                     vm.content = "";
                     vm.photo = "";
                     vm.previewPhoto = "";
-                    services.sendNotification({
-                        type: 1,
-                        profile_id: vm.profile_id,
-                        post_id: response.data.data.id,
-                        content: response.data.data.content,
-                    });
+                    // services.sendNotification({
+                    //     type: 1,
+                    //     profile_id: vm.profile_id,
+                    //     post_id: response.data.data.id,
+                    //     content: response.data.data.content,
+                    // });
                 })
                 .catch(function (error) {
                     console.log(error.response);

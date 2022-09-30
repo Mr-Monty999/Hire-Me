@@ -1,6 +1,10 @@
 <template>
     <div class="container mt-5 mb-5">
-        <div class="row d-flex align-items-center justify-content-center">
+        <loading v-if="!loaded"></loading>
+        <div
+            v-if="loaded"
+            class="row d-flex align-items-center justify-content-center"
+        >
             <div class="col-md-12" v-if="post && post.profile">
                 <!-- <div class="card" v-for="(post, i) in posts.data" :key="i"> -->
                 <div class="d-flex justify-content-between p-2 px-3">
@@ -204,6 +208,7 @@ import headerAuth from "../../helpers/auth";
 import headerFormAuth from "../../helpers/formAuth";
 import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
 import services from "../../helpers/services";
+import Loading from "../../components/bootstrap/Loading.vue";
 
 export default {
     name: "Post",
@@ -218,10 +223,12 @@ export default {
                 comments: [],
             },
             profile_id: 0,
+            loaded: false,
         };
     },
     components: {
         ModalSnippet,
+        Loading,
     },
     methods: {
         getFile(e) {
@@ -457,6 +464,14 @@ export default {
         this.getPost(this.$route.params.id);
         console.log("View Posts");
         console.log(this.posts);
+    },
+    mounted: function () {
+        let vm = this;
+        this.$nextTick(function () {
+            setTimeout(function () {
+                vm.loaded = true;
+            }, 1000);
+        });
     },
 };
 </script>

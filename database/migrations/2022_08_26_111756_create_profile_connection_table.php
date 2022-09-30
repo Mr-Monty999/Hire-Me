@@ -16,6 +16,7 @@ class CreateProfileConnectionTable extends Migration
         Schema::create('profile_connection', function (Blueprint $table) {
             $table->bigInteger("profile1_id")->unsigned();
             $table->bigInteger("profile2_id")->unsigned();
+            $table->boolean("accepted");
             $table->timestamps();
 
             $table->primary(["profile1_id", "profile2_id"]);

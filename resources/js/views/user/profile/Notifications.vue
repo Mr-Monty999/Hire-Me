@@ -13,7 +13,10 @@
                     class="max-width"
                 >
                     <div
-                        @click="goToPost(notification.data.post_id)"
+                        @click="
+                            if (notification.data.post_id)
+                                return goToPost(notification.data.post_id);
+                        "
                         :class="'alert ' + getAlertClass(notification)"
                     >
                         <div v-if="notification.data.profile">
@@ -83,6 +86,39 @@
                                         "
                                         class="fa-solid fa-thumbs-down text-primary"
                                     ></i>
+                                </div>
+                                <div
+                                    v-else-if="
+                                        notification.type ==
+                                        'App\\Notifications\\ConnectionRequestNotification'
+                                    "
+                                    class="text-break"
+                                >
+                                    <span>أرسل إليك طلب إتصال</span>
+                                    <div>
+                                        <button
+                                            @click="
+                                                acceptConnection(
+                                                    profile_id,
+                                                    notification.data.profile_id
+                                                )
+                                            "
+                                            class="btn btn-success"
+                                        >
+                                            تأكيد
+                                        </button>
+                                        <button
+                                            @click="
+                                                removeConnection(
+                                                    profile_id,
+                                                    notification.data.profile_id
+                                                )
+                                            "
+                                            class="btn btn-danger"
+                                        >
+                                            حذف
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -161,9 +197,96 @@ export default {
                 },
             });
         },
+        goToProfile(profileId) {
+            this.$router.push({
+                name: "profile",
+                params: {
+                    id: profileId,
+                },
+            });
+        },
         getAlertClass(notification) {
             if (notification.read_at == null) return "alert-info";
             else return "alert-light";
+        },
+        acceptConnection(profileId, targetProfileId) {
+            var vm = this;
+            axios
+                .post(
+                    "/api/profiles/" + profileId + "/connections/accept",
+                    {
+                        target_profile_id: targetProfileId,
+                    },
+                    {
+                        headers: headerAuth,
+                    }
+                )
+                .then(function (response) {
+                    console.log(response);
+
+                    var notificationIndex = vm.notifications.data.findIndex(
+                        (el) => el.data.profile_id == targetProfileId
+                    );
+
+                    vm.notifications.data.splice(notificationIndex, 1);
+
+                    vm.$notify({
+                        title: "نجاح",
+                        text: "تم قبول طلب الإتصال بنجاح",
+                        type: "success",
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                    var errors = error.response.data.errors;
+                    for (const error in errors) {
+                        vm.$notify({
+                            title: "خطأ:لم يتم تنفيذ",
+                            text: errors[error][0],
+                            type: "error",
+                        });
+                    }
+                });
+        },
+        removeConnection(profileId, targetProfileId) {
+            var vm = this;
+            axios
+                .delete(
+                    "/api/profiles/" +
+                        profileId +
+                        "/profiles/" +
+                        targetProfileId +
+                        "/connections/remove",
+                    {
+                        headers: headerAuth,
+                    }
+                )
+                .then(function (response) {
+                    console.log(response);
+
+                    var notificationIndex = vm.notifications.data.findIndex(
+                        (el) => el.data.profile_id == targetProfileId
+                    );
+
+                    vm.notifications.data.splice(notificationIndex, 1);
+
+                    vm.$notify({
+                        title: "نجاح",
+                        text: "تم حذف الطلب بنجاح",
+                        type: "success",
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                    var errors = error.response.data.errors;
+                    for (const error in errors) {
+                        vm.$notify({
+                            title: "خطأ:لم يتم تنفيذ",
+                            text: errors[error][0],
+                            type: "error",
+                        });
+                    }
+                });
         },
     },
     components: {

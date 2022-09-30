@@ -1,6 +1,7 @@
 <template>
     <div class="root-div">
-        <main class="container rounded mt-5 mb-5">
+        <loading v-if="!loaded"></loading>
+        <main v-if="loaded" class="container rounded mt-5 mb-5">
             <div class="row gap-4">
                 <div class="col-md-3 border-right bg-mine">
                     <button @click="back()" class="btn btn-secondary">
@@ -369,6 +370,7 @@
 import axios from "axios";
 import headerAuth from "../../../helpers/auth";
 import headerFormAuth from "../../../helpers/formAuth";
+import Loading from "../../../components/bootstrap/Loading.vue";
 
 import ModalSnippet from "../../../components/bootstrap/ModalSnippet.vue";
 
@@ -402,6 +404,7 @@ export default {
             phones: [],
             followers: [],
             profile_id: 0,
+            loaded: false,
         };
     },
     computed: {
@@ -623,10 +626,19 @@ export default {
     },
     components: {
         ModalSnippet,
+        Loading,
     },
     created() {
         this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
         this.getProfileInfo();
+    },
+    mounted: function () {
+        let vm = this;
+        this.$nextTick(function () {
+            setTimeout(function () {
+                vm.loaded = true;
+            }, 1000);
+        });
     },
 };
 </script>

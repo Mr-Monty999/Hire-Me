@@ -1,6 +1,7 @@
 <template>
     <div class="root-div">
-        <main class="container rounded mt-5 mb-5">
+        <loading v-if="!loaded"></loading>
+        <main v-if="loaded" class="container rounded mt-5 mb-5">
             <div class="row gap-4">
                 <div class="col-md-3 border-right bg-mine">
                     <div
@@ -376,6 +377,7 @@ import headerAuth from "../../helpers/auth";
 import ViewPosts from "../../components/posts/ViewPosts.vue";
 import CreatePost from "../../components/posts/CreatePost.vue";
 import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
+import Loading from "../../components/bootstrap/Loading.vue";
 
 export default {
     data() {
@@ -390,6 +392,7 @@ export default {
             company_name: "",
             phone: "",
             profile_id: 0,
+            loaded: false,
         };
     },
     computed: {
@@ -737,6 +740,15 @@ export default {
         ViewPosts,
         CreatePost,
         ModalSnippet,
+        Loading,
+    },
+    mounted: function () {
+        let vm = this;
+        this.$nextTick(function () {
+            setTimeout(function () {
+                vm.loaded = true;
+            }, 1000);
+        });
     },
     created() {
         this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;

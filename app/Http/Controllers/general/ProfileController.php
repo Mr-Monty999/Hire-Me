@@ -11,6 +11,7 @@ use App\Models\Post;
 use App\Models\Profile;
 use App\Models\ProfilePhone;
 use App\Models\User;
+use App\Notifications\SendConnectionRequestNotification;
 use App\Services\FileUploadService;
 use App\Services\NotificationService;
 use App\Services\ProfileService;
@@ -115,8 +116,9 @@ class ProfileController extends Controller
         $data["unreaded_notifications_count"] = NotificationService::getProfileUnReadedNotificationsCount($id);
         return ResponseService::json($data, "تمت العملية بنجاح");
     }
-    public function getUnReadedNotificationsCount($id)
+    public function getHeaderCounts($id)
     {
+        $data["incoming_connections_count"] = ProfileService::getAllIncommingConnectionsCount($id);
         $data["unreaded_notifications_count"] = NotificationService::getProfileUnReadedNotificationsCount($id);
         return ResponseService::json($data, "تمت العملية بنجاح");
     }
@@ -124,6 +126,54 @@ class ProfileController extends Controller
     {
         NotificationService::readAllNotifications($profileId);
         return ResponseService::json(null, "تمت العملية بنجاح");
+    }
+
+    public static function sendConnectionRequest(Request $request, $profileId)
+    {
+        $data = ProfileService::sendConnectionRequest($profileId, $request->target_profile_id);
+        // NotificationService::sendConnectionRequestNotification([
+        //     "notifiable_id" => $request->target_profile_id,
+        //     "profile_id" => $profileId,
+        // ]);
+        return ResponseService::json($data, "تمت العملية بنجاح");
+    }
+    public static function removeConnection($profileId, $targetProfileId)
+    {
+        $data = ProfileService::removeConnection($profileId, $targetProfileId);
+
+        return ResponseService::json($data, "تمت العملية بنجاح");
+    }
+
+    public static function acceptConnectionRequest(Request $request, $profileId)
+    {
+        $data = ProfileService::acceptConnectionRequest($profileId, $request->target_profile_id);
+
+        return ResponseService::json($data, "تمت العملية بنجاح");
+    }
+    public static function getAllAcceptedConnections($profileId)
+    {
+        $data = ProfileService::getAllAcceptedConnections($profileId);
+
+        return ResponseService::json($data, "تمت العملية بنجاح");
+    }
+
+    public static function getConnectionStatus($profileId, $targetProfileId)
+    {
+        $data = ProfileService::getConnectionStatus($profileId, $targetProfileId);
+
+        return ResponseService::json($data, "تمت العملية بنجاح");
+    }
+    public static function getAllIncommingConnections($profileId)
+    {
+        $data = ProfileService::getAllIncommingConnections($profileId);
+
+        return ResponseService::json($data, "تمت العملية بنجاح");
+    }
+    public static function getAllIncommingConnectionsCount($profileId)
+    {
+        $count = ProfileService::getAllIncommingConnectionsCount($profileId);
+
+        return ResponseService::json($count, "تمت العملية بنجاح");
     }
     /**
      * Show the form for editing the specified resource.

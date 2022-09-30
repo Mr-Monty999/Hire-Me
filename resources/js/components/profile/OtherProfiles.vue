@@ -1,6 +1,7 @@
 <template>
     <div>
-        <main class="container rounded mt-5 mb-5">
+        <loading v-if="!loaded"></loading>
+        <main v-if="loaded" class="container rounded mt-5 mb-5">
             <div class="row gap-4">
                 <div class="col-md-3 border-right bg-mine">
                     <div
@@ -17,14 +18,37 @@
                         <span class="text-black-50 text-break">{{
                             profile.nickname
                         }}</span>
+
                         <span
-                            class="btn btn-primary"
+                            class="btn btn-warning"
+                            v-if="connection_request == false"
+                            @click="
+                                removeConnection(profile_id, $route.params.id)
+                            "
+                            >في إنتظار القبول <i class="fa-solid fa-plus"></i
+                        ></span>
+                        <span
+                            class="btn btn-danger"
+                            v-else-if="connection_request == true"
+                            @click="
+                                removeConnection(profile_id, $route.params.id)
+                            "
+                            >إلغاء الأتصال<i class="fa-solid fa-minus"></i
+                        ></span>
+                        <span
+                            class="btn btn-success"
+                            v-else
+                            @click="addConnection(profile_id, $route.params.id)"
+                            >إتصال <i class="fa-solid fa-plus"></i
+                        ></span>
+                        <span
+                            class="btn btn-primary mar-1"
                             v-if="!followed"
                             @click="followProfile(profile_id, $route.params.id)"
                             >متابعة <i class="fa-solid fa-plus"></i
                         ></span>
                         <span
-                            class="btn btn-danger"
+                            class="btn btn-danger mar-1"
                             v-else
                             @click="
                                 unFollowProfile(profile_id, $route.params.id)
@@ -276,6 +300,7 @@
 import axios from "axios";
 import headerAuth from "../../helpers/auth";
 import ViewPosts from "../../components/posts/ViewPosts.vue";
+import Loading from "../../components/bootstrap/Loading.vue";
 
 export default {
     data() {
@@ -290,6 +315,8 @@ export default {
             phone: "",
             posts: {},
             profile_id: 0,
+            connection_request: null,
+            loaded: false,
         };
     },
     methods: {
@@ -446,6 +473,98 @@ export default {
             }
             return avatar;
         },
+
+        addConnection(profileId, targetProfileId) {
+            var vm = this;
+            axios
+                .post(
+                    "/api/profiles/" + profileId + "/connections/request",
+                    {
+                        target_profile_id: targetProfileId,
+                    },
+                    {
+                        headers: headerAuth,
+                    }
+                )
+                .then(function (response) {
+                    console.log(response);
+                    vm.connection_request = false;
+                    vm.$notify({
+                        title: "نجاح",
+                        text: "تم إرسال طلب الإتصال بنجاح",
+                        type: "success",
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                    var errors = error.response.data.errors;
+                    for (const error in errors) {
+                        vm.$notify({
+                            title: "خطأ:لم يتم تنفيذ",
+                            text: errors[error][0],
+                            type: "error",
+                        });
+                    }
+                });
+        },
+
+        removeConnection(profileId, targetProfileId) {
+            var vm = this;
+            axios
+                .delete(
+                    "/api/profiles/" +
+                        profileId +
+                        "/profiles/" +
+                        targetProfileId +
+                        "/connections/remove",
+                    {
+                        headers: headerAuth,
+                    }
+                )
+                .then(function (response) {
+                    console.log(response);
+                    vm.connection_request = null;
+                    vm.$notify({
+                        title: "نجاح",
+                        text: "تم إلغاء طلب الإتصال بنجاح",
+                        type: "success",
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                    var errors = error.response.data.errors;
+                    for (const error in errors) {
+                        vm.$notify({
+                            title: "خطأ:لم يتم تنفيذ",
+                            text: errors[error][0],
+                            type: "error",
+                        });
+                    }
+                });
+        },
+        connectionStatus(profileId, targetProfileId) {
+            var vm = this;
+
+            axios
+                .get(
+                    "/api/profiles/" +
+                        profileId +
+                        "/profiles/" +
+                        targetProfileId +
+                        "/connection-status",
+                    {
+                        headers: headerAuth,
+                    }
+                )
+                .then(function (response) {
+                    console.log(response);
+
+                    vm.connection_request = response.data.data.pivot.accepted;
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                });
+        },
     },
     computed: {},
     created() {
@@ -453,9 +572,20 @@ export default {
         this.getProfileInfo();
         this.getProfilePosts();
         this.isFollowed(this.profile_id, this.$route.params.id);
+        this.connectionStatus(this.profile_id, this.$route.params.id);
     },
+    mounted: function () {
+        let vm = this;
+        this.$nextTick(function () {
+            setTimeout(function () {
+                vm.loaded = true;
+            }, 1000);
+        });
+    },
+
     components: {
         ViewPosts,
+        Loading,
     },
 };
 </script>

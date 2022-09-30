@@ -4,6 +4,9 @@ namespace App\Services;
 
 use App\Models\Post;
 use App\Models\Profile;
+use DB;
+use Illuminate\Database\Eloquent\Collection;
+use Notification;
 
 /**
  * Class ProfileService.
@@ -73,6 +76,7 @@ class ProfileService
         $profile->followings()->syncWithoutDetaching($request->profile_id);
         return $profile;
     }
+
     public static function unFollowProfile($myProfileId, $targetProfileId)
     {
         $profile = Profile::findOrFail($myProfileId);
@@ -84,5 +88,60 @@ class ProfileService
         $profile = Profile::findOrFail($myProfileId);
         $exist =  $profile->followings()->wherePivot("profile2_id", "=", $targetProfileId)->exists();
         return $exist;
+    }
+
+    public static function sendConnectionRequest($profileId, $targetProfileId)
+    {
+        $profile = Profile::find($profileId);
+        $profile->connectionsTo()->syncWithoutDetaching([$targetProfileId => ["accepted" => false]]);
+
+        return $profile;
+    }
+    public static function removeConnection($profileId, $targetProfileId)
+    {
+        $profile = Profile::find($profileId)->connectionsFrom()->detach($targetProfileId);
+        $profile = Profile::find($profileId)->connectionsTo()->detach($targetProfileId);
+
+        return $profile;
+    }
+
+    public static function acceptConnectionRequest($profileId, $targetProfileId)
+    {
+        $profile = Profile::find($profileId)->connectionsFrom()->syncWithoutDetaching([$targetProfileId => ["accepted" => true]]);
+        $profile = Profile::find($profileId)->connectionsTo()->syncWithoutDetaching([$targetProfileId => ["accepted" => true]]);
+
+        return $profile;
+    }
+    public static function getAllAcceptedConnections($profileId)
+    {
+        $connections = Profile::find($profileId)->connectionsTo()->wherePivot("accepted", "=", true)->get();
+        $connections->merge(Profile::find($profileId)->connectionsFrom()->wherePivot("accepted", "=", true)->get());
+
+        return $connections;
+    }
+    public static function getConnectionStatus($profileId, $targetProfileId)
+    {
+        $profile = Profile::find($profileId)->connectionsTo()->wherePivot("profile2_id", $targetProfileId)->first();
+
+        return $profile;
+    }
+    public static function getAllPendingConnections($profileId)
+    {
+        $connections = Profile::find($profileId)->connectionsTo()->wherePivot("accepted", "=", "false")->paginate(10);
+
+        return $connections;
+    }
+
+    public static function getAllIncommingConnections($profileId)
+    {
+        $connections = Profile::find($profileId)->connectionsFrom()->wherePivot("accepted", "=", "false")->paginate(10);
+
+        return $connections;
+    }
+    public static function getAllIncommingConnectionsCount($profileId)
+    {
+        $count = Profile::find($profileId)->connectionsFrom()->wherePivot("accepted", "=", "false")->count();
+
+        return $count;
     }
 }
