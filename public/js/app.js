@@ -5806,6 +5806,15 @@ __webpack_require__.r(__webpack_exports__);
         console.log(response);
         vm.posts.data[postIndex].reacts.splice(reactIndex, 1);
         vm.posts.data[postIndex].reacts.push(response.data.data);
+        if (vm.posts.data[postIndex].likes_count > 0) vm.posts.data[postIndex].likes_count -= 1;
+        if (vm.posts.data[postIndex].dislikes_count > 0) vm.posts.data[postIndex].dislikes_count -= 1;
+
+        if (reactType == 1) {
+          vm.posts.data[postIndex].likes_count += 1;
+        } else if (reactType == 2) {
+          vm.posts.data[postIndex].dislikes_count += 1;
+        }
+
         vm.$notify({
           title: "نجاح",
           text: response.data.message,
@@ -5830,7 +5839,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    removeReactFromPost: function removeReactFromPost(profileId, postId) {
+    removeReactFromPost: function removeReactFromPost(profileId, postId, reactType) {
       var vm = this;
       axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/posts/" + postId + "/profiles/" + profileId, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
@@ -5843,6 +5852,13 @@ __webpack_require__.r(__webpack_exports__);
           return el.id == profileId;
         });
         vm.posts.data[postIndex].reacts.splice(reactIndex, 1);
+
+        if (reactType == 1 && vm.posts.data[postIndex].likes_count > 0) {
+          vm.posts.data[postIndex].likes_count -= 1;
+        } else if (reactType == 2 && vm.posts.data[postIndex].dislikes_count > 0) {
+          vm.posts.data[postIndex].dislikes_count -= 1;
+        }
+
         vm.$notify({
           title: "نجاح",
           text: response.data.message,
@@ -8353,12 +8369,12 @@ var render = function render() {
     })]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("div", {
       staticClass: "d-flex justify-content-between align-items-center p-2"
     }, [_c("div", {
-      staticClass: "d-flex flex-row icons d-flex align-items-center"
+      staticClass: "d-flex flex-row icons d-flex align-items-center gap-1"
     }, [_vm.reactType(post, _vm.profile_id) == 1 ? _c("i", {
       staticClass: "fa-solid fa-thumbs-up text-primary",
       on: {
         click: function click($event) {
-          return _vm.removeReactFromPost(_vm.profile_id, post.id);
+          return _vm.removeReactFromPost(_vm.profile_id, post.id, 1);
         }
       }
     }) : _c("i", {
@@ -8368,11 +8384,11 @@ var render = function render() {
           return _vm.reactToPost(_vm.profile_id, post.id, 1);
         }
       }
-    }), _vm._v(" "), _vm.reactType(post, _vm.profile_id) == 2 ? _c("i", {
+    }), _vm._v(" "), _c("span", [_vm._v("\n                                " + _vm._s(_vm._f("toNumber")(post.likes_count)) + "\n                            ")]), _vm._v(" "), _vm.reactType(post, _vm.profile_id) == 2 ? _c("i", {
       staticClass: "fa-solid fa-thumbs-down text-primary",
       on: {
         click: function click($event) {
-          return _vm.removeReactFromPost(_vm.profile_id, post.id);
+          return _vm.removeReactFromPost(_vm.profile_id, post.id, 2);
         }
       }
     }) : _c("i", {
@@ -8382,7 +8398,7 @@ var render = function render() {
           return _vm.reactToPost(_vm.profile_id, post.id, 2);
         }
       }
-    })]), _vm._v(" "), _c("div", {
+    }), _vm._v(" "), _c("span", [_vm._v("\n                                " + _vm._s(_vm._f("toNumber")(post.dislikes_count)) + "\n                            ")])]), _vm._v(" "), _c("div", {
       staticClass: "d-flex flex-row muted-color"
     }, [_c("span", [_vm._v("التعليقات " + _vm._s(post.comments.length))])])]), _vm._v(" "), _c("hr"), _vm._v(" "), _vm._m(0, true)])]);
   }), 0), _vm._v(" "), _vm.posts.last_page > 1 ? _c("paginate", {

@@ -175,6 +175,11 @@ class ProfileController extends Controller
 
         return ResponseService::json($count, "تمت العملية بنجاح");
     }
+    public function search($pattern)
+    {
+        $profile = ProfileService::searchForProfile($pattern);
+        return ResponseService::json($profile, "تمت العملية بنجاح");
+    }
     /**
      * Show the form for editing the specified resource.
      *

@@ -55,7 +55,7 @@ class PostController extends Controller
         NotificationService::sendCreatePostNotification($data);
         $post = $post->with("reacts", "comments", "profile:id,firstname,lastname,avatar", "tags")->find($post->id);
 
-        return ResponseService::json($post, "تم إنشاء المنشور بنجاح");
+        return ResponseService::json($post, "تم إنشاء المنشور بنجاح", 201);
     }
 
     /**
@@ -88,7 +88,11 @@ class PostController extends Controller
         $reacted = PostService::isReacted($postId, $profileId);
         return ResponseService::json($reacted, "تمت العملية بنجاح");
     }
-
+    public function search($pattern)
+    {
+        $post = PostService::searchForPost($pattern);
+        return ResponseService::json($post, "تمت العملية بنجاح");
+    }
     /**
      * Show the form for editing the specified resource.
      *

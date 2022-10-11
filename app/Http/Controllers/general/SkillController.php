@@ -57,7 +57,7 @@ class SkillController extends Controller
         $skill->profiles()->syncWithoutDetaching($data["profile_id"]);
 
 
-        return ResponseService::json($skill, "تم إضافة المهارة بنجاح");
+        return ResponseService::json($skill, "تم إضافة المهارة بنجاح", 201);
     }
     public function detach($skillId, $profileId)
     {

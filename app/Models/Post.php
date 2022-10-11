@@ -23,6 +23,15 @@ class Post extends Model
     {
         return $this->belongsToMany(Profile::class, "post_react")->withPivot("type")->withTimestamps();
     }
+    public function likes()
+    {
+        return $this->reacts()->wherePivot("type", "=", 1);
+    }
+    public function disLikes()
+    {
+        return $this->reacts()->wherePivot("type", "=", 2);
+    }
+
     public function tags()
     {
         return $this->belongsToMany(Tag::class, "post_tag")->withTimestamps();

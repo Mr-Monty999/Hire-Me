@@ -51,6 +51,7 @@ Route::group(["namespace" => "general"], function () {
         Route::get("profiles/{id}/connections", "ProfileController@getAllAcceptedConnections");
         Route::get("profiles/{id}/connections/incomming", "ProfileController@getAllIncommingConnections");
         Route::get("profiles/{id}/profiles/{targetId}/connection-status", "ProfileController@getConnectionStatus");
+        Route::get("profiles/search/{pattern}", "ProfileController@search");
 
 
         //Profile Phones
@@ -76,6 +77,8 @@ Route::group(["namespace" => "general"], function () {
         Route::post("posts/{id}/profiles", "PostController@react");
         Route::delete("posts/{id}/profiles/{profileId}", "PostController@unReact");
         Route::get("posts/{id}/profiles/{profileId}/react-type", "PostController@isReacted");
+        Route::get("posts/search/{pattern}", "PostController@search");
+
 
         //Skills
         Route::resource("skills", "SkillController");
@@ -87,5 +90,8 @@ Route::group(["namespace" => "general"], function () {
 
         //Noctifications
         Route::resource("notifications", "NotificationController");
+
+        ///Public Routes
+        Route::get("search/{pattern}", "PublicController@search");
     });
 });

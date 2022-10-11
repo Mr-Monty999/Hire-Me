@@ -144,4 +144,20 @@ class ProfileService
 
         return $count;
     }
+    public static function searchForProfile($pattern)
+    {
+        $pattern = trim($pattern);
+        $pattern =   explode(" ", $pattern, 2);
+        $result = null;
+        if (isset($pattern[1])) {
+            $result = Profile::withCount("followers", "followings")->where("firstname", "LIKE", "%$pattern[0]%")
+                ->where("lastname", "LIKE", "%$pattern[1]%")
+                ->get();
+        } else {
+            $result = Profile::withCount("followers", "followings")->where("firstname", "LIKE", "%$pattern[0]%")
+                ->get();
+        }
+
+        return $result;
+    }
 }

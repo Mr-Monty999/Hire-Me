@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Post;
+use DB;
 
 /**
  * Class PostService.
@@ -19,7 +20,8 @@ class PostService
             },
             "tags",
             "profile:id,firstname,lastname,avatar",
-        ])->withCount("comments", "reacts", "tags")->latest()->paginate(5);
+        ])->withCount("comments", "reacts", "tags", "likes", "dislikes")->latest()->paginate(5);
+
 
         return $posts;
     }
@@ -34,7 +36,13 @@ class PostService
                 "tags",
                 "profile:id,firstname,lastname,avatar"
             ]
-        )->withCount("reacts", "comments", "tags")->find($postId);
+        )->withCount(["reacts", "comments", "tags", "likes", "dislikes"])->find($postId);
+
+
+
+        // $post["likes_counts"]  = $post->reacts()->wherePivot("type", "=", 1)->count();
+        // $post["dislikes_counts"]  = $post->reacts()->wherePivot("type", "=", 2)->count();
+
         return $post;
     }
     public static function react($request, $postId)
@@ -63,5 +71,14 @@ class PostService
             $reacted = $reacted->pivot->type;
 
         return $reacted;
+    }
+
+    public static function searchForPost($content)
+    {
+        $content = trim($content);
+        $result = Post::withCount("reacts", "likes", "dislikes")->where("content", "LIKE", "%$content%")
+            ->get();
+
+        return $result;
     }
 }

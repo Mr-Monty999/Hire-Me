@@ -51,7 +51,7 @@ class ExperienceController extends Controller
             $data["company_id"] = $company->id;
 
         $ex =   Experience::create($data);
-        return ResponseService::json($ex, "تم إضافة الخبرة بنجاح");
+        return ResponseService::json($ex, "تم إضافة الخبرة بنجاح", 201);
     }
 
     /**

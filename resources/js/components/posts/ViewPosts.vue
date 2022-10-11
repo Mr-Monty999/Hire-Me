@@ -147,13 +147,17 @@
                             class="d-flex justify-content-between align-items-center p-2"
                         >
                             <div
-                                class="d-flex flex-row icons d-flex align-items-center"
+                                class="d-flex flex-row icons d-flex align-items-center gap-1"
                             >
                                 <i
                                     v-if="reactType(post, profile_id) == 1"
                                     class="fa-solid fa-thumbs-up text-primary"
                                     @click="
-                                        removeReactFromPost(profile_id, post.id)
+                                        removeReactFromPost(
+                                            profile_id,
+                                            post.id,
+                                            1
+                                        )
                                     "
                                 ></i>
                                 <i
@@ -161,11 +165,18 @@
                                     class="fa-solid fa-thumbs-up"
                                     @click="reactToPost(profile_id, post.id, 1)"
                                 ></i>
+                                <span>
+                                    {{ post.likes_count | toNumber }}
+                                </span>
                                 <i
                                     v-if="reactType(post, profile_id) == 2"
                                     class="fa-solid fa-thumbs-down text-primary"
                                     @click="
-                                        removeReactFromPost(profile_id, post.id)
+                                        removeReactFromPost(
+                                            profile_id,
+                                            post.id,
+                                            2
+                                        )
                                     "
                                 ></i>
                                 <i
@@ -173,6 +184,9 @@
                                     class="fa-solid fa-thumbs-down"
                                     @click="reactToPost(profile_id, post.id, 2)"
                                 ></i>
+                                <span>
+                                    {{ post.dislikes_count | toNumber }}
+                                </span>
                             </div>
                             <div class="d-flex flex-row muted-color">
                                 <span
@@ -364,6 +378,17 @@ export default {
                     vm.posts.data[postIndex].reacts.splice(reactIndex, 1);
                     vm.posts.data[postIndex].reacts.push(response.data.data);
 
+                    if (vm.posts.data[postIndex].likes_count > 0)
+                        vm.posts.data[postIndex].likes_count -= 1;
+                    if (vm.posts.data[postIndex].dislikes_count > 0)
+                        vm.posts.data[postIndex].dislikes_count -= 1;
+
+                    if (reactType == 1) {
+                        vm.posts.data[postIndex].likes_count += 1;
+                    } else if (reactType == 2) {
+                        vm.posts.data[postIndex].dislikes_count += 1;
+                    }
+
                     vm.$notify({
                         title: "نجاح",
                         text: response.data.message,
@@ -389,7 +414,7 @@ export default {
                     }
                 });
         },
-        removeReactFromPost(profileId, postId) {
+        removeReactFromPost(profileId, postId, reactType) {
             var vm = this;
 
             axios
@@ -407,6 +432,18 @@ export default {
                         (el) => el.id == profileId
                     );
                     vm.posts.data[postIndex].reacts.splice(reactIndex, 1);
+
+                    if (
+                        reactType == 1 &&
+                        vm.posts.data[postIndex].likes_count > 0
+                    ) {
+                        vm.posts.data[postIndex].likes_count -= 1;
+                    } else if (
+                        reactType == 2 &&
+                        vm.posts.data[postIndex].dislikes_count > 0
+                    ) {
+                        vm.posts.data[postIndex].dislikes_count -= 1;
+                    }
 
                     vm.$notify({
                         title: "نجاح",
