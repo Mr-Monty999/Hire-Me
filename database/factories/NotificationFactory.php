@@ -17,7 +17,7 @@ class NotificationFactory extends Factory
         return [
             "type" => $this->faker->numberBetween(1, 5),
             "data" => $this->faker->text(30),
-            "profile_id" => $this->faker->randomElement(Profile::pluck("id")->toArray()),
+            "notifiable_id" => $this->faker->randomElement(Profile::pluck("id")->toArray()),
 
         ];
     }

@@ -8957,8 +8957,8 @@ var render = function render() {
         return _vm.removeConnection(_vm.profile_id, _vm.$route.params.id);
       }
     }
-  }, [_vm._v("في إنتظار القبول "), _c("i", {
-    staticClass: "fa-solid fa-plus"
+  }, [_vm._v("في إنتظار القبول\n                        "), _c("i", {
+    staticClass: "fa-solid fa-user-plus"
   })]) : _vm.connection_request == true ? _c("span", {
     staticClass: "btn btn-danger",
     on: {
@@ -8976,7 +8976,7 @@ var render = function render() {
       }
     }
   }, [_vm._v("إتصال "), _c("i", {
-    staticClass: "fa-solid fa-plus"
+    staticClass: "fa-solid fa-user-plus"
   })]), _vm._v(" "), !_vm.followed ? _c("span", {
     staticClass: "btn btn-primary mar-1",
     on: {

@@ -25,7 +25,8 @@
                             @click="
                                 removeConnection(profile_id, $route.params.id)
                             "
-                            >في إنتظار القبول <i class="fa-solid fa-plus"></i
+                            >في إنتظار القبول
+                            <i class="fa-solid fa-user-plus"></i
                         ></span>
                         <span
                             class="btn btn-danger"
@@ -39,7 +40,7 @@
                             class="btn btn-success"
                             v-else
                             @click="addConnection(profile_id, $route.params.id)"
-                            >إتصال <i class="fa-solid fa-plus"></i
+                            >إتصال <i class="fa-solid fa-user-plus"></i
                         ></span>
                         <span
                             class="btn btn-primary mar-1"

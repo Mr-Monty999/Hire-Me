@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Post;
 use App\Models\Profile;
-
+use App\Services\ProfileService;
 use Database\Factories\ProfileFactory;
 use DB;
 use Illuminate\Database\Seeder;
@@ -23,13 +24,18 @@ class ProfileSeeder extends Seeder
 
         Profile::factory(10)->create();
 
+        $ids = Profile::pluck("id")->toArray();
+        $connectionIds = $ids;
+        foreach ($ids as $key => $value) {
+            $ids[$value] =  ["created_at" => now(), "updated_at" => now()];
+            $connectionIds[$value] = ["accepted" => false];
+        }
+
         foreach (Profile::all() as $key => $row) {
-            # code...
-            $ids = Profile::pluck("id")->toArray();
-            foreach ($ids as $key => $value)
-                $ids[$value] =  ["created_at" => now(), "updated_at" => now()];
-            $row->followings()->sync($ids);
-            $row->followers()->sync($ids);
+            $row->followings()->syncWithoutDetaching($ids);
+            $row->followers()->syncWithoutDetaching($ids);
+            $row->connectionsTo()->syncWithoutDetaching($connectionIds);
+            $row->connectionsFrom()->syncWithoutDetaching($connectionIds);
         }
     }
 }
