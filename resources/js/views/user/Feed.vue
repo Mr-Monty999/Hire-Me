@@ -54,9 +54,15 @@ export default {
             var vm = this;
 
             axios
-                .get("/api/posts?page=" + pageNumber, {
-                    headers: headerAuth,
-                })
+                .get(
+                    "/api/profiles/" +
+                        this.profile_id +
+                        "/feedback/posts?page=" +
+                        pageNumber,
+                    {
+                        headers: headerAuth,
+                    }
+                )
                 .then(function (response) {
                     console.log(response);
                     vm.posts = response.data.data;

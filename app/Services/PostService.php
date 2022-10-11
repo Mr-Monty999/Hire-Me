@@ -22,21 +22,34 @@ class PostService
             "profile:id,firstname,lastname,avatar",
         ])->withCount("comments", "reacts", "tags", "likes", "dislikes")->latest()->paginate(5);
 
+        foreach ($posts as  $post) {
+            $post->created_at_diff_for_humans = $post->created_at->diffForHumans();
+        }
 
         return $posts;
     }
 
-    public static function getPost($postId)
+    public static function getPost($postId, $profileId)
     {
 
         $post = Post::with(
             [
                 "comments.replies",
-                "reacts",
+                "reacts" => function ($q) {
+                    $q->latest()->paginate(5);
+                },
                 "tags",
                 "profile:id,firstname,lastname,avatar"
             ]
         )->withCount(["reacts", "comments", "tags", "likes", "dislikes"])->find($postId);
+
+        $post->created_at_diff_for_humans = $post->created_at->diffForHumans();
+        $react = $post->reacts()->where("profile_id", "=", $profileId)->first();
+        if ($react)
+            $post->react_type = $react->pivot->type;
+        else
+            $post->react_type = 0;
+
 
 
 

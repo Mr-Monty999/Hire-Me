@@ -14,7 +14,7 @@ class PublicService
 
     public static function search($pattern)
     {
-        // $result = self::searchForProfile($pattern);
+        // $result = ProfileService::searchForProfile($pattern);
         $result = PostService::searchForPost($pattern);
         return $result;
     }

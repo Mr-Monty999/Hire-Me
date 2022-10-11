@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Profile;
 use App\Notifications\ConnectionRequestNotification;
 use App\Notifications\CreatePostNotification;
+use App\Notifications\FollowNotification;
 use App\Notifications\ReactToPostNotification;
 use App\Notifications\SendConnectiondataNotification;
 use App\Notifications\SendConnectionRequestNotification;
@@ -62,7 +63,11 @@ class NotificationService
         Profile::find($data["notifiable_id"])->notify(new ConnectionRequestNotification($data));
         return true;
     }
-
+    public static function sendFollowNotification($data)
+    {
+        Profile::find($data["profile_id"])->notify(new FollowNotification($data));
+        return true;
+    }
     public static function getProfileUnReadedNotificationsCount($profileId)
     {
         return Profile::find($profileId)->unreadNotifications()->count();

@@ -57,12 +57,45 @@ class ProfileService
         $posts =  Post::with([
             "comments",
             "reacts" => function ($q) {
-                $q->latest()->paginate(1);
+                $q->latest()->paginate(5);
             },
             "profile:id,firstname,lastname,avatar",
             "tags"
-        ])->where("profile_id", $profileId)->latest()->paginate(5);
+        ])->withCount("reacts", "likes", "dislikes")->where("profile_id", $profileId)->latest()->paginate(5);
         // $posts["count"] = self::getPostsCount($profileId);
+        foreach ($posts as  $post) {
+            $post->created_at_diff_for_humans = $post->created_at->diffForHumans();
+
+            $react = $post->reacts()->where("profile_id", "=", $profileId)->first();
+            if ($react)
+                $post->react_type = $react->pivot->type;
+            else
+                $post->react_type = 0;
+        }
+        return $posts;
+    }
+
+    public static function getFeedPosts($profileId)
+    {
+        $posts = Post::with([
+            "comments.replies",
+            "reacts" => function ($q) {
+                $q->latest()->paginate(5);
+            },
+            "tags",
+            "profile:id,firstname,lastname,avatar",
+        ])->withCount("comments", "reacts", "tags", "likes", "dislikes")->latest()->paginate(5);
+
+        foreach ($posts as  $post) {
+            $post->created_at_diff_for_humans = $post->created_at->diffForHumans();
+
+            $react = $post->reacts()->where("profile_id", "=", $profileId)->first();
+            if ($react)
+                $post->react_type = $react->pivot->type;
+            else
+                $post->react_type = 0;
+        }
+
         return $posts;
     }
     public static function getPostsCount($profileId)

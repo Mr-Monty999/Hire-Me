@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Notifications\SendConnectionRequestNotification;
 use App\Services\FileUploadService;
 use App\Services\NotificationService;
+use App\Services\PostService;
 use App\Services\ProfileService;
 use App\Services\ResponseService;
 use Illuminate\Http\Request;
@@ -94,7 +95,7 @@ class ProfileController extends Controller
     public function followProfile(ProfileFollowStoreRequest $request, $myProfileId)
     {
         $profile = ProfileService::followProfile($request, $myProfileId);
-
+        NotificationService::sendFollowNotification($request->all());
         return ResponseService::json($profile, "تم المتابعة بنجاح");
     }
     public function unFollowProfile($myProfileId, $targetProfileId)
@@ -131,10 +132,10 @@ class ProfileController extends Controller
     public static function sendConnectionRequest(Request $request, $profileId)
     {
         $data = ProfileService::sendConnectionRequest($profileId, $request->target_profile_id);
-        // NotificationService::sendConnectionRequestNotification([
-        //     "notifiable_id" => $request->target_profile_id,
-        //     "profile_id" => $profileId,
-        // ]);
+        NotificationService::sendConnectionRequestNotification([
+            "notifiable_id" => $request->target_profile_id,
+            "profile_id" => $profileId,
+        ]);
         return ResponseService::json($data, "تمت العملية بنجاح");
     }
     public static function removeConnection($profileId, $targetProfileId)
@@ -179,6 +180,18 @@ class ProfileController extends Controller
     {
         $profile = ProfileService::searchForProfile($pattern);
         return ResponseService::json($profile, "تمت العملية بنجاح");
+    }
+    public function showFeedbackPosts($profileId)
+    {
+        $posts = ProfileService::getFeedPosts($profileId);
+        return ResponseService::json($posts, "تمت العملية بنجاح");
+    }
+
+    public function showPost($profileId, $postId)
+    {
+
+        $post = PostService::getPost($postId, $profileId);
+        return ResponseService::json($post, "تم عرض المنشور بنجاح");
     }
     /**
      * Show the form for editing the specified resource.

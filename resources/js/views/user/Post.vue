@@ -21,7 +21,7 @@
                                 {{ post.profile.lastname }}</span
                             >
                             <small class="mr-2 date">{{
-                                post.created_at
+                                post.created_at_diff_for_humans
                             }}</small>
                         </div>
                     </div>
@@ -149,10 +149,10 @@
                         class="d-flex justify-content-between align-items-center p-2"
                     >
                         <div
-                            class="d-flex flex-row icons d-flex align-items-center"
+                            class="d-flex flex-row icons d-flex align-items-center gap-1"
                         >
                             <i
-                                v-if="reactType(post, profile_id) == 1"
+                                v-if="post.react_type == 1"
                                 class="fa-solid fa-thumbs-up text-primary"
                                 @click="
                                     removeReactFromPost(profile_id, post.id)
@@ -163,8 +163,11 @@
                                 class="fa-solid fa-thumbs-up"
                                 @click="reactToPost(profile_id, post.id, 1)"
                             ></i>
+                            <span>
+                                {{ post.likes_count | toNumber }}
+                            </span>
                             <i
-                                v-if="reactType(post, profile_id) == 2"
+                                v-if="post.react_type == 2"
                                 class="fa-solid fa-thumbs-down text-primary"
                                 @click="
                                     removeReactFromPost(profile_id, post.id)
@@ -175,6 +178,9 @@
                                 class="fa-solid fa-thumbs-down"
                                 @click="reactToPost(profile_id, post.id, 2)"
                             ></i>
+                            <span>
+                                {{ post.dislikes_count | toNumber }}
+                            </span>
                         </div>
                         <div class="d-flex flex-row muted-color">
                             <span>التعليقات {{ post.comments.length }}</span>
@@ -207,7 +213,6 @@ import axios from "axios";
 import headerAuth from "../../helpers/auth";
 import headerFormAuth from "../../helpers/formAuth";
 import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
-import services from "../../helpers/services";
 import Loading from "../../components/bootstrap/Loading.vue";
 
 export default {
@@ -327,12 +332,29 @@ export default {
         reactToPost(profileId, postId, reactType) {
             var vm = this;
 
+            vm.removeMyReacts(vm.post);
+            vm.post.react_type = reactType;
+
+            if (reactType == 1) {
+                vm.post.likes_count += 1;
+            } else if (reactType == 2) {
+                vm.post.dislikes_count += 1;
+            }
+
+            vm.$notify({
+                title: "نجاح",
+                text: "تم التفاعل مع المنشور بنجاح",
+                type: "success",
+            });
+
             axios
                 .post(
                     "/api/posts/" + postId + "/profiles",
                     {
                         profile_id: profileId,
                         type: reactType,
+                        post_author: vm.post.profile_id,
+                        post_id: postId,
                     },
                     {
                         headers: headerAuth,
@@ -340,25 +362,6 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
-
-                    var reactIndex = vm.post.reacts.findIndex(
-                        (el) => el.id == profileId
-                    );
-                    vm.post.reacts.splice(reactIndex, 1);
-                    vm.post.reacts.push(response.data.data);
-
-                    vm.$notify({
-                        title: "نجاح",
-                        text: response.data.message,
-                        type: "success",
-                    });
-                    services.sendNotification({
-                        type: 2,
-                        profile_id: vm.profile_id,
-                        post_id: postId,
-                        react_type: reactType,
-                        post_author: vm.post.profile_id,
-                    });
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -375,23 +378,20 @@ export default {
         removeReactFromPost(profileId, postId) {
             var vm = this;
 
+            vm.removeMyReacts(vm.post);
+            vm.post.react_type = 0;
+
+            vm.$notify({
+                title: "نجاح",
+                text: "تم التفاعل مع المنشور بنجاح",
+                type: "success",
+            });
             axios
                 .delete("/api/posts/" + postId + "/profiles/" + profileId, {
                     headers: headerAuth,
                 })
                 .then(function (response) {
                     console.log(response);
-
-                    var reactIndex = vm.post.reacts.findIndex(
-                        (el) => el.id == profileId
-                    );
-                    vm.post.reacts.splice(reactIndex, 1);
-
-                    vm.$notify({
-                        title: "نجاح",
-                        text: response.data.message,
-                        type: "success",
-                    });
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -405,42 +405,24 @@ export default {
                     }
                 });
         },
-        // reactType(profileId, postId) {
-        //     var vm = this;
-
-        //     axios
-        //         .get("/api/posts/" + postId + "/profiles/" + profileId+"/react-type", {
-        //             headers: headerAuth,
-        //         })
-        //         .then(function (response) {
-        //             console.log(response);
-        //             return response.data.data;
-        //         })
-        //         .catch(function (error) {
-        //             console.log(error.response);
-        //             return false;
-        //         });
-        //     return false;
-        // },
-        reactType(post, profileId) {
-            var reactIndex = post.reacts.findIndex((el) => el.id == profileId);
-
-            if (reactIndex >= 0) {
-                return post.reacts[reactIndex].pivot.type;
-            }
-            return 0;
+        removeMyReacts(post) {
+            if (post.react_type == 1 && post.likes_count > 0)
+                post.likes_count -= 1;
+            else if (post.react_type == 2 && post.dislikes_count > 0)
+                post.dislikes_count -= 1;
         },
+
         previewAvatar(avatar) {
             if (!avatar) {
                 return "/images/assets/personal.jpg";
             }
             return avatar;
         },
-        getPost(postId) {
+        getPost(postId, profileId) {
             var vm = this;
 
             axios
-                .get("/api/posts/" + postId + "", {
+                .get("/api/profiles/" + profileId + "/posts/" + postId + "", {
                     headers: headerAuth,
                 })
                 .then(function (response) {
@@ -461,7 +443,7 @@ export default {
     },
     created() {
         this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
-        this.getPost(this.$route.params.id);
+        this.getPost(this.$route.params.id, this.profile_id);
         console.log("View Posts");
         console.log(this.posts);
     },

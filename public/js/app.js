@@ -5792,8 +5792,19 @@ __webpack_require__.r(__webpack_exports__);
       var postIndex = vm.posts.data.findIndex(function (el) {
         return el.id == postId;
       });
-      var reactIndex = vm.posts.data[postIndex].reacts.findIndex(function (el) {
-        return el.id == profileId;
+      vm.removeMyReacts(vm.posts.data[postIndex]);
+      vm.posts.data[postIndex].react_type = reactType;
+
+      if (reactType == 1) {
+        vm.posts.data[postIndex].likes_count += 1;
+      } else if (reactType == 2) {
+        vm.posts.data[postIndex].dislikes_count += 1;
+      }
+
+      vm.$notify({
+        title: "نجاح",
+        text: "تم التفاعل مع المنشور بنجاح",
+        type: "success"
       });
       axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/posts/" + postId + "/profiles", {
         profile_id: profileId,
@@ -5803,23 +5814,9 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
-        console.log(response);
-        vm.posts.data[postIndex].reacts.splice(reactIndex, 1);
-        vm.posts.data[postIndex].reacts.push(response.data.data);
-        if (vm.posts.data[postIndex].likes_count > 0) vm.posts.data[postIndex].likes_count -= 1;
-        if (vm.posts.data[postIndex].dislikes_count > 0) vm.posts.data[postIndex].dislikes_count -= 1;
-
-        if (reactType == 1) {
-          vm.posts.data[postIndex].likes_count += 1;
-        } else if (reactType == 2) {
-          vm.posts.data[postIndex].dislikes_count += 1;
-        }
-
-        vm.$notify({
-          title: "نجاح",
-          text: response.data.message,
-          type: "success"
-        }); // services.sendNotification({
+        console.log(response); // vm.posts.data[postIndex].reacts.splice(reactIndex, 1);
+        // vm.posts.data[postIndex].reacts.push(response.data.data);
+        // services.sendNotification({
         //     type: 2,
         //     profile_id: vm.profile_id,
         //     post_id: postId,
@@ -5841,29 +5838,20 @@ __webpack_require__.r(__webpack_exports__);
     },
     removeReactFromPost: function removeReactFromPost(profileId, postId, reactType) {
       var vm = this;
+      var postIndex = vm.posts.data.findIndex(function (el) {
+        return el.id == postId;
+      });
+      vm.removeMyReacts(vm.posts.data[postIndex]);
+      vm.posts.data[postIndex].react_type = 0;
+      vm.$notify({
+        title: "نجاح",
+        text: "تم التفاعل مع المنشور بنجاح",
+        type: "success"
+      });
       axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/posts/" + postId + "/profiles/" + profileId, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
-        console.log(response);
-        var postIndex = vm.posts.data.findIndex(function (el) {
-          return el.id == postId;
-        });
-        var reactIndex = vm.posts.data[postIndex].reacts.findIndex(function (el) {
-          return el.id == profileId;
-        });
-        vm.posts.data[postIndex].reacts.splice(reactIndex, 1);
-
-        if (reactType == 1 && vm.posts.data[postIndex].likes_count > 0) {
-          vm.posts.data[postIndex].likes_count -= 1;
-        } else if (reactType == 2 && vm.posts.data[postIndex].dislikes_count > 0) {
-          vm.posts.data[postIndex].dislikes_count -= 1;
-        }
-
-        vm.$notify({
-          title: "نجاح",
-          text: response.data.message,
-          type: "success"
-        });
+        console.log(response); // vm.posts.data[postIndex].reacts.splice(reactIndex, 1);
       })["catch"](function (error) {
         console.log(error.response);
         var errors = error.response.data.errors;
@@ -5877,32 +5865,8 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    // reactType(profileId, postId) {
-    //     var vm = this;
-    //     axios
-    //         .get("/api/posts/" + postId + "/profiles/" + profileId+"/react-type", {
-    //             headers: headerAuth,
-    //         })
-    //         .then(function (response) {
-    //             console.log(response);
-    //             return response.data.data;
-    //         })
-    //         .catch(function (error) {
-    //             console.log(error.response);
-    //             return false;
-    //         });
-    //     return false;
-    // },
-    reactType: function reactType(post, profileId) {
-      var reactIndex = post.reacts.findIndex(function (el) {
-        return el.id == profileId;
-      });
-
-      if (reactIndex >= 0) {
-        return post.reacts[reactIndex].pivot.type;
-      }
-
-      return 0;
+    removeMyReacts: function removeMyReacts(post) {
+      if (post.react_type == 1 && post.likes_count > 0) post.likes_count -= 1;else if (post.react_type == 2 && post.dislikes_count > 0) post.dislikes_count -= 1;
     },
     previewAvatar: function previewAvatar(avatar) {
       if (!avatar) {
@@ -6746,7 +6710,7 @@ __webpack_require__.r(__webpack_exports__);
     getPosts: function getPosts() {
       var pageNumber = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/posts?page=" + pageNumber, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + this.profile_id + "/feedback/posts?page=" + pageNumber, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -6789,9 +6753,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _helpers_auth__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../helpers/auth */ "./resources/js/helpers/auth.js");
 /* harmony import */ var _helpers_formAuth__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../helpers/formAuth */ "./resources/js/helpers/formAuth.js");
 /* harmony import */ var _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../components/bootstrap/ModalSnippet.vue */ "./resources/js/components/bootstrap/ModalSnippet.vue");
-/* harmony import */ var _helpers_services__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../helpers/services */ "./resources/js/helpers/services.js");
-/* harmony import */ var _components_bootstrap_Loading_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../components/bootstrap/Loading.vue */ "./resources/js/components/bootstrap/Loading.vue");
-
+/* harmony import */ var _components_bootstrap_Loading_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../components/bootstrap/Loading.vue */ "./resources/js/components/bootstrap/Loading.vue");
 
 
 
@@ -6815,7 +6777,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   components: {
     ModalSnippet: _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
-    Loading: _components_bootstrap_Loading_vue__WEBPACK_IMPORTED_MODULE_5__["default"]
+    Loading: _components_bootstrap_Loading_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
   },
   methods: {
     getFile: function getFile(e) {
@@ -6906,30 +6868,29 @@ __webpack_require__.r(__webpack_exports__);
     },
     reactToPost: function reactToPost(profileId, postId, reactType) {
       var vm = this;
+      vm.removeMyReacts(vm.post);
+      vm.post.react_type = reactType;
+
+      if (reactType == 1) {
+        vm.post.likes_count += 1;
+      } else if (reactType == 2) {
+        vm.post.dislikes_count += 1;
+      }
+
+      vm.$notify({
+        title: "نجاح",
+        text: "تم التفاعل مع المنشور بنجاح",
+        type: "success"
+      });
       axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/posts/" + postId + "/profiles", {
         profile_id: profileId,
-        type: reactType
+        type: reactType,
+        post_author: vm.post.profile_id,
+        post_id: postId
       }, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        var reactIndex = vm.post.reacts.findIndex(function (el) {
-          return el.id == profileId;
-        });
-        vm.post.reacts.splice(reactIndex, 1);
-        vm.post.reacts.push(response.data.data);
-        vm.$notify({
-          title: "نجاح",
-          text: response.data.message,
-          type: "success"
-        });
-        _helpers_services__WEBPACK_IMPORTED_MODULE_4__["default"].sendNotification({
-          type: 2,
-          profile_id: vm.profile_id,
-          post_id: postId,
-          react_type: reactType,
-          post_author: vm.post.profile_id
-        });
       })["catch"](function (error) {
         console.log(error.response);
         var errors = error.response.data.errors;
@@ -6945,19 +6906,17 @@ __webpack_require__.r(__webpack_exports__);
     },
     removeReactFromPost: function removeReactFromPost(profileId, postId) {
       var vm = this;
+      vm.removeMyReacts(vm.post);
+      vm.post.react_type = 0;
+      vm.$notify({
+        title: "نجاح",
+        text: "تم التفاعل مع المنشور بنجاح",
+        type: "success"
+      });
       axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/posts/" + postId + "/profiles/" + profileId, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        var reactIndex = vm.post.reacts.findIndex(function (el) {
-          return el.id == profileId;
-        });
-        vm.post.reacts.splice(reactIndex, 1);
-        vm.$notify({
-          title: "نجاح",
-          text: response.data.message,
-          type: "success"
-        });
       })["catch"](function (error) {
         console.log(error.response);
         var errors = error.response.data.errors;
@@ -6971,32 +6930,8 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    // reactType(profileId, postId) {
-    //     var vm = this;
-    //     axios
-    //         .get("/api/posts/" + postId + "/profiles/" + profileId+"/react-type", {
-    //             headers: headerAuth,
-    //         })
-    //         .then(function (response) {
-    //             console.log(response);
-    //             return response.data.data;
-    //         })
-    //         .catch(function (error) {
-    //             console.log(error.response);
-    //             return false;
-    //         });
-    //     return false;
-    // },
-    reactType: function reactType(post, profileId) {
-      var reactIndex = post.reacts.findIndex(function (el) {
-        return el.id == profileId;
-      });
-
-      if (reactIndex >= 0) {
-        return post.reacts[reactIndex].pivot.type;
-      }
-
-      return 0;
+    removeMyReacts: function removeMyReacts(post) {
+      if (post.react_type == 1 && post.likes_count > 0) post.likes_count -= 1;else if (post.react_type == 2 && post.dislikes_count > 0) post.dislikes_count -= 1;
     },
     previewAvatar: function previewAvatar(avatar) {
       if (!avatar) {
@@ -7005,9 +6940,9 @@ __webpack_require__.r(__webpack_exports__);
 
       return avatar;
     },
-    getPost: function getPost(postId) {
+    getPost: function getPost(postId, profileId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/posts/" + postId + "", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + profileId + "/posts/" + postId + "", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -7024,7 +6959,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
-    this.getPost(this.$route.params.id);
+    this.getPost(this.$route.params.id, this.profile_id);
     console.log("View Posts");
     console.log(this.posts);
   },
@@ -7796,7 +7731,7 @@ var staticRenderFns = [function () {
     attrs: {
       dir: "ltr"
     }
-  }, [_c("div", [_c("h4", [_vm._v("Made By :")]), _vm._v(" "), _c("h6", [_vm._v("Montaser Mohammed")]), _vm._v(" "), _c("h6", [_vm._v("Mohammed Anwer")]), _vm._v(" "), _c("h6", [_vm._v("Marwaa")]), _vm._v(" "), _c("h6", [_vm._v("Munjeda")])]), _vm._v(" "), _c("div", [_c("h4", [_vm._v("Supervised By :")]), _vm._v(" "), _c("h6", [_vm._v("Sufian Ali")])])]);
+  }, [_c("div", [_c("h4", [_vm._v("Made By :")]), _vm._v(" "), _c("h6", [_vm._v("Montaser Mohammed")]), _vm._v(" "), _c("h6", [_vm._v("Ahmed Adel")]), _vm._v(" "), _c("h6", [_vm._v("Mohammed Anwer")]), _vm._v(" "), _c("h6", [_vm._v("Marwaa")]), _vm._v(" "), _c("h6", [_vm._v("Munjeda")])]), _vm._v(" "), _c("div", [_c("h4", [_vm._v("Supervised By :")]), _vm._v(" "), _c("h6", [_vm._v("Sufian Ali")])])]);
 }];
 render._withStripped = true;
 
@@ -8092,7 +8027,7 @@ var staticRenderFns = [function () {
     staticClass: "form-control me-2",
     attrs: {
       type: "search",
-      placeholder: "بحث",
+      placeholder: "بحث عن أشخاص,وظائف,منشورات...",
       "aria-label": "Search"
     }
   })]);
@@ -8267,7 +8202,7 @@ var render = function render() {
       staticClass: "text-break name"
     }, [_vm._v(_vm._s(post.profile.firstname) + "\n                                " + _vm._s(post.profile.lastname))]), _vm._v(" "), _c("small", {
       staticClass: "mr-2 date"
-    }, [_vm._v(_vm._s(post.created_at))])])]), _vm._v(" "), post.profile_id == _vm.profile_id ? _c("div", {
+    }, [_vm._v(_vm._s(post.created_at_diff_for_humans))])])]), _vm._v(" "), post.profile_id == _vm.profile_id ? _c("div", {
       staticClass: "d-flex flex-row mt-1 gap-2"
     }, [_c("modal-snippet", {
       attrs: {
@@ -8370,7 +8305,7 @@ var render = function render() {
       staticClass: "d-flex justify-content-between align-items-center p-2"
     }, [_c("div", {
       staticClass: "d-flex flex-row icons d-flex align-items-center gap-1"
-    }, [_vm.reactType(post, _vm.profile_id) == 1 ? _c("i", {
+    }, [post.react_type == 1 ? _c("i", {
       staticClass: "fa-solid fa-thumbs-up text-primary",
       on: {
         click: function click($event) {
@@ -8384,7 +8319,7 @@ var render = function render() {
           return _vm.reactToPost(_vm.profile_id, post.id, 1);
         }
       }
-    }), _vm._v(" "), _c("span", [_vm._v("\n                                " + _vm._s(_vm._f("toNumber")(post.likes_count)) + "\n                            ")]), _vm._v(" "), _vm.reactType(post, _vm.profile_id) == 2 ? _c("i", {
+    }), _vm._v(" "), _c("span", [_vm._v("\n                                " + _vm._s(_vm._f("toNumber")(post.likes_count)) + "\n                            ")]), _vm._v(" "), post.react_type == 2 ? _c("i", {
       staticClass: "fa-solid fa-thumbs-down text-primary",
       on: {
         click: function click($event) {
@@ -9820,7 +9755,7 @@ var render = function render() {
     staticClass: "text-break name"
   }, [_vm._v(_vm._s(_vm.post.profile.firstname) + "\n                            " + _vm._s(_vm.post.profile.lastname))]), _vm._v(" "), _c("small", {
     staticClass: "mr-2 date"
-  }, [_vm._v(_vm._s(_vm.post.created_at))])])]), _vm._v(" "), _vm.post.profile_id == _vm.profile_id ? _c("div", {
+  }, [_vm._v(_vm._s(_vm.post.created_at_diff_for_humans))])])]), _vm._v(" "), _vm.post.profile_id == _vm.profile_id ? _c("div", {
     staticClass: "d-flex flex-row mt-1 gap-2"
   }, [_c("modal-snippet", {
     attrs: {
@@ -9922,8 +9857,8 @@ var render = function render() {
   })]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("div", {
     staticClass: "d-flex justify-content-between align-items-center p-2"
   }, [_c("div", {
-    staticClass: "d-flex flex-row icons d-flex align-items-center"
-  }, [_vm.reactType(_vm.post, _vm.profile_id) == 1 ? _c("i", {
+    staticClass: "d-flex flex-row icons d-flex align-items-center gap-1"
+  }, [_vm.post.react_type == 1 ? _c("i", {
     staticClass: "fa-solid fa-thumbs-up text-primary",
     on: {
       click: function click($event) {
@@ -9937,7 +9872,7 @@ var render = function render() {
         return _vm.reactToPost(_vm.profile_id, _vm.post.id, 1);
       }
     }
-  }), _vm._v(" "), _vm.reactType(_vm.post, _vm.profile_id) == 2 ? _c("i", {
+  }), _vm._v(" "), _c("span", [_vm._v("\n                            " + _vm._s(_vm._f("toNumber")(_vm.post.likes_count)) + "\n                        ")]), _vm._v(" "), _vm.post.react_type == 2 ? _c("i", {
     staticClass: "fa-solid fa-thumbs-down text-primary",
     on: {
       click: function click($event) {
@@ -9951,7 +9886,7 @@ var render = function render() {
         return _vm.reactToPost(_vm.profile_id, _vm.post.id, 2);
       }
     }
-  })]), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _c("span", [_vm._v("\n                            " + _vm._s(_vm._f("toNumber")(_vm.post.dislikes_count)) + "\n                        ")])]), _vm._v(" "), _c("div", {
     staticClass: "d-flex flex-row muted-color"
   }, [_c("span", [_vm._v("التعليقات " + _vm._s(_vm.post.comments.length))])])]), _vm._v(" "), _c("hr"), _vm._v(" "), _vm._m(0)])]) : _c("div", [_c("h1", [_vm._v("عفوا هذا المنشور غير موجود")])])]) : _vm._e()], 1);
 };

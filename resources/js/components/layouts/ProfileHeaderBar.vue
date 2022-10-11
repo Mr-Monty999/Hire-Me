@@ -124,7 +124,7 @@
                         <input
                             class="form-control me-2"
                             type="search"
-                            placeholder="بحث"
+                            placeholder="بحث عن أشخاص,وظائف,منشورات..."
                             aria-label="Search"
                         />
                     </form>
