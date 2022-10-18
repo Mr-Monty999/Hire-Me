@@ -13,7 +13,7 @@ class ResponseService
     {
     }
 
-    public static function json($data, $message, $status = 200)
+    public static function json($data = null, $message = null, $status = 200)
     {
         $response["data"] = $data;
         $response["message"] = $message;

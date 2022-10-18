@@ -32,10 +32,10 @@ Route::group(["namespace" => "general"], function () {
         Route::post("users/logout", "UserController@logout");
 
         //Users
-        Route::resource("users", "UserController");
+        Route::apiResource("users", "UserController");
 
         //Profiles
-        Route::resource("profiles", "ProfileController");
+        Route::apiResource("profiles", "ProfileController");
         // Route::get("profiles/{id}/phones", "ProfileController@showPhones");
         Route::get("profiles/{id}/posts", "ProfileController@showPosts");
         Route::get("profiles/{id}/info", "ProfileController@showProfileOnly");
@@ -57,25 +57,25 @@ Route::group(["namespace" => "general"], function () {
 
 
         //Profile Phones
-        Route::resource("profiles.phones", "ProfilePhoneController");
+        Route::apiResource("profiles.phones", "ProfilePhoneController");
 
         //Certificates
-        Route::resource("certificates", "CertificateController");
+        Route::apiResource("certificates", "CertificateController");
 
         //Comments
-        Route::resource("comments", "CommentController");
+        Route::apiResource("comments", "CommentController");
 
         //Companies
-        Route::resource("companies", "CompanyController");
+        Route::apiResource("companies", "CompanyController");
 
         //Company Phones
-        Route::resource("companies.phones", "CompanyPhoneController");
+        Route::apiResource("companies.phones", "CompanyPhoneController");
 
         //Experiences
-        Route::resource("experiences", "ExperienceController");
+        Route::apiResource("experiences", "ExperienceController");
 
         //Posts
-        Route::resource("posts", "PostController");
+        Route::apiResource("posts", "PostController");
         Route::post("posts/{id}/profiles", "PostController@react");
         Route::delete("posts/{id}/profiles/{profileId}", "PostController@unReact");
         Route::get("posts/{id}/profiles/{profileId}/react-type", "PostController@isReacted");
@@ -83,17 +83,19 @@ Route::group(["namespace" => "general"], function () {
 
 
         //Skills
-        Route::resource("skills", "SkillController");
+        Route::apiResource("skills", "SkillController");
         Route::delete("skills/{skillId}/profiles/{profileId}", "SkillController@detach");
         Route::get("skills/{name}/search", "SkillController@search");
-
         //Tags
-        Route::resource("tags", "TagController");
+        Route::apiResource("tags", "TagController");
 
-        //Noctifications
-        Route::resource("notifications", "NotificationController");
+        // //Noctifications
+        // Route::apiResource("notifications", "NotificationController");
 
         ///Public Routes
         Route::get("search/{pattern}", "PublicController@search");
+
+        ///Jobs Routes
+        Route::apiResource("jobs", "JobController");
     });
 });

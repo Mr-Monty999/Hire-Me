@@ -11,6 +11,7 @@ use App\Services\FileUploadService;
 use App\Services\NotificationService;
 use App\Services\PostService;
 use App\Services\ResponseService;
+use Auth;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -22,6 +23,7 @@ class PostController extends Controller
      */
     public function index()
     {
+        // return Auth::user();
         $posts = PostService::getAllPosts();
 
         return ResponseService::json($posts, "تم جلب جميع المنشورات بنجاح");
@@ -53,7 +55,7 @@ class PostController extends Controller
         $post = Post::create($data);
         $data["post_id"] = $post->id;
         NotificationService::sendCreatePostNotification($data);
-        $post = $post->with("reacts", "comments", "profile:id,firstname,lastname,avatar", "tags")->find($post->id);
+        $post = PostService::getPost($post->id, Auth::user()->profile->id);
 
         return ResponseService::json($post, "تم إنشاء المنشور بنجاح", 201);
     }

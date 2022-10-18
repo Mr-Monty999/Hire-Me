@@ -39,6 +39,9 @@ class NotificationService
                 $value->markAsRead();
         }
     }
+    public static function readNotification()
+    {
+    }
     public static function sendCreatePostNotification($data)
     {
         $profile = Profile::find($data["profile_id"]);

@@ -115,6 +115,10 @@ export default {
             let data = new FormData();
             data.append("content", vm.content);
             data.append("photo", vm.previewPhoto);
+            // data.append("likes_count", 0);
+            // data.append("dislikes_count", 0);
+            data.append("photo", vm.previewPhoto);
+
             data.append("profile_id", vm.profile_id);
             axios
                 .post("/api/posts/", data, {
