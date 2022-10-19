@@ -90,6 +90,18 @@
                                 <div
                                     v-else-if="
                                         notification.type ==
+                                        'App\\Notifications\\OfferJobNotification'
+                                    "
+                                    class="text-break"
+                                >
+                                    <b>قام بعرض وظيفة جديدة</b>
+                                    <!-- <div class="limited">
+                                        "{{ notification.data.job.title }}"
+                                    </div> -->
+                                </div>
+                                <!-- <div
+                                    v-else-if="
+                                        notification.type ==
                                         'App\\Notifications\\ConnectionRequestNotification'
                                     "
                                     class="text-break"
@@ -119,7 +131,7 @@
                                             حذف
                                         </button>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>

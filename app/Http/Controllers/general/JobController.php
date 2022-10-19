@@ -7,7 +7,9 @@ use App\Http\Requests\StoreJobRequest;
 use App\Http\Requests\UpdateJobRequest;
 use App\Models\Job;
 use App\Services\JobService;
+use App\Services\NotificationService;
 use App\Services\ResponseService;
+use Auth;
 use Illuminate\Support\Facades\Response;
 
 class JobController extends Controller
@@ -20,7 +22,8 @@ class JobController extends Controller
     public function index()
     {
 
-        //
+        $jobs = JobService::getAllJobs();
+        return ResponseService::json($jobs, "تم جلب جميع المنشورات بنجاح");
     }
 
     /**
@@ -31,8 +34,11 @@ class JobController extends Controller
      */
     public function store(StoreJobRequest $request)
     {
-
-        $data = JobService::store($request->all());
+        $data = $request->all();
+        $data["profile_id"] = Auth::user()->profile->id;
+        $data = JobService::store($data);
+        $data["job_id"] = $data["id"];
+        NotificationService::sendOfferJobNotification($data);
         return ResponseService::json($data);
     }
 
@@ -57,7 +63,9 @@ class JobController extends Controller
      */
     public function update(UpdateJobRequest $request, Job $job)
     {
-        $data = JobService::update($job, $request->all());
+        $data = $request->all();
+        $data["profile_id"] = Auth::user()->profile->id;
+        $data = JobService::update($job, $data);
         return  ResponseService::json($data);
     }
 

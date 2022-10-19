@@ -8,6 +8,7 @@ use App\Http\Requests\UserRegisterRequest;
 use App\Models\Profile;
 use App\Models\User;
 use App\Services\ResponseService;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -27,38 +28,25 @@ class UserController extends Controller
     public function login(UserLoginRequest $request)
     {
         $request->validated();
+        $login = UserService::login($request);
 
-
-        if (Auth::attempt($request->only(["email", "password"]), true)) {
-            // Auth::user()->tokens()->delete();
-            $data = Auth::user();
-            $data["profile_id"] = Auth::user()->profile->id;
-            unset($data["profile"]);
-            $data["token"] = Auth::user()->createToken(uniqid("token_"))->plainTextToken;
-
-            return ResponseService::json($data, "تم تسجيل الدخول بنجاح");
-        } else
+        if ($login)
+            return ResponseService::json($login, "تم تسجيل الدخول بنجاح");
+        else
             return ResponseService::json(null, "الرجاء التحقق من البيانات !", 401);
     }
 
     public function register(UserRegisterRequest $request)
     {
         $request->validated();
-        $data = $request->all();
-        $data["password"] = bcrypt($data["password"]);
-        $user = User::create($data);
-        $data["user_id"] =  $user->id;
-        $user["token"] = $user->createToken(uniqid("token_"))->plainTextToken;
-        $user["profile_id"] = Profile::create($data)->id;
+        $user = UserService::register($request->all());
         return ResponseService::json($user, "تم إنشاء الحساب بنجاح");
     }
     public function logout()
     {
-        // if (Auth::user() != null)
-        //     $data = Auth::user();
-        // Auth::logout();
+        $logout = UserService::logout();
 
-        return ResponseService::json(null, "تم تسجيل الخروج بنجاح");
+        return ResponseService::json($logout, "تم تسجيل الخروج بنجاح");
     }
 
 

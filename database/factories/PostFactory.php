@@ -17,7 +17,7 @@ class PostFactory extends Factory
         return [
             "content" => $this->faker->realText(),
             "photo" => $this->faker->imageUrl,
-            "profile_id" => $this->faker->randomElement(Profile::pluck("id"))
+            "profile_id" => $this->faker->randomElement(Profile::pluck("id")->toArray())
         ];
     }
 }

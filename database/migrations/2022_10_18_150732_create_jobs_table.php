@@ -18,7 +18,10 @@ class CreateJobsTable extends Migration
             $table->string("title", 255);
             $table->text("description");
             $table->string("location", 255);
+            $table->bigInteger("profile_id")->unsigned();
             $table->timestamps();
+
+            $table->foreign("profile_id")->references("id")->on("profiles")->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 

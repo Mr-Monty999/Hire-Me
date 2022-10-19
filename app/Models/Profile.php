@@ -46,6 +46,10 @@ class Profile extends Model
     {
         return $this->hasMany(Post::class);
     }
+    public function jobs()
+    {
+        return $this->hasMany(Job::class);
+    }
     public function commentsReacts()
     {
         return $this->belongsToMany(Comment::class, "comment_react")->withTimestamps();

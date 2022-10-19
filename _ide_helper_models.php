@@ -173,6 +173,33 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * App\Models\Job
+ *
+ * @property int $id
+ * @property string $title
+ * @property string $description
+ * @property string $location
+ * @property int $profile_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Profile $profile
+ * @method static \Database\Factories\JobFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Job newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Job newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Job query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Job whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Job whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Job whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Job whereLocation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Job whereProfileId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Job whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Job whereUpdatedAt($value)
+ */
+	class Job extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\Post
  *
  * @property int $id
@@ -242,6 +269,8 @@ namespace App\Models{
  * @property-read int|null $followers_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Profile[] $followings
  * @property-read int|null $followings_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Job[] $jobs
+ * @property-read int|null $jobs_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Company[] $managementCompanies
  * @property-read int|null $management_companies_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications

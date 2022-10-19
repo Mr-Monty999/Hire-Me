@@ -58,6 +58,15 @@
                                         >الملف الشخصي</router-link
                                     >
                                 </li>
+                                <li>
+                                    <router-link
+                                        class="dropdown-item"
+                                        :to="{
+                                            name: 'jobs',
+                                        }"
+                                        >الوظائف</router-link
+                                    >
+                                </li>
                                 <li hidden>
                                     <a class="dropdown-item" href="#"
                                         >الشركات</a

@@ -193,4 +193,15 @@ class ProfileService
 
         return $result;
     }
+
+    public static function getAllRelations($profileId)
+    {
+        $profile = Profile::find($profileId);
+        $followings = $profile->followings()->get();
+        $connections = self::getAllAcceptedConnections($profileId);
+
+        $relations =  $followings->merge($connections)->except($profileId)->unique("id");
+
+        return $relations;
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Job;
+use App\Models\Profile;
 
 /**
  * Class JobService.
@@ -13,6 +14,8 @@ class JobService
     public static function store($data)
     {
         $job =  Job::create($data);
+        $job = Job::find($job->id);
+
         return $job;
     }
     public static function update($job, $data)
@@ -20,5 +23,18 @@ class JobService
         $job->update($data);
 
         return $job;
+    }
+
+    public static function getAllJobs()
+    {
+        $jobs = Job::with([
+            "profile:id,firstname,lastname,avatar",
+        ])->latest()->paginate(5);
+
+        foreach ($jobs as  $job) {
+            $job->created_at_diff_for_humans = $job->created_at->diffForHumans();
+        }
+
+        return $jobs;
     }
 }

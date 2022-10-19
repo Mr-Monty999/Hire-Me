@@ -26,7 +26,7 @@ class StoreJobRequest extends FormRequest
         return [
             "title" => "required",
             "description" => "required",
-            "location" => "required"
+            "location" => "required",
         ];
     }
 

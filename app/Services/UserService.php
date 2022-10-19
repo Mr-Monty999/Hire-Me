@@ -2,10 +2,54 @@
 
 namespace App\Services;
 
+use App\Models\Profile;
+use App\Models\User;
+use Auth;
+
 /**
  * Class UserService.
  */
 class UserService
 {
 
+    public static function login($request)
+    {
+        // $request->validated();
+
+
+        if (Auth::attempt($request->only(["email", "password"]), true)) {
+            // Auth::user()->tokens()->delete();
+            $data = Auth::user();
+            $data["profile_id"] = Auth::user()->profile->id;
+            unset($data["profile"]);
+            $data["token"] = Auth::user()->createToken(uniqid("token_"))->plainTextToken;
+
+            return $data;
+        } else
+            return false;
+    }
+
+    public static function register($data)
+    {
+
+        // $request->validated();
+        // $data = $request->all();
+        $data["password"] = bcrypt($data["password"]);
+        $user = User::create($data);
+        $data["user_id"] =  $user->id;
+        $user["token"] = $user->createToken(uniqid("token_"))->plainTextToken;
+        $user["profile_id"] = Profile::create($data)->id;
+        return $user;
+    }
+    public static function logout()
+    {
+
+        $data = null;
+        if (Auth::user() != null)
+            $data = Auth::user();
+
+        // Auth::logout();
+
+        return $data;
+    }
 }

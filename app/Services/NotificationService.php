@@ -2,10 +2,13 @@
 
 namespace App\Services;
 
+use App\Models\Job;
+use App\Models\Post;
 use App\Models\Profile;
 use App\Notifications\ConnectionRequestNotification;
 use App\Notifications\CreatePostNotification;
 use App\Notifications\FollowNotification;
+use App\Notifications\OfferJobNotification;
 use App\Notifications\ReactToPostNotification;
 use App\Notifications\SendConnectiondataNotification;
 use App\Notifications\SendConnectionRequestNotification;
@@ -27,7 +30,13 @@ class NotificationService
         foreach ($notifications as $key => $value) {
             $temp = $value->data;
             $temp["profile"] = Profile::find($value->data["profile_id"]);
+            if (isset($value->data["post_id"]))
+                $temp["post"] = Post::find($value->data["post_id"]);
+            if (isset($value->data["job_id"]))
+                $temp["job"] = Job::find($value->data["job_id"]);
+
             $value->data = $temp;
+            // $value->data->profile = Profile::find($value->data["profile_id"]);
         }
         return $notifications;
     }
@@ -44,11 +53,7 @@ class NotificationService
     }
     public static function sendCreatePostNotification($data)
     {
-        $profile = Profile::find($data["profile_id"]);
-        $followings = $profile->followings()->get()->except($data["profile_id"]);
-        $connections = ProfileService::getAllAcceptedConnections($data["profile_id"]);
-        $targets =  $followings->merge($connections)->unique("id");
-
+        $targets = ProfileService::getAllRelations($data["profile_id"]);
         Notification::send($targets, new CreatePostNotification($data));
 
         return true;
@@ -64,6 +69,14 @@ class NotificationService
     public static function sendConnectionRequestNotification($data)
     {
         Profile::find($data["notifiable_id"])->notify(new ConnectionRequestNotification($data));
+        return true;
+    }
+    public static function sendOfferJobNotification($data)
+    {
+
+        $targets = ProfileService::getAllRelations($data["profile_id"]);
+        Notification::send($targets, new OfferJobNotification($data));
+
         return true;
     }
     public static function sendFollowNotification($data)
