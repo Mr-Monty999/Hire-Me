@@ -7,6 +7,7 @@ use App\Http\Requests\ExperienceStoreRequest;
 use App\Http\Requests\ExperienceUpdateRequest;
 use App\Models\Company;
 use App\Models\Experience;
+use App\Services\ExperienceService;
 use App\Services\ResponseService;
 use Illuminate\Http\Request;
 
@@ -42,15 +43,7 @@ class ExperienceController extends Controller
      */
     public function store(ExperienceStoreRequest $request)
     {
-        $request->validated();
-        $data = $request->all();
-
-        $company = Company::where("name", $data["company_name"])->first();
-
-        if ($company != null)
-            $data["company_id"] = $company->id;
-
-        $ex =   Experience::create($data);
+        $ex =  ExperienceService::store($request->all());
         return ResponseService::json($ex, "تم إضافة الخبرة بنجاح", 201);
     }
 
@@ -85,8 +78,7 @@ class ExperienceController extends Controller
      */
     public function update(ExperienceUpdateRequest $request, Experience $experience)
     {
-        $request->validated();
-        $experience->update($request->all());
+        ExperienceService::update($request->all(), $experience);
 
         return ResponseService::json($experience, "تم تعديل البيانات بنجاح");
     }
@@ -99,7 +91,7 @@ class ExperienceController extends Controller
      */
     public function destroy(Experience $experience)
     {
-        $experience->delete();
+        ExperienceService::forceDelete($experience);
         return ResponseService::json($experience, "تم حذف البيانات بنجاح");
     }
 }

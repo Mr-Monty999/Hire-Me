@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Post;
 use Auth;
 use DB;
+use Gate;
 
 /**
  * Class PostService.
@@ -12,6 +13,27 @@ use DB;
 class PostService
 {
 
+    public static function update($request, $post)
+    {
+
+        Gate::authorize("update", $post);
+
+        $data = $request->all();
+        if ($request->file("photo") != null) {
+            $data["photo"] = FileUploadService::uploadImage($request->file("photo"), "/images/posts");
+            FileUploadService::deleteImageIfExists(public_path($post->photo));
+        } else
+            $data["photo"] = $post->photo;
+        $post->update($data);
+        return $post;
+    }
+    public static function forceDelete($post)
+    {
+        Gate::authorize("forceDelete", $post);
+        FileUploadService::deleteImageIfExists(public_path($post->photo));
+        $post->delete();
+        return $post;
+    }
     public static function getAllPosts()
     {
         $profileId = Auth::user()->profile->id;

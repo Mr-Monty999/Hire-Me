@@ -12,6 +12,7 @@ use App\Services\NotificationService;
 use App\Services\PostService;
 use App\Services\ResponseService;
 use Auth;
+use Gate;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -117,13 +118,8 @@ class PostController extends Controller
      */
     public function update(PostUpdateRequest $request, Post $post)
     {
-        $data = $request->all();
-        if ($request->file("photo") != null) {
-            $data["photo"] = FileUploadService::uploadImage($request->file("photo"), "/images/posts");
-            FileUploadService::deleteImageIfExists(public_path($post->photo));
-        } else
-            $data["photo"] = $post->photo;
-        $post->update($data);
+        PostService::update($request, $post);
+
         return ResponseService::json($post, "تم تعديل المنشور بنجاح");
     }
 
@@ -135,9 +131,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        FileUploadService::deleteImageIfExists(public_path($post->photo));
-
-        $post->delete();
+        PostService::forceDelete($post);
 
         return ResponseService::json($post, "تم حذف المنشور بنجاح");
     }

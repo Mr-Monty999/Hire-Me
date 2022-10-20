@@ -10,6 +10,7 @@ use App\Services\JobService;
 use App\Services\NotificationService;
 use App\Services\ResponseService;
 use Auth;
+use Gate;
 use Illuminate\Support\Facades\Response;
 
 class JobController extends Controller
@@ -79,7 +80,7 @@ class JobController extends Controller
      */
     public function destroy(Job $job)
     {
-        $job->delete();
+        JobService::forceDelete($job);
         return  ResponseService::json($job);
     }
 }

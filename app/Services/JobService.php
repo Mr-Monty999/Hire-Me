@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Job;
 use App\Models\Profile;
+use Gate;
 
 /**
  * Class JobService.
@@ -25,8 +26,16 @@ class JobService
     }
     public static function update($job, $data)
     {
+        Gate::authorize("update", $job);
         $job->update($data);
 
+        return $job;
+    }
+    public static function forceDelete($job)
+    {
+
+        Gate::authorize("forceDelete", $job);
+        $job->delete();
         return $job;
     }
 
