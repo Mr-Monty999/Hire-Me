@@ -212,19 +212,7 @@ class ProfileController extends Controller
     {
 
 
-        $data = $request->all();
-        $profile = Profile::find($id);
-        if ($request->file("avatar") != null) {
-            $data["avatar"] = FileUploadService::uploadImage($request->file("avatar"), "/images/profiles");
-
-            FileUploadService::deleteImageIfExists(public_path($profile->avatar));
-        } else {
-            $data["avatar"] = $profile->avatar;
-        }
-
-
-
-        $profile->update($data);
+        $profile =   ProfileService::update($request, Profile::find($id));
 
         return ResponseService::json($profile, "تم حفظ الملف الشخصي بنجاح");
     }
@@ -237,8 +225,7 @@ class ProfileController extends Controller
      */
     public function destroy($id)
     {
-        $profile = Profile::where("user_id", $id)->first();
-        $profile->delete();
+        $profile = ProfileService::forceDelete(Profile::find($id));
         return ResponseService::json($profile, "تم حذف الملف الشخصي بنجاح");
     }
 }
