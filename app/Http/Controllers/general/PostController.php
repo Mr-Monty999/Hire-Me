@@ -69,8 +69,8 @@ class PostController extends Controller
     public function show($postId)
     {
 
-        // $post = PostService::getPost($postId);
-        // return ResponseService::json($post, "تم عرض المنشور بنجاح");
+        $post = PostService::getPost($postId, Auth::user()->profile->id);
+        return ResponseService::json($post, "تم عرض المنشور بنجاح");
     }
 
 

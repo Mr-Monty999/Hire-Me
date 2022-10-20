@@ -10,6 +10,11 @@ use App\Models\Profile;
  */
 class JobService
 {
+    public static function show($jobId)
+    {
+        $job = Job::with("profile:id,firstname,lastname,avatar")->find($jobId);
+        return $job;
+    }
 
     public static function store($data)
     {

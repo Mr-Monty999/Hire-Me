@@ -39,7 +39,7 @@ class PostService
     }
 
 
-    public static function getPost($postId, $profileId)
+    public static function getPost($postId, $authProfileId)
     {
 
         $post = Post::with(
@@ -54,7 +54,7 @@ class PostService
         )->withCount(["reacts", "comments", "tags", "likes", "dislikes"])->find($postId);
 
         $post->created_at_diff_for_humans = $post->created_at->diffForHumans();
-        $react = $post->reacts()->where("profile_id", "=", $profileId)->first();
+        $react = $post->reacts()->where("profile_id", "=", $authProfileId)->first();
         if ($react)
             $post->react_type = $react->pivot->type;
         else

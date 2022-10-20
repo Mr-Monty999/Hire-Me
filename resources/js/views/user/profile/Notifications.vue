@@ -15,7 +15,9 @@
                     <div
                         @click="
                             if (notification.data.post_id)
-                                return goToPost(notification.data.post_id);
+                                return showPost(notification.data.post_id);
+                            else if (notification.data.job_id)
+                                return showJob(notification.data.job_id);
                         "
                         :class="'alert ' + getAlertClass(notification)"
                     >
@@ -29,7 +31,7 @@
                                     :src="notification.data.profile.avatar"
                                     alt=""
                                     @click="
-                                        goToProfile(
+                                        showProfile(
                                             notification.data.profile_id
                                         )
                                     "
@@ -40,7 +42,7 @@
                                     src="/images/assets/personal.jpg"
                                     alt=""
                                     @click="
-                                        goToProfile(
+                                        showProfile(
                                             notification.data.profile_id
                                         )
                                     "
@@ -48,7 +50,7 @@
                                 <b
                                     class="text-break fullname"
                                     @click="
-                                        goToProfile(
+                                        showProfile(
                                             notification.data.profile_id
                                         )
                                     "
@@ -199,7 +201,7 @@ export default {
                     console.log(error.response);
                 });
         },
-        goToProfile(profileId) {
+        showProfile(profileId) {
             this.$router.push({
                 name: "profile",
                 params: {
@@ -207,7 +209,7 @@ export default {
                 },
             });
         },
-        goToPost(postId) {
+        showPost(postId) {
             this.$router.push({
                 name: "post",
                 params: {
@@ -215,7 +217,15 @@ export default {
                 },
             });
         },
-        goToProfile(profileId) {
+        showJob(jobId) {
+            this.$router.push({
+                name: "job.show",
+                params: {
+                    id: jobId,
+                },
+            });
+        },
+        showProfile(profileId) {
             this.$router.push({
                 name: "profile",
                 params: {

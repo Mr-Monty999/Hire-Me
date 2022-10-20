@@ -12,6 +12,7 @@ import Notifications from "../views/user/profile/Notifications.vue";
 import Connections from "../views/user/profile/Connections.vue";
 import Post from "../views/user/Post.vue";
 import Jobs from "../views/user/Jobs.vue";
+import ShowJob from "../views/user/ShowJob.vue";
 
 Vue.use(VueRouter);
 
@@ -57,9 +58,14 @@ const routes = [
         component: Jobs,
     },
     {
-        path: "/post/:id",
+        path: "/posts/:id",
         name: "post",
         component: Post,
+    },
+    {
+        path: "/jobs/:id",
+        name: "job.show",
+        component: ShowJob,
     },
     {
         path: "/profile/:id/edit",
@@ -92,6 +98,7 @@ router.beforeEach(function (to, from, next) {
         "connections",
         "post",
         "jobs",
+        "job.show",
     ];
     if (localStorage.getItem("user") == null) {
         if (routes.includes(to.name)) next({ name: "login" });

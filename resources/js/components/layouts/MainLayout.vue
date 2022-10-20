@@ -28,6 +28,7 @@ export default {
                 "connections",
                 "post",
                 "jobs",
+                "job.show",
             ];
             if (routes.includes(this.$route.name)) return true;
 

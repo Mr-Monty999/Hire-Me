@@ -38,7 +38,7 @@
                             iconLaunchButton
                             launchButtonClass="fa-solid fa-pen-to-square text-warning"
                             confirmButtonClass="btn btn-warning"
-                            :name="'editPost' + i"
+                            :name="'editPost'"
                             @confirmEvent="updatePost(post.id)"
                             @onLaunchButtonClick="editPost(post.id)"
                         >
@@ -64,13 +64,13 @@
                                     <!-- <div> -->
                                     <label
                                         class="fa fa-image options mr-4 col-1"
-                                        :for="'photo' + i"
+                                        :for="'photo'"
                                     >
                                         <input
                                             type="file"
-                                            :name="'photo' + i"
+                                            :name="'photo'"
                                             hidden
-                                            :id="'photo' + i"
+                                            :id="'photo'"
                                             @change="getFile"
                                         />
                                     </label>
@@ -88,7 +88,7 @@
                             title="حذف منشورك"
                             launchButtonClass="fa-solid fa-trash text-danger"
                             confirmButtonClass="btn btn-danger"
-                            :name="'deletePost' + i"
+                            :name="'deletePost'"
                             confirmAndClosed
                             @confirmEvent="deletePost(post.id)"
                         >
@@ -125,7 +125,7 @@
                                             title="حذف منشورك"
                                             launchButtonClass="dropdown-item"
                                             confirmButtonClass="btn btn-danger"
-                                            :name="'deletePost' + i"
+                                            :name="'deletePost' "
                                             confirmAndClosed
                                             @confirmEvent="deletePost(post.id)"
                                         >
@@ -418,11 +418,11 @@ export default {
             }
             return avatar;
         },
-        getPost(postId, profileId) {
+        getPost(postId) {
             var vm = this;
 
             axios
-                .get("/api/profiles/" + profileId + "/posts/" + postId + "", {
+                .get("/api/posts/" + postId, {
                     headers: headerAuth,
                 })
                 .then(function (response) {
@@ -443,7 +443,7 @@ export default {
     },
     created() {
         this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
-        this.getPost(this.$route.params.id, this.profile_id);
+        this.getPost(this.$route.params.id);
         console.log("View Posts");
         console.log(this.posts);
     },

@@ -186,13 +186,6 @@ class ProfileController extends Controller
         $posts = ProfileService::getFeedPosts($profileId);
         return ResponseService::json($posts, "تمت العملية بنجاح");
     }
-
-    public function showPost($profileId, $postId)
-    {
-
-        $post = PostService::getPost($postId, $profileId);
-        return ResponseService::json($post, "تم عرض المنشور بنجاح");
-    }
     /**
      * Show the form for editing the specified resource.
      *

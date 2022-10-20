@@ -53,7 +53,6 @@ Route::group(["namespace" => "general"], function () {
         Route::get("profiles/{id}/profiles/{targetId}/connection-status", "ProfileController@getConnectionStatus");
         Route::get("profiles/search/{pattern}", "ProfileController@search");
         Route::get("profiles/{profileId}/feedback/posts", "ProfileController@showFeedbackPosts");
-        Route::get("profiles/{profileId}/posts/{postId}", "ProfileController@showPost");
 
 
         //Profile Phones
