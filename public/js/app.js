@@ -10678,7 +10678,7 @@ var render = function render() {
   return _c("div", {
     staticClass: "container mt-5 mb-5"
   }, [!_vm.loaded ? _c("loading") : _vm._e(), _vm._v(" "), _vm.loaded ? _c("div", {
-    staticClass: "row d-flex align-items-center justify-content-center bg-mine"
+    staticClass: "row d-flex align-items-center justify-content-center"
   }, [_vm.post && _vm.post.profile ? _c("div", {
     staticClass: "col-md-12"
   }, [_c("div", {
