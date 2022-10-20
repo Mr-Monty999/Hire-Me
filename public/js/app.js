@@ -5407,6 +5407,12 @@ __webpack_require__.r(__webpack_exports__);
       // data.append("location", vm.location);
       // data.append("_method", "put");
 
+      var spinner = '<div class="spinner-border text-white" role="status">' + '<span class="visually-hidden">Loading...</span>' + "</div>";
+      vm.$notify({
+        title: "في الإنتظار...",
+        text: "جاري تعديل الوظيفة " + spinner,
+        type: "info"
+      });
       axios__WEBPACK_IMPORTED_MODULE_0___default().put("/api/jobs/" + jobId, {
         title: vm.title,
         description: vm.description,
@@ -5422,8 +5428,11 @@ __webpack_require__.r(__webpack_exports__);
         vm.jobs.data[jobIndex].description = response.data.data.description;
         vm.jobs.data[jobIndex].location = response.data.data.location;
         vm.$notify({
+          clean: true
+        });
+        vm.$notify({
           title: "نجاح",
-          text: "تم تعديل العمل بنجاح",
+          text: "تم تعديل الوظيفة بنجاح",
           type: "success"
         });
       })["catch"](function (error) {
@@ -5441,6 +5450,12 @@ __webpack_require__.r(__webpack_exports__);
     },
     deleteJob: function deleteJob(jobId) {
       var vm = this;
+      var spinner = '<div class="spinner-border text-white" role="status">' + '<span class="visually-hidden">Loading...</span>' + "</div>";
+      vm.$notify({
+        title: "في الإنتظار...",
+        text: "جاري حذف الوظيفة " + spinner,
+        type: "info"
+      });
       axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/jobs/" + jobId, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
@@ -5450,8 +5465,11 @@ __webpack_require__.r(__webpack_exports__);
         });
         vm.jobs.data.splice(index, 1);
         vm.$notify({
+          clean: true
+        });
+        vm.$notify({
           title: "نجاح",
-          text: "تم حذف العمل بنجاح",
+          text: "تم حذف الوظيفة بنجاح",
           type: "success"
         });
       })["catch"](function (error) {
@@ -5756,10 +5774,19 @@ __webpack_require__.r(__webpack_exports__);
 
       data.append("photo", vm.previewPhoto);
       data.append("profile_id", vm.profile_id);
+      var spinner = '<div class="spinner-border text-white" role="status">' + '<span class="visually-hidden">Loading...</span>' + "</div>";
+      vm.$notify({
+        title: "في الإنتظار...",
+        text: "جاري نشر المنشور " + spinner,
+        type: "info"
+      });
       axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/posts/", data, {
         headers: _helpers_formAuth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
+        vm.$notify({
+          clean: true
+        });
         vm.$notify({
           title: "نجاح",
           text: "تم نشر المنشور بنجاح",
@@ -5871,6 +5898,12 @@ __webpack_require__.r(__webpack_exports__);
       data.append("content", vm.content);
       data.append("photo", vm.previewPhoto);
       data.append("_method", "put");
+      var spinner = '<div class="spinner-border text-white" role="status">' + '<span class="visually-hidden">Loading...</span>' + "</div>";
+      vm.$notify({
+        title: "في الإنتظار...",
+        text: "جاري تعديل المنشور " + spinner,
+        type: "info"
+      });
       axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/posts/" + postId, data, {
         headers: _helpers_formAuth__WEBPACK_IMPORTED_MODULE_2__["default"]
       }).then(function (response) {
@@ -5880,6 +5913,9 @@ __webpack_require__.r(__webpack_exports__);
         });
         vm.posts.data[postIndex].content = response.data.data.content;
         vm.posts.data[postIndex].photo = response.data.data.photo;
+        vm.$notify({
+          clean: true
+        });
         vm.$notify({
           title: "نجاح",
           text: "تم تعديل المنشور بنجاح",
@@ -5900,6 +5936,12 @@ __webpack_require__.r(__webpack_exports__);
     },
     deletePost: function deletePost(postId) {
       var vm = this;
+      var spinner = '<div class="spinner-border text-white" role="status">' + '<span class="visually-hidden">Loading...</span>' + "</div>";
+      vm.$notify({
+        title: "في الإنتظار...",
+        text: "جاري حذف المنشور " + spinner,
+        type: "info"
+      });
       axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/posts/" + postId, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
@@ -5908,6 +5950,9 @@ __webpack_require__.r(__webpack_exports__);
           return el.id == postId;
         });
         vm.posts.data.splice(index, 1);
+        vm.$notify({
+          clean: true
+        });
         vm.$notify({
           title: "نجاح",
           text: "تم حذف المنشور بنجاح",
@@ -5962,6 +6007,9 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       vm.$notify({
+        clean: true
+      });
+      vm.$notify({
         title: "نجاح",
         text: "تم التفاعل مع المنشور بنجاح",
         type: "success"
@@ -6003,6 +6051,9 @@ __webpack_require__.r(__webpack_exports__);
       });
       vm.removeMyReacts(vm.posts.data[postIndex]);
       vm.posts.data[postIndex].react_type = 0;
+      vm.$notify({
+        clean: true
+      });
       vm.$notify({
         title: "نجاح",
         text: "تم التفاعل مع المنشور بنجاح",
@@ -6956,6 +7007,12 @@ __webpack_require__.r(__webpack_exports__);
     },
     offerJob: function offerJob() {
       var vm = this;
+      var spinner = '<div class="spinner-border text-white" role="status">' + '<span class="visually-hidden">Loading...</span>' + "</div>";
+      vm.$notify({
+        title: "في الإنتظار...",
+        text: "جاري عرض الوظيفة " + spinner,
+        type: "info"
+      });
       axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/jobs", {
         title: vm.title,
         description: vm.description,
@@ -6967,8 +7024,11 @@ __webpack_require__.r(__webpack_exports__);
         vm.jobs.data.unshift(response.data.data);
         vm.reset();
         vm.$notify({
+          clean: true
+        });
+        vm.$notify({
           title: "نجاح",
-          text: "تم إضافة العمل بنجاح",
+          text: "تم عرض الوظيفة بنجاح",
           type: "success"
         });
       })["catch"](function (error) {
@@ -8047,7 +8107,7 @@ var render = function render() {
       staticClass: "form-control",
       attrs: {
         type: "text",
-        placeholder: "عنوان العمل",
+        placeholder: "عنوان الوظيفة",
         name: "title",
         cols: "100px"
       },
@@ -8127,12 +8187,12 @@ var render = function render() {
           return _vm.deleteJob(job.id);
         }
       }
-    }, [_vm._v("\n                            هل أنت متأكد من حذف هذا العمل؟\n                        ")])], 1) : _vm._e()]), _vm._v(" "), _c("div", [_c("h3", {
+    }, [_vm._v("\n                            هل أنت متأكد من حذف هذه الوظيفة؟\n                        ")])], 1) : _vm._e()]), _vm._v(" "), _c("div", [_c("h3", {
       staticClass: "text-justify p-2"
     }, [_vm._v("\n                        " + _vm._s(job.title) + "\n                    ")]), _vm._v(" "), _c("div", {
       staticClass: "text-justify p-2"
     }, [_c("div", [_vm._v(_vm._s(job.description))])]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("div", {
-      staticClass: "d-flex justify-title-between align-items-center p-2"
+      staticClass: "d-flex d-none justify-title-between align-items-center p-2"
     }), _vm._v(" "), _c("small", {
       staticClass: "text-justify p-2 date"
     }, [_vm._v("\n                        " + _vm._s(job.location) + "\n                        "), _c("i", {
@@ -10208,8 +10268,7 @@ var render = function render() {
       closeButtonName: "إغلاق",
       confirmButtonName: "عرض الوظيف",
       title: "عرض وظيفة",
-      iconLaunchButton: "",
-      launchButtonClass: "btn btn-success",
+      launchButtonClass: "btn btn-success mar-1",
       confirmButtonClass: "btn btn-success",
       name: "offerJob",
       confirmAndClosed: ""
@@ -10294,7 +10353,9 @@ var render = function render() {
         _vm.location = $event.target.value;
       }
     }
-  })])]), _vm._v(" "), _c("h3", [_vm._v("الوظائف المتوفرة")]), _vm._v(" "), _c("view-jobs", {
+  })])]), _vm._v(" "), _c("h3", {
+    staticClass: "mar-1"
+  }, [_vm._v("الوظائف المتوفرة")]), _vm._v(" "), _c("view-jobs", {
     attrs: {
       onPageClick: _vm.getJobs,
       jobs: _vm.jobs

@@ -81,6 +81,7 @@ class ProfileService
         $profileId = Auth::user()->profile->id;
 
         $profileIds = self::getFeedbackRelations($profileId)->pluck("id")->push((int)$profileId);
+
         $posts = Post::with([
             "comments.replies",
             "reacts" => function ($q) {

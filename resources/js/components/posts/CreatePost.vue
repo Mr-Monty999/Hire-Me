@@ -120,6 +120,17 @@ export default {
             data.append("photo", vm.previewPhoto);
 
             data.append("profile_id", vm.profile_id);
+
+            var spinner =
+                '<div class="spinner-border text-white" role="status">' +
+                '<span class="visually-hidden">Loading...</span>' +
+                "</div>";
+
+            vm.$notify({
+                title: "في الإنتظار...",
+                text: "جاري نشر المنشور " + spinner,
+                type: "info",
+            });
             axios
                 .post("/api/posts/", data, {
                     headers: headerFormAuth,
@@ -127,6 +138,9 @@ export default {
                 .then(function (response) {
                     console.log(response);
 
+                    vm.$notify({
+                        clean: true,
+                    });
                     vm.$notify({
                         title: "نجاح",
                         text: "تم نشر المنشور بنجاح",

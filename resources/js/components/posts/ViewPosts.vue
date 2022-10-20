@@ -269,6 +269,18 @@ export default {
             data.append("content", vm.content);
             data.append("photo", vm.previewPhoto);
             data.append("_method", "put");
+
+            var spinner =
+                '<div class="spinner-border text-white" role="status">' +
+                '<span class="visually-hidden">Loading...</span>' +
+                "</div>";
+
+            vm.$notify({
+                title: "في الإنتظار...",
+                text: "جاري تعديل المنشور " + spinner,
+                type: "info",
+            });
+
             axios
                 .post("/api/posts/" + postId, data, {
                     headers: headerFormAuth,
@@ -281,6 +293,9 @@ export default {
                     vm.posts.data[postIndex].content =
                         response.data.data.content;
                     vm.posts.data[postIndex].photo = response.data.data.photo;
+                    vm.$notify({
+                        clean: true,
+                    });
                     vm.$notify({
                         title: "نجاح",
                         text: "تم تعديل المنشور بنجاح",
@@ -301,6 +316,16 @@ export default {
         },
         deletePost(postId) {
             var vm = this;
+            var spinner =
+                '<div class="spinner-border text-white" role="status">' +
+                '<span class="visually-hidden">Loading...</span>' +
+                "</div>";
+
+            vm.$notify({
+                title: "في الإنتظار...",
+                text: "جاري حذف المنشور " + spinner,
+                type: "info",
+            });
 
             axios
                 .delete("/api/posts/" + postId, {
@@ -312,6 +337,10 @@ export default {
                         (el) => el.id == postId
                     );
                     vm.posts.data.splice(index, 1);
+
+                    vm.$notify({
+                        clean: true,
+                    });
                     vm.$notify({
                         title: "نجاح",
                         text: "تم حذف المنشور بنجاح",
@@ -366,6 +395,10 @@ export default {
             }
 
             vm.$notify({
+                clean: true,
+            });
+
+            vm.$notify({
                 title: "نجاح",
                 text: "تم التفاعل مع المنشور بنجاح",
                 type: "success",
@@ -418,6 +451,9 @@ export default {
             vm.removeMyReacts(vm.posts.data[postIndex]);
             vm.posts.data[postIndex].react_type = 0;
 
+            vm.$notify({
+                clean: true,
+            });
             vm.$notify({
                 title: "نجاح",
                 text: "تم التفاعل مع المنشور بنجاح",

@@ -44,7 +44,7 @@
                                     <input
                                         type="text"
                                         class="form-control"
-                                        placeholder="عنوان العمل"
+                                        placeholder="عنوان الوظيفة"
                                         name="title"
                                         cols="100px"
                                         v-model="title"
@@ -83,7 +83,7 @@
                                 confirmAndClosed
                                 @confirmEvent="deleteJob(job.id)"
                             >
-                                هل أنت متأكد من حذف هذا العمل؟
+                                هل أنت متأكد من حذف هذه الوظيفة؟
                             </modal-snippet>
                             <!-- <div class="dropdown">
                                 <a
@@ -120,7 +120,7 @@
                                             confirmAndClosed
                                             @confirmEvent="deleteJob(job.id)"
                                         >
-                                            هل أنت متأكد من حذف هذا العمل؟
+                                            هل أنت متأكد من حذف هذه الوظيفة؟
                                         </modal-snippet>
                                     </li>
                                 </ul>
@@ -137,7 +137,7 @@
                         </div>
                         <hr />
                         <div
-                            class="d-flex justify-title-between align-items-center p-2"
+                            class="d-flex d-none justify-title-between align-items-center p-2"
                         >
                             <!-- <div
                                 class="d-flex flex-row icons d-flex align-items-center gap-1"
@@ -253,6 +253,17 @@ export default {
             // data.append("description", vm.description);
             // data.append("location", vm.location);
             // data.append("_method", "put");
+
+            var spinner =
+                '<div class="spinner-border text-white" role="status">' +
+                '<span class="visually-hidden">Loading...</span>' +
+                "</div>";
+
+            vm.$notify({
+                title: "في الإنتظار...",
+                text: "جاري تعديل الوظيفة " + spinner,
+                type: "info",
+            });
             axios
                 .put(
                     "/api/jobs/" + jobId,
@@ -277,8 +288,11 @@ export default {
                         response.data.data.location;
 
                     vm.$notify({
+                        clean: true,
+                    });
+                    vm.$notify({
                         title: "نجاح",
-                        text: "تم تعديل العمل بنجاح",
+                        text: "تم تعديل الوظيفة بنجاح",
                         type: "success",
                     });
                 })
@@ -296,7 +310,16 @@ export default {
         },
         deleteJob(jobId) {
             var vm = this;
+            var spinner =
+                '<div class="spinner-border text-white" role="status">' +
+                '<span class="visually-hidden">Loading...</span>' +
+                "</div>";
 
+            vm.$notify({
+                title: "في الإنتظار...",
+                text: "جاري حذف الوظيفة " + spinner,
+                type: "info",
+            });
             axios
                 .delete("/api/jobs/" + jobId, {
                     headers: headerAuth,
@@ -305,9 +328,14 @@ export default {
                     console.log(response);
                     var index = vm.jobs.data.findIndex((el) => el.id == jobId);
                     vm.jobs.data.splice(index, 1);
+
+                    vm.$notify({
+                        clean: true,
+                    });
+
                     vm.$notify({
                         title: "نجاح",
-                        text: "تم حذف العمل بنجاح",
+                        text: "تم حذف الوظيفة بنجاح",
                         type: "success",
                     });
                 })

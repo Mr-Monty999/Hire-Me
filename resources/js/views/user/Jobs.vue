@@ -15,8 +15,7 @@
                             closeButtonName="إغلاق"
                             confirmButtonName="عرض الوظيف"
                             title="عرض وظيفة"
-                            iconLaunchButton
-                            launchButtonClass="btn btn-success"
+                            launchButtonClass="btn btn-success mar-1"
                             confirmButtonClass="btn btn-success"
                             name="offerJob"
                             confirmAndClosed
@@ -53,7 +52,7 @@
                                 />
                             </div>
                         </modal-snippet>
-                        <h3>الوظائف المتوفرة</h3>
+                        <h3 class="mar-1">الوظائف المتوفرة</h3>
 
                         <view-jobs
                             :onPageClick="getJobs"
@@ -117,6 +116,17 @@ export default {
         },
         offerJob() {
             var vm = this;
+            var spinner =
+                '<div class="spinner-border text-white" role="status">' +
+                '<span class="visually-hidden">Loading...</span>' +
+                "</div>";
+
+            vm.$notify({
+                title: "في الإنتظار...",
+                text: "جاري عرض الوظيفة " + spinner,
+                type: "info",
+            });
+
             axios
                 .post(
                     "/api/jobs",
@@ -133,9 +143,13 @@ export default {
                     console.log(response);
                     vm.jobs.data.unshift(response.data.data);
                     vm.reset();
+
+                    vm.$notify({
+                        clean: true,
+                    });
                     vm.$notify({
                         title: "نجاح",
-                        text: "تم إضافة العمل بنجاح",
+                        text: "تم عرض الوظيفة بنجاح",
                         type: "success",
                     });
                 })
