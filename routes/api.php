@@ -92,9 +92,10 @@ Route::group(["namespace" => "general"], function () {
         // Route::apiResource("notifications", "NotificationController");
 
         ///Public Routes
-        Route::get("search/{pattern}", "PublicController@search");
+        Route::get("search/{pattern}", "PublicController@searchForAll");
 
         ///Jobs Routes
         Route::apiResource("jobs", "JobController");
+        Route::get("jobs/search/{pattern}", "JobController@search");
     });
 });

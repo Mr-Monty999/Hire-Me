@@ -51,4 +51,16 @@ class JobService
 
         return $jobs;
     }
+
+    public static function searchForJob($pattern)
+    {
+        $pattern = trim($pattern);
+        $result = Job::with("profile:id,firstname,lastname,avatar")->where("title", "LIKE", "%$pattern%")
+            ->orWhere("description", "LIKE", "%$pattern%")
+            ->orWhere("location", "LIKE", "%$pattern%")
+            ->latest()
+            ->paginate(5);
+
+        return $result;
+    }
 }

@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class PublicController extends Controller
 {
 
-    public function search($pattern)
+    public function searchForAll($pattern)
     {
         $result = PublicService::search($pattern);
         return ResponseService::json($result, "تم جلب البيانات بنجاح");

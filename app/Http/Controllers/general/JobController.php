@@ -27,6 +27,12 @@ class JobController extends Controller
         return ResponseService::json($jobs, "تم جلب جميع المنشورات بنجاح");
     }
 
+    public function search($pattern)
+    {
+        $searched = JobService::searchForJob($pattern);
+        return ResponseService::json($searched);
+    }
+
     /**
      * Store a newly created resource in storage.
      *

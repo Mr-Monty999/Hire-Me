@@ -1,8 +1,31 @@
 <template>
     <div>
         <loading v-if="!loaded"></loading>
-        <main v-if="loaded" class="container rounded mt-5 mb-5">
-            <div></div>
+        <main v-if="loaded" class="container rounded">
+            <div>
+                <select
+                    v-model="selectedFilter"
+                    class="form-select"
+                    aria-label="Default select example"
+                >
+                    <option hidden value="1">الكل</option>
+                    <option value="2">الأشخاص</option>
+                    <option value="3">الوظائف</option>
+                    <option value="4">المنشورات</option>
+                </select>
+                <div class="mar-1">
+                    <view-posts
+                        v-if="selectedFilter == 4"
+                        :onPageClick="search"
+                        :posts="searchedData"
+                    ></view-posts>
+                    <view-jobs
+                        v-if="selectedFilter == 3"
+                        :onPageClick="search"
+                        :jobs="searchedData"
+                    ></view-jobs>
+                </div>
+            </div>
         </main>
     </div>
 </template>
@@ -12,6 +35,8 @@ import axios from "axios";
 import headerAuth from "../../helpers/auth";
 import ViewPosts from "../../components/posts/ViewPosts.vue";
 import Loading from "../../components/bootstrap/Loading.vue";
+import Paginate from "vuejs-paginate";
+import ViewJobs from "../../components/jobs/ViewJobs.vue";
 
 // import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
 
@@ -19,19 +44,99 @@ export default {
     components: {
         ViewPosts,
         Loading,
+        Paginate,
+        ViewJobs,
         // ModalSnippet,
     },
     data() {
         return {
             profile_id: 0,
-            posts: {},
+            searchedData: [],
+            selectedFilter: 3,
             loaded: false,
         };
     },
-    methods: {},
+    methods: {
+        search(pageNumber = 1) {
+            var vm = this;
 
+            if (vm.selectedFilter == 2) {
+                axios
+                    .get(
+                        "/api/profiles/search/" +
+                            this.$route.params.pattern +
+                            "?page=" +
+                            pageNumber,
+                        {
+                            headers: headerAuth,
+                        }
+                    )
+                    .then(function (response) {
+                        console.log(response);
+                        vm.searchedData = null;
+                        vm.searchedData = response.data.data;
+                        scrollTo(0, 10);
+                    })
+                    .catch(function (error) {
+                        console.log(error.response);
+                    });
+            } else if (vm.selectedFilter == 3) {
+                axios
+                    .get(
+                        "/api/jobs/search/" +
+                            this.$route.params.pattern +
+                            "?page=" +
+                            pageNumber,
+                        {
+                            headers: headerAuth,
+                        }
+                    )
+                    .then(function (response) {
+                        console.log(response);
+                        vm.searchedData = null;
+                        vm.searchedData = response.data.data;
+                        scrollTo(0, 10);
+                    })
+                    .catch(function (error) {
+                        console.log(error.response);
+                    });
+            } else if (vm.selectedFilter == 4) {
+                axios
+                    .get(
+                        "/api/posts/search/" +
+                            this.$route.params.pattern +
+                            "?page=" +
+                            pageNumber,
+                        {
+                            headers: headerAuth,
+                        }
+                    )
+                    .then(function (response) {
+                        console.log(response);
+                        vm.searchedData = null;
+                        vm.searchedData = response.data.data;
+                        scrollTo(0, 10);
+                    })
+                    .catch(function (error) {
+                        console.log(error.response);
+                    });
+            }
+        },
+        selectFilter(value) {
+            this.filter = value;
+        },
+    },
+    watch: {
+        $route() {
+            this.search();
+        },
+        selectedFilter() {
+            this.search();
+        },
+    },
     created() {
         this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
+        this.search();
     },
 
     mounted: function () {

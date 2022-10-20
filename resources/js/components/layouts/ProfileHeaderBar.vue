@@ -135,6 +135,8 @@
                             type="search"
                             placeholder="بحث عن أشخاص,وظائف,منشورات..."
                             aria-label="Search"
+                            v-model="pattern"
+                            @keyup="search(pattern)"
                         />
                     </form>
                 </div>
@@ -159,6 +161,7 @@ export default {
             user_id: "",
             unreadedNotifications: 0,
             incommingConnections: 0,
+            pattern: "",
         };
     },
     methods: {
@@ -239,6 +242,16 @@ export default {
                 })
                 .catch(function (error) {
                     console.log(error.response);
+                });
+        },
+        search(pattern) {
+            pattern = pattern.trim();
+            if (pattern != "")
+                this.$router.push({
+                    name: "search",
+                    params: {
+                        pattern: pattern,
+                    },
                 });
         },
     },

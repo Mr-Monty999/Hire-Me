@@ -37,6 +37,8 @@ class PostService
     public static function getAllPosts()
     {
         $profileId = Auth::user()->profile->id;
+
+
         $posts = Post::with([
             "comments.replies",
             "reacts" => function ($q) {
@@ -55,7 +57,6 @@ class PostService
             else
                 $post->react_type = 0;
         }
-
 
         return $posts;
     }
@@ -121,9 +122,31 @@ class PostService
     public static function searchForPost($content)
     {
         $content = trim($content);
-        $result = Post::withCount("reacts", "likes", "dislikes")->where("content", "LIKE", "%$content%")
-            ->get();
+        $profileId = Auth::user()->profile->id;
 
-        return $result;
+
+        $posts = Post::with([
+            "comments.replies",
+            "reacts" => function ($q) {
+                $q->latest()->paginate(5);
+            },
+            "tags",
+            "profile:id,firstname,lastname,avatar",
+        ])->withCount("comments", "reacts", "tags", "likes", "dislikes")
+            ->where("content", "LIKE", "%$content%")
+            ->latest()
+            ->paginate(5);
+
+        foreach ($posts as  $post) {
+            $post->created_at_diff_for_humans = $post->created_at->diffForHumans();
+
+            $react = $post->reacts()->where("profile_id", "=", $profileId)->first();
+            if ($react)
+                $post->react_type = $react->pivot->type;
+            else
+                $post->react_type = 0;
+        }
+
+        return $posts;
     }
 }

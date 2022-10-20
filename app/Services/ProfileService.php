@@ -213,12 +213,16 @@ class ProfileService
         $pattern =   explode(" ", $pattern, 2);
         $result = null;
         if (isset($pattern[1])) {
-            $result = Profile::withCount("followers", "followings")->where("firstname", "LIKE", "%$pattern[0]%")
+            $result = Profile::withCount("followers", "followings")
+                ->where("firstname", "LIKE", "%$pattern[0]%")
                 ->where("lastname", "LIKE", "%$pattern[1]%")
-                ->get();
+                ->latest()
+                ->paginate(5);
         } else {
-            $result = Profile::withCount("followers", "followings")->where("firstname", "LIKE", "%$pattern[0]%")
-                ->get();
+            $result = Profile::withCount("followers", "followings")
+                ->where("firstname", "LIKE", "%$pattern[0]%")
+                ->latest()
+                ->paginate(5);
         }
 
         return $result;

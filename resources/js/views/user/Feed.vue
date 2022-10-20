@@ -3,12 +3,12 @@
         <loading v-if="!loaded"></loading>
         <main v-if="loaded" class="container rounded mt-5 mb-5">
             <div class="row gap-4">
-                <div class="col-md-2 border-right bg-mine">
+                <div class="col-md-2 border-right bg-mine radius-1">
                     <div
                         class="d-flex flex-column align-items-center text-center p-3 py-5"
                     ></div>
                 </div>
-                <div class="col-md-7 border-right bg-mine">
+                <div class="col-md-7 border-right bg-mine radius-1">
                     <div class="p-3 py-5">
                         <create-post :posts="posts"></create-post>
                         <h3>المنشورات</h3>
@@ -18,7 +18,7 @@
                         ></view-posts>
                     </div>
                 </div>
-                <div class="col-md-2 bg-mine">
+                <div class="col-md-2 bg-mine radius-1">
                     <div class="p-3 py-5"></div>
                 </div>
             </div>

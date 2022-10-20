@@ -26,7 +26,9 @@ main {
 .bg-mine {
     background-color: #f3f2ef !important;
 }
-
+.radius-1 {
+    border-radius: 10px !important;
+}
 .mar-1 {
     margin-top: 10px;
     margin-bottom: 10px;

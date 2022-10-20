@@ -189,9 +189,7 @@
                                 </span>
                             </div>
                             <div class="d-flex flex-row muted-color">
-                                <span
-                                    >التعليقات {{ post.comments.length }}</span
-                                >
+                                <span>التعليقات {{ post.comments_count }}</span>
                             </div>
                         </div>
                         <hr />
