@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Post;
+use Auth;
 use DB;
 
 /**
@@ -13,6 +14,7 @@ class PostService
 
     public static function getAllPosts()
     {
+        $profileId = Auth::user()->profile->id;
         $posts = Post::with([
             "comments.replies",
             "reacts" => function ($q) {
@@ -24,7 +26,14 @@ class PostService
 
         foreach ($posts as  $post) {
             $post->created_at_diff_for_humans = $post->created_at->diffForHumans();
+
+            $react = $post->reacts()->where("profile_id", "=", $profileId)->first();
+            if ($react)
+                $post->react_type = $react->pivot->type;
+            else
+                $post->react_type = 0;
         }
+
 
         return $posts;
     }

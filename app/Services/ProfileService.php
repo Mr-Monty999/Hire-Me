@@ -78,7 +78,9 @@ class ProfileService
 
     public static function getFeedPosts($profileId)
     {
-        $profileIds = self::getAllRelations($profileId)->pluck("id")->push((int)$profileId);
+        $profileId = Auth::user()->profile->id;
+
+        $profileIds = self::getFeedbackRelations($profileId)->pluck("id")->push((int)$profileId);
         $posts = Post::with([
             "comments.replies",
             "reacts" => function ($q) {
@@ -147,7 +149,7 @@ class ProfileService
 
         return $profile;
     }
-    public static function getAllAcceptedConnections($profileId)
+    public static function getProfileConnections($profileId)
     {
         $connections = Profile::find($profileId)->connectionsTo()->wherePivot("accepted", "=", true)->get();
         $connections->merge(Profile::find($profileId)->connectionsFrom()->wherePivot("accepted", "=", true)->get());
@@ -196,11 +198,11 @@ class ProfileService
         return $result;
     }
 
-    public static function getAllRelations($profileId)
+    public static function getFeedbackRelations($profileId)
     {
         $profile = Profile::find($profileId);
         $followings = $profile->followings()->get();
-        $connections = self::getAllAcceptedConnections($profileId);
+        $connections = self::getProfileConnections($profileId);
 
         $relations =  $followings->merge($connections)->except($profileId)->unique("id");
 

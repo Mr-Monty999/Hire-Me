@@ -57,7 +57,7 @@ class OfferJobNotification extends Notification
     {
         return [
             "profile_id" => $this->data["profile_id"],
-            "job_id" => $this->data["job_id"]
+            "job_id" => $this->data["job_id"],
         ];
     }
 }

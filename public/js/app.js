@@ -11346,7 +11346,7 @@ var render = function render() {
       staticClass: "text-break"
     }, [_c("b", [_vm._v("قام بنشر منشور جديد ")]), _vm._v(" "), _c("div", {
       staticClass: "limited"
-    }, [_vm._v('\n                                    "' + _vm._s(notification.data.content) + '"\n                                ')])]) : notification.type == "App\\Notifications\\ReactToPostNotification" ? _c("div", {
+    }, [notification.data.post ? _c("span", [_vm._v('\n                                        "' + _vm._s(notification.data.post.content) + '"\n                                    ')]) : _vm._e()])]) : notification.type == "App\\Notifications\\ReactToPostNotification" ? _c("div", {
       staticClass: "text-break"
     }, [_c("span", [_vm._v("قام بالتفاعل مع منشورك")]), _vm._v(" "), notification.data.react_type == 1 ? _c("i", {
       staticClass: "fa-solid fa-thumbs-up text-primary"
@@ -11354,7 +11354,9 @@ var render = function render() {
       staticClass: "fa-solid fa-thumbs-down text-primary"
     }) : _vm._e()]) : notification.type == "App\\Notifications\\OfferJobNotification" ? _c("div", {
       staticClass: "text-break"
-    }, [_c("b", [_vm._v("قام بعرض وظيفة جديدة")])]) : _vm._e()])]) : _vm._e()])]);
+    }, [_c("b", [_vm._v("قام بعرض وظيفة جديدة")]), _vm._v(" "), _c("div", {
+      staticClass: "limited"
+    }, [notification.data.job ? _c("span", [_vm._v('\n                                        "' + _vm._s(notification.data.job.title) + '"\n                                    ')]) : _vm._e()])]) : _vm._e()])]) : _vm._e()])]);
   }), _vm._v(" "), _vm.notifications.last_page > 1 ? _c("paginate", {
     attrs: {
       "page-count": _vm.notifications.last_page,

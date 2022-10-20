@@ -24,7 +24,7 @@ class PostUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            "content" => "required",
+            "content" => "required_if:photo,null",
             "photo" => "image|nullable",
         ];
     }
@@ -32,7 +32,7 @@ class PostUpdateRequest extends FormRequest
     public function messages()
     {
         return [
-            "content.required" => "الرجاء كتابة محتوي المنشور !",
+            "content.required_if" => "الرجاء كتابة محتوي المنشور !",
             "photo.image" => "الرجاء إختيار صورة فقط !"
         ];
     }

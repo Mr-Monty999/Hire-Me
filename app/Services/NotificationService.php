@@ -53,7 +53,11 @@ class NotificationService
     }
     public static function sendCreatePostNotification($data)
     {
-        $targets = ProfileService::getAllRelations($data["profile_id"]);
+        $profile = Profile::find($data["profile_id"]);
+        $followers = $profile->followers()->get();
+        $connections = ProfileService::getProfileConnections($data["profile_id"]);
+        $targets =  $followers->merge($connections)->except($data["profile_id"])->unique("id");
+
         Notification::send($targets, new CreatePostNotification($data));
 
         return true;
@@ -74,7 +78,11 @@ class NotificationService
     public static function sendOfferJobNotification($data)
     {
 
-        $targets = ProfileService::getAllRelations($data["profile_id"]);
+        $profile = Profile::find($data["profile_id"]);
+        $followers = $profile->followers()->get();
+        $connections = ProfileService::getProfileConnections($data["profile_id"]);
+        $targets =  $followers->merge($connections)->except($data["profile_id"])->unique("id");
+
         Notification::send($targets, new OfferJobNotification($data));
 
         return true;

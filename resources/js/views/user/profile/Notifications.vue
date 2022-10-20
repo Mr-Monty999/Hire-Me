@@ -65,7 +65,11 @@
                                 >
                                     <b>قام بنشر منشور جديد </b>
                                     <div class="limited">
-                                        "{{ notification.data.content }}"
+                                        <span v-if="notification.data.post">
+                                            "{{
+                                                notification.data.post.content
+                                            }}"
+                                        </span>
                                     </div>
                                 </div>
                                 <div
@@ -95,9 +99,11 @@
                                     class="text-break"
                                 >
                                     <b>قام بعرض وظيفة جديدة</b>
-                                    <!-- <div class="limited">
-                                        "{{ notification.data.job.title }}"
-                                    </div> -->
+                                    <div class="limited">
+                                        <span v-if="notification.data.job">
+                                            "{{ notification.data.job.title }}"
+                                        </span>
+                                    </div>
                                 </div>
                                 <!-- <div
                                     v-else-if="

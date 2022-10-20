@@ -153,7 +153,7 @@ class ProfileController extends Controller
     }
     public static function getAllAcceptedConnections($profileId)
     {
-        $data = ProfileService::getAllAcceptedConnections($profileId);
+        $data = ProfileService::getProfileConnections($profileId);
 
         return ResponseService::json($data, "تمت العملية بنجاح");
     }

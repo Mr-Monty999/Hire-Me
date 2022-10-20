@@ -59,7 +59,6 @@ class CreatePostNotification extends Notification
         return [
             "profile_id" => $this->postData["profile_id"],
             "post_id" => $this->postData["post_id"],
-            "content" => $this->postData["content"]
         ];
     }
 }
