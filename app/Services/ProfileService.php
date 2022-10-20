@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Post;
 use App\Models\Profile;
+use Auth;
 use DB;
 use Illuminate\Database\Eloquent\Collection;
 use Notification;
@@ -77,6 +78,7 @@ class ProfileService
 
     public static function getFeedPosts($profileId)
     {
+        $profileIds = self::getAllRelations($profileId)->pluck("id")->push((int)$profileId);
         $posts = Post::with([
             "comments.replies",
             "reacts" => function ($q) {
@@ -84,7 +86,7 @@ class ProfileService
             },
             "tags",
             "profile:id,firstname,lastname,avatar",
-        ])->withCount("comments", "reacts", "tags", "likes", "dislikes")->latest()->paginate(5);
+        ])->withCount("comments", "reacts", "tags", "likes", "dislikes")->whereIn("profile_id", $profileIds)->latest()->paginate(5);
 
         foreach ($posts as  $post) {
             $post->created_at_diff_for_humans = $post->created_at->diffForHumans();

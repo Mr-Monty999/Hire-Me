@@ -29,6 +29,7 @@ class PostService
         return $posts;
     }
 
+
     public static function getPost($postId, $profileId)
     {
 
