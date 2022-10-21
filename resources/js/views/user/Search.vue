@@ -20,7 +20,7 @@
                         :posts="searchedData"
                     ></view-posts>
                     <view-jobs
-                        v-if="selectedFilter == 3"
+                        v-else-if="selectedFilter == 3"
                         :onPageClick="search"
                         :jobs="searchedData"
                     ></view-jobs>

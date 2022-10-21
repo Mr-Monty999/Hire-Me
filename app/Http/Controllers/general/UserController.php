@@ -20,14 +20,17 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+    }
     public function index()
     {
-        //
+        $user  = UserService::getAllUsers();
+        return ResponseService::json($user);
     }
 
     public function login(UserLoginRequest $request)
     {
-        $request->validated();
         $login = UserService::login($request);
 
         if ($login)
@@ -38,7 +41,6 @@ class UserController extends Controller
 
     public function register(UserRegisterRequest $request)
     {
-        $request->validated();
         $user = UserService::register($request->all());
         return ResponseService::json($user, "تم إنشاء الحساب بنجاح");
     }

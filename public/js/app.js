@@ -5698,8 +5698,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     search: function search(pattern) {
-      pattern = pattern.trim();
-      if (pattern != "") this.$router.push({
+      if (pattern != "" && this.$route.path != "/search/" + pattern) this.$router.push({
         name: "search",
         params: {
           pattern: pattern
@@ -11059,7 +11058,7 @@ var render = function render() {
       onPageClick: _vm.search,
       posts: _vm.searchedData
     }
-  }) : _vm._e(), _vm._v(" "), _vm.selectedFilter == 3 ? _c("view-jobs", {
+  }) : _vm.selectedFilter == 3 ? _c("view-jobs", {
     attrs: {
       onPageClick: _vm.search,
       jobs: _vm.searchedData

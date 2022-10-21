@@ -32,7 +32,8 @@ Route::group(["namespace" => "general"], function () {
         Route::post("users/logout", "UserController@logout");
 
         //Users
-        Route::apiResource("users", "UserController");
+        Route::apiResource("users", "UserController")->middleware("permission:view-users");
+
 
         //Profiles
         Route::apiResource("profiles", "ProfileController");

@@ -245,8 +245,7 @@ export default {
                 });
         },
         search(pattern) {
-            pattern = pattern.trim();
-            if (pattern != "")
+            if (pattern != "" && this.$route.path != "/search/" + pattern)
                 this.$router.push({
                     name: "search",
                     params: {

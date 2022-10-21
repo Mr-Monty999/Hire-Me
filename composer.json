@@ -12,6 +12,7 @@
         "laravel/sanctum": "^2.15",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.4",
+        "spatie/laravel-permission": "^5.5",
         "timwassenburg/laravel-service-generator": "^1.0"
     },
     "require-dev": {
