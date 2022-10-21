@@ -12,9 +12,9 @@ use Spatie\Permission\Models\Permission;
 class PermissionService
 {
 
-    public static function insert($permissions)
+    public static function create($permissionName)
     {
-        $permission = Permission::insert($permissions);
+        $permission = Permission::create(["name" => $permissionName]);
         return $permission;
     }
     public static function delete($permissionName)

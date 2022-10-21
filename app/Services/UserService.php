@@ -24,9 +24,6 @@ class UserService
             $data["profile_id"] = Auth::user()->profile->id;
             unset($data["profile"]);
             $data["token"] = Auth::user()->createToken(uniqid("token_"))->plainTextToken;
-
-            $user->assignRole('user');
-
             return $data;
         } else
             return false;

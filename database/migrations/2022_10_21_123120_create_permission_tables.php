@@ -129,28 +129,69 @@ class CreatePermissionTables extends Migration
             ->forget(config('permission.cache.key'));
 
 
-        ////Roles
-        RoleService::insert([
-            ["name" => "owner", "guard_name" => "web"],
-            ["name" => "user", "guard_name" => "web"]
-        ]);
-        PermissionService::insert([
-            ["name" => "view-users", "guard_name" => "web"],
-            ["name" => "edit-users", "guard_name" => "web"],
-            ["name" => "update-users", "guard_name" => "web"],
-            ["name" => "delete-users", "guard_name" => "web"],
-        ]);
 
-        $user =  UserService::register([
-            "email" => "admin@gmail.com",
-            "password" => "password",
-            "firstname" => "admin",
-            "lastname" => "admin",
-            "gender" => "male",
-            "birthdate" => "2000-1-1",
-            "repassword" => "password"
-        ]);
-        $user->assignRole("owner");
+
+        ///Permissions
+        $permissions = [
+            "create-users",
+            "view-users",
+            "edit-users",
+            "delete-users",
+            "create-roles",
+            "view-roles",
+            "edit-roles",
+            "delete-roles",
+            "create-profiles",
+            "view-profiles",
+            "edit-profiles",
+            "delete-profiles",
+            "create-posts",
+            "view-posts",
+            "edit-posts",
+            "delete-posts",
+            "create-jobs",
+            "view-jobs",
+            "edit-jobs",
+            "delete-jobs",
+            "create-skills",
+            "view-skills",
+            "edit-skills",
+            "delete-skills",
+            "create-profiles-phones",
+            "view-profiles-phones",
+            "edit-profiles-phones",
+            "delete-profiles-phones",
+        ];
+        foreach ($permissions as $perm)
+            PermissionService::create($perm);
+
+        ////Roles
+        RoleService::create("owner");
+
+        $role = RoleService::create("user");
+        $role->syncPermissions(array_diff($permissions, [
+            "create-users",
+            "view-users",
+            "edit-users",
+            "delete-users",
+            "create-roles",
+            "view-roles",
+            "edit-roles",
+            "delete-roles",
+            "delete-profiles",
+
+        ]));
+
+        // $user =  UserService::register([
+        //     "email" => "admin@gmail.com",
+        //     "password" => "password",
+        //     "firstname" => "admin",
+        //     "lastname" => "admin",
+        //     "gender" => "male",
+        //     "birthdate" => "2000-1-1",
+        //     "repassword" => "password"
+        // ]);
+        // $user->assignRole("owner");
     }
 
     /**

@@ -53,7 +53,7 @@ class ProfilePhonePolicy
      */
     public function update(User $user, ProfilePhone $profilePhone)
     {
-        //
+        return $user->profile->id == $profilePhone->profile_id;
     }
 
     /**
@@ -65,7 +65,7 @@ class ProfilePhonePolicy
      */
     public function delete(User $user, ProfilePhone $profilePhone)
     {
-        //
+        return $user->profile->id == $profilePhone->profile_id;
     }
 
     /**
@@ -77,7 +77,6 @@ class ProfilePhonePolicy
      */
     public function restore(User $user, ProfilePhone $profilePhone)
     {
-        //
     }
 
     /**
@@ -89,6 +88,6 @@ class ProfilePhonePolicy
      */
     public function forceDelete(User $user, ProfilePhone $profilePhone)
     {
-        //
+        return $user->profile->id == $profilePhone->profile_id;
     }
 }

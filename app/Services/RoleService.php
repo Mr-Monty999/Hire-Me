@@ -12,10 +12,10 @@ class RoleService
 {
 
 
-    public static function insert($roles)
+    public static function create($roleName)
     {
 
-        $role = Role::insert($roles);
+        $role = Role::create(["name" => $roleName]);
         return $role;
     }
 

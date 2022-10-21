@@ -17,6 +17,15 @@ class ProfilePhoneController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct()
+    {
+        $this->middleware("permission:create-profiles-phones")->only(["create", "store"]);
+        $this->middleware("permission:view-profiles-phones")->only(["index", "show"]);
+        $this->middleware("permission:edit-profiles-phones")->only(["edit", "update"]);
+        $this->middleware("permission:delete-profiles-phones")->only(["destroy"]);
+    }
+
     public function index($profileId)
     {
         $phones =  Profile::with("phones")->find($profileId)->only("phones");

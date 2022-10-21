@@ -20,6 +20,14 @@ class JobController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+        $this->middleware("permission:create-jobs")->only(["create", "store"]);
+        $this->middleware("permission:view-jobs")->only(["index", "show"]);
+        $this->middleware("permission:edit-jobs")->only(["edit", "update"]);
+        $this->middleware("permission:delete-jobs")->only(["destroy"]);
+    }
+
     public function index()
     {
 

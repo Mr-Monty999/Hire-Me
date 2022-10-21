@@ -22,6 +22,14 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+        $this->middleware("permission:create-posts")->only(["create", "store"]);
+        $this->middleware("permission:view-posts")->only(["index", "show"]);
+        $this->middleware("permission:edit-posts")->only(["edit", "update"]);
+        $this->middleware("permission:delete-posts")->only(["destroy"]);
+    }
+
     public function index()
     {
         // return Auth::user();

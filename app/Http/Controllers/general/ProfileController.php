@@ -28,6 +28,14 @@ class ProfileController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+        $this->middleware("permission:create-profiles")->only(["create", "store"]);
+        $this->middleware("permission:view-profiles")->only(["index", "show"]);
+        $this->middleware("permission:edit-profiles")->only(["edit", "update"]);
+        $this->middleware("permission:delete-profiles")->only(["destroy"]);
+    }
+
     public function index()
     {
         $data = Profile::with("phones", "skills", "experiences", "posts")->get();

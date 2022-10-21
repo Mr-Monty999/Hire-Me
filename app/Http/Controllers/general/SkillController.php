@@ -16,6 +16,14 @@ class SkillController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct()
+    {
+        $this->middleware("permission:create-skills")->only(["create", "store"]);
+        $this->middleware("permission:view-skills")->only(["index", "show"]);
+        $this->middleware("permission:edit-skills")->only(["edit", "update"]);
+        $this->middleware("permission:delete-skills")->only(["destroy"]);
+    }
     public function index()
     {
 
