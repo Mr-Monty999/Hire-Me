@@ -31,13 +31,13 @@ class Company extends Model
         return $this->hasMany(Certificate::class);
     }
 
-    public function managementProfiles()
+    public function managementUsers()
     {
-        return $this->belongsToMany(Profile::class, "company_management");
+        return $this->belongsToMany(User::class, "company_management");
     }
 
     public function followers()
     {
-        return $this->belongsToMany(Profile::class, "company_follow");
+        return $this->belongsToMany(User::class, "company_follow");
     }
 }

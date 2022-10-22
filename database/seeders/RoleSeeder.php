@@ -18,6 +18,7 @@ class RoleSeeder extends Seeder
     {
         DB::table("roles")->whereNotIn("name", ["owner", "user"])->delete();
         DB::table("model_has_roles")->delete();
+        DB::table("model_has_permissions")->delete();
 
         $users = User::all();
         foreach ($users as $user)

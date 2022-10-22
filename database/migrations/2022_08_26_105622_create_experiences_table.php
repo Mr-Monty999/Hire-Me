@@ -20,11 +20,11 @@ class CreateExperiencesTable extends Migration
             $table->string("position", 255);
             $table->string("company_name", 255);
             $table->bigInteger("company_id")->unsigned()->nullable();
-            $table->bigInteger("profile_id")->unsigned();
+            $table->bigInteger("user_id")->unsigned();
             $table->timestamps();
 
             $table->foreign("company_id")->references("id")->on("companies")->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreign("profile_id")->references("id")->on("profiles")->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign("user_id")->references("id")->on("users")->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 

@@ -9,11 +9,11 @@ use Illuminate\Database\Eloquent\Model;
 class Post extends Model
 {
     use HasFactory;
-    protected $fillable = ["title", "content", "photo", "profile_id"];
+    protected $fillable = ["title", "content", "photo", "user_id"];
 
-    public function profile()
+    public function user()
     {
-        return $this->belongsTo(Profile::class);
+        return $this->belongsTo(User::class);
     }
     public function comments()
     {
@@ -21,7 +21,7 @@ class Post extends Model
     }
     public function reacts()
     {
-        return $this->belongsToMany(Profile::class, "post_react")->withPivot("type")->withTimestamps();
+        return $this->belongsToMany(User::class, "post_react")->withPivot("type")->withTimestamps();
     }
     public function likes()
     {

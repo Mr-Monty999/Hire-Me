@@ -26,7 +26,6 @@ class PostStoreRequest extends FormRequest
         return [
             "content" => "required_if:photo,null",
             "photo" => "image|nullable",
-            "profile_id" => "required"
         ];
     }
 

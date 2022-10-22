@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProfilePhoneStoreRequest extends FormRequest
+class UserFollowStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,14 +24,7 @@ class ProfilePhoneStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            "phone" => "required|unique:profile_phones,phone",
-        ];
-    }
-    public function messages()
-    {
-        return [
-            "phone.required" => "رقم الهاتف مطلوب !",
-            "phone.unique" => "هذا الرقم مستخدم بالفعل !"
+            "user_id" => "required"
         ];
     }
 }

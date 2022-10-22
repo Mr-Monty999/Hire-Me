@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Profile;
 use App\Models\Skill;
 use App\Models\User;
 use DB;
@@ -20,7 +19,7 @@ class SkillSeeder extends Seeder
         DB::table("skills")->delete();
         Skill::factory(10)->create();
 
-        foreach (Profile::all() as $key => $row) {
+        foreach (User::all() as $key => $row) {
             $ids = Skill::pluck("id")->toArray();
             foreach ($ids as $key => $value)
                 $ids[$value] = ["created_at" => now(), "updated_at" => now()];

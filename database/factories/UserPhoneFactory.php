@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
-use App\Models\Profile;
+use App\Models\Test;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ProfilePhoneFactory extends Factory
+class UserPhoneFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -16,7 +17,7 @@ class ProfilePhoneFactory extends Factory
     {
         return [
             "phone" => $this->faker->phoneNumber,
-            "profile_id" => $this->faker->randomElement(Profile::pluck("id"))
+            "user_id" => $this->faker->randomElement(User::pluck("id"))
         ];
     }
 }

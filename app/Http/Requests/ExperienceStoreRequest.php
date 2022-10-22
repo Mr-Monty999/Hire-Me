@@ -28,7 +28,6 @@ class ExperienceStoreRequest extends FormRequest
             "end" => "date|after:start",
             "position" => "required",
             "company_name" => "required",
-            "profile_id" => "required"
         ];
     }
 

@@ -14,14 +14,14 @@ class CreateCompanyManagementTable extends Migration
     public function up()
     {
         Schema::create('company_management', function (Blueprint $table) {
-            $table->bigInteger("profile_id")->unsigned();
+            $table->bigInteger("user_id")->unsigned();
             $table->bigInteger("company_id")->unsigned();
             $table->string("position", 255);
             $table->timestamps();
 
-            $table->primary(["profile_id", "company_id"]);
+            $table->primary(["user_id", "company_id"]);
 
-            $table->foreign("profile_id")->references("id")->on("profiles")->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign("user_id")->references("id")->on("users")->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreign("company_id")->references("id")->on("companies")->cascadeOnDelete()->cascadeOnUpdate();
         });
     }

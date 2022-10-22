@@ -19,23 +19,6 @@ class ProfileSeeder extends Seeder
     public function run()
     {
         DB::table("profiles")->delete();
-        DB::table("profile_follow")->delete();
-        DB::table("profile_skill")->delete();
-
         Profile::factory(10)->create();
-
-        $ids = Profile::pluck("id")->toArray();
-        $connectionIds = $ids;
-        foreach ($ids as $key => $value) {
-            $ids[$value] =  ["created_at" => now(), "updated_at" => now()];
-            $connectionIds[$value] = ["accepted" => false];
-        }
-
-        foreach (Profile::all() as $key => $row) {
-            $row->followings()->syncWithoutDetaching($ids);
-            $row->followers()->syncWithoutDetaching($ids);
-            $row->connectionsTo()->syncWithoutDetaching($connectionIds);
-            $row->connectionsFrom()->syncWithoutDetaching($connectionIds);
-        }
     }
 }

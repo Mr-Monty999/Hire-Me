@@ -11,8 +11,8 @@ class Skill extends Model
     use HasFactory;
 
     protected $fillable = ["name"];
-    public function profiles()
+    public function users()
     {
-        return $this->belongsToMany(Profile::class, "profile_skill");
+        return $this->belongsToMany(User::class, "user_skill");
     }
 }

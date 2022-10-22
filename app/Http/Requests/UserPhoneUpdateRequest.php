@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProfilePhoneUpdateRequest extends FormRequest
+class UserPhoneUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,7 @@ class ProfilePhoneUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            "phone" => "required|unique:profile_phones,phone," . $this->route("profile_phone"),
+            "phone" => "required|unique:user_phones,phone," . $this->route("user_phone"),
         ];
     }
     public function messages()

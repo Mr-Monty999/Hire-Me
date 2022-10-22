@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 
-class ProfilePhone extends Model
+class UserPhone extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["phone", "profile_id"];
+    protected $fillable = ["phone", "user_id"];
 
-    public function profile()
+    public function user()
     {
-        return $this->belongsTo(Profile::class);
+        return $this->belongsTo(User::class);
     }
 }

@@ -15,12 +15,12 @@ class CreateCompanyFollowTable extends Migration
     {
         Schema::create('company_follow', function (Blueprint $table) {
             $table->bigInteger("company_id")->unsigned();
-            $table->bigInteger("profile_id")->unsigned();
+            $table->bigInteger("user_id")->unsigned();
             $table->timestamps();
 
-            $table->primary(["company_id", "profile_id"]);
+            $table->primary(["company_id", "user_id"]);
             $table->foreign("company_id")->references("id")->on("companies")->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreign("profile_id")->references("id")->on("profiles")->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign("user_id")->references("id")->on("users")->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 

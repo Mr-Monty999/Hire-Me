@@ -21,8 +21,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Company|null $company
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Profile[] $profiles
- * @property-read int|null $profiles_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @property-read int|null $users_count
  * @method static \Database\Factories\CertificateFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Certificate newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Certificate newQuery()
@@ -45,17 +45,17 @@ namespace App\Models{
  * @property string $content
  * @property string|null $photo
  * @property int $post_id
- * @property int $profile_id
+ * @property int $user_id
  * @property int|null $comment_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Comment|null $parentComment
  * @property-read \App\Models\Post $post
- * @property-read \App\Models\Profile $profile
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Profile[] $reacts
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $reacts
  * @property-read int|null $reacts_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Comment[] $replies
  * @property-read int|null $replies_count
+ * @property-read \App\Models\User $user
  * @method static \Database\Factories\CommentFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment newQuery()
@@ -66,8 +66,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment wherePhoto($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment wherePostId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereProfileId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment whereUserId($value)
  */
 	class Comment extends \Eloquent {}
 }
@@ -91,10 +91,10 @@ namespace App\Models{
  * @property-read int|null $certificates_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Experience[] $experiences
  * @property-read int|null $experiences_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Profile[] $followers
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $followers
  * @property-read int|null $followers_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Profile[] $managementProfiles
- * @property-read int|null $management_profiles_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $managementUsers
+ * @property-read int|null $management_users_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompanyPhone[] $phones
  * @property-read int|null $phones_count
  * @method static \Database\Factories\CompanyFactory factory(...$parameters)
@@ -149,11 +149,11 @@ namespace App\Models{
  * @property string $position
  * @property string $company_name
  * @property int|null $company_id
- * @property int $profile_id
+ * @property int $user_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Company|null $company
- * @property-read \App\Models\Profile $profile
+ * @property-read \App\Models\User $user
  * @method static \Database\Factories\ExperienceFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Experience newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Experience newQuery()
@@ -164,9 +164,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Experience whereEnd($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Experience whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Experience wherePosition($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Experience whereProfileId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Experience whereStart($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Experience whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Experience whereUserId($value)
  */
 	class Experience extends \Eloquent {}
 }
@@ -179,10 +179,10 @@ namespace App\Models{
  * @property string $title
  * @property string $description
  * @property string $location
- * @property int $profile_id
+ * @property int $user_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Profile $profile
+ * @property-read \App\Models\User $user
  * @method static \Database\Factories\JobFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Job newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Job newQuery()
@@ -191,9 +191,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Job whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Job whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Job whereLocation($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Job whereProfileId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Job whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Job whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Job whereUserId($value)
  */
 	class Job extends \Eloquent {}
 }
@@ -205,16 +205,16 @@ namespace App\Models{
  * @property int $id
  * @property string|null $content
  * @property string|null $photo
- * @property int $profile_id
+ * @property int $user_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Comment[] $comments
  * @property-read int|null $comments_count
- * @property-read \App\Models\Profile $profile
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Profile[] $reacts
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $reacts
  * @property-read int|null $reacts_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tag[] $tags
  * @property-read int|null $tags_count
+ * @property-read \App\Models\User $user
  * @method static \Database\Factories\PostFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Post newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Post newQuery()
@@ -223,8 +223,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post wherePhoto($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereProfileId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Post whereUserId($value)
  */
 	class Post extends \Eloquent {}
 }
@@ -253,36 +253,8 @@ namespace App\Models{
  * @property int $user_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Certificate[] $certificates
- * @property-read int|null $certificates_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Comment[] $comments
- * @property-read int|null $comments_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Comment[] $commentsReacts
- * @property-read int|null $comments_reacts_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Profile[] $connectionsFrom
- * @property-read int|null $connections_from_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Profile[] $connectionsTo
- * @property-read int|null $connections_to_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Experience[] $experiences
- * @property-read int|null $experiences_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Profile[] $followers
- * @property-read int|null $followers_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Profile[] $followings
- * @property-read int|null $followings_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Job[] $jobs
- * @property-read int|null $jobs_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Company[] $managementCompanies
- * @property-read int|null $management_companies_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProfilePhone[] $phones
- * @property-read int|null $phones_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Post[] $posts
- * @property-read int|null $posts_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Post[] $postsReacts
- * @property-read int|null $posts_reacts_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Skill[] $skills
- * @property-read int|null $skills_count
  * @property-read \App\Models\User $user
  * @method static \Database\Factories\ProfileFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Profile newModelQuery()
@@ -314,37 +286,14 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * App\Models\ProfilePhone
- *
- * @property int $id
- * @property string $phone
- * @property int $profile_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Profile $profile
- * @method static \Database\Factories\ProfilePhoneFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|ProfilePhone newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ProfilePhone newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ProfilePhone query()
- * @method static \Illuminate\Database\Eloquent\Builder|ProfilePhone whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ProfilePhone whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ProfilePhone wherePhone($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ProfilePhone whereProfileId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ProfilePhone whereUpdatedAt($value)
- */
-	class ProfilePhone extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
  * App\Models\Skill
  *
  * @property int $id
  * @property string $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Profile[] $profiles
- * @property-read int|null $profiles_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @property-read int|null $users_count
  * @method static \Database\Factories\SkillFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Skill newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Skill newQuery()
@@ -392,13 +341,41 @@ namespace App\Models{
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Certificate[] $certificates
+ * @property-read int|null $certificates_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Comment[] $comments
+ * @property-read int|null $comments_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Comment[] $commentsReacts
+ * @property-read int|null $comments_reacts_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|User[] $connectionsFrom
+ * @property-read int|null $connections_from_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|User[] $connectionsTo
+ * @property-read int|null $connections_to_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Experience[] $experiences
+ * @property-read int|null $experiences_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|User[] $followers
+ * @property-read int|null $followers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|User[] $followings
+ * @property-read int|null $followings_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Job[] $jobs
+ * @property-read int|null $jobs_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Company[] $managementCompanies
+ * @property-read int|null $management_companies_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
  * @property-read int|null $permissions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserPhone[] $phones
+ * @property-read int|null $phones_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Post[] $posts
+ * @property-read int|null $posts_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Post[] $postsReacts
+ * @property-read int|null $posts_reacts_count
  * @property-read \App\Models\Profile|null $profile
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Role[] $roles
  * @property-read int|null $roles_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Skill[] $skills
+ * @property-read int|null $skills_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Sanctum\PersonalAccessToken[] $tokens
  * @property-read int|null $tokens_count
  * @method static \Database\Factories\UserFactory factory(...$parameters)
@@ -416,5 +393,28 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  */
 	class User extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * App\Models\UserPhone
+ *
+ * @property int $id
+ * @property string $phone
+ * @property int $user_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User $user
+ * @method static \Database\Factories\UserPhoneFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserPhone newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserPhone newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserPhone query()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserPhone whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserPhone whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserPhone wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserPhone whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserPhone whereUserId($value)
+ */
+	class UserPhone extends \Eloquent {}
 }
 

@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Profile;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PostFactory extends Factory
@@ -17,7 +17,7 @@ class PostFactory extends Factory
         return [
             "content" => $this->faker->realText(),
             "photo" => $this->faker->imageUrl,
-            "profile_id" => $this->faker->randomElement(Profile::pluck("id")->toArray())
+            "user_id" => $this->faker->randomElement(User::pluck("id")->toArray())
         ];
     }
 }

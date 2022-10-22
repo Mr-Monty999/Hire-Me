@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\ProfilePhone;
+use App\Models\UserPhone;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class ProfilePhonePolicy
+class UserPhonePolicy
 {
     use HandlesAuthorization;
 
@@ -25,10 +25,10 @@ class ProfilePhonePolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ProfilePhone  $profilePhone
+     * @param  \App\Models\UserPhone  $userPhone
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, ProfilePhone $profilePhone)
+    public function view(User $user, UserPhone $userPhone)
     {
         //
     }
@@ -48,34 +48,34 @@ class ProfilePhonePolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ProfilePhone  $profilePhone
+     * @param  \App\Models\UserPhone  $userPhone
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, ProfilePhone $profilePhone)
+    public function update(User $user, UserPhone $userPhone)
     {
-        return $user->profile->id == $profilePhone->profile_id;
+        return $user->id == $userPhone->user_id;
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ProfilePhone  $profilePhone
+     * @param  \App\Models\UserPhone  $userPhone
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, ProfilePhone $profilePhone)
+    public function delete(User $user, UserPhone $userPhone)
     {
-        return $user->profile->id == $profilePhone->profile_id;
+        return $user->id == $userPhone->user_id;
     }
 
     /**
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ProfilePhone  $profilePhone
+     * @param  \App\Models\UserPhone  $userPhone
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, ProfilePhone $profilePhone)
+    public function restore(User $user, UserPhone $userPhone)
     {
     }
 
@@ -83,11 +83,11 @@ class ProfilePhonePolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ProfilePhone  $profilePhone
+     * @param  \App\Models\UserPhone  $userPhone
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, ProfilePhone $profilePhone)
+    public function forceDelete(User $user, UserPhone $userPhone)
     {
-        return $user->profile->id == $profilePhone->profile_id;
+        return $user->id == $userPhone->user_id;
     }
 }

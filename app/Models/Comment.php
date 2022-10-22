@@ -10,16 +10,16 @@ class Comment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["title", "content", "photo", "post_id", "profile_id", "comment_id"];
+    protected $fillable = ["title", "content", "photo", "post_id", "user_id", "comment_id"];
 
     public function post()
     {
         return $this->belongsTo(Post::class);
     }
 
-    public function profile()
+    public function user()
     {
-        return $this->belongsTo(Profile::class);
+        return $this->belongsTo(User::class);
     }
 
     public function replies()
@@ -34,6 +34,6 @@ class Comment extends Model
 
     public function reacts()
     {
-        return $this->belongsToMany(Profile::class, "comment_react")->withPivot("type");
+        return $this->belongsToMany(User::class, "comment_react")->withPivot("type");
     }
 }

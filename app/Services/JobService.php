@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\Job;
-use App\Models\Profile;
+use App\Models\User;
 use Gate;
 
 /**
@@ -13,7 +13,7 @@ class JobService
 {
     public static function show($jobId)
     {
-        $job = Job::with("profile:id,firstname,lastname,avatar")->find($jobId);
+        $job = Job::with("user.profile")->find($jobId);
         return $job;
     }
 
@@ -42,7 +42,7 @@ class JobService
     public static function getAllJobs()
     {
         $jobs = Job::with([
-            "profile:id,firstname,lastname,avatar",
+            "user:id,firstname,lastname,avatar",
         ])->latest()->paginate(5);
 
         foreach ($jobs as  $job) {
@@ -55,7 +55,7 @@ class JobService
     public static function searchForJob($pattern)
     {
         $pattern = trim($pattern);
-        $result = Job::with("profile:id,firstname,lastname,avatar")->where("title", "LIKE", "%$pattern%")
+        $result = Job::with("user:id,firstname,lastname,avatar")->where("title", "LIKE", "%$pattern%")
             ->orWhere("description", "LIKE", "%$pattern%")
             ->orWhere("location", "LIKE", "%$pattern%")
             ->latest()

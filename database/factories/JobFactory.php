@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Profile;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class JobFactory extends Factory
@@ -18,7 +18,7 @@ class JobFactory extends Factory
             "title" => $this->faker->jobTitle,
             "description" => $this->faker->realText,
             "location" => $this->faker->country . "," . $this->faker->city,
-            "profile_id" => $this->faker->randomElement(Profile::pluck("id")->toArray())
+            "user_id" => $this->faker->randomElement(User::pluck("id")->toArray())
         ];
     }
 }

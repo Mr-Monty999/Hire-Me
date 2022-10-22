@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProfileCertificateTable extends Migration
+class CreateUserCertificateTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateProfileCertificateTable extends Migration
      */
     public function up()
     {
-        Schema::create('profile_certificate', function (Blueprint $table) {
-            $table->bigInteger("profile_id")->unsigned();
+        Schema::create('user_certificate', function (Blueprint $table) {
+            $table->bigInteger("user_id")->unsigned();
             $table->bigInteger("certificate_id")->unsigned();
             $table->timestamps();
 
-            $table->primary(["profile_id", "certificate_id"]);
-            $table->foreign("profile_id")->references("id")->on("profiles")->cascadeOnDelete()->cascadeOnUpdate();
+            $table->primary(["user_id", "certificate_id"]);
+            $table->foreign("user_id")->references("id")->on("users")->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreign("certificate_id")->references("id")->on("certificates")->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
@@ -31,6 +31,6 @@ class CreateProfileCertificateTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('profile_certificate');
+        Schema::dropIfExists('user_certificate');
     }
 }

@@ -10,7 +10,7 @@ use App\Models\ProfilePhone;
 use App\Services\ResponseService;
 use Illuminate\Http\Request;
 
-class ProfilePhoneController extends Controller
+class UserPhoneController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -47,6 +47,7 @@ class ProfilePhoneController extends Controller
      */
     public function store(ProfilePhoneStoreRequest $request, $profileId)
     {
+    
         $data = $request->all();
         $data["profile_id"] = $profileId;
         $phone = ProfilePhone::create($data);

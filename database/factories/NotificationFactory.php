@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Profile;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class NotificationFactory extends Factory
@@ -17,7 +17,7 @@ class NotificationFactory extends Factory
         return [
             "type" => $this->faker->numberBetween(1, 5),
             "data" => $this->faker->text(30),
-            "notifiable_id" => $this->faker->randomElement(Profile::pluck("id")->toArray()),
+            "notifiable_id" => $this->faker->randomElement(User::pluck("id")->toArray()),
 
         ];
     }

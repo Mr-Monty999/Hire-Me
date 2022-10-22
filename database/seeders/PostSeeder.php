@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Post;
-use App\Models\Profile;
+use App\Models\User;
 use App\Notifications\ReactToPostNotification;
 use DB;
 use Illuminate\Database\Seeder;
@@ -23,7 +23,7 @@ class PostSeeder extends Seeder
 
         Post::factory(30)->create();
 
-        $ids = Profile::pluck("id")->toArray();
+        $ids = User::pluck("id")->toArray();
         foreach ($ids as $key => $value)
             $ids[$value] =  ["type" => 1];
 
@@ -31,7 +31,7 @@ class PostSeeder extends Seeder
         foreach (Post::all() as $key => $row) {
 
             $row->reacts()->syncWithoutDetaching($ids);
-            // $row->profile->notify(new ReactToPostNotification(["react_type" => 1, "post_id" => $row->id], "profile_id"=));
+            // $row->user->notify(new ReactToPostNotification(["react_type" => 1, "post_id" => $row->id], "user_id"=));
         }
     }
 }

@@ -13,9 +13,9 @@ class Certificate extends Model
     protected $fillable = ["name", "company_name", "company_id"];
 
 
-    public function profiles()
+    public function users()
     {
-        return $this->belongsToMany(Profile::class, "profile_certificate");
+        return $this->belongsToMany(User::class, "user_certificate");
     }
     public function company()
     {

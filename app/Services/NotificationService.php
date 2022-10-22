@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Job;
 use App\Models\Post;
-use App\Models\Profile;
+use App\Models\User;
 use App\Notifications\ConnectionRequestNotification;
 use App\Notifications\CreatePostNotification;
 use App\Notifications\FollowNotification;
@@ -24,25 +24,25 @@ use PhpParser\ErrorHandler\Collecting;
 class NotificationService
 {
 
-    public static function getProfileAllReceivedNotifications($profileId)
+    public static function getUserAllReceivedNotifications($userId)
     {
-        $notifications =  Profile::find($profileId)->notifications()->paginate(10);
+        $notifications =  User::find($userId)->notifications()->paginate(10);
         foreach ($notifications as $key => $value) {
             $temp = $value->data;
-            $temp["profile"] = Profile::find($value->data["profile_id"]);
+            $temp["user"] = User::find($value->data["user_id"]);
             if (isset($value->data["post_id"]))
                 $temp["post"] = Post::find($value->data["post_id"]);
             if (isset($value->data["job_id"]))
                 $temp["job"] = Job::find($value->data["job_id"]);
 
             $value->data = $temp;
-            // $value->data->profile = Profile::find($value->data["profile_id"]);
+            // $value->data->user = User::find($value->data["user_id"]);
         }
         return $notifications;
     }
-    public static function readAllNotifications($profileId, $except = [])
+    public static function readAllNotifications($userId, $except = [])
     {
-        $notifications = Profile::find($profileId)->unreadNotifications;
+        $notifications = User::find($userId)->unreadNotifications;
         foreach ($notifications as  $value) {
             if (!in_array($value->type, $except))
                 $value->markAsRead();
@@ -53,10 +53,10 @@ class NotificationService
     }
     public static function sendCreatePostNotification($data)
     {
-        $profile = Profile::find($data["profile_id"]);
-        $followers = $profile->followers()->get();
-        $connections = ProfileService::getProfileConnections($data["profile_id"]);
-        $targets =  $followers->merge($connections)->except($data["profile_id"])->unique("id");
+        $user = User::find($data["user_id"]);
+        $followers = $user->followers()->get();
+        $connections = UserService::getUserConnections($data["user_id"]);
+        $targets =  $followers->merge($connections)->except($data["user_id"])->unique("id");
 
         Notification::send($targets, new CreatePostNotification($data));
 
@@ -65,23 +65,23 @@ class NotificationService
     public static function sendReactToPostNotification($data)
     {
 
-        if ($data["post_author"] != $data["profile_id"])
-            Profile::find($data["post_author"])->notify(new ReactToPostNotification($data));
+        if ($data["post_author"] != $data["user_id"])
+            User::find($data["post_author"])->notify(new ReactToPostNotification($data));
 
         return true;
     }
     public static function sendConnectionRequestNotification($data)
     {
-        Profile::find($data["notifiable_id"])->notify(new ConnectionRequestNotification($data));
+        User::find($data["notifiable_id"])->notify(new ConnectionRequestNotification($data));
         return true;
     }
     public static function sendOfferJobNotification($data)
     {
 
-        $profile = Profile::find($data["profile_id"]);
-        $followers = $profile->followers()->get();
-        $connections = ProfileService::getProfileConnections($data["profile_id"]);
-        $targets =  $followers->merge($connections)->except($data["profile_id"])->unique("id");
+        $user = User::find($data["user_id"]);
+        $followers = $user->followers()->get();
+        $connections = UserService::getUserConnections($data["user_id"]);
+        $targets =  $followers->merge($connections)->except($data["user_id"])->unique("id");
 
         Notification::send($targets, new OfferJobNotification($data));
 
@@ -89,11 +89,11 @@ class NotificationService
     }
     public static function sendFollowNotification($data)
     {
-        Profile::find($data["profile_id"])->notify(new FollowNotification($data));
+        User::find($data["user_id"])->notify(new FollowNotification($data));
         return true;
     }
-    public static function getProfileUnReadedNotificationsCount($profileId)
+    public static function getUserUnReadedNotificationsCount($userId)
     {
-        return Profile::find($profileId)->unreadNotifications()->count();
+        return User::find($userId)->unreadNotifications()->count();
     }
 }

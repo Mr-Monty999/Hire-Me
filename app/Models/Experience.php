@@ -10,15 +10,15 @@ class Experience extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["start", "end", "position", "company_name", "company_id", "profile_id"];
+    protected $fillable = ["start", "end", "position", "company_name", "company_id", "user_id"];
 
     public function company()
     {
         return $this->belongsTo(Company::class);
     }
 
-    public function profile()
+    public function user()
     {
-        return $this->belongsTo(Profile::class);
+        return $this->belongsTo(User::class);
     }
 }

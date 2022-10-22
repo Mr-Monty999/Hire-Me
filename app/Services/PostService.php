@@ -36,7 +36,7 @@ class PostService
     }
     public static function getAllPosts()
     {
-        $profileId = Auth::user()->profile->id;
+        $userId = Auth::user()->id;
 
 
         $posts = Post::with([
@@ -45,13 +45,13 @@ class PostService
                 $q->latest()->paginate(5);
             },
             "tags",
-            "profile:id,firstname,lastname,avatar",
+            "user.profile",
         ])->withCount("comments", "reacts", "tags", "likes", "dislikes")->latest()->paginate(5);
 
         foreach ($posts as  $post) {
             $post->created_at_diff_for_humans = $post->created_at->diffForHumans();
 
-            $react = $post->reacts()->where("profile_id", "=", $profileId)->first();
+            $react = $post->reacts()->where("user_id", "=", $userId)->first();
             if ($react)
                 $post->react_type = $react->pivot->type;
             else
@@ -62,7 +62,7 @@ class PostService
     }
 
 
-    public static function getPost($postId, $authProfileId)
+    public static function getPost($postId, $authUserId)
     {
 
         $post = Post::with(
@@ -72,12 +72,12 @@ class PostService
                     $q->latest()->paginate(5);
                 },
                 "tags",
-                "profile:id,firstname,lastname,avatar"
+                "user.profile"
             ]
         )->withCount(["reacts", "comments", "tags", "likes", "dislikes"])->find($postId);
 
         $post->created_at_diff_for_humans = $post->created_at->diffForHumans();
-        $react = $post->reacts()->where("profile_id", "=", $authProfileId)->first();
+        $react = $post->reacts()->where("user_id", "=", $authUserId)->first();
         if ($react)
             $post->react_type = $react->pivot->type;
         else
@@ -95,23 +95,23 @@ class PostService
     {
         $post = Post::findOrFail($postId);
         $post->reacts()->syncWithoutDetaching([
-            $request->profile_id => ["type" => $request->type]
+            $request->user_id => ["type" => $request->type]
         ]);
-        $reacted = $post->reacts()->wherePivot("profile_id", "=", $request->profile_id)->first();
+        $reacted = $post->reacts()->wherePivot("user_id", "=", $request->user_id)->first();
         return $reacted;
     }
-    public static function unReact($postId, $profileId)
+    public static function unReact($postId, $userId)
     {
         $post = Post::findOrFail($postId);
-        $post->reacts()->detach($profileId);
-        $reacted = $post->reacts()->wherePivot("profile_id", "=", $profileId)->first();
+        $post->reacts()->detach($userId);
+        $reacted = $post->reacts()->wherePivot("user_id", "=", $userId)->first();
         return $reacted;
     }
 
-    public static function isReacted($postId, $profileId)
+    public static function isReacted($postId, $userId)
     {
         $post = Post::findOrFail($postId);
-        $reacted =  $post->reacts()->wherePivot("profile_id", "=", $profileId)->first();
+        $reacted =  $post->reacts()->wherePivot("user_id", "=", $userId)->first();
 
         if ($reacted != null)
             $reacted = $reacted->pivot->type;
@@ -122,7 +122,7 @@ class PostService
     public static function searchForPost($content)
     {
         $content = trim($content);
-        $profileId = Auth::user()->profile->id;
+        $userId = Auth::user()->user->id;
 
 
         $posts = Post::with([
@@ -131,7 +131,7 @@ class PostService
                 $q->latest()->paginate(5);
             },
             "tags",
-            "profile:id,firstname,lastname,avatar",
+            "user.profile",
         ])->withCount("comments", "reacts", "tags", "likes", "dislikes")
             ->where("content", "LIKE", "%$content%")
             ->latest()
@@ -140,7 +140,7 @@ class PostService
         foreach ($posts as  $post) {
             $post->created_at_diff_for_humans = $post->created_at->diffForHumans();
 
-            $react = $post->reacts()->where("profile_id", "=", $profileId)->first();
+            $react = $post->reacts()->where("user_id", "=", $userId)->first();
             if ($react)
                 $post->react_type = $react->pivot->type;
             else

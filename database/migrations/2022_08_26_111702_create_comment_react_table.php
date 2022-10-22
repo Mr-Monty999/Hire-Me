@@ -15,14 +15,14 @@ class CreateCommentReactTable extends Migration
     {
         Schema::create('comment_react', function (Blueprint $table) {
             $table->bigInteger("comment_id")->unsigned();
-            $table->bigInteger("profile_id")->unsigned();
+            $table->bigInteger("user_id")->unsigned();
             $table->integer("type")->unsigned();
 
             $table->timestamps();
 
-            $table->primary(["profile_id", "comment_id"]);
+            $table->primary(["user_id", "comment_id"]);
             $table->foreign("comment_id")->references("id")->on("comments")->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreign("profile_id")->references("id")->on("profiles")->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign("user_id")->references("id")->on("users")->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 

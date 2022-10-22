@@ -53,7 +53,7 @@ class ExperiencePolicy
      */
     public function update(User $user, Experience $experience)
     {
-        return $user->profile->id == $experience->profile_id;
+        return $user->id == $experience->user_id;
     }
 
     /**
@@ -65,7 +65,7 @@ class ExperiencePolicy
      */
     public function delete(User $user, Experience $experience)
     {
-        return $user->profile->id == $experience->profile_id;
+        return $user->id == $experience->user_id;
     }
 
     /**
@@ -89,6 +89,6 @@ class ExperiencePolicy
      */
     public function forceDelete(User $user, Experience $experience)
     {
-        return $user->profile->id == $experience->profile_id;
+        return $user->id == $experience->user_id;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Profile;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ExperienceFactory extends Factory
@@ -19,7 +19,7 @@ class ExperienceFactory extends Factory
             "end" => $this->faker->date,
             "position" => $this->faker->jobTitle,
             "company_name" => $this->faker->company,
-            "profile_id" => $this->faker->randomElement(Profile::pluck("id")),
+            "user_id" => $this->faker->randomElement(User::pluck("id")),
 
         ];
     }

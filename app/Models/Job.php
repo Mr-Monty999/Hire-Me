@@ -9,12 +9,12 @@ class Job extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["title", "description", "location", "profile_id"];
+    protected $fillable = ["title", "description", "location", "user_id"];
 
-    protected $with = ["profile:id,firstname,lastname,avatar"];
+    protected $with = ["user:id,firstname,lastname,avatar"];
 
-    public function profile()
+    public function user()
     {
-        return $this->belongsTo(Profile::class);
+        return $this->belongsTo(User::class);
     }
 }
