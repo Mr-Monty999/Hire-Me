@@ -23,10 +23,7 @@ class CertificateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -56,10 +53,7 @@ class CertificateController extends Controller
      * @param  \App\Models\Certificate  $certificate
      * @return \Illuminate\Http\Response
      */
-    public function edit(Certificate $certificate)
-    {
-        //
-    }
+
 
     /**
      * Update the specified resource in storage.

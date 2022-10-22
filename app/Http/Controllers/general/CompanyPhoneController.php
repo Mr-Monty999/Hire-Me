@@ -23,10 +23,6 @@ class CompanyPhoneController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -56,10 +52,6 @@ class CompanyPhoneController extends Controller
      * @param  \App\Models\CompanyPhone  $companyPhone
      * @return \Illuminate\Http\Response
      */
-    public function edit(CompanyPhone $companyPhone)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.

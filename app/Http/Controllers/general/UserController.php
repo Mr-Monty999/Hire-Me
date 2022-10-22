@@ -22,9 +22,9 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        $this->middleware("permission:create-users")->only(["create", "store"]);
+        $this->middleware("permission:create-users")->only(["store"]);
         $this->middleware("permission:view-users")->only(["index", "show"]);
-        $this->middleware("permission:edit-users")->only(["edit", "update"]);
+        $this->middleware("permission:edit-users")->only(["update"]);
         $this->middleware("permission:delete-users")->only(["destroy"]);
     }
     public function index()
@@ -77,11 +77,6 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        //
-    }
-
     /**
      * Update the specified resource in storage.
      *

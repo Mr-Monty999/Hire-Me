@@ -30,9 +30,9 @@ class ProfileController extends Controller
      */
     public function __construct()
     {
-        $this->middleware("permission:create-profiles")->only(["create", "store"]);
+        $this->middleware("permission:create-profiles")->only(["store"]);
         $this->middleware("permission:view-profiles")->only(["index", "show"]);
-        $this->middleware("permission:edit-profiles")->only(["edit", "update"]);
+        $this->middleware("permission:edit-profiles")->only(["update"]);
         $this->middleware("permission:delete-profiles")->only(["destroy"]);
     }
 
@@ -48,10 +48,6 @@ class ProfileController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-    }
-
     /**
      * Store a newly created resource in storage.
      *

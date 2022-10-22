@@ -24,9 +24,9 @@ class PostController extends Controller
      */
     public function __construct()
     {
-        $this->middleware("permission:create-posts")->only(["create", "store"]);
+        $this->middleware("permission:create-posts")->only(["store"]);
         $this->middleware("permission:view-posts")->only(["index", "show"]);
-        $this->middleware("permission:edit-posts")->only(["edit", "update"]);
+        $this->middleware("permission:edit-posts")->only(["update"]);
         $this->middleware("permission:delete-posts")->only(["destroy"]);
     }
 
@@ -43,11 +43,6 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -112,10 +107,6 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function edit(Post $post)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.

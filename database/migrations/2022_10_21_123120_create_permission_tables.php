@@ -161,6 +161,23 @@ class CreatePermissionTables extends Migration
             "view-profiles-phones",
             "edit-profiles-phones",
             "delete-profiles-phones",
+            "create-experiences",
+            "view-experiences",
+            "edit-experiences",
+            "delete-experiences",
+            "create-comments",
+            "view-comments",
+            "edit-comments",
+            "delete-comments",
+            "create-certificates",
+            "view-certificates",
+            "edit-certificates",
+            "delete-certificates",
+            "create-companies",
+            "view-companies",
+            "edit-companies",
+            "delete-companies",
+            "view-dashboard"
         ];
         foreach ($permissions as $perm)
             PermissionService::create($perm);

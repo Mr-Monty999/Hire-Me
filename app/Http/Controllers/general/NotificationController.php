@@ -31,10 +31,6 @@ class NotificationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -62,10 +58,7 @@ class NotificationController extends Controller
      * @param  \App\Models\Notification  $notification
      * @return \Illuminate\Http\Response
      */
-    public function edit($notification)
-    {
-        //
-    }
+
 
     /**
      * Update the specified resource in storage.

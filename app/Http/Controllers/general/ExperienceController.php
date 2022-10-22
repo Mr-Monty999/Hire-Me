@@ -18,6 +18,15 @@ class ExperienceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct()
+    {
+        $this->middleware("permission:create-experiences")->only(["store"]);
+        $this->middleware("permission:view-experiences")->only(["index", "show"]);
+        $this->middleware("permission:edit-experiences")->only(["update"]);
+        $this->middleware("permission:delete-experiences")->only(["destroy"]);
+    }
+
     public function index()
     {
 
@@ -30,10 +39,6 @@ class ExperienceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -64,11 +69,6 @@ class ExperienceController extends Controller
      * @param  \App\Models\Experience  $experience
      * @return \Illuminate\Http\Response
      */
-    public function edit(Experience $experience)
-    {
-        //
-    }
-
     /**
      * Update the specified resource in storage.
      *

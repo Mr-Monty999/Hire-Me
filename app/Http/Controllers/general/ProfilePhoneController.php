@@ -20,9 +20,9 @@ class ProfilePhoneController extends Controller
 
     public function __construct()
     {
-        $this->middleware("permission:create-profiles-phones")->only(["create", "store"]);
+        $this->middleware("permission:create-profiles-phones")->only(["store"]);
         $this->middleware("permission:view-profiles-phones")->only(["index", "show"]);
-        $this->middleware("permission:edit-profiles-phones")->only(["edit", "update"]);
+        $this->middleware("permission:edit-profiles-phones")->only(["update"]);
         $this->middleware("permission:delete-profiles-phones")->only(["destroy"]);
     }
 
@@ -39,11 +39,6 @@ class ProfilePhoneController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -75,10 +70,6 @@ class ProfilePhoneController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
