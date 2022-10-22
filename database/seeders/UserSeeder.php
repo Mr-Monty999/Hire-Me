@@ -15,8 +15,8 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        DB::table("users")->delete();
 
+        DB::table("users")->delete();
         User::factory(10)->create();
     }
 }
