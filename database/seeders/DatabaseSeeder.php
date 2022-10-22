@@ -31,7 +31,8 @@ class DatabaseSeeder extends Seeder
             CommentSeeder::class,
             PostSeeder::class,
             NotificationSeeder::class,
-            JobSeeder::class
+            JobSeeder::class,
+            RoleSeeder::class
         ]);
     }
 }
