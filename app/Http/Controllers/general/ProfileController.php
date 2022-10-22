@@ -30,10 +30,10 @@ class ProfileController extends Controller
      */
     public function __construct()
     {
-        $this->middleware("permission:create-profiles")->only(["store"]);
+        // $this->middleware("permission:create-profiles")->only(["store"]);
         $this->middleware("permission:view-profiles")->only(["index", "show"]);
         $this->middleware("permission:edit-profiles")->only(["update"]);
-        $this->middleware("permission:delete-profiles")->only(["destroy"]);
+        // $this->middleware("permission:delete-profiles")->only(["destroy"]);
     }
 
     public function index()

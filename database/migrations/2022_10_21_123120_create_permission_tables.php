@@ -132,19 +132,9 @@ class CreatePermissionTables extends Migration
 
 
         ///Permissions
-        $permissions = [
-            "create-users",
-            "view-users",
-            "edit-users",
-            "delete-users",
-            "create-roles",
-            "view-roles",
-            "edit-roles",
-            "delete-roles",
-            "create-profiles",
+        $userPermissions = [
             "view-profiles",
             "edit-profiles",
-            "delete-profiles",
             "create-posts",
             "view-posts",
             "edit-posts",
@@ -177,16 +167,9 @@ class CreatePermissionTables extends Migration
             "view-companies",
             "edit-companies",
             "delete-companies",
-            "view-dashboard"
         ];
-        foreach ($permissions as $perm)
-            PermissionService::create($perm);
-
-        ////Roles
-        RoleService::create("owner");
-
-        $role = RoleService::create("user");
-        $role->syncPermissions(array_diff($permissions, [
+        $adminPermissions = [
+            "view-dashboard",
             "create-users",
             "view-users",
             "edit-users",
@@ -195,9 +178,45 @@ class CreatePermissionTables extends Migration
             "view-roles",
             "edit-roles",
             "delete-roles",
-            "delete-profiles",
+            "view-any-profiles",
+            "edit-any-profiles",
+            "view-any-posts",
+            "edit-any-posts",
+            "delete-any-posts",
+            "view-any-jobs",
+            "edit-any-jobs",
+            "delete-any-jobs",
+            "view-any-skills",
+            "edit-any-skills",
+            "delete-any-skills",
+            "view-any-profiles-phones",
+            "edit-any-profiles-phones",
+            "delete-any-profiles-phones",
+            "view-any-experiences",
+            "edit-any-experiences",
+            "delete-any-experiences",
+            "view-any-comments",
+            "edit-any-comments",
+            "delete-any-comments",
+            "view-any-certificates",
+            "edit-any-certificates",
+            "delete-any-certificates",
+            "view-any-companies",
+            "edit-any-companies",
+            "delete-any-companies",
+        ];
+        foreach ($userPermissions as $perm)
+            PermissionService::create($perm);
 
-        ]));
+        foreach ($adminPermissions as $perm)
+            PermissionService::create($perm);
+
+        ////Roles
+        RoleService::create("owner");
+
+        $role = RoleService::create("user");
+        $role->syncPermissions($userPermissions);
+
 
         // $user =  UserService::register([
         //     "email" => "admin@gmail.com",
