@@ -17,6 +17,7 @@ use App\Services\NotificationService;
 use App\Services\PostService;
 use App\Services\ProfileService;
 use App\Services\ResponseService;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Notification;
@@ -56,10 +57,9 @@ class ProfileController extends Controller
      */
     public function store(ProfileStoreRequest $request)
     {
-        $request->validated();
-        Profile::create($request->all());
+        $profile = ProfileService::store($request->all());
 
-        return ResponseService::json($request->all(), "تم اضافة الملف الشخصي");
+        return ResponseService::json($profile, "تم اضافة الملف الشخصي");
     }
 
     /**
@@ -71,125 +71,18 @@ class ProfileController extends Controller
     public function show($id)
     {
 
-        $profile = ProfileService::showProfileWithRelations($id);
+        $profile = UserService::showUserWithRelations($id);
 
         return ResponseService::json($profile, "تم جلب البيانات بنجاح");
     }
 
-    public function showProfileOnly($id)
+    public function showUserProfileOnly($id)
     {
 
-        $profile = ProfileService::showProfileOnly($id);
-        return ResponseService::json($profile, "تم جلب البيانات بنجاح");
+        $user = UserService::showUserProfileOnly($id);
+        return ResponseService::json($user, "تم جلب البيانات بنجاح");
     }
 
-    public function showPhones($profileId)
-    {
-        $phones =  ProfileService::showPhones($profileId);
-        // $phones = ProfilePhone::where("profile_id", $profileId)->get();
-
-        return ResponseService::json($phones, "تم جلب أرقام الهواتف بنجاح");
-    }
-    public function showPosts($profileId)
-    {
-        $posts =  ProfileService::showPosts($profileId);
-
-        return ResponseService::json($posts, "تم جلب المنشورات بنجاح");
-    }
-    public function followProfile(ProfileFollowStoreRequest $request, $myProfileId)
-    {
-        $profile = ProfileService::followProfile($request, $myProfileId);
-        NotificationService::sendFollowNotification($request->all());
-        return ResponseService::json($profile, "تم المتابعة بنجاح");
-    }
-    public function unFollowProfile($myProfileId, $targetProfileId)
-    {
-        $profile = ProfileService::unFollowProfile($myProfileId, $targetProfileId);
-        return ResponseService::json($profile, "تم إلغاء المتابعة بنجاح");
-    }
-    public function isFollowed($myProfileId, $targetProfileId)
-    {
-        $exist =  ProfileService::isFollowed($myProfileId, $targetProfileId);
-        return ResponseService::json($exist, "تمت العملية بنجاح");
-    }
-
-    public function getNotifications($id)
-    {
-
-        $notifications = NotificationService::getProfileAllReceivedNotifications($id);
-        $data["notifications"] = $notifications;
-        $data["unreaded_notifications_count"] = NotificationService::getProfileUnReadedNotificationsCount($id);
-        return ResponseService::json($data, "تمت العملية بنجاح");
-    }
-    public function getHeaderCounts($id)
-    {
-        $data["incoming_connections_count"] = ProfileService::getAllIncommingConnectionsCount($id);
-        $data["unreaded_notifications_count"] = NotificationService::getProfileUnReadedNotificationsCount($id);
-        return ResponseService::json($data, "تمت العملية بنجاح");
-    }
-    public function readAllNotifications($profileId)
-    {
-        NotificationService::readAllNotifications($profileId);
-        return ResponseService::json(null, "تمت العملية بنجاح");
-    }
-
-    public static function sendConnectionRequest(Request $request, $profileId)
-    {
-        $data = ProfileService::sendConnectionRequest($profileId, $request->target_profile_id);
-        NotificationService::sendConnectionRequestNotification([
-            "notifiable_id" => $request->target_profile_id,
-            "profile_id" => $profileId,
-        ]);
-        return ResponseService::json($data, "تمت العملية بنجاح");
-    }
-    public static function removeConnection($profileId, $targetProfileId)
-    {
-        $data = ProfileService::removeConnection($profileId, $targetProfileId);
-
-        return ResponseService::json($data, "تمت العملية بنجاح");
-    }
-
-    public static function acceptConnectionRequest(Request $request, $profileId)
-    {
-        $data = ProfileService::acceptConnectionRequest($profileId, $request->target_profile_id);
-
-        return ResponseService::json($data, "تمت العملية بنجاح");
-    }
-    public static function getAllAcceptedConnections($profileId)
-    {
-        $data = ProfileService::getProfileConnections($profileId);
-
-        return ResponseService::json($data, "تمت العملية بنجاح");
-    }
-
-    public static function getConnectionStatus($profileId, $targetProfileId)
-    {
-        $data = ProfileService::getConnectionStatus($profileId, $targetProfileId);
-
-        return ResponseService::json($data, "تمت العملية بنجاح");
-    }
-    public static function getAllIncommingConnections($profileId)
-    {
-        $data = ProfileService::getAllIncommingConnections($profileId);
-
-        return ResponseService::json($data, "تمت العملية بنجاح");
-    }
-    public static function getAllIncommingConnectionsCount($profileId)
-    {
-        $count = ProfileService::getAllIncommingConnectionsCount($profileId);
-
-        return ResponseService::json($count, "تمت العملية بنجاح");
-    }
-    public function search($pattern)
-    {
-        $profile = ProfileService::searchForProfile($pattern);
-        return ResponseService::json($profile, "تمت العملية بنجاح");
-    }
-    public function showFeedbackPosts($profileId)
-    {
-        $posts = ProfileService::getFeedPosts($profileId);
-        return ResponseService::json($posts, "تمت العملية بنجاح");
-    }
     /**
      * Show the form for editing the specified resource.
      *

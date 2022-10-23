@@ -55,7 +55,7 @@ class ConnectionRequestNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            "profile_id" => $this->data["profile_id"],
+            "user_id" => $this->data["user_id"],
 
         ];
     }

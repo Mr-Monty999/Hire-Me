@@ -58,7 +58,7 @@ class ReactToPostNotification extends Notification
         return [
             "react_type" => $this->reactData["type"],
             "post_id" => $this->reactData["post_id"],
-            "profile_id" => $this->reactData["profile_id"]
+            "user_id" => $this->reactData["user_id"]
         ];
     }
 }

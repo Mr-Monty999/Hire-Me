@@ -57,7 +57,7 @@ class CreatePostNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            "profile_id" => $this->postData["profile_id"],
+            "user_id" => $this->postData["user_id"],
             "post_id" => $this->postData["post_id"],
         ];
     }

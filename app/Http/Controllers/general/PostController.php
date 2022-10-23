@@ -59,7 +59,7 @@ class PostController extends Controller
         $post = Post::create($data);
         $data["post_id"] = $post->id;
         NotificationService::sendCreatePostNotification($data);
-        $post = PostService::getPost($post->id, Auth::user()->profile->id);
+        $post = PostService::getPost($post->id, Auth::user()->id);
 
         return ResponseService::json($post, "تم إنشاء المنشور بنجاح", 201);
     }
@@ -73,7 +73,7 @@ class PostController extends Controller
     public function show($postId)
     {
 
-        $post = PostService::getPost($postId, Auth::user()->profile->id);
+        $post = PostService::getPost($postId, Auth::user()->id);
         return ResponseService::json($post, "تم عرض المنشور بنجاح");
     }
 
@@ -85,15 +85,15 @@ class PostController extends Controller
         NotificationService::sendReactToPostNotification($request->all());
         return ResponseService::json($reacted, "تم التفاعل مع المنشور بنجاح");
     }
-    public function unReact($postId, $profileId)
+    public function unReact($postId, $userId)
     {
-        $reacted = PostService::unReact($postId, $profileId);
+        $reacted = PostService::unReact($postId, $userId);
         return ResponseService::json($reacted, "تم التفاعل مع المنشور بنجاح");
     }
 
-    public function isReacted($postId, $profileId)
+    public function isReacted($postId, $userId)
     {
-        $reacted = PostService::isReacted($postId, $profileId);
+        $reacted = PostService::isReacted($postId, $userId);
         return ResponseService::json($reacted, "تمت العملية بنجاح");
     }
     public function search($pattern)

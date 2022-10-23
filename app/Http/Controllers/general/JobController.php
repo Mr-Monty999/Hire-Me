@@ -50,7 +50,7 @@ class JobController extends Controller
     public function store(StoreJobRequest $request)
     {
         $data = $request->all();
-        $data["profile_id"] = Auth::user()->profile->id;
+        $data["user_id"] = Auth::user()->id;
         $data = JobService::store($data);
         $data["job_id"] = $data["id"];
         NotificationService::sendOfferJobNotification($data);
@@ -81,7 +81,7 @@ class JobController extends Controller
     public function update(UpdateJobRequest $request, Job $job)
     {
         $data = $request->all();
-        $data["profile_id"] = Auth::user()->profile->id;
+        $data["user_id"] = Auth::user()->id;
         $data = JobService::update($job, $data);
         return  ResponseService::json($data);
     }

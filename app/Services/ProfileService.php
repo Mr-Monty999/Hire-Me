@@ -15,6 +15,13 @@ use Notification;
  */
 class ProfileService
 {
+    public static  function store($data)
+    {
+        $profile = Profile::create($data);
+
+        return $profile;
+    }
+
     public static function update($request, $profile)
     {
         Gate::authorize("update", $profile);

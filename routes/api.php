@@ -37,27 +37,29 @@ Route::group(["namespace" => "general"], function () {
 
         //Profiles
         Route::apiResource("profiles", "ProfileController");
-        // Route::get("profiles/{id}/phones", "ProfileController@showPhones");
-        Route::get("profiles/{id}/posts", "ProfileController@showPosts");
-        Route::get("profiles/{id}/info", "ProfileController@showProfileOnly");
-        Route::post("profiles/{id}/follows", "ProfileController@followProfile");
-        Route::delete("profiles/{id}/profiles/{targetId}/follows", "ProfileController@unFollowProfile");
-        Route::get("profiles/{id}/profiles/{targetId}/is-followed", "ProfileController@isFollowed");
-        Route::get("profiles/{id}/notifications", "ProfileController@getNotifications");
-        Route::get("profiles/{id}/header/counts", "ProfileController@getHeaderCounts");
-        Route::post("profiles/{id}/notifications/readall", "ProfileController@readAllNotifications");
-        Route::post("profiles/{id}/connections/request", "ProfileController@sendConnectionRequest");
-        Route::post("profiles/{id}/connections/accept", "ProfileController@acceptConnectionRequest");
-        Route::delete("profiles/{id}/profiles/{targetId}/connections/remove", "ProfileController@removeConnection");
-        Route::get("profiles/{id}/connections", "ProfileController@getAllAcceptedConnections");
-        Route::get("profiles/{id}/connections/incomming", "ProfileController@getAllIncommingConnections");
-        Route::get("profiles/{id}/profiles/{targetId}/connection-status", "ProfileController@getConnectionStatus");
-        Route::get("profiles/search/{pattern}", "ProfileController@search");
-        Route::get("profiles/{profileId}/feedback/posts", "ProfileController@showFeedbackPosts");
 
 
-        //Profile Phones
-        Route::apiResource("profiles.phones", "ProfilePhoneController");
+        // Route::get("profiles/{id}/phones", "UserController@showPhones");
+        Route::get("profiles/{id}/posts", "UserController@showPosts");
+        Route::get("profiles/{id}/info", "UserController@showUserOnly");
+        Route::post("profiles/{id}/follows", "UserController@followUser");
+        Route::delete("profiles/{id}/profiles/{targetId}/follows", "UserController@unFollowUser");
+        Route::get("profiles/{id}/profiles/{targetId}/is-followed", "UserController@isFollowed");
+        Route::get("profiles/{id}/notifications", "UserController@getNotifications");
+        Route::get("profiles/{id}/header/counts", "UserController@getHeaderCounts");
+        Route::post("profiles/{id}/notifications/readall", "UserController@readAllNotifications");
+        Route::post("profiles/{id}/connections/request", "UserController@sendConnectionRequest");
+        Route::post("profiles/{id}/connections/accept", "UserController@acceptConnectionRequest");
+        Route::delete("profiles/{id}/profiles/{targetId}/connections/remove", "UserController@removeConnection");
+        Route::get("profiles/{id}/connections", "UserController@getAllAcceptedConnections");
+        Route::get("profiles/{id}/connections/incomming", "UserController@getAllIncommingConnections");
+        Route::get("profiles/{id}/profiles/{targetId}/connection-status", "UserController@getConnectionStatus");
+        Route::get("profiles/search/{pattern}", "UserController@search");
+        Route::get("profiles/{profileId}/feedback/posts", "UserController@showFeedbackPosts");
+
+
+        //User Phones
+        Route::apiResource("profiles.phones", "UserPhoneController");
 
         //Certificates
         Route::apiResource("certificates", "CertificateController");

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\general;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SkillStoreRequest;
-use App\Models\Profile;
+use App\Models\User;
 use App\Models\Skill;
 use App\Services\ResponseService;
 use Illuminate\Http\Request;
@@ -27,7 +27,7 @@ class SkillController extends Controller
     public function index()
     {
 
-        $data = Skill::with("profiles")->get();
+        $data = Skill::with("users")->get();
         return ResponseService::json($data, "تم جلب البيانات بنجاح");
     }
 
@@ -57,15 +57,15 @@ class SkillController extends Controller
         if ($skill == null)
             $skill = Skill::create($data);
 
-        $skill->profiles()->syncWithoutDetaching($data["profile_id"]);
+        $skill->users()->syncWithoutDetaching($data["user_id"]);
 
 
         return ResponseService::json($skill, "تم إضافة المهارة بنجاح", 201);
     }
-    public function detach($skillId, $profileId)
+    public function detach($skillId, $userId)
     {
         $skill = Skill::find($skillId);
-        $skill->profiles()->detach($profileId);
+        $skill->users()->detach($userId);
 
         return ResponseService::json($skill, "تم حذف المهارة بنجاح");
     }
@@ -78,7 +78,7 @@ class SkillController extends Controller
     public function show(Skill $skill)
     {
 
-        // $skill = $skill->with("profiles")->get();
+        // $skill = $skill->with("users")->get();
 
         return ResponseService::json($skill, "تم عرض المهارة بنجاح");
     }
