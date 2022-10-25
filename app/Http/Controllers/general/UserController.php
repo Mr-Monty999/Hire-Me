@@ -70,7 +70,8 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = UserService::showUserWithRelations($id);
+        return ResponseService::json($user);
     }
 
     public function showPhones($userId)
@@ -80,22 +81,28 @@ class UserController extends Controller
 
         return ResponseService::json($phones, "تم جلب أرقام الهواتف بنجاح");
     }
+    public  function showProfile($userId)
+    {
+
+        $profile = UserService::showProfile($userId);
+        return ResponseService::json($profile);
+    }
     public function showPosts($userId)
     {
         $posts =  UserService::showPosts($userId);
 
         return ResponseService::json($posts, "تم جلب المنشورات بنجاح");
     }
-    public function followUser(UserFollowStoreRequest $request, $myUserId)
+    public function followUser(UserFollowStoreRequest $request, $targetUserId)
     {
 
-        $user = UserService::followUser($request, $myUserId);
-        NotificationService::sendFollowNotification($request->all());
+        $user = UserService::followUser(Auth::id(), $targetUserId);
+        NotificationService::sendFollowNotification(["user_id" => $targetUserId]);
         return ResponseService::json($user, "تم المتابعة بنجاح");
     }
-    public function unFollowUser($myUserId, $targetUserId)
+    public function unFollowUser($targetUserId)
     {
-        $user = UserService::unFollowUser($myUserId, $targetUserId);
+        $user = UserService::unFollowUser(Auth::id(), $targetUserId);
         return ResponseService::json($user, "تم إلغاء المتابعة بنجاح");
     }
     public function isFollowed($myUserId, $targetUserId)
@@ -112,60 +119,62 @@ class UserController extends Controller
         $data["unreaded_notifications_count"] = NotificationService::getUserUnReadedNotificationsCount($id);
         return ResponseService::json($data, "تمت العملية بنجاح");
     }
-    public function getHeaderCounts($id)
+    public function getHeaderCounts()
     {
-        $data["incoming_connections_count"] = UserService::getAllIncommingConnectionsCount($id);
-        $data["unreaded_notifications_count"] = NotificationService::getUserUnReadedNotificationsCount($id);
+        $userId = Auth::user()->id;
+        $data["incoming_connections_count"] = UserService::getAllIncommingConnectionsCount($userId);
+        $data["unreaded_notifications_count"] = NotificationService::getUserUnReadedNotificationsCount($userId);
         return ResponseService::json($data, "تمت العملية بنجاح");
     }
-    public function readAllNotifications($userId)
+    public function readAllNotifications()
     {
+        $userId = Auth::user()->id;
         NotificationService::readAllNotifications($userId);
         return ResponseService::json(null, "تمت العملية بنجاح");
     }
 
-    public static function sendConnectionRequest(Request $request, $userId)
+    public function sendConnectionRequest(Request $request, $targetUserId)
     {
-        $data = UserService::sendConnectionRequest($userId, $request->target_user_id);
+        $data = UserService::sendConnectionRequest(Auth::id(), $targetUserId);
         NotificationService::sendConnectionRequestNotification([
-            "notifiable_id" => $request->target_user_id,
-            "user_id" => $userId,
+            "notifiable_id" => $targetUserId,
+            "user_id" => Auth::id(),
         ]);
         return ResponseService::json($data, "تمت العملية بنجاح");
     }
-    public static function removeConnection($userId, $targetUserId)
+    public function removeConnection($targetUserId)
     {
-        $data = UserService::removeConnection($userId, $targetUserId);
+        $data = UserService::removeConnection(Auth::id(), $targetUserId);
 
         return ResponseService::json($data, "تمت العملية بنجاح");
     }
 
-    public static function acceptConnectionRequest(Request $request, $userId)
+    public function acceptConnectionRequest(Request $request, $userId)
     {
         $data = UserService::acceptConnectionRequest($userId, $request->target_user_id);
 
         return ResponseService::json($data, "تمت العملية بنجاح");
     }
-    public static function getAllAcceptedConnections($userId)
+    public function getAllAcceptedConnections($userId)
     {
         $data = UserService::getUserConnections($userId);
 
         return ResponseService::json($data, "تمت العملية بنجاح");
     }
 
-    public static function getConnectionStatus($userId, $targetUserId)
+    public function getConnectionStatus($targetUserId)
     {
-        $data = UserService::getConnectionStatus($userId, $targetUserId);
+        $data = UserService::getConnectionStatus(Auth::id(), $targetUserId);
 
         return ResponseService::json($data, "تمت العملية بنجاح");
     }
-    public static function getAllIncommingConnections($userId)
+    public function getAllIncommingConnections($userId)
     {
         $data = UserService::getAllIncommingConnections($userId);
 
         return ResponseService::json($data, "تمت العملية بنجاح");
     }
-    public static function getAllIncommingConnectionsCount($userId)
+    public function getAllIncommingConnectionsCount($userId)
     {
         $count = UserService::getAllIncommingConnectionsCount($userId);
 

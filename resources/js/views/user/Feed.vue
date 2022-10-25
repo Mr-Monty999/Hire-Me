@@ -44,7 +44,7 @@ export default {
     },
     data() {
         return {
-            profile_id: 0,
+            user_id: 0,
             posts: {},
             loaded: false,
         };
@@ -55,8 +55,8 @@ export default {
 
             axios
                 .get(
-                    "/api/profiles/" +
-                        this.profile_id +
+                    "/api/users/" +
+                        this.user_id +
                         "/feedback/posts?page=" +
                         pageNumber,
                     {
@@ -75,7 +75,7 @@ export default {
     },
 
     created() {
-        this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
+        this.user_id = JSON.parse(localStorage.getItem("user")).id;
         this.getPosts();
     },
 

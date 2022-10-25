@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Post;
 use App\Models\Profile;
+use App\Models\User;
 use Auth;
 use DB;
 use Gate;
@@ -36,6 +37,12 @@ class ProfileService
         }
 
         $profile->update($data);
+        return $profile;
+    }
+    public static function show($id)
+    {
+
+        $profile = Profile::find($id);;
         return $profile;
     }
 

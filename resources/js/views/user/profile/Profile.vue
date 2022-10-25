@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="myProfileId == $route.params.id">
+        <div v-if="myUserId == $route.params.id">
             <my-profile></my-profile>
         </div>
         <div v-else>
@@ -16,7 +16,7 @@ import OtherProfiles from "../../../components/profile/OtherProfiles.vue";
 export default {
     data() {
         return {
-            myProfileId: 0,
+            myUserId: 0,
         };
     },
     methods: {},
@@ -25,8 +25,7 @@ export default {
         MyProfile,
     },
     created() {
-        let profileId = JSON.parse(localStorage.getItem("user")).profile_id;
-        this.myProfileId = profileId;
+        this.myUserId = JSON.parse(localStorage.getItem("user")).id;
     },
 };
 </script>

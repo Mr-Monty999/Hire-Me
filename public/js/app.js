@@ -5629,7 +5629,6 @@ __webpack_require__.r(__webpack_exports__);
     return {
       firstname: "",
       lastname: "",
-      profile_id: "",
       avatar: "",
       user_id: "",
       unreadedNotifications: 0,
@@ -5656,14 +5655,13 @@ __webpack_require__.r(__webpack_exports__);
       vm.$router.push({
         name: "profile",
         params: {
-          id: vm.profile_id
+          id: vm.user_id
         }
       });
     },
-    getProfileInfo: function getProfileInfo() {
-      var profileId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.profile_id;
+    getProfileInfo: function getProfileInfo(userId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + profileId + "/info", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/users/" + userId + "/profile", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -5674,9 +5672,9 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error.response);
       });
     },
-    getHeaderCounts: function getHeaderCounts(profileId) {
+    getHeaderCounts: function getHeaderCounts() {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + profileId + "/header/counts", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/users/auth/header/counts", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -5686,9 +5684,9 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error.response);
       });
     },
-    readAllNotifications: function readAllNotifications(profileId) {
+    readAllNotifications: function readAllNotifications() {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/profiles/" + profileId + "/notifications/readall", {}, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/users/auth/notifications/readall", {}, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -5717,9 +5715,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     this.user_id = JSON.parse(localStorage.getItem("user")).id;
-    this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
-    this.getProfileInfo();
-    this.getHeaderCounts(this.profile_id);
+    this.getProfileInfo(this.user_id);
+    this.getHeaderCounts();
   }
 });
 
@@ -5755,7 +5752,7 @@ __webpack_require__.r(__webpack_exports__);
       content: "",
       photo: "",
       previewPhoto: "",
-      profile_id: ""
+      user_id: ""
     };
   },
   props: ["posts"],
@@ -5763,9 +5760,9 @@ __webpack_require__.r(__webpack_exports__);
     ModalSnippet: _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
   },
   methods: {
-    getProfileInfo: function getProfileInfo() {
+    getUserInfo: function getUserInfo() {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + vm.profile_id + "/info", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/users/" + vm.user_id + "/profile", {
         headers: _helpers_formAuth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -5781,8 +5778,8 @@ __webpack_require__.r(__webpack_exports__);
       data.append("photo", vm.previewPhoto); // data.append("likes_count", 0);
       // data.append("dislikes_count", 0);
 
-      data.append("photo", vm.previewPhoto);
-      data.append("profile_id", vm.profile_id);
+      data.append("photo", vm.previewPhoto); // data.append("user_id", vm.user_id);
+
       var spinner = '<div class="spinner-border text-white" role="status">' + '<span class="visually-hidden">Loading...</span>' + "</div>";
       vm.$notify({
         title: "في الإنتظار...",
@@ -5806,7 +5803,7 @@ __webpack_require__.r(__webpack_exports__);
         vm.photo = "";
         vm.previewPhoto = ""; // services.sendNotification({
         //     type: 1,
-        //     profile_id: vm.profile_id,
+        //     user_id: vm.user_id,
         //     post_id: response.data.data.id,
         //     content: response.data.data.content,
         // });
@@ -5841,8 +5838,8 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
-    this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
-    this.getProfileInfo();
+    this.user_id = JSON.parse(localStorage.getItem("user")).id;
+    this.getUserInfo();
   }
 });
 
@@ -5880,7 +5877,7 @@ __webpack_require__.r(__webpack_exports__);
       content: "",
       photo: "",
       previewPhoto: "",
-      profile_id: 0
+      user_id: 0
     };
   },
   components: {
@@ -5991,17 +5988,17 @@ __webpack_require__.r(__webpack_exports__);
     hideModal: function hideModal() {
       this.$modal.hide("my-modal");
     },
-    goToProfile: function goToProfile(profileId) {
-      if (profileId != this.$route.params.id) {
+    goToProfile: function goToProfile(userId) {
+      if (userId != this.$route.params.id) {
         this.$router.push({
           name: "profile",
           params: {
-            id: profileId
+            id: userId
           }
         });
       }
     },
-    reactToPost: function reactToPost(profileId, postId, reactType) {
+    reactToPost: function reactToPost(userId, postId, reactType) {
       var vm = this;
       var postIndex = vm.posts.data.findIndex(function (el) {
         return el.id == postId;
@@ -6023,10 +6020,9 @@ __webpack_require__.r(__webpack_exports__);
         text: "تم التفاعل مع المنشور بنجاح",
         type: "success"
       });
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/posts/" + postId + "/profiles", {
-        profile_id: profileId,
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/posts/" + postId + "/react", {
         type: reactType,
-        post_author: vm.posts.data[postIndex].profile_id,
+        post_author: vm.posts.data[postIndex].user_id,
         post_id: postId
       }, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
@@ -6035,10 +6031,10 @@ __webpack_require__.r(__webpack_exports__);
         // vm.posts.data[postIndex].reacts.push(response.data.data);
         // services.sendNotification({
         //     type: 2,
-        //     profile_id: vm.profile_id,
+        //     user_id: vm.user_id,
         //     post_id: postId,
         //     react_type: reactType,
-        //     post_author: vm.posts.data[postIndex].profile_id,
+        //     post_author: vm.posts.data[postIndex].user_id,
         // });
       })["catch"](function (error) {
         console.log(error.response);
@@ -6053,7 +6049,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    removeReactFromPost: function removeReactFromPost(profileId, postId, reactType) {
+    removeReactFromPost: function removeReactFromPost(userId, postId, reactType) {
       var vm = this;
       var postIndex = vm.posts.data.findIndex(function (el) {
         return el.id == postId;
@@ -6068,7 +6064,7 @@ __webpack_require__.r(__webpack_exports__);
         text: "تم التفاعل مع المنشور بنجاح",
         type: "success"
       });
-      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/posts/" + postId + "/profiles/" + profileId, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/posts/" + postId + "/unreact/", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response); // vm.posts.data[postIndex].reacts.splice(reactIndex, 1);
@@ -6106,7 +6102,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   props: ["posts", "onPageClick"],
   created: function created() {
-    this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
+    this.user_id = JSON.parse(localStorage.getItem("user")).id;
     console.log("View Posts");
     console.log(this.posts);
   }
@@ -6141,7 +6137,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      profile: {},
+      user: {
+        profile: {}
+      },
       posts: {},
       skill_name: "",
       start: "",
@@ -6150,38 +6148,38 @@ __webpack_require__.r(__webpack_exports__);
       suggestSkills: [],
       company_name: "",
       phone: "",
-      profile_id: 0,
+      user_id: 0,
       loaded: false
     };
   },
   computed: {
     previewAvatar: function previewAvatar() {
-      if (!this.profile.avatar) {
+      if (!this.user.profile.avatar) {
         return "/images/assets/personal.jpg";
       }
 
-      return this.profile.avatar;
+      return this.user.profile.avatar;
     }
   },
   methods: {
     savePersonalInfo: function savePersonalInfo() {
-      var profileId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.profile_id;
+      var userId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.user_id;
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().put("/api/profiles/" + profileId + "", {
-        firstname: vm.profile.firstname,
-        lastname: vm.profile.lastname,
-        nickname: vm.profile.nickname,
-        birthdate: vm.profile.birthdate,
-        about: vm.profile.about,
-        avatar: vm.profile.avatar,
-        website: vm.profile.website,
-        country: vm.profile.country,
-        city: vm.profile.city,
-        state: vm.profile.state,
-        street: vm.profile.street,
-        university: vm.profile.university,
-        degree: vm.profile.degree,
-        study_type: vm.profile.study_type
+      axios__WEBPACK_IMPORTED_MODULE_0___default().put("/api/profiles/" + userId + "", {
+        firstname: vm.user.profile.firstname,
+        lastname: vm.user.profile.lastname,
+        nickname: vm.user.profile.nickname,
+        birthdate: vm.user.profile.birthdate,
+        about: vm.user.profile.about,
+        avatar: vm.user.profile.avatar,
+        website: vm.user.profile.website,
+        country: vm.user.profile.country,
+        city: vm.user.profile.city,
+        state: vm.user.profile.state,
+        street: vm.user.profile.street,
+        university: vm.user.profile.university,
+        degree: vm.user.profile.degree,
+        study_type: vm.user.profile.study_type
       }, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
@@ -6211,12 +6209,12 @@ __webpack_require__.r(__webpack_exports__);
         start: vm.start,
         end: vm.end,
         position: vm.position,
-        profile_id: vm.profile_id
+        user_id: vm.user_id
       }, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        vm.profile.experiences.push(response.data.data);
+        vm.user.experiences.push(response.data.data);
         vm.clearData();
         vm.$notify({
           title: "نجاح",
@@ -6240,17 +6238,17 @@ __webpack_require__.r(__webpack_exports__);
       var vm = this;
       axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/skills", {
         name: this.skill_name,
-        profile_id: vm.profile_id
+        user_id: vm.user_id
       }, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        var skillExist = vm.profile.skills.find(function (el) {
+        var skillExist = vm.user.skills.find(function (el) {
           return el.name == response.data.data.name;
         });
 
         if (!skillExist) {
-          vm.profile.skills.push(response.data.data);
+          vm.user.skills.push(response.data.data);
           vm.skill_name = "";
           vm.$notify({
             title: "نجاح",
@@ -6288,13 +6286,13 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error.response);
       });
     },
-    getProfileInfo: function getProfileInfo() {
+    getUserInfo: function getUserInfo() {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + vm.profile_id + "", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/users/" + vm.user_id + "", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        vm.profile = response.data.data;
+        vm.user = response.data.data;
       })["catch"](function (error) {
         console.log(error.response);
       });
@@ -6309,16 +6307,16 @@ __webpack_require__.r(__webpack_exports__);
       diff = end.getDate() - start.getDate();
       if (diff > 0) return diff + " يوم";
     },
-    deleteSkill: function deleteSkill(profileId, skillId) {
+    deleteSkill: function deleteSkill(skillId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/skills/" + skillId + "/profiles/" + profileId, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/skills/" + skillId + "/detach", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        var index = vm.profile.skills.findIndex(function (el) {
+        var index = vm.user.skills.findIndex(function (el) {
           return el.id == skillId;
         });
-        vm.profile.skills.splice(index, 1);
+        vm.user.skills.splice(index, 1);
         vm.$notify({
           title: "نجاح",
           text: "تم حذف المهارة بنجاح",
@@ -6343,10 +6341,10 @@ __webpack_require__.r(__webpack_exports__);
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        var index = vm.profile.experiences.findIndex(function (el) {
+        var index = vm.user.experiences.findIndex(function (el) {
           return el.id == experienceId;
         });
-        vm.profile.experiences.splice(index, 1);
+        vm.user.experiences.splice(index, 1);
         vm.$notify({
           title: "نجاح",
           text: "تم حذف الخبرة بنجاح",
@@ -6367,13 +6365,13 @@ __webpack_require__.r(__webpack_exports__);
     },
     editExperience: function editExperience(experienceId) {
       var vm = this;
-      var expIndex = vm.profile.experiences.findIndex(function (el) {
+      var expIndex = vm.user.experiences.findIndex(function (el) {
         return el.id == experienceId;
       });
-      vm.company_name = vm.profile.experiences[expIndex].company_name;
-      vm.start = vm.profile.experiences[expIndex].start;
-      vm.end = vm.profile.experiences[expIndex].end;
-      vm.position = vm.profile.experiences[expIndex].position;
+      vm.company_name = vm.user.experiences[expIndex].company_name;
+      vm.start = vm.user.experiences[expIndex].start;
+      vm.end = vm.user.experiences[expIndex].end;
+      vm.position = vm.user.experiences[expIndex].position;
     },
     updateExperience: function updateExperience(experienceId) {
       var vm = this;
@@ -6382,18 +6380,18 @@ __webpack_require__.r(__webpack_exports__);
         start: vm.start,
         end: vm.end,
         position: vm.position,
-        profile_id: vm.profile_id
+        user_id: vm.user_id
       }, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        var expIndex = vm.profile.experiences.findIndex(function (el) {
+        var expIndex = vm.user.experiences.findIndex(function (el) {
           return el.id == experienceId;
         });
-        vm.profile.experiences[expIndex].company_name = vm.company_name;
-        vm.profile.experiences[expIndex].start = vm.start;
-        vm.profile.experiences[expIndex].end = vm.end;
-        vm.profile.experiences[expIndex].position = vm.position;
+        vm.user.experiences[expIndex].company_name = vm.company_name;
+        vm.user.experiences[expIndex].start = vm.start;
+        vm.user.experiences[expIndex].end = vm.end;
+        vm.user.experiences[expIndex].position = vm.position;
         vm.$notify({
           title: "نجاح",
           text: "تم تعديل الخبرة بنجاح",
@@ -6419,10 +6417,10 @@ __webpack_require__.r(__webpack_exports__);
       this.position = "";
       this.skill_name = "";
     },
-    getProfilePosts: function getProfilePosts() {
+    getUserPosts: function getUserPosts() {
       var pageNumber = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + vm.$route.params.id + "/posts?page=" + pageNumber, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/users/" + vm.$route.params.id + "/posts?page=" + pageNumber, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -6448,9 +6446,9 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   created: function created() {
-    this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
-    this.getProfileInfo();
-    this.getProfilePosts();
+    this.user_id = JSON.parse(localStorage.getItem("user")).id;
+    this.getUserInfo();
+    this.getUserPosts();
   }
 });
 
@@ -6482,39 +6480,39 @@ __webpack_require__.r(__webpack_exports__);
       skill_name: "",
       start: "",
       end: "",
-      profile: {},
+      user: {
+        profile: {}
+      },
       position: "",
       company_name: "",
       followed: false,
       phone: "",
       posts: {},
-      profile_id: 0,
+      user_id: 0,
       connection_request: null,
       loaded: false
     };
   },
   methods: {
-    getProfileInfo: function getProfileInfo() {
+    getUserInfo: function getUserInfo() {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + vm.$route.params.id + "", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/users/" + vm.$route.params.id + "", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        vm.profile = response.data.data;
+        vm.user = response.data.data;
       })["catch"](function (error) {
         console.log(error.response);
       });
     },
-    followProfile: function followProfile(profileId, targetProfileId) {
+    followUser: function followUser(targetUserId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/profiles/" + profileId + "/follows", {
-        profile_id: targetProfileId
-      }, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/users/auth/follows/" + targetUserId + "", {}, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
         vm.followed = true;
-        vm.profile.followersCount += 1;
+        vm.user.profile.followersCount += 1;
         vm.$notify({
           title: "نجاح",
           text: response.data.message,
@@ -6533,14 +6531,14 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    unFollowProfile: function unFollowProfile(profileId, targetProfileId) {
+    unFollowUser: function unFollowUser(userId, targetUserId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/profiles/" + profileId + "/profiles/" + targetProfileId + "/follows", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/users/" + userId + "/unfollows/" + targetUserId + {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
         vm.followed = false;
-        vm.profile.followersCount -= 1;
+        vm.user.profile.followersCount -= 1;
         vm.$notify({
           title: "نجاح",
           text: response.data.message,
@@ -6559,9 +6557,9 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    isFollowed: function isFollowed(profileId, targetProfileId) {
+    isFollowed: function isFollowed(userId, targetUserId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + profileId + "/profiles/" + targetProfileId + "/is-followed", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/users/" + userId + "/users/" + targetUserId + "/is-followed", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -6580,10 +6578,10 @@ __webpack_require__.r(__webpack_exports__);
       diff = end.getDate() - start.getDate();
       if (diff > 0) return diff + " يوم";
     },
-    getProfilePosts: function getProfilePosts() {
+    getUserPosts: function getUserPosts() {
       var pageNumber = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + vm.$route.params.id + "/posts?page=" + pageNumber, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/users/" + vm.$route.params.id + "/posts?page=" + pageNumber, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -6600,11 +6598,9 @@ __webpack_require__.r(__webpack_exports__);
 
       return avatar;
     },
-    addConnection: function addConnection(profileId, targetProfileId) {
+    addConnection: function addConnection(targetUserId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/profiles/" + profileId + "/connections/request", {
-        target_profile_id: targetProfileId
-      }, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/auth/connections/request/" + targetUserId + "", {}, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -6627,9 +6623,9 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    removeConnection: function removeConnection(profileId, targetProfileId) {
+    removeConnection: function removeConnection(targetUserId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/profiles/" + profileId + "/profiles/" + targetProfileId + "/connections/remove", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/users/auth/connections/remove/" + targetUserId + "", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -6652,9 +6648,9 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    connectionStatus: function connectionStatus(profileId, targetProfileId) {
+    connectionStatus: function connectionStatus(targetUserId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + profileId + "/profiles/" + targetProfileId + "/connection-status", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/users/auth/connection-status/" + targetUserId + "", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -6666,11 +6662,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {},
   created: function created() {
-    this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
-    this.getProfileInfo();
-    this.getProfilePosts();
-    this.isFollowed(this.profile_id, this.$route.params.id);
-    this.connectionStatus(this.profile_id, this.$route.params.id);
+    this.user_id = JSON.parse(localStorage.getItem("user")).id;
+    this.getUserInfo();
+    this.getUserPosts();
+    this.isFollowed(this.user_id, this.$route.params.id);
+    this.connectionStatus(this.$route.params.id);
   },
   mounted: function mounted() {
     var vm = this;
@@ -6921,7 +6917,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      profile_id: 0,
+      user_id: 0,
       posts: {},
       loaded: false
     };
@@ -6930,7 +6926,7 @@ __webpack_require__.r(__webpack_exports__);
     getPosts: function getPosts() {
       var pageNumber = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + this.profile_id + "/feedback/posts?page=" + pageNumber, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/users/" + this.user_id + "/feedback/posts?page=" + pageNumber, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -6942,7 +6938,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
-    this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
+    this.user_id = JSON.parse(localStorage.getItem("user")).id;
     this.getPosts();
   },
   mounted: function mounted() {
@@ -8249,7 +8245,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      myProfileId: 0
+      myUserId: 0
     };
   },
   methods: {},
@@ -8258,8 +8254,7 @@ __webpack_require__.r(__webpack_exports__);
     MyProfile: _components_profile_MyProfile_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
   created: function created() {
-    var profileId = JSON.parse(localStorage.getItem("user")).profile_id;
-    this.myProfileId = profileId;
+    this.myUserId = JSON.parse(localStorage.getItem("user")).id;
   }
 });
 
@@ -8837,7 +8832,7 @@ var render = function render() {
       to: {
         name: "profile",
         params: {
-          id: _vm.profile_id
+          id: _vm.user_id
         }
       }
     }
@@ -8859,7 +8854,7 @@ var render = function render() {
     staticClass: "nav-item",
     on: {
       click: function click($event) {
-        return _vm.readAllNotifications(_vm.profile_id);
+        return _vm.readAllNotifications(_vm.user_id);
       }
     }
   }, [_c("router-link", {
@@ -9118,21 +9113,21 @@ var render = function render() {
     }, [_c("img", {
       staticClass: "rounded-circle",
       attrs: {
-        src: _vm.previewAvatar(post.profile.avatar),
+        src: _vm.previewAvatar(post.user.profile.avatar),
         width: "50"
       },
       on: {
         click: function click($event) {
-          return _vm.goToProfile(post.profile.id);
+          return _vm.goToProfile(post.user.id);
         }
       }
     }), _vm._v(" "), _c("div", {
       staticClass: "d-flex flex-column ml-2"
     }, [_c("span", {
       staticClass: "text-break name"
-    }, [_vm._v(_vm._s(post.profile.firstname) + "\n                                " + _vm._s(post.profile.lastname))]), _vm._v(" "), _c("small", {
+    }, [_vm._v(_vm._s(post.user.profile.firstname) + "\n                                " + _vm._s(post.user.profile.lastname))]), _vm._v(" "), _c("small", {
       staticClass: "mr-2 date"
-    }, [_vm._v(_vm._s(post.created_at_diff_for_humans))])])]), _vm._v(" "), post.profile_id == _vm.profile_id ? _c("div", {
+    }, [_vm._v(_vm._s(post.created_at_diff_for_humans))])])]), _vm._v(" "), post.user_id == _vm.user_id ? _c("div", {
       staticClass: "d-flex flex-row mt-1 gap-2"
     }, [_c("modal-snippet", {
       attrs: {
@@ -9239,28 +9234,28 @@ var render = function render() {
       staticClass: "fa-solid fa-thumbs-up text-primary",
       on: {
         click: function click($event) {
-          return _vm.removeReactFromPost(_vm.profile_id, post.id, 1);
+          return _vm.removeReactFromPost(_vm.user_id, post.id, 1);
         }
       }
     }) : _c("i", {
       staticClass: "fa-solid fa-thumbs-up",
       on: {
         click: function click($event) {
-          return _vm.reactToPost(_vm.profile_id, post.id, 1);
+          return _vm.reactToPost(_vm.user_id, post.id, 1);
         }
       }
     }), _vm._v(" "), _c("span", [_vm._v("\n                                " + _vm._s(_vm._f("toNumber")(post.likes_count)) + "\n                            ")]), _vm._v(" "), post.react_type == 2 ? _c("i", {
       staticClass: "fa-solid fa-thumbs-down text-primary",
       on: {
         click: function click($event) {
-          return _vm.removeReactFromPost(_vm.profile_id, post.id, 2);
+          return _vm.removeReactFromPost(_vm.user_id, post.id, 2);
         }
       }
     }) : _c("i", {
       staticClass: "fa-solid fa-thumbs-down",
       on: {
         click: function click($event) {
-          return _vm.reactToPost(_vm.profile_id, post.id, 2);
+          return _vm.reactToPost(_vm.user_id, post.id, 2);
         }
       }
     }), _vm._v(" "), _c("span", [_vm._v("\n                                " + _vm._s(_vm._f("toNumber")(post.dislikes_count)) + "\n                            ")])]), _vm._v(" "), _c("div", {
@@ -9342,21 +9337,21 @@ var render = function render() {
     }
   }), _c("span", {
     staticClass: "font-weight-bold text-break"
-  }, [_vm._v(_vm._s(_vm.profile.firstname) + "\n                        " + _vm._s(_vm.profile.lastname))]), _vm._v(" "), _vm.profile.nickname ? _c("span", {
+  }, [_vm._v(_vm._s(_vm.user.profile.firstname) + "\n                        " + _vm._s(_vm.user.profile.lastname))]), _vm._v(" "), _vm.user.profile.nickname ? _c("span", {
     staticClass: "font-weight-bold text-break"
-  }, [_vm._v("(" + _vm._s(_vm.profile.nickname) + ")")]) : _vm._e(), _vm._v(" "), _c("span", [_c("router-link", {
+  }, [_vm._v("(" + _vm._s(_vm.user.profile.nickname) + ")")]) : _vm._e(), _vm._v(" "), _c("span", [_c("router-link", {
     staticClass: "btn btn-warning",
     attrs: {
       to: {
         name: "profile.edit",
         params: {
-          id: _vm.profile_id
+          id: _vm.user_id
         }
       }
     }
   }, [_vm._v("تعديل الملف الشخصي")])], 1), _vm._v(" "), _c("span", {
     staticClass: "text-black-50"
-  }, [_vm._v(_vm._s(_vm.profile.email))]), _c("span", [_vm._v(_vm._s(_vm._f("toNumber")(_vm.profile.followers_count)) + "\n                        مُتَابَع\n                    ")]), _vm._v(" "), _c("span", [_vm._v(_vm._s(_vm._f("toNumber")(_vm.profile.followings_count)) + "\n                        يتابع\n                    ")])]), _vm._v(" "), _c("div", {
+  }, [_vm._v(_vm._s(_vm.user.email))]), _c("span", [_vm._v(_vm._s(_vm._f("toNumber")(_vm.user.followers_count)) + "\n                        مُتَابَع\n                    ")]), _vm._v(" "), _c("span", [_vm._v(_vm._s(_vm._f("toNumber")(_vm.user.followings_count)) + "\n                        يتابع\n                    ")])]), _vm._v(" "), _c("div", {
     staticClass: "mar-1"
   }, [_c("label", {
     staticClass: "form-label",
@@ -9367,8 +9362,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.profile.about,
-      expression: "profile.about"
+      value: _vm.user.profile.about,
+      expression: "user.profile.about"
     }],
     staticClass: "form-control",
     attrs: {
@@ -9380,13 +9375,13 @@ var render = function render() {
       placeholder: "عني"
     },
     domProps: {
-      value: _vm.profile.about
+      value: _vm.user.profile.about
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
 
-        _vm.$set(_vm.profile, "about", $event.target.value);
+        _vm.$set(_vm.user.profile, "about", $event.target.value);
       }
     }
   })])]), _vm._v(" "), _c("div", {
@@ -9399,7 +9394,7 @@ var render = function render() {
     }
   }), _vm._v(" "), _c("view-posts", {
     attrs: {
-      onPageClick: _vm.getProfilePosts,
+      onPageClick: _vm.getUserPosts,
       posts: _vm.posts
     }
   })], 1)]), _vm._v(" "), _c("div", {
@@ -9536,7 +9531,7 @@ var render = function render() {
     attrs: {
       id: "accordionExample"
     }
-  }, _vm._l(_vm.profile.experiences, function (exp, i) {
+  }, _vm._l(_vm.user.experiences, function (exp, i) {
     return _c("div", {
       key: i,
       staticClass: "accordion-item"
@@ -9802,7 +9797,7 @@ var render = function render() {
     });
   }), 0)])])], 1), _vm._v(" "), _c("ul", {
     staticClass: "list-group list"
-  }, _vm._l(_vm.profile.skills, function (skill, i) {
+  }, _vm._l(_vm.user.skills, function (skill, i) {
     return _c("li", {
       key: i,
       staticClass: "text-center list-group-item"
@@ -9819,7 +9814,7 @@ var render = function render() {
       },
       on: {
         confirmEvent: function confirmEvent($event) {
-          return _vm.deleteSkill(_vm.profile_id, skill.id);
+          return _vm.deleteSkill(skill.id);
         }
       }
     }, [_vm._v("\n                                    هل أنت متأكد من حذف " + _vm._s(skill.name) + "?\n                                ")])], 1);
@@ -9874,17 +9869,17 @@ var render = function render() {
     staticClass: "rounded-circle mt-5",
     attrs: {
       width: "150px",
-      src: _vm.previewAvatar(_vm.profile.avatar)
+      src: _vm.previewAvatar(_vm.user.profile.avatar)
     }
   }), _c("span", {
     staticClass: "font-weight-bold text-break"
-  }, [_vm._v(_vm._s(_vm.profile.firstname) + "\n                        " + _vm._s(_vm.profile.lastname))]), _vm._v(" "), _c("span", {
+  }, [_vm._v(_vm._s(_vm.user.profile.firstname) + "\n                        " + _vm._s(_vm.user.profile.lastname))]), _vm._v(" "), _c("span", {
     staticClass: "text-black-50 text-break"
-  }, [_vm._v(_vm._s(_vm.profile.nickname))]), _vm._v(" "), _vm.connection_request == false ? _c("span", {
+  }, [_vm._v(_vm._s(_vm.user.profile.nickname))]), _vm._v(" "), _vm.connection_request == false ? _c("span", {
     staticClass: "btn btn-warning",
     on: {
       click: function click($event) {
-        return _vm.removeConnection(_vm.profile_id, _vm.$route.params.id);
+        return _vm.removeConnection(_vm.$route.params.id);
       }
     }
   }, [_vm._v("في إنتظار القبول\n                        "), _c("i", {
@@ -9893,7 +9888,7 @@ var render = function render() {
     staticClass: "btn btn-danger",
     on: {
       click: function click($event) {
-        return _vm.removeConnection(_vm.profile_id, _vm.$route.params.id);
+        return _vm.removeConnection(_vm.$route.params.id);
       }
     }
   }, [_vm._v("إلغاء الأتصال"), _c("i", {
@@ -9902,7 +9897,7 @@ var render = function render() {
     staticClass: "btn btn-success",
     on: {
       click: function click($event) {
-        return _vm.addConnection(_vm.profile_id, _vm.$route.params.id);
+        return _vm.addConnection(_vm.$route.params.id);
       }
     }
   }, [_vm._v("إتصال "), _c("i", {
@@ -9911,7 +9906,7 @@ var render = function render() {
     staticClass: "btn btn-primary mar-1",
     on: {
       click: function click($event) {
-        return _vm.followProfile(_vm.profile_id, _vm.$route.params.id);
+        return _vm.followUser(_vm.$route.params.id);
       }
     }
   }, [_vm._v("متابعة "), _c("i", {
@@ -9920,17 +9915,17 @@ var render = function render() {
     staticClass: "btn btn-danger mar-1",
     on: {
       click: function click($event) {
-        return _vm.unFollowProfile(_vm.profile_id, _vm.$route.params.id);
+        return _vm.unFollowUser(_vm.$route.params.id);
       }
     }
   }, [_vm._v("الغاء متابعة "), _c("i", {
     staticClass: "fa-solid fa-minus"
-  })]), _vm._v(" "), _c("span", [_vm._v(_vm._s(_vm._f("toNumber")(_vm.profile.followers_count)) + " مُتَابَع\n                    ")]), _vm._v(" "), _c("span", [_vm._v(_vm._s(_vm._f("toNumber")(_vm.profile.followings_count)) + "\n                        يتابع\n                    ")])]), _vm._v(" "), _c("div", [_c("span", [_vm._v("حول")]), _vm._v(" "), _c("textarea", {
+  })]), _vm._v(" "), _c("span", [_vm._v(_vm._s(_vm._f("toNumber")(_vm.user.followers_count)) + "\n                        مُتَابَع\n                    ")]), _vm._v(" "), _c("span", [_vm._v(_vm._s(_vm._f("toNumber")(_vm.user.followings_count)) + "\n                        يتابع\n                    ")])]), _vm._v(" "), _c("div", [_c("span", [_vm._v("حول")]), _vm._v(" "), _c("textarea", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.profile.about,
-      expression: "profile.about"
+      value: _vm.user.profile.about,
+      expression: "user.profile.about"
     }],
     staticClass: "form-control",
     attrs: {
@@ -9939,13 +9934,13 @@ var render = function render() {
       readonly: ""
     },
     domProps: {
-      value: _vm.profile.about
+      value: _vm.user.profile.about
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
 
-        _vm.$set(_vm.profile, "about", $event.target.value);
+        _vm.$set(_vm.user.profile, "about", $event.target.value);
       }
     }
   })])]), _vm._v(" "), _c("div", {
@@ -9958,35 +9953,35 @@ var render = function render() {
     staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("النوع:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.profile.gender) + "\n                            ")])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("النوع:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.user.profile.gender) + "\n                            ")])]), _vm._v(" "), _c("div", {
     staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("تاريخ الميلاد:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.profile.birthdate) + "\n                            ")])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("تاريخ الميلاد:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.user.profile.birthdate) + "\n                            ")])]), _vm._v(" "), _c("div", {
     staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("الدولة:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.profile.country) + "\n                            ")])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("الدولة:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.user.profile.country) + "\n                            ")])]), _vm._v(" "), _c("div", {
     staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("الولاية:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.profile.state) + "\n                            ")])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("الولاية:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.user.profile.state) + "\n                            ")])]), _vm._v(" "), _c("div", {
     staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("المدينة:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.profile.city) + "\n                            ")])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("المدينة:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.user.profile.city) + "\n                            ")])]), _vm._v(" "), _c("div", {
     staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("الشارع:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.profile.street) + "\n                            ")])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("الشارع:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.user.profile.street) + "\n                            ")])]), _vm._v(" "), _c("div", {
     staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("الموقع الإلكتروني:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.profile.website) + "\n                            ")])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("الموقع الإلكتروني:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                " + _vm._s(_vm.user.profile.website) + "\n                            ")])]), _vm._v(" "), _c("div", {
     staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("ارقام الهواتف:")]), _vm._v(" "), _vm._l(_vm.profile.phones, function (phone, i) {
+  }, [_vm._v("ارقام الهواتف:")]), _vm._v(" "), _vm._l(_vm.user.phones, function (phone, i) {
     return _c("div", {
       key: i
     }, [_vm._v("\n                                " + _vm._s(phone.phone) + "\n                            ")]);
@@ -9996,19 +9991,19 @@ var render = function render() {
     staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("الجامعة:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                    " + _vm._s(_vm.profile.university) + "\n                                ")])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("الجامعة:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                    " + _vm._s(_vm.user.profile.university) + "\n                                ")])]), _vm._v(" "), _c("div", {
     staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("الدرجة العلمية:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                    " + _vm._s(_vm.profile.degree) + "\n                                ")])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("الدرجة العلمية:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                    " + _vm._s(_vm.user.profile.degree) + "\n                                ")])]), _vm._v(" "), _c("div", {
     staticClass: "col-md-6"
   }, [_c("label", {
     staticClass: "labels"
-  }, [_vm._v("نوع التخصص:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                    " + _vm._s(_vm.profile.study_type) + "\n                                ")])])])])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("نوع التخصص:")]), _vm._v(" "), _c("div", {}, [_vm._v("\n                                    " + _vm._s(_vm.user.profile.study_type) + "\n                                ")])])])])]), _vm._v(" "), _c("div", {
     staticClass: "p-3 py-0"
-  }, [_c("h4", [_vm._v("\n                        منشورات " + _vm._s(_vm.profile.firstname) + "\n                        " + _vm._s(_vm.profile.nickname) + "\n                    ")]), _vm._v(" "), _c("view-posts", {
+  }, [_c("h4", [_vm._v("\n                        منشورات " + _vm._s(_vm.user.profile.firstname) + "\n                        " + _vm._s(_vm.user.profile.nickname) + "\n                    ")]), _vm._v(" "), _c("view-posts", {
     attrs: {
-      onPageClick: _vm.getProfilePosts,
+      onPageClick: _vm.getUserPosts,
       posts: _vm.posts
     }
   })], 1)]), _vm._v(" "), _c("div", {
@@ -10020,7 +10015,7 @@ var render = function render() {
     attrs: {
       id: "accordionExample"
     }
-  }, _vm._l(_vm.profile.experiences, function (exp, i) {
+  }, _vm._l(_vm.user.experiences, function (exp, i) {
     return _c("div", {
       key: i,
       staticClass: "accordion-item"
@@ -10086,7 +10081,7 @@ var render = function render() {
     staticClass: "p-3 py-5"
   }, [_vm._m(3), _vm._v(" "), _c("ul", {
     staticClass: "list-group list"
-  }, _vm._l(_vm.profile.skills, function (skill, i) {
+  }, _vm._l(_vm.user.skills, function (skill, i) {
     return _c("li", {
       key: i,
       staticClass: "text-center list-group-item"
@@ -12115,7 +12110,7 @@ var render = function render() {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _c("div", [_vm.myProfileId == _vm.$route.params.id ? _c("div", [_c("my-profile")], 1) : _c("div", [_c("other-profiles")], 1)]);
+  return _c("div", [_vm.myUserId == _vm.$route.params.id ? _c("div", [_c("my-profile")], 1) : _c("div", [_c("other-profiles")], 1)]);
 };
 
 var staticRenderFns = [];

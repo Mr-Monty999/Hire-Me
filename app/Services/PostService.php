@@ -12,6 +12,21 @@ use Gate;
  */
 class PostService
 {
+    public static function store($request, $userId)
+    {
+
+        $data = $request->all();
+        $data["user_id"] = $userId;
+        if ($request->file("photo") != null)
+            $data["photo"] = FileUploadService::uploadImage($request->file("photo"), "/images/posts");
+
+        $post = Post::create($data);
+        $data["post_id"] = $post->id;
+        NotificationService::sendCreatePostNotification($data);
+        $post = self::getPost($post->id, Auth::user()->id);
+
+        return $post;
+    }
 
     public static function update($request, $post)
     {
@@ -40,8 +55,9 @@ class PostService
 
 
         $posts = Post::with([
-            "comments.replies",
-            "reacts" => function ($q) {
+            "comments.replies" => function ($q) {
+                $q->latest()->paginate(5);
+            },            "reacts" => function ($q) {
                 $q->latest()->paginate(5);
             },
             "tags",
@@ -67,7 +83,9 @@ class PostService
 
         $post = Post::with(
             [
-                "comments.replies",
+                "comments.replies" => function ($q) {
+                    $q->latest()->paginate(5);
+                },
                 "reacts" => function ($q) {
                     $q->latest()->paginate(5);
                 },
@@ -91,13 +109,13 @@ class PostService
 
         return $post;
     }
-    public static function react($request, $postId)
+    public static function react($data, $postId)
     {
         $post = Post::findOrFail($postId);
         $post->reacts()->syncWithoutDetaching([
-            $request->user_id => ["type" => $request->type]
+            $data["user_id"] => ["type" => $data["type"]]
         ]);
-        $reacted = $post->reacts()->wherePivot("user_id", "=", $request->user_id)->first();
+        $reacted = $post->reacts()->wherePivot("user_id", "=", $data["user_id"])->first();
         return $reacted;
     }
     public static function unReact($postId, $userId)

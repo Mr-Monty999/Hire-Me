@@ -10,57 +10,52 @@
                         <img
                             class="rounded-circle mt-5"
                             width="150px"
-                            :src="previewAvatar(profile.avatar)"
+                            :src="previewAvatar(user.profile.avatar)"
                         /><span class="font-weight-bold text-break"
-                            >{{ profile.firstname }}
-                            {{ profile.lastname }}</span
+                            >{{ user.profile.firstname }}
+                            {{ user.profile.lastname }}</span
                         >
                         <span class="text-black-50 text-break">{{
-                            profile.nickname
+                            user.profile.nickname
                         }}</span>
 
                         <span
                             class="btn btn-warning"
                             v-if="connection_request == false"
-                            @click="
-                                removeConnection(profile_id, $route.params.id)
-                            "
+                            @click="removeConnection($route.params.id)"
                             >في إنتظار القبول
                             <i class="fa-solid fa-user-plus"></i
                         ></span>
                         <span
                             class="btn btn-danger"
                             v-else-if="connection_request == true"
-                            @click="
-                                removeConnection(profile_id, $route.params.id)
-                            "
+                            @click="removeConnection($route.params.id)"
                             >إلغاء الأتصال<i class="fa-solid fa-minus"></i
                         ></span>
                         <span
                             class="btn btn-success"
                             v-else
-                            @click="addConnection(profile_id, $route.params.id)"
+                            @click="addConnection($route.params.id)"
                             >إتصال <i class="fa-solid fa-user-plus"></i
                         ></span>
                         <span
                             class="btn btn-primary mar-1"
                             v-if="!followed"
-                            @click="followProfile(profile_id, $route.params.id)"
+                            @click="followUser($route.params.id)"
                             >متابعة <i class="fa-solid fa-plus"></i
                         ></span>
                         <span
                             class="btn btn-danger mar-1"
                             v-else
-                            @click="
-                                unFollowProfile(profile_id, $route.params.id)
-                            "
+                            @click="unFollowUser($route.params.id)"
                             >الغاء متابعة <i class="fa-solid fa-minus"></i
                         ></span>
                         <span
-                            >{{ profile.followers_count | toNumber }} مُتَابَع
+                            >{{ user.followers_count | toNumber }}
+                            مُتَابَع
                         </span>
                         <span
-                            >{{ profile.followings_count | toNumber }}
+                            >{{ user.followings_count | toNumber }}
                             يتابع
                         </span>
                     </div>
@@ -71,7 +66,7 @@
                             type="text"
                             aria-label="readonly input example"
                             readonly
-                            v-model="profile.about"
+                            v-model="user.profile.about"
                         >
                         </textarea>
                     </div>
@@ -88,50 +83,50 @@
                             <div class="col-md-6">
                                 <label class="labels">النوع:</label>
                                 <div class="">
-                                    {{ profile.gender }}
+                                    {{ user.profile.gender }}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">تاريخ الميلاد:</label>
                                 <div class="">
-                                    {{ profile.birthdate }}
+                                    {{ user.profile.birthdate }}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">الدولة:</label>
                                 <div class="">
-                                    {{ profile.country }}
+                                    {{ user.profile.country }}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">الولاية:</label>
                                 <div class="">
-                                    {{ profile.state }}
+                                    {{ user.profile.state }}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">المدينة:</label>
                                 <div class="">
-                                    {{ profile.city }}
+                                    {{ user.profile.city }}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">الشارع:</label>
                                 <div class="">
-                                    {{ profile.street }}
+                                    {{ user.profile.street }}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">الموقع الإلكتروني:</label>
                                 <div class="">
-                                    {{ profile.website }}
+                                    {{ user.profile.website }}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="labels">ارقام الهواتف:</label>
                                 <div
                                     class=""
-                                    v-for="(phone, i) in profile.phones"
+                                    v-for="(phone, i) in user.phones"
                                     :key="i"
                                 >
                                     {{ phone.phone }}
@@ -146,7 +141,7 @@
                                 <div class="col-md-6">
                                     <label class="labels">الجامعة:</label>
                                     <div class="">
-                                        {{ profile.university }}
+                                        {{ user.profile.university }}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -154,13 +149,13 @@
                                         >الدرجة العلمية:</label
                                     >
                                     <div class="">
-                                        {{ profile.degree }}
+                                        {{ user.profile.degree }}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="labels">نوع التخصص:</label>
                                     <div class="">
-                                        {{ profile.study_type }}
+                                        {{ user.profile.study_type }}
                                     </div>
                                 </div>
                             </div>
@@ -168,11 +163,11 @@
                     </div>
                     <div class="p-3 py-0">
                         <h4>
-                            منشورات {{ profile.firstname }}
-                            {{ profile.nickname }}
+                            منشورات {{ user.profile.firstname }}
+                            {{ user.profile.nickname }}
                         </h4>
                         <view-posts
-                            :onPageClick="getProfilePosts"
+                            :onPageClick="getUserPosts"
                             :posts="posts"
                         ></view-posts>
                     </div>
@@ -187,7 +182,7 @@
                         <!-- <br /> -->
                         <div class="accordion" id="accordionExample">
                             <div
-                                v-for="(exp, i) in profile.experiences"
+                                v-for="(exp, i) in user.experiences"
                                 :key="i"
                                 class="accordion-item"
                             >
@@ -283,7 +278,7 @@
                             <ul class="list-group list">
                                 <li
                                     class="text-center list-group-item"
-                                    v-for="(skill, i) in profile.skills"
+                                    v-for="(skill, i) in user.skills"
                                     :key="i"
                                 >
                                     {{ skill.name }}
@@ -309,42 +304,42 @@ export default {
             skill_name: "",
             start: "",
             end: "",
-            profile: {},
+            user: {
+                profile: {},
+            },
             position: "",
             company_name: "",
             followed: false,
             phone: "",
             posts: {},
-            profile_id: 0,
+            user_id: 0,
             connection_request: null,
             loaded: false,
         };
     },
     methods: {
-        getProfileInfo() {
+        getUserInfo() {
             var vm = this;
 
             axios
-                .get("/api/profiles/" + vm.$route.params.id + "", {
+                .get("/api/users/" + vm.$route.params.id + "", {
                     headers: headerAuth,
                 })
                 .then(function (response) {
                     console.log(response);
-                    vm.profile = response.data.data;
+                    vm.user = response.data.data;
                 })
                 .catch(function (error) {
                     console.log(error.response);
                 });
         },
-        followProfile(profileId, targetProfileId) {
+        followUser(targetUserId) {
             var vm = this;
 
             axios
                 .post(
-                    "/api/profiles/" + profileId + "/follows",
-                    {
-                        profile_id: targetProfileId,
-                    },
+                    "/api/users/auth/follows/" + targetUserId + "",
+                    {},
                     {
                         headers: headerAuth,
                     }
@@ -352,7 +347,7 @@ export default {
                 .then(function (response) {
                     console.log(response);
                     vm.followed = true;
-                    vm.profile.followersCount += 1;
+                    vm.user.profile.followersCount += 1;
                     vm.$notify({
                         title: "نجاح",
                         text: response.data.message,
@@ -371,24 +366,23 @@ export default {
                     }
                 });
         },
-        unFollowProfile(profileId, targetProfileId) {
+        unFollowUser(userId, targetUserId) {
             var vm = this;
 
             axios
                 .delete(
-                    "/api/profiles/" +
-                        profileId +
-                        "/profiles/" +
-                        targetProfileId +
-                        "/follows",
-                    {
-                        headers: headerAuth,
-                    }
+                    "/api/users/" +
+                        userId +
+                        "/unfollows/" +
+                        targetUserId +
+                        {
+                            headers: headerAuth,
+                        }
                 )
                 .then(function (response) {
                     console.log(response);
                     vm.followed = false;
-                    vm.profile.followersCount -= 1;
+                    vm.user.profile.followersCount -= 1;
                     vm.$notify({
                         title: "نجاح",
                         text: response.data.message,
@@ -407,15 +401,15 @@ export default {
                     }
                 });
         },
-        isFollowed(profileId, targetProfileId) {
+        isFollowed(userId, targetUserId) {
             var vm = this;
 
             axios
                 .get(
-                    "/api/profiles/" +
-                        profileId +
-                        "/profiles/" +
-                        targetProfileId +
+                    "/api/users/" +
+                        userId +
+                        "/users/" +
+                        targetUserId +
                         "/is-followed",
                     {
                         headers: headerAuth,
@@ -445,12 +439,12 @@ export default {
 
             if (diff > 0) return diff + " يوم";
         },
-        getProfilePosts(pageNumber = 1) {
+        getUserPosts(pageNumber = 1) {
             var vm = this;
 
             axios
                 .get(
-                    "/api/profiles/" +
+                    "/api/users/" +
                         vm.$route.params.id +
                         "/posts?page=" +
                         pageNumber,
@@ -475,14 +469,12 @@ export default {
             return avatar;
         },
 
-        addConnection(profileId, targetProfileId) {
+        addConnection(targetUserId) {
             var vm = this;
             axios
                 .post(
-                    "/api/profiles/" + profileId + "/connections/request",
-                    {
-                        target_profile_id: targetProfileId,
-                    },
+                    "/api/auth/connections/request/" + targetUserId + "",
+                    {},
                     {
                         headers: headerAuth,
                     }
@@ -509,15 +501,11 @@ export default {
                 });
         },
 
-        removeConnection(profileId, targetProfileId) {
+        removeConnection(targetUserId) {
             var vm = this;
             axios
                 .delete(
-                    "/api/profiles/" +
-                        profileId +
-                        "/profiles/" +
-                        targetProfileId +
-                        "/connections/remove",
+                    "/api/users/auth/connections/remove/" + targetUserId + "",
                     {
                         headers: headerAuth,
                     }
@@ -543,20 +531,13 @@ export default {
                     }
                 });
         },
-        connectionStatus(profileId, targetProfileId) {
+        connectionStatus(targetUserId) {
             var vm = this;
 
             axios
-                .get(
-                    "/api/profiles/" +
-                        profileId +
-                        "/profiles/" +
-                        targetProfileId +
-                        "/connection-status",
-                    {
-                        headers: headerAuth,
-                    }
-                )
+                .get("/api/users/auth/connection-status/" + targetUserId + "", {
+                    headers: headerAuth,
+                })
                 .then(function (response) {
                     console.log(response);
 
@@ -569,11 +550,11 @@ export default {
     },
     computed: {},
     created() {
-        this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
-        this.getProfileInfo();
-        this.getProfilePosts();
-        this.isFollowed(this.profile_id, this.$route.params.id);
-        this.connectionStatus(this.profile_id, this.$route.params.id);
+        this.user_id = JSON.parse(localStorage.getItem("user")).id;
+        this.getUserInfo();
+        this.getUserPosts();
+        this.isFollowed(this.user_id, this.$route.params.id);
+        this.connectionStatus(this.$route.params.id);
     },
     mounted: function () {
         let vm = this;

@@ -53,7 +53,7 @@
                                         class="dropdown-item"
                                         :to="{
                                             name: 'profile',
-                                            params: { id: profile_id },
+                                            params: { id: user_id },
                                         }"
                                         >الملف الشخصي</router-link
                                     >
@@ -85,7 +85,7 @@
                         </li>
                         <li
                             class="nav-item"
-                            @click="readAllNotifications(profile_id)"
+                            @click="readAllNotifications(user_id)"
                         >
                             <router-link
                                 class="nav-link position-relative"
@@ -156,7 +156,6 @@ export default {
         return {
             firstname: "",
             lastname: "",
-            profile_id: "",
             avatar: "",
             user_id: "",
             unreadedNotifications: 0,
@@ -189,14 +188,14 @@ export default {
         viewProfile() {
             var vm = this;
 
-            vm.$router.push({ name: "profile", params: { id: vm.profile_id } });
+            vm.$router.push({ name: "profile", params: { id: vm.user_id } });
         },
 
-        getProfileInfo(profileId = this.profile_id) {
+        getProfileInfo(userId) {
             var vm = this;
 
             axios
-                .get("/api/profiles/" + profileId + "/info", {
+                .get("/api/users/" + userId + "/profile", {
                     headers: headerAuth,
                 })
                 .then(function (response) {
@@ -209,10 +208,10 @@ export default {
                     console.log(error.response);
                 });
         },
-        getHeaderCounts(profileId) {
+        getHeaderCounts() {
             var vm = this;
             axios
-                .get("/api/profiles/" + profileId + "/header/counts", {
+                .get("/api/users/auth/header/counts", {
                     headers: headerAuth,
                 })
                 .then(function (response) {
@@ -226,11 +225,11 @@ export default {
                     console.log(error.response);
                 });
         },
-        readAllNotifications(profileId) {
+        readAllNotifications() {
             var vm = this;
             axios
                 .post(
-                    "/api/profiles/" + profileId + "/notifications/readall",
+                    "/api/users/auth/notifications/readall",
                     {},
                     {
                         headers: headerAuth,
@@ -264,9 +263,8 @@ export default {
     },
     created() {
         this.user_id = JSON.parse(localStorage.getItem("user")).id;
-        this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
-        this.getProfileInfo();
-        this.getHeaderCounts(this.profile_id);
+        this.getProfileInfo(this.user_id);
+        this.getHeaderCounts();
     },
 };
 </script>

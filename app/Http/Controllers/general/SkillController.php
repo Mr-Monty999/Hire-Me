@@ -7,6 +7,7 @@ use App\Http\Requests\SkillStoreRequest;
 use App\Models\User;
 use App\Models\Skill;
 use App\Services\ResponseService;
+use Auth;
 use Illuminate\Http\Request;
 
 class SkillController extends Controller
@@ -62,10 +63,11 @@ class SkillController extends Controller
 
         return ResponseService::json($skill, "تم إضافة المهارة بنجاح", 201);
     }
-    public function detach($skillId, $userId)
+    public function detach($skillId)
     {
+
         $skill = Skill::find($skillId);
-        $skill->users()->detach($userId);
+        $skill->users()->detach(Auth::id());
 
         return ResponseService::json($skill, "تم حذف المهارة بنجاح");
     }

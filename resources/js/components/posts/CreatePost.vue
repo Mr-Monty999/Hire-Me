@@ -86,7 +86,7 @@ export default {
             content: "",
             photo: "",
             previewPhoto: "",
-            profile_id: "",
+            user_id: "",
         };
     },
     props: ["posts"],
@@ -95,11 +95,11 @@ export default {
     },
 
     methods: {
-        getProfileInfo() {
+        getUserInfo() {
             var vm = this;
 
             axios
-                .get("/api/profiles/" + vm.profile_id + "/info", {
+                .get("/api/users/" + vm.user_id + "/profile", {
                     headers: headerFormAuth,
                 })
                 .then(function (response) {
@@ -119,7 +119,7 @@ export default {
             // data.append("dislikes_count", 0);
             data.append("photo", vm.previewPhoto);
 
-            data.append("profile_id", vm.profile_id);
+            // data.append("user_id", vm.user_id);
 
             var spinner =
                 '<div class="spinner-border text-white" role="status">' +
@@ -152,7 +152,7 @@ export default {
                     vm.previewPhoto = "";
                     // services.sendNotification({
                     //     type: 1,
-                    //     profile_id: vm.profile_id,
+                    //     user_id: vm.user_id,
                     //     post_id: response.data.data.id,
                     //     content: response.data.data.content,
                     // });
@@ -189,8 +189,8 @@ export default {
         },
     },
     created() {
-        this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
-        this.getProfileInfo();
+        this.user_id = JSON.parse(localStorage.getItem("user")).id;
+        this.getUserInfo();
     },
 };
 </script>

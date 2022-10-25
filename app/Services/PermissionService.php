@@ -38,6 +38,10 @@ class PermissionService
     public static function userPermissions()
     {
         return [
+            "create-users",
+            "view-users",
+            "edit-users",
+            "delete-users",
             "view-profiles",
             "edit-profiles",
             "create-posts",
@@ -78,10 +82,10 @@ class PermissionService
     {
         return [
             "view-dashboard",
-            "create-users",
-            "view-users",
-            "edit-users",
-            "delete-users",
+            "create-any-users",
+            "view-any-users",
+            "edit-any-users",
+            "delete-any-users",
             "create-roles",
             "view-roles",
             "edit-roles",

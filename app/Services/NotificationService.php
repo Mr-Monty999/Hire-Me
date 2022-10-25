@@ -12,6 +12,7 @@ use App\Notifications\OfferJobNotification;
 use App\Notifications\ReactToPostNotification;
 use App\Notifications\SendConnectiondataNotification;
 use App\Notifications\SendConnectionRequestNotification;
+use Auth;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Notification;

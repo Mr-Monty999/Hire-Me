@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Post;
+use App\Models\Profile;
 use Spatie\Permission\Models\Role;
 use App\Models\User;
 use Auth;
@@ -19,12 +20,11 @@ class UserService
 
 
         if (Auth::attempt($request->only(["email", "password"]), true)) {
-            $data = Auth::user();
             $user = Auth::user();
             // $data["user_id"] = Auth::user()->user->id;
             // unset($data["user"]);
-            $data["token"] = Auth::user()->createToken(uniqid("token_"))->plainTextToken;
-            return $data;
+            $user["token"] = Auth::user()->createToken(uniqid("token_"))->plainTextToken;
+            return $user;
         } else
             return false;
     }
@@ -35,10 +35,11 @@ class UserService
 
         $data["password"] = bcrypt($data["password"]);
         $user = User::create($data);
-        $data["user_id"] =  $user->id;
         $user["token"] = $user->createToken(uniqid("token_"))->plainTextToken;
-        // $user["user_id"] = User::create($data)->id;
+        $data["user_id"] = $user->id;
+        ProfileService::store($data);
         $user->assignRole('user');
+        unset($user->roles);
 
         return $user;
     }
@@ -84,10 +85,10 @@ class UserService
 
         return $user;
     }
-    public static function showUserProfileOnly($id)
+    public static function showProfile($userId)
     {
-        $user = User::find($id)->profile()->get();
-        return $user;
+        $profile = User::find($userId)->profile;
+        return $profile;
     }
     public static function showPhones($userId)
     {
@@ -153,10 +154,10 @@ class UserService
         $count = Post::where("user_id", $userId)->count();
         return $count;
     }
-    public static function followUser($request, $myUserId)
+    public static function followUser($myUserId, $targetUserId)
     {
         $user = User::findOrFail($myUserId);
-        $user->followings()->syncWithoutDetaching($request->user_id);
+        $user->followings()->syncWithoutDetaching($targetUserId);
         return $user;
     }
 
@@ -223,6 +224,7 @@ class UserService
     }
     public static function getAllIncommingConnectionsCount($userId)
     {
+
         $count = User::find($userId)->connectionsFrom()->wherePivot("accepted", "=", "false")->count();
 
         return $count;

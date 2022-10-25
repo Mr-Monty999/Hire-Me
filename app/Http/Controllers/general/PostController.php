@@ -51,15 +51,7 @@ class PostController extends Controller
      */
     public function store(PostStoreRequest  $request)
     {
-
-        $data = $request->all();
-        if ($request->file("photo") != null)
-            $data["photo"] = FileUploadService::uploadImage($request->file("photo"), "/images/posts");
-
-        $post = Post::create($data);
-        $data["post_id"] = $post->id;
-        NotificationService::sendCreatePostNotification($data);
-        $post = PostService::getPost($post->id, Auth::user()->id);
+        $post = PostService::store($request, Auth::id());
 
         return ResponseService::json($post, "تم إنشاء المنشور بنجاح", 201);
     }
@@ -81,12 +73,15 @@ class PostController extends Controller
 
     public function react(Request $request, $postId)
     {
-        $reacted = PostService::react($request, $postId);
-        NotificationService::sendReactToPostNotification($request->all());
+        $data = $request->all();
+        $data["user_id"] = Auth::id();
+        $reacted = PostService::react($data, $postId);
+        NotificationService::sendReactToPostNotification($data);
         return ResponseService::json($reacted, "تم التفاعل مع المنشور بنجاح");
     }
-    public function unReact($postId, $userId)
+    public function unReact($postId)
     {
+        $userId = Auth::id();
         $reacted = PostService::unReact($postId, $userId);
         return ResponseService::json($reacted, "تم التفاعل مع المنشور بنجاح");
     }

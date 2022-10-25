@@ -39,7 +39,7 @@ class ProfileController extends Controller
 
     public function index()
     {
-        $data = Profile::with("phones", "skills", "experiences", "posts")->get();
+        $data = Profile::with("user")->get();
 
         return ResponseService::json($data, "تم جلب البيانات بنجاح");
     }
@@ -70,18 +70,17 @@ class ProfileController extends Controller
      */
     public function show($id)
     {
-
-        $profile = UserService::showUserWithRelations($id);
+        $profile = ProfileService::show($id);
 
         return ResponseService::json($profile, "تم جلب البيانات بنجاح");
     }
 
-    public function showUserProfileOnly($id)
-    {
+    // public function showUserProfileOnly($id)
+    // {
 
-        $user = UserService::showUserProfileOnly($id);
-        return ResponseService::json($user, "تم جلب البيانات بنجاح");
-    }
+    //     $user = UserService::showUserProfileOnly($id);
+    //     return ResponseService::json($user, "تم جلب البيانات بنجاح");
+    // }
 
     /**
      * Show the form for editing the specified resource.
@@ -109,7 +108,7 @@ class ProfileController extends Controller
     {
 
 
-        $profile =   ProfileService::update($request, Profile::find($id));
+        $profile =   ProfileService::update($request, User::find($id)->profile);
 
         return ResponseService::json($profile, "تم حفظ الملف الشخصي بنجاح");
     }

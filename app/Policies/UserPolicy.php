@@ -52,7 +52,7 @@ class UserPolicy
      */
     public function update(User $user, User $model)
     {
-        //
+        return $user->id == $model->user_id || $user->hasPermissionTo("edit-any-users");
     }
 
     /**
@@ -64,7 +64,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model)
     {
-        //
+        return $user->id == $model->user_id || $user->hasPermissionTo("delete-any-users");
     }
 
     /**
@@ -88,6 +88,6 @@ class UserPolicy
      */
     public function forceDelete(User $user, User $model)
     {
-        //
+        return $user->id == $model->user_id || $user->hasPermissionTo("delete-any-users");
     }
 }

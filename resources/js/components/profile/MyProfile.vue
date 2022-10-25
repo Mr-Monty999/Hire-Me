@@ -12,33 +12,33 @@
                             width="150px"
                             :src="previewAvatar"
                         /><span class="font-weight-bold text-break"
-                            >{{ profile.firstname }}
-                            {{ profile.lastname }}</span
+                            >{{ user.profile.firstname }}
+                            {{ user.profile.lastname }}</span
                         >
                         <span
-                            v-if="profile.nickname"
+                            v-if="user.profile.nickname"
                             class="font-weight-bold text-break"
-                            >({{ profile.nickname }})</span
+                            >({{ user.profile.nickname }})</span
                         >
                         <span
                             ><router-link
                                 :to="{
                                     name: 'profile.edit',
                                     params: {
-                                        id: profile_id,
+                                        id: user_id,
                                     },
                                 }"
                                 class="btn btn-warning"
                                 >تعديل الملف الشخصي</router-link
                             >
                         </span>
-                        <span class="text-black-50">{{ profile.email }}</span
+                        <span class="text-black-50">{{ user.email }}</span
                         ><span
-                            >{{ profile.followers_count | toNumber }}
+                            >{{ user.followers_count | toNumber }}
                             مُتَابَع
                         </span>
                         <span
-                            >{{ profile.followings_count | toNumber }}
+                            >{{ user.followings_count | toNumber }}
                             يتابع
                         </span>
                     </div>
@@ -46,7 +46,7 @@
                         <label for="" class="form-label">حول</label>
                         <textarea
                             name="profile.about"
-                            v-model="profile.about"
+                            v-model="user.profile.about"
                             class="form-control"
                             id=""
                             cols="50"
@@ -61,7 +61,7 @@
                         <h4>منشوراتك</h4>
                         <create-post :posts="posts"></create-post>
                         <view-posts
-                            :onPageClick="getProfilePosts"
+                            :onPageClick="getUserPosts"
                             :posts="posts"
                         ></view-posts>
                     </div>
@@ -132,7 +132,7 @@
                         </div>
                         <div class="accordion" id="accordionExample">
                             <div
-                                v-for="(exp, i) in profile.experiences"
+                                v-for="(exp, i) in user.experiences"
                                 :key="i"
                                 class="accordion-item"
                             >
@@ -342,7 +342,7 @@
                             <ul class="list-group list">
                                 <li
                                     class="text-center list-group-item"
-                                    v-for="(skill, i) in profile.skills"
+                                    v-for="(skill, i) in user.skills"
                                     :key="i"
                                 >
                                     <p>{{ skill.name }}</p>
@@ -355,9 +355,7 @@
                                         confirmButtonClass="btn btn-success"
                                         :name="'deleteSkill' + i"
                                         confirmAndClosed
-                                        @confirmEvent="
-                                            deleteSkill(profile_id, skill.id)
-                                        "
+                                        @confirmEvent="deleteSkill(skill.id)"
                                     >
                                         هل أنت متأكد من حذف {{ skill.name }}?
                                     </modal-snippet>
@@ -382,7 +380,9 @@ import Loading from "../../components/bootstrap/Loading.vue";
 export default {
     data() {
         return {
-            profile: {},
+            user: {
+                profile: {},
+            },
             posts: {},
             skill_name: "",
             start: "",
@@ -391,40 +391,40 @@ export default {
             suggestSkills: [],
             company_name: "",
             phone: "",
-            profile_id: 0,
+            user_id: 0,
             loaded: false,
         };
     },
     computed: {
         previewAvatar() {
-            if (!this.profile.avatar) {
+            if (!this.user.profile.avatar) {
                 return "/images/assets/personal.jpg";
             }
-            return this.profile.avatar;
+            return this.user.profile.avatar;
         },
     },
     methods: {
-        savePersonalInfo(profileId = this.profile_id) {
+        savePersonalInfo(userId = this.user_id) {
             var vm = this;
 
             axios
                 .put(
-                    "/api/profiles/" + profileId + "",
+                    "/api/profiles/" + userId + "",
                     {
-                        firstname: vm.profile.firstname,
-                        lastname: vm.profile.lastname,
-                        nickname: vm.profile.nickname,
-                        birthdate: vm.profile.birthdate,
-                        about: vm.profile.about,
-                        avatar: vm.profile.avatar,
-                        website: vm.profile.website,
-                        country: vm.profile.country,
-                        city: vm.profile.city,
-                        state: vm.profile.state,
-                        street: vm.profile.street,
-                        university: vm.profile.university,
-                        degree: vm.profile.degree,
-                        study_type: vm.profile.study_type,
+                        firstname: vm.user.profile.firstname,
+                        lastname: vm.user.profile.lastname,
+                        nickname: vm.user.profile.nickname,
+                        birthdate: vm.user.profile.birthdate,
+                        about: vm.user.profile.about,
+                        avatar: vm.user.profile.avatar,
+                        website: vm.user.profile.website,
+                        country: vm.user.profile.country,
+                        city: vm.user.profile.city,
+                        state: vm.user.profile.state,
+                        street: vm.user.profile.street,
+                        university: vm.user.profile.university,
+                        degree: vm.user.profile.degree,
+                        study_type: vm.user.profile.study_type,
                     },
                     {
                         headers: headerAuth,
@@ -461,7 +461,7 @@ export default {
                         start: vm.start,
                         end: vm.end,
                         position: vm.position,
-                        profile_id: vm.profile_id,
+                        user_id: vm.user_id,
                     },
 
                     {
@@ -470,7 +470,7 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
-                    vm.profile.experiences.push(response.data.data);
+                    vm.user.experiences.push(response.data.data);
                     vm.clearData();
 
                     vm.$notify({
@@ -499,7 +499,7 @@ export default {
                     "/api/skills",
                     {
                         name: this.skill_name,
-                        profile_id: vm.profile_id,
+                        user_id: vm.user_id,
                     },
 
                     {
@@ -508,11 +508,11 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
-                    var skillExist = vm.profile.skills.find(
+                    var skillExist = vm.user.skills.find(
                         (el) => el.name == response.data.data.name
                     );
                     if (!skillExist) {
-                        vm.profile.skills.push(response.data.data);
+                        vm.user.skills.push(response.data.data);
                         vm.skill_name = "";
                         vm.$notify({
                             title: "نجاح",
@@ -554,16 +554,16 @@ export default {
                     console.log(error.response);
                 });
         },
-        getProfileInfo() {
+        getUserInfo() {
             var vm = this;
 
             axios
-                .get("/api/profiles/" + vm.profile_id + "", {
+                .get("/api/users/" + vm.user_id + "", {
                     headers: headerAuth,
                 })
                 .then(function (response) {
                     console.log(response);
-                    vm.profile = response.data.data;
+                    vm.user = response.data.data;
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -585,19 +585,19 @@ export default {
 
             if (diff > 0) return diff + " يوم";
         },
-        deleteSkill(profileId, skillId) {
+        deleteSkill(skillId) {
             var vm = this;
 
             axios
-                .delete("/api/skills/" + skillId + "/profiles/" + profileId, {
+                .delete("/api/skills/" + skillId + "/detach", {
                     headers: headerAuth,
                 })
                 .then(function (response) {
                     console.log(response);
-                    var index = vm.profile.skills.findIndex(
+                    var index = vm.user.skills.findIndex(
                         (el) => el.id == skillId
                     );
-                    vm.profile.skills.splice(index, 1);
+                    vm.user.skills.splice(index, 1);
                     vm.$notify({
                         title: "نجاح",
                         text: "تم حذف المهارة بنجاح",
@@ -625,10 +625,10 @@ export default {
                 })
                 .then(function (response) {
                     console.log(response);
-                    var index = vm.profile.experiences.findIndex(
+                    var index = vm.user.experiences.findIndex(
                         (el) => el.id == experienceId
                     );
-                    vm.profile.experiences.splice(index, 1);
+                    vm.user.experiences.splice(index, 1);
                     vm.$notify({
                         title: "نجاح",
                         text: "تم حذف الخبرة بنجاح",
@@ -649,13 +649,13 @@ export default {
         },
         editExperience(experienceId) {
             var vm = this;
-            let expIndex = vm.profile.experiences.findIndex(
+            let expIndex = vm.user.experiences.findIndex(
                 (el) => el.id == experienceId
             );
-            vm.company_name = vm.profile.experiences[expIndex].company_name;
-            vm.start = vm.profile.experiences[expIndex].start;
-            vm.end = vm.profile.experiences[expIndex].end;
-            vm.position = vm.profile.experiences[expIndex].position;
+            vm.company_name = vm.user.experiences[expIndex].company_name;
+            vm.start = vm.user.experiences[expIndex].start;
+            vm.end = vm.user.experiences[expIndex].end;
+            vm.position = vm.user.experiences[expIndex].position;
         },
         updateExperience(experienceId) {
             var vm = this;
@@ -668,7 +668,7 @@ export default {
                         start: vm.start,
                         end: vm.end,
                         position: vm.position,
-                        profile_id: vm.profile_id,
+                        user_id: vm.user_id,
                     },
                     {
                         headers: headerAuth,
@@ -677,14 +677,14 @@ export default {
                 .then(function (response) {
                     console.log(response);
 
-                    let expIndex = vm.profile.experiences.findIndex(
+                    let expIndex = vm.user.experiences.findIndex(
                         (el) => el.id == experienceId
                     );
-                    vm.profile.experiences[expIndex].company_name =
+                    vm.user.experiences[expIndex].company_name =
                         vm.company_name;
-                    vm.profile.experiences[expIndex].start = vm.start;
-                    vm.profile.experiences[expIndex].end = vm.end;
-                    vm.profile.experiences[expIndex].position = vm.position;
+                    vm.user.experiences[expIndex].start = vm.start;
+                    vm.user.experiences[expIndex].end = vm.end;
+                    vm.user.experiences[expIndex].position = vm.position;
 
                     vm.$notify({
                         title: "نجاح",
@@ -712,12 +712,12 @@ export default {
             this.position = "";
             this.skill_name = "";
         },
-        getProfilePosts(pageNumber = 1) {
+        getUserPosts(pageNumber = 1) {
             var vm = this;
 
             axios
                 .get(
-                    "/api/profiles/" +
+                    "/api/users/" +
                         vm.$route.params.id +
                         "/posts?page=" +
                         pageNumber,
@@ -751,9 +751,9 @@ export default {
         });
     },
     created() {
-        this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
-        this.getProfileInfo();
-        this.getProfilePosts();
+        this.user_id = JSON.parse(localStorage.getItem("user")).id;
+        this.getUserInfo();
+        this.getUserPosts();
     },
 };
 </script>
