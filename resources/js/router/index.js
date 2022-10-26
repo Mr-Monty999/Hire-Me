@@ -110,20 +110,20 @@ router.beforeEach(function (to, from, next) {
     if (localStorage.getItem("user") == null) {
         if (routes.includes(to.name)) next({ name: "login" });
     } else {
-        const profileId = JSON.parse(localStorage.getItem("user")).profile_id;
+        const userId = JSON.parse(localStorage.getItem("user")).id;
 
         if (!routes.includes(to.name))
             next({
                 name: "feed",
                 // params: {
-                //     id: profileId,
+                //     id: userId,
                 // },
             });
-        if (to.name == "profile.edit" && to.params["id"] != profileId)
+        if (to.name == "profile.edit" && to.params["id"] != userId)
             return next({
                 name: "profile.edit",
                 params: {
-                    id: profileId,
+                    id: userId,
                 },
             });
     }

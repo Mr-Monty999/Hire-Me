@@ -36,24 +36,24 @@ Route::group(["namespace" => "general"], function () {
 
 
         //Profiles
-        Route::apiResource("profiles", "ProfileController");
+        // Route::apiResource("profiles", "ProfileController");
 
 
-        Route::get("users/{userId}/phones", "UserController@showPhones");
         Route::get("users/{userId}/posts", "UserController@showPosts");
         Route::get("users/{userId}/profile", "UserController@showProfile");
+        Route::put("users/{userId}/profile", "UserController@updateProfile");
         Route::post("users/auth/follows/{targetId}", "UserController@followUser");
         Route::delete("users/auth/unfollows/{targetId}", "UserController@unFollowUser");
         Route::get("users/{userId}/is-followed/{targetId}", "UserController@isFollowed");
-        Route::get("users/{id}/notifications", "UserController@getNotifications");
+        Route::get("users/auth/notifications", "UserController@getNotifications");
         Route::get("users/auth/header/counts", "UserController@getHeaderCounts");
         Route::post("users/auth/notifications/readall", "UserController@readAllNotifications");
         Route::post("users/auth/connections/request/{targetUser}", "UserController@sendConnectionRequest");
-        Route::post("users/{id}/connections/accept", "UserController@acceptConnectionRequest");
+        Route::post("users/auth/connections/accept", "UserController@acceptConnectionRequest");
         Route::delete("users/auth/connections/remove/{targetUser}", "UserController@removeConnection");
-        Route::get("users/{id}/connections", "UserController@getAllAcceptedConnections");
-        Route::get("users/{id}/connections/incomming", "UserController@getAllIncommingConnections");
-        Route::get("users/{id}/users/{targetId}/connection-status", "UserController@getConnectionStatus");
+        Route::get("users/{userId}/connections", "UserController@getAllAcceptedConnections");
+        Route::get("users/auth/connections/incomming", "UserController@getAllIncommingConnections");
+        Route::get("users/auth/connection-status/{targetId}", "UserController@getConnectionStatus");
         Route::get("users/search/{pattern}", "UserController@search");
         Route::get("users/{userId}/feedback/posts", "UserController@showFeedbackPosts");
 

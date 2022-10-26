@@ -16,9 +16,9 @@
                         <div>
                             <div>
                                 <img
-                                    v-if="connection.avatar != null"
+                                    v-if="connection.profile.avatar != null"
                                     class="photo"
-                                    :src="connection.avatar"
+                                    :src="connection.profile.avatar"
                                     alt=""
                                     @click="goToProfile(connection.id)"
                                 />
@@ -33,8 +33,8 @@
                                     class="text-break fullname"
                                     @click="goToProfile(connection.id)"
                                 >
-                                    {{ connection.firstname }}
-                                    {{ connection.lastname }}
+                                    {{ connection.profile.firstname }}
+                                    {{ connection.profile.lastname }}
                                 </b>
 
                                 <div class="text-break">
@@ -42,23 +42,13 @@
                                 </div>
                                 <div>
                                     <button
-                                        @click="
-                                            acceptConnection(
-                                                profile_id,
-                                                connection.id
-                                            )
-                                        "
+                                        @click="acceptConnection(connection.id)"
                                         class="btn btn-success"
                                     >
                                         تأكيد
                                     </button>
                                     <button
-                                        @click="
-                                            removeConnection(
-                                                profile_id,
-                                                connection.id
-                                            )
-                                        "
+                                        @click="removeConnection(connection.id)"
                                         class="btn btn-danger"
                                     >
                                         حذف
@@ -97,9 +87,9 @@ import Loading from "../../../components/bootstrap/Loading.vue";
 export default {
     data() {
         return {
-            profile_id: 0,
+            user_id: 0,
             connections: {},
-            profiles: [],
+            users: [],
             loaded: false,
         };
     },
@@ -109,10 +99,7 @@ export default {
 
             axios
                 .get(
-                    "/api/profiles/" +
-                        this.profile_id +
-                        "/connections/incomming?page=" +
-                        pageNumber,
+                    "/api/users/auth/connections/incomming?page=" + pageNumber,
                     {
                         headers: headerAuth,
                     }
@@ -125,21 +112,21 @@ export default {
                     console.log(error.response);
                 });
         },
-        goToProfile(profileId) {
+        goToProfile(userId) {
             this.$router.push({
                 name: "profile",
                 params: {
-                    id: profileId,
+                    id: userId,
                 },
             });
         },
-        acceptConnection(profileId, targetProfileId) {
+        acceptConnection(targetUserId) {
             var vm = this;
             axios
                 .post(
-                    "/api/profiles/" + profileId + "/connections/accept",
+                    "/api/users/auth/connections/accept",
                     {
-                        target_profile_id: targetProfileId,
+                        target_user_id: targetUserId,
                     },
                     {
                         headers: headerAuth,
@@ -149,7 +136,7 @@ export default {
                     console.log(response);
 
                     var connectionIndex = vm.connections.data.findIndex(
-                        (el) => el.id == targetProfileId
+                        (el) => el.id == targetUserId
                     );
 
                     vm.connections.data.splice(connectionIndex, 1);
@@ -172,24 +159,17 @@ export default {
                     }
                 });
         },
-        removeConnection(profileId, targetProfileId) {
+        removeConnection(targetUserId) {
             var vm = this;
             axios
-                .delete(
-                    "/api/profiles/" +
-                        profileId +
-                        "/profiles/" +
-                        targetProfileId +
-                        "/connections/remove",
-                    {
-                        headers: headerAuth,
-                    }
-                )
+                .delete("/api/users/auth/connections/remove/" + targetUserId, {
+                    headers: headerAuth,
+                })
                 .then(function (response) {
                     console.log(response);
 
                     var connectionIndex = vm.connections.data.findIndex(
-                        (el) => el.id == targetProfileId
+                        (el) => el.id == targetUserId
                     );
 
                     vm.connections.data.splice(connectionIndex, 1);
@@ -219,8 +199,8 @@ export default {
     },
     created() {
         var vm = this;
-        let profileId = JSON.parse(localStorage.getItem("user")).profile_id;
-        vm.profile_id = profileId;
+        let userId = JSON.parse(localStorage.getItem("user")).id;
+        vm.user_id = userId;
         vm.getConnections();
     },
     mounted: function () {

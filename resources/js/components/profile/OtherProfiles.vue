@@ -338,7 +338,7 @@ export default {
 
             axios
                 .post(
-                    "/api/users/auth/follows/" + targetUserId + "",
+                    "/api/users/auth/follows/" + targetUserId,
                     {},
                     {
                         headers: headerAuth,
@@ -347,7 +347,7 @@ export default {
                 .then(function (response) {
                     console.log(response);
                     vm.followed = true;
-                    vm.user.profile.followersCount += 1;
+                    vm.user.followers_count += 1;
                     vm.$notify({
                         title: "نجاح",
                         text: response.data.message,
@@ -366,23 +366,17 @@ export default {
                     }
                 });
         },
-        unFollowUser(userId, targetUserId) {
+        unFollowUser(targetUserId) {
             var vm = this;
 
             axios
-                .delete(
-                    "/api/users/" +
-                        userId +
-                        "/unfollows/" +
-                        targetUserId +
-                        {
-                            headers: headerAuth,
-                        }
-                )
+                .delete("/api/users/auth/unfollows/" + targetUserId, {
+                    headers: headerAuth,
+                })
                 .then(function (response) {
                     console.log(response);
                     vm.followed = false;
-                    vm.user.profile.followersCount -= 1;
+                    vm.user.followers_count -= 1;
                     vm.$notify({
                         title: "نجاح",
                         text: response.data.message,
@@ -408,9 +402,9 @@ export default {
                 .get(
                     "/api/users/" +
                         userId +
-                        "/users/" +
+                        "/is-followed/" +
                         targetUserId +
-                        "/is-followed",
+                        "",
                     {
                         headers: headerAuth,
                     }
@@ -473,7 +467,7 @@ export default {
             var vm = this;
             axios
                 .post(
-                    "/api/auth/connections/request/" + targetUserId + "",
+                    "/api/users/auth/connections/request/" + targetUserId + "",
                     {},
                     {
                         headers: headerAuth,

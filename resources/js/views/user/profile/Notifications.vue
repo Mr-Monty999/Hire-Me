@@ -30,30 +30,18 @@
                                     class="photo"
                                     :src="notification.data.profile.avatar"
                                     alt=""
-                                    @click="
-                                        showProfile(
-                                            notification.data.profile_id
-                                        )
-                                    "
+                                    @click="showUser(notification.data.user_id)"
                                 />
                                 <img
                                     v-else
                                     class="photo"
                                     src="/images/assets/personal.jpg"
                                     alt=""
-                                    @click="
-                                        showProfile(
-                                            notification.data.profile_id
-                                        )
-                                    "
+                                    @click="showUser(notification.data.user_id)"
                                 />
                                 <b
                                     class="text-break fullname"
-                                    @click="
-                                        showProfile(
-                                            notification.data.profile_id
-                                        )
-                                    "
+                                    @click="showUser(notification.data.user_id)"
                                 >
                                     {{ notification.data.profile.firstname }}
                                     {{ notification.data.profile.lastname }}
@@ -107,6 +95,15 @@
                                         </span>
                                     </div>
                                 </div>
+                                <div
+                                    v-else-if="
+                                        notification.type ==
+                                        'App\\Notifications\\FollowNotification'
+                                    "
+                                    class="text-break"
+                                >
+                                    <b>يتابعك الأن</b>
+                                </div>
                                 <!-- <div
                                     v-else-if="
                                         notification.type ==
@@ -119,8 +116,8 @@
                                         <button
                                             @click="
                                                 acceptConnection(
-                                                    profile_id,
-                                                    notification.data.profile_id
+                                                    user_id,
+                                                    notification.data.user_id
                                                 )
                                             "
                                             class="btn btn-success"
@@ -130,8 +127,8 @@
                                         <button
                                             @click="
                                                 removeConnection(
-                                                    profile_id,
-                                                    notification.data.profile_id
+                                                    user_id,
+                                                    notification.data.user_id
                                                 )
                                             "
                                             class="btn btn-danger"
@@ -173,9 +170,9 @@ import Loading from "../../../components/bootstrap/Loading.vue";
 export default {
     data() {
         return {
-            profile_id: 0,
+            user_id: 0,
             notifications: {},
-            profiles: [],
+            users: [],
             loaded: false,
         };
     },
@@ -184,15 +181,9 @@ export default {
             var vm = this;
 
             axios
-                .get(
-                    "/api/profiles/" +
-                        this.profile_id +
-                        "/notifications?page=" +
-                        pageNumber,
-                    {
-                        headers: headerAuth,
-                    }
-                )
+                .get("/api/users/auth/notifications?page=" + pageNumber, {
+                    headers: headerAuth,
+                })
                 .then(function (response) {
                     console.log(response);
                     vm.notifications = response.data.data.notifications;
@@ -201,11 +192,11 @@ export default {
                     console.log(error.response);
                 });
         },
-        showProfile(profileId) {
+        showUser(userId) {
             this.$router.push({
                 name: "profile",
                 params: {
-                    id: profileId,
+                    id: userId,
                 },
             });
         },
@@ -225,25 +216,25 @@ export default {
                 },
             });
         },
-        showProfile(profileId) {
-            this.$router.push({
-                name: "profile",
-                params: {
-                    id: profileId,
-                },
-            });
-        },
+        // showUser(userId) {
+        //     this.$router.push({
+        //         name: "user",
+        //         params: {
+        //             id: userId,
+        //         },
+        //     });
+        // },
         getAlertClass(notification) {
             if (notification.read_at == null) return "alert-info";
             else return "alert-light";
         },
-        acceptConnection(profileId, targetProfileId) {
+        acceptConnection(targetUserId) {
             var vm = this;
             axios
                 .post(
-                    "/api/profiles/" + profileId + "/connections/accept",
+                    "/api/users/auth/connections/accept",
                     {
-                        target_profile_id: targetProfileId,
+                        target_user_id: targetUserId,
                     },
                     {
                         headers: headerAuth,
@@ -253,7 +244,7 @@ export default {
                     console.log(response);
 
                     var notificationIndex = vm.notifications.data.findIndex(
-                        (el) => el.data.profile_id == targetProfileId
+                        (el) => el.data.user_id == targetUserId
                     );
 
                     vm.notifications.data.splice(notificationIndex, 1);
@@ -276,24 +267,17 @@ export default {
                     }
                 });
         },
-        removeConnection(profileId, targetProfileId) {
+        removeConnection(targetUserId) {
             var vm = this;
             axios
-                .delete(
-                    "/api/profiles/" +
-                        profileId +
-                        "/profiles/" +
-                        targetProfileId +
-                        "/connections/remove",
-                    {
-                        headers: headerAuth,
-                    }
-                )
+                .delete("/api/users/auth/connections/remove" + targetUserId, {
+                    headers: headerAuth,
+                })
                 .then(function (response) {
                     console.log(response);
 
                     var notificationIndex = vm.notifications.data.findIndex(
-                        (el) => el.data.profile_id == targetProfileId
+                        (el) => el.data.user_id == targetUserId
                     );
 
                     vm.notifications.data.splice(notificationIndex, 1);
@@ -323,8 +307,8 @@ export default {
     },
     created() {
         var vm = this;
-        let profileId = JSON.parse(localStorage.getItem("user")).profile_id;
-        vm.profile_id = profileId;
+        let userId = JSON.parse(localStorage.getItem("user")).id;
+        vm.user_id = userId;
         vm.getNotifications();
     },
     mounted: function () {

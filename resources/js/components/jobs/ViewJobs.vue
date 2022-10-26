@@ -8,15 +8,15 @@
                     >
                         <div class="d-flex flex-row align-items-center gap-2">
                             <img
-                                :src="previewAvatar(job.profile.avatar)"
+                                :src="previewAvatar(job.user.profile.avatar)"
                                 width="50"
                                 class="rounded-circle"
-                                @click="goToProfile(job.profile.id)"
+                                @click="goToProfile(job.user.profile.id)"
                             />
                             <div class="d-flex flex-column ml-2">
                                 <span class="text-break name"
-                                    >{{ job.profile.firstname }}
-                                    {{ job.profile.lastname }}</span
+                                    >{{ job.user.profile.firstname }}
+                                    {{ job.user.profile.lastname }}</span
                                 >
                                 <small class="mr-2 date">{{
                                     job.created_at_diff_for_humans
@@ -25,7 +25,7 @@
                         </div>
                         <div
                             class="d-flex flex-row mt-1 gap-2"
-                            v-if="job.profile_id == profile_id"
+                            v-if="job.user_id == user_id"
                         >
                             <!-- <i class="fa fa-ellipsis-h"></i> -->
                             <modal-snippet
@@ -147,7 +147,7 @@
                                     class="fa-solid fa-thumbs-up text-primary"
                                     @click="
                                         removeReactFromJob(
-                                            profile_id,
+                                            user_id,
                                             job.id,
                                             1
                                         )
@@ -156,7 +156,7 @@
                                 <i
                                     v-else
                                     class="fa-solid fa-thumbs-up"
-                                    @click="reactToJob(profile_id, job.id, 1)"
+                                    @click="reactToJob(user_id, job.id, 1)"
                                 ></i>
                                 <span>
                                     {{ job.likes_count | toNumber }}
@@ -166,7 +166,7 @@
                                     class="fa-solid fa-thumbs-down text-primary"
                                     @click="
                                         removeReactFromJob(
-                                            profile_id,
+                                            user_id,
                                             job.id,
                                             2
                                         )
@@ -175,7 +175,7 @@
                                 <i
                                     v-else
                                     class="fa-solid fa-thumbs-down"
-                                    @click="reactToJob(profile_id, job.id, 2)"
+                                    @click="reactToJob(user_id, job.id, 2)"
                                 ></i>
                                 <span>
                                     {{ job.dislikes_count | toNumber }}
@@ -230,7 +230,7 @@ export default {
             title: "",
             description: "",
             location: "",
-            profile_id: 0,
+            user_id: 0,
         };
     },
     components: {
@@ -362,12 +362,12 @@ export default {
         hideModal() {
             this.$modal.hide("my-modal");
         },
-        goToProfile(profileId) {
-            if (profileId != this.$route.params.id) {
+        goToProfile(userId) {
+            if (userId != this.$route.params.id) {
                 this.$router.push({
                     name: "profile",
                     params: {
-                        id: profileId,
+                        id: userId,
                     },
                 });
             }
@@ -386,7 +386,7 @@ export default {
     },
     props: ["jobs", "onPageClick"],
     created() {
-        this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
+        this.user_id = JSON.parse(localStorage.getItem("user")).id;
     },
 };
 </script>

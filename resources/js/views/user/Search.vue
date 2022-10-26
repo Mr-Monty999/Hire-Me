@@ -50,7 +50,7 @@ export default {
     },
     data() {
         return {
-            profile_id: 0,
+            user_id: 0,
             searchedData: [],
             selectedFilter: 3,
             loaded: false,
@@ -63,7 +63,7 @@ export default {
             if (vm.selectedFilter == 2) {
                 axios
                     .get(
-                        "/api/profiles/search/" +
+                        "/api/users/search/" +
                             this.$route.params.pattern +
                             "?page=" +
                             pageNumber,
@@ -135,7 +135,7 @@ export default {
         },
     },
     created() {
-        this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
+        this.user_id = JSON.parse(localStorage.getItem("user")).id;
         this.search();
     },
 

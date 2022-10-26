@@ -42,7 +42,7 @@ class ProfileService
     public static function show($id)
     {
 
-        $profile = Profile::find($id);;
+        $profile = Profile::with("user")->find($id);
         return $profile;
     }
 

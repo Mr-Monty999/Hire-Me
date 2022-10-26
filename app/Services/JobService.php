@@ -42,7 +42,7 @@ class JobService
     public static function getAllJobs()
     {
         $jobs = Job::with([
-            "user:id,firstname,lastname,avatar",
+            "user.profile",
         ])->latest()->paginate(5);
 
         foreach ($jobs as  $job) {
@@ -55,7 +55,7 @@ class JobService
     public static function searchForJob($pattern)
     {
         $pattern = trim($pattern);
-        $result = Job::with("user:id,firstname,lastname,avatar")->where("title", "LIKE", "%$pattern%")
+        $result = Job::with("user.profile")->where("title", "LIKE", "%$pattern%")
             ->orWhere("description", "LIKE", "%$pattern%")
             ->orWhere("location", "LIKE", "%$pattern%")
             ->latest()

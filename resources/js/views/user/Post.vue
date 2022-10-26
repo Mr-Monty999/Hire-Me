@@ -5,20 +5,20 @@
             v-if="loaded"
             class="row d-flex align-items-center justify-content-center"
         >
-            <div class="col-md-12" v-if="post && post.profile">
+            <div class="col-md-12" v-if="post && post.user">
                 <!-- <div class="card" v-for="(post, i) in posts.data" :key="i"> -->
                 <div class="d-flex justify-content-between p-2 px-3">
                     <div class="d-flex flex-row align-items-center gap-2">
                         <img
-                            :src="previewAvatar(post.profile.avatar)"
+                            :src="previewAvatar(post.user.profile.avatar)"
                             width="50"
                             class="rounded-circle"
-                            @click="goToProfile(post.profile.id)"
+                            @click="goToProfile(post.user.profile.id)"
                         />
                         <div class="d-flex flex-column ml-2">
                             <span class="text-break name"
-                                >{{ post.profile.firstname }}
-                                {{ post.profile.lastname }}</span
+                                >{{ post.user.profile.firstname }}
+                                {{ post.user.profile.lastname }}</span
                             >
                             <small class="mr-2 date">{{
                                 post.created_at_diff_for_humans
@@ -27,7 +27,7 @@
                     </div>
                     <div
                         class="d-flex flex-row mt-1 gap-2"
-                        v-if="post.profile_id == profile_id"
+                        v-if="post.user_id == user_id"
                     >
                         <!-- <i class="fa fa-ellipsis-h"></i> -->
                         <modal-snippet
@@ -154,14 +154,12 @@
                             <i
                                 v-if="post.react_type == 1"
                                 class="fa-solid fa-thumbs-up text-primary"
-                                @click="
-                                    removeReactFromPost(profile_id, post.id)
-                                "
+                                @click="removeReactFromPost(user_id, post.id)"
                             ></i>
                             <i
                                 v-else
                                 class="fa-solid fa-thumbs-up"
-                                @click="reactToPost(profile_id, post.id, 1)"
+                                @click="reactToPost(user_id, post.id, 1)"
                             ></i>
                             <span>
                                 {{ post.likes_count | toNumber }}
@@ -169,14 +167,12 @@
                             <i
                                 v-if="post.react_type == 2"
                                 class="fa-solid fa-thumbs-down text-primary"
-                                @click="
-                                    removeReactFromPost(profile_id, post.id)
-                                "
+                                @click="removeReactFromPost(user_id, post.id)"
                             ></i>
                             <i
                                 v-else
                                 class="fa-solid fa-thumbs-down"
-                                @click="reactToPost(profile_id, post.id, 2)"
+                                @click="reactToPost(user_id, post.id, 2)"
                             ></i>
                             <span>
                                 {{ post.dislikes_count | toNumber }}
@@ -227,7 +223,7 @@ export default {
                 tags: [],
                 comments: [],
             },
-            profile_id: 0,
+            user_id: 0,
             loaded: false,
         };
     },
@@ -319,17 +315,17 @@ export default {
         hideModal() {
             this.$modal.hide("my-modal");
         },
-        goToProfile(profileId) {
-            if (profileId != this.$route.params.id) {
+        goToProfile(userId) {
+            if (userId != this.$route.params.id) {
                 this.$router.push({
                     name: "profile",
                     params: {
-                        id: profileId,
+                        id: userId,
                     },
                 });
             }
         },
-        reactToPost(profileId, postId, reactType) {
+        reactToPost(userId, postId, reactType) {
             var vm = this;
 
             vm.removeMyReacts(vm.post);
@@ -349,11 +345,11 @@ export default {
 
             axios
                 .post(
-                    "/api/posts/" + postId + "/profiles",
+                    "/api/posts/" + postId + "/react",
                     {
-                        profile_id: profileId,
+                        user_id: userId,
                         type: reactType,
-                        post_author: vm.post.profile_id,
+                        post_author: vm.post.user_id,
                         post_id: postId,
                     },
                     {
@@ -375,7 +371,7 @@ export default {
                     }
                 });
         },
-        removeReactFromPost(profileId, postId) {
+        removeReactFromPost(userId, postId) {
             var vm = this;
 
             vm.removeMyReacts(vm.post);
@@ -387,7 +383,7 @@ export default {
                 type: "success",
             });
             axios
-                .delete("/api/posts/" + postId + "/profiles/" + profileId, {
+                .delete("/api/posts/" + postId + "/unreact", {
                     headers: headerAuth,
                 })
                 .then(function (response) {
@@ -442,7 +438,7 @@ export default {
         },
     },
     created() {
-        this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
+        this.user_id = JSON.parse(localStorage.getItem("user")).id;
         this.getPost(this.$route.params.id);
         console.log("View Posts");
         console.log(this.posts);

@@ -8,6 +8,7 @@ use Spatie\Permission\Models\Role;
 use App\Models\User;
 use Auth;
 use Hash;
+use Illuminate\Support\Collection;
 
 /**
  * Class UserService.
@@ -21,8 +22,8 @@ class UserService
 
         if (Auth::attempt($request->only(["email", "password"]), true)) {
             $user = Auth::user();
-            // $data["user_id"] = Auth::user()->user->id;
-            // unset($data["user"]);
+            $user["profile_id"] = $user->profile->id;
+            unset($user["profile"]);
             $user["token"] = Auth::user()->createToken(uniqid("token_"))->plainTextToken;
             return $user;
         } else
@@ -37,7 +38,8 @@ class UserService
         $user = User::create($data);
         $user["token"] = $user->createToken(uniqid("token_"))->plainTextToken;
         $data["user_id"] = $user->id;
-        ProfileService::store($data);
+        $user["profile_id"] = ProfileService::store($data)->id;
+        unset($user["profile"]);
         $user->assignRole('user');
         unset($user->roles);
 
@@ -58,7 +60,26 @@ class UserService
 
     public static function getAllUsers()
     {
-        $users = User::all();
+
+        $users = User::with([
+            "phones",
+            "skills",
+            "experiences",
+            "profile",
+            // "posts" => function ($q) {
+            //     $q->latest();
+            // },
+            // "posts.comments.replies",
+            // "posts.user:id,firstname,lastname,avatar",
+            // "posts.reacts",
+            // "posts.tags",
+            "followers" => function ($q) {
+                $q->paginate(5);
+            },
+            "followings" => function ($q) {
+                $q->paginate(5);
+            }
+        ])->withCount("followers", "followings")->paginate(5);
         return $users;
     }
     public static function showUserWithRelations($id)
@@ -81,21 +102,20 @@ class UserService
             "followings" => function ($q) {
                 $q->paginate(5);
             }
-        ])->withCount("followers", "followings")->find($id);
+        ])->withCount("followers", "followings")->find($id)->makeVisibleIf(Auth::id() == $id, ["email"]);
 
         return $user;
     }
+
     public static function showProfile($userId)
     {
-        $profile = User::find($userId)->profile;
+        $profile = Profile::where("user_id", "=", $userId)->firstOrFail();
+        $profile["user"] = User::find($userId)->makeVisibleIf(Auth::id() == $userId, ["email"]);
         return $profile;
     }
     public static function showPhones($userId)
     {
-        // $phones =  User::with("phones")->find($userId)->only("phones");
         $phones = User::find($userId)->phones()->get();
-        // $phones = UserPhone::where("user_id", $userId)->get();
-
         return $phones;
     }
     public static function showPosts($userId)
@@ -183,16 +203,18 @@ class UserService
     }
     public static function removeConnection($userId, $targetUserId)
     {
-        $user = User::find($userId)->connectionsFrom()->detach($targetUserId);
-        $user = User::find($userId)->connectionsTo()->detach($targetUserId);
+        $user = User::find($userId);
+        $user->connectionsFrom()->detach($targetUserId);
+        $user->connectionsTo()->detach($targetUserId);
 
         return $user;
     }
 
     public static function acceptConnectionRequest($userId, $targetUserId)
     {
-        $user = User::find($userId)->connectionsFrom()->syncWithoutDetaching([$targetUserId => ["accepted" => true]]);
-        $user = User::find($userId)->connectionsTo()->syncWithoutDetaching([$targetUserId => ["accepted" => true]]);
+        $user = User::find($userId);
+        $user->connectionsFrom()->syncWithoutDetaching([$targetUserId => ["accepted" => true]]);
+        $user->connectionsTo()->syncWithoutDetaching([$targetUserId => ["accepted" => true]]);
 
         return $user;
     }
@@ -219,7 +241,9 @@ class UserService
     public static function getAllIncommingConnections($userId)
     {
         $connections = User::find($userId)->connectionsFrom()->wherePivot("accepted", "=", "false")->paginate(10);
-
+        foreach ($connections as $connection) {
+            $connection->profile = Profile::where("user_id", $connection->id)->first();
+        }
         return $connections;
     }
     public static function getAllIncommingConnectionsCount($userId)
@@ -235,13 +259,13 @@ class UserService
         $pattern =   explode(" ", $pattern, 2);
         $result = null;
         if (isset($pattern[1])) {
-            $result = User::withCount("followers", "followings")
+            $result = Profile::withCount("user", "user")
                 ->where("firstname", "LIKE", "%$pattern[0]%")
                 ->where("lastname", "LIKE", "%$pattern[1]%")
                 ->latest()
                 ->paginate(5);
         } else {
-            $result = User::withCount("followers", "followings")
+            $result = Profile::withCount("user", "user")
                 ->where("firstname", "LIKE", "%$pattern[0]%")
                 ->latest()
                 ->paginate(5);

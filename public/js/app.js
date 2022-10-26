@@ -5382,7 +5382,7 @@ __webpack_require__.r(__webpack_exports__);
       title: "",
       description: "",
       location: "",
-      profile_id: 0
+      user_id: 0
     };
   },
   components: {
@@ -5496,12 +5496,12 @@ __webpack_require__.r(__webpack_exports__);
     hideModal: function hideModal() {
       this.$modal.hide("my-modal");
     },
-    goToProfile: function goToProfile(profileId) {
-      if (profileId != this.$route.params.id) {
+    goToProfile: function goToProfile(userId) {
+      if (userId != this.$route.params.id) {
         this.$router.push({
           name: "profile",
           params: {
-            id: profileId
+            id: userId
           }
         });
       }
@@ -5521,7 +5521,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   props: ["jobs", "onPageClick"],
   created: function created() {
-    this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
+    this.user_id = JSON.parse(localStorage.getItem("user")).id;
   }
 });
 
@@ -6507,12 +6507,12 @@ __webpack_require__.r(__webpack_exports__);
     },
     followUser: function followUser(targetUserId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/users/auth/follows/" + targetUserId + "", {}, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/users/auth/follows/" + targetUserId, {}, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
         vm.followed = true;
-        vm.user.profile.followersCount += 1;
+        vm.user.followers_count += 1;
         vm.$notify({
           title: "نجاح",
           text: response.data.message,
@@ -6531,14 +6531,14 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    unFollowUser: function unFollowUser(userId, targetUserId) {
+    unFollowUser: function unFollowUser(targetUserId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/users/" + userId + "/unfollows/" + targetUserId + {
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/users/auth/unfollows/" + targetUserId, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
         vm.followed = false;
-        vm.user.profile.followersCount -= 1;
+        vm.user.followers_count -= 1;
         vm.$notify({
           title: "نجاح",
           text: response.data.message,
@@ -6559,7 +6559,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     isFollowed: function isFollowed(userId, targetUserId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/users/" + userId + "/users/" + targetUserId + "/is-followed", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/users/" + userId + "/is-followed/" + targetUserId + "", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -6600,7 +6600,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     addConnection: function addConnection(targetUserId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/auth/connections/request/" + targetUserId + "", {}, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/users/auth/connections/request/" + targetUserId + "", {}, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -6983,7 +6983,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      profile_id: 0,
+      user_id: 0,
       jobs: {},
       loaded: false,
       title: "",
@@ -7051,7 +7051,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
-    this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
+    this.user_id = JSON.parse(localStorage.getItem("user")).id;
     this.getJobs();
   },
   mounted: function mounted() {
@@ -7100,7 +7100,7 @@ __webpack_require__.r(__webpack_exports__);
         tags: [],
         comments: []
       },
-      profile_id: 0,
+      user_id: 0,
       loaded: false
     };
   },
@@ -7185,17 +7185,17 @@ __webpack_require__.r(__webpack_exports__);
     hideModal: function hideModal() {
       this.$modal.hide("my-modal");
     },
-    goToProfile: function goToProfile(profileId) {
-      if (profileId != this.$route.params.id) {
+    goToProfile: function goToProfile(userId) {
+      if (userId != this.$route.params.id) {
         this.$router.push({
           name: "profile",
           params: {
-            id: profileId
+            id: userId
           }
         });
       }
     },
-    reactToPost: function reactToPost(profileId, postId, reactType) {
+    reactToPost: function reactToPost(userId, postId, reactType) {
       var vm = this;
       vm.removeMyReacts(vm.post);
       vm.post.react_type = reactType;
@@ -7211,10 +7211,10 @@ __webpack_require__.r(__webpack_exports__);
         text: "تم التفاعل مع المنشور بنجاح",
         type: "success"
       });
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/posts/" + postId + "/profiles", {
-        profile_id: profileId,
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/posts/" + postId + "/react", {
+        user_id: userId,
         type: reactType,
-        post_author: vm.post.profile_id,
+        post_author: vm.post.user_id,
         post_id: postId
       }, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
@@ -7233,7 +7233,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    removeReactFromPost: function removeReactFromPost(profileId, postId) {
+    removeReactFromPost: function removeReactFromPost(userId, postId) {
       var vm = this;
       vm.removeMyReacts(vm.post);
       vm.post.react_type = 0;
@@ -7242,7 +7242,7 @@ __webpack_require__.r(__webpack_exports__);
         text: "تم التفاعل مع المنشور بنجاح",
         type: "success"
       });
-      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/posts/" + postId + "/profiles/" + profileId, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/posts/" + postId + "/unreact", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -7287,7 +7287,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
-    this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
+    this.user_id = JSON.parse(localStorage.getItem("user")).id;
     this.getPost(this.$route.params.id);
     console.log("View Posts");
     console.log(this.posts);
@@ -7340,7 +7340,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      profile_id: 0,
+      user_id: 0,
       searchedData: [],
       selectedFilter: 3,
       loaded: false
@@ -7352,7 +7352,7 @@ __webpack_require__.r(__webpack_exports__);
       var vm = this;
 
       if (vm.selectedFilter == 2) {
-        axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/search/" + this.$route.params.pattern + "?page=" + pageNumber, {
+        axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/users/search/" + this.$route.params.pattern + "?page=" + pageNumber, {
           headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
         }).then(function (response) {
           console.log(response);
@@ -7399,7 +7399,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
-    this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
+    this.user_id = JSON.parse(localStorage.getItem("user")).id;
     this.search();
   },
   mounted: function mounted() {
@@ -7448,7 +7448,7 @@ __webpack_require__.r(__webpack_exports__);
         tags: [],
         comments: []
       },
-      profile_id: 0,
+      user_id: 0,
       loaded: false
     };
   },
@@ -7554,17 +7554,17 @@ __webpack_require__.r(__webpack_exports__);
     hideModal: function hideModal() {
       this.$modal.hide("my-modal");
     },
-    goToProfile: function goToProfile(profileId) {
-      if (profileId != this.$route.params.id) {
+    goToProfile: function goToProfile(userId) {
+      if (userId != this.$route.params.id) {
         this.$router.push({
           name: "profile",
           params: {
-            id: profileId
+            id: userId
           }
         });
       }
     },
-    // reactToJob(profileId, jobId, reactType) {
+    // reactToJob(userId, jobId, reactType) {
     //     var vm = this;
     //     vm.removeMyReacts(vm.job);
     //     vm.job.react_type = reactType;
@@ -7582,9 +7582,9 @@ __webpack_require__.r(__webpack_exports__);
     //         .job(
     //             "/api/jobs/" + jobId + "/profiles",
     //             {
-    //                 profile_id: profileId,
+    //                 user_id: userId,
     //                 type: reactType,
-    //                 job_author: vm.job.profile_id,
+    //                 job_author: vm.job.user_id,
     //                 job_id: jobId,
     //             },
     //             {
@@ -7606,7 +7606,7 @@ __webpack_require__.r(__webpack_exports__);
     //             }
     //         });
     // },
-    // removeReactFromJob(profileId, jobId) {
+    // removeReactFromJob(userId, jobId) {
     //     var vm = this;
     //     vm.removeMyReacts(vm.job);
     //     vm.job.react_type = 0;
@@ -7616,7 +7616,7 @@ __webpack_require__.r(__webpack_exports__);
     //         type: "success",
     //     });
     //     axios
-    //         .delete("/api/jobs/" + jobId + "/profiles/" + profileId, {
+    //         .delete("/api/jobs/" + jobId + "/profiles/" + userId, {
     //             headers: headerAuth,
     //         })
     //         .then(function (response) {
@@ -7661,7 +7661,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {},
   created: function created() {
-    this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
+    this.user_id = JSON.parse(localStorage.getItem("user")).id;
     this.getJob(this.$route.params.id);
     console.log("View Jobs");
     console.log(this.jobs);
@@ -7702,9 +7702,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      profile_id: 0,
+      user_id: 0,
       connections: {},
-      profiles: [],
+      users: [],
       loaded: false
     };
   },
@@ -7712,7 +7712,7 @@ __webpack_require__.r(__webpack_exports__);
     getConnections: function getConnections() {
       var pageNumber = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + this.profile_id + "/connections/incomming?page=" + pageNumber, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/users/auth/connections/incomming?page=" + pageNumber, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -7721,24 +7721,24 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error.response);
       });
     },
-    goToProfile: function goToProfile(profileId) {
+    goToProfile: function goToProfile(userId) {
       this.$router.push({
         name: "profile",
         params: {
-          id: profileId
+          id: userId
         }
       });
     },
-    acceptConnection: function acceptConnection(profileId, targetProfileId) {
+    acceptConnection: function acceptConnection(targetUserId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/profiles/" + profileId + "/connections/accept", {
-        target_profile_id: targetProfileId
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/users/auth/connections/accept", {
+        target_user_id: targetUserId
       }, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
         var connectionIndex = vm.connections.data.findIndex(function (el) {
-          return el.id == targetProfileId;
+          return el.id == targetUserId;
         });
         vm.connections.data.splice(connectionIndex, 1);
         vm.$notify({
@@ -7759,14 +7759,14 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    removeConnection: function removeConnection(profileId, targetProfileId) {
+    removeConnection: function removeConnection(targetUserId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/profiles/" + profileId + "/profiles/" + targetProfileId + "/connections/remove", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/users/auth/connections/remove/" + targetUserId, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
         var connectionIndex = vm.connections.data.findIndex(function (el) {
-          return el.id == targetProfileId;
+          return el.id == targetUserId;
         });
         vm.connections.data.splice(connectionIndex, 1);
         vm.$notify({
@@ -7794,8 +7794,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     var vm = this;
-    var profileId = JSON.parse(localStorage.getItem("user")).profile_id;
-    vm.profile_id = profileId;
+    var userId = JSON.parse(localStorage.getItem("user")).id;
+    vm.user_id = userId;
     vm.getConnections();
   },
   mounted: function mounted() {
@@ -7835,39 +7835,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      firstname: "",
-      lastname: "",
-      nickname: "",
-      gender: "",
-      birthdate: "",
-      email: "",
-      about: "",
-      avatar: "",
-      previewAvatar: "",
-      background_photo: "",
-      website: "",
-      country: "",
-      state: "",
-      city: "",
-      street: "",
-      university: "",
-      degree: "",
-      study_type: "",
-      skill_name: "",
-      start: "",
-      end: "",
-      position: "",
-      company_name: "",
+      user: {
+        profile: {},
+        phones: []
+      },
       phone: "",
-      phones: [],
-      followers: [],
+      previewAvatar: "",
+      user_id: 0,
       profile_id: 0,
       loaded: false
     };
   },
   computed: {
     getAvatar: function getAvatar() {
-      if (this.previewAvatar) return URL.createObjectURL(this.previewAvatar);else if (this.avatar) return this.avatar;else return "/images/assets/personal.jpg";
+      if (this.previewAvatar) return URL.createObjectURL(this.previewAvatar);else if (this.user.profile.avatar) return this.user.profile.avatar;else return "/images/assets/personal.jpg";
     }
   },
   methods: {
@@ -7875,30 +7856,30 @@ __webpack_require__.r(__webpack_exports__);
       this.previewAvatar = e.target.files[0];
       if (this.previewAvatar == undefined) this.previewAvatar = "";
     },
-    savePersonalInfo: function savePersonalInfo(profileId) {
+    savePersonalInfo: function savePersonalInfo(userId) {
       var vm = this;
       var data = new FormData();
       console.log(this.previewAvatar);
-      data.append("firstname", vm.firstname);
-      data.append("lastname", vm.lastname);
-      data.append("nickname", vm.nickname);
-      data.append("gender", vm.gender);
-      data.append("birthdate", vm.birthdate);
-      data.append("about", vm.about);
+      data.append("firstname", vm.user.profile.firstname);
+      data.append("lastname", vm.user.profile.lastname);
+      data.append("nickname", vm.user.profile.nickname);
+      data.append("gender", vm.user.profile.gender);
+      data.append("birthdate", vm.user.profile.birthdate);
+      data.append("about", vm.user.profile.about);
       data.append("avatar", vm.previewAvatar);
-      data.append("website", vm.website);
-      data.append("country", vm.country);
-      data.append("city", vm.city);
-      data.append("state", vm.state);
-      data.append("street", vm.street);
-      data.append("university", vm.university);
-      data.append("degree", vm.degree);
-      data.append("study_type", vm.study_type);
+      data.append("website", vm.user.profile.website);
+      data.append("country", vm.user.profile.country);
+      data.append("city", vm.user.profile.city);
+      data.append("state", vm.user.profile.state);
+      data.append("street", vm.user.profile.street);
+      data.append("university", vm.user.profile.university);
+      data.append("degree", vm.user.profile.degree);
+      data.append("study_type", vm.user.profile.study_type);
       data.append("_method", "put");
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/profiles/" + profileId + "", data, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/users/" + userId + "/profile", data, {
         headers: _helpers_formAuth__WEBPACK_IMPORTED_MODULE_2__["default"]
       }).then(function (response) {
-        vm.avatar = response.data.data.avatar;
+        vm.user.profile.avatar = response.data.data.avatar;
         console.log(response);
         vm.$notify({
           title: "نجاح",
@@ -7918,27 +7899,27 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    getProfilePhones: function getProfilePhones(profileId) {
+    getUserPhones: function getUserPhones(userId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + profileId + "/phones", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/users/" + userId + "/phones", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        vm.phones = response.data.data.phones;
+        vm.user.phones = response.data.data;
       })["catch"](function (error) {
         console.log(error.response);
         var errors = error.response.data.errors;
       });
     },
-    addPhone: function addPhone(profileId, myPhone) {
+    addPhone: function addPhone(userId, myPhone) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/profiles/" + profileId + "/phones", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/users/" + userId + "/phones", {
         phone: myPhone
       }, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        vm.phones.push(response.data.data);
+        vm.user.phones.push(response.data.data);
         vm.phone = "";
         vm.$notify({
           title: "نجاح",
@@ -7958,14 +7939,14 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    deletePhone: function deletePhone(profileId, phoneId) {
+    deletePhone: function deletePhone(userId, phoneId) {
       var vm = this;
-      var phoneIndex = vm.phones.findIndex(function (el) {
+      var phoneIndex = vm.user.phones.findIndex(function (el) {
         return el.id == phoneId;
       }); // vm.deletedPhones.push(vm.phones[phoneIndex]);
 
-      vm.phones.splice(phoneIndex, 1);
-      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/profiles/" + profileId + "/phones/" + phoneId, {
+      vm.user.phones.splice(phoneIndex, 1);
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/users/" + userId + "/phones/" + phoneId, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -7988,9 +7969,9 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    updatePhone: function updatePhone(profileId, phoneId, value) {
+    updatePhone: function updatePhone(userId, phoneId, value) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().put("/api/profiles/" + profileId + "/phones/" + phoneId, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().put("/api/users/" + userId + "/phones/" + phoneId, {
         phone: value
       }, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
@@ -8015,30 +7996,13 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    getProfileInfo: function getProfileInfo() {
+    getUserProfile: function getUserProfile(userId) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + vm.$route.params.id + "", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/users/" + userId + "/profile", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        vm.firstname = response.data.data.firstname;
-        vm.lastname = response.data.data.lastname;
-        vm.nickname = response.data.data.nickname;
-        vm.birthdate = response.data.data.birthdate;
-        vm.about = response.data.data.about;
-        vm.gender = response.data.data.gender;
-        vm.avatar = response.data.data.avatar;
-        vm.background_photo = response.data.data.background_photo;
-        vm.website = response.data.data.website;
-        vm.country = response.data.data.country;
-        vm.city = response.data.data.city;
-        vm.state = response.data.data.state;
-        vm.street = response.data.data.street;
-        vm.university = response.data.data.university;
-        vm.degree = response.data.data.degree;
-        vm.study_type = response.data.data.study_type;
-        vm.phones = response.data.data.phones;
-        vm.email = response.data.data.user.email;
+        vm.user.profile = response.data.data;
       })["catch"](function (error) {
         console.log(error.response);
       });
@@ -8053,8 +8017,10 @@ __webpack_require__.r(__webpack_exports__);
     Loading: _components_bootstrap_Loading_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
   },
   created: function created() {
+    this.user_id = JSON.parse(localStorage.getItem("user")).id;
     this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
-    this.getProfileInfo();
+    this.getUserProfile(this.$route.params.id);
+    this.getUserPhones(this.$route.params.id);
   },
   mounted: function mounted() {
     var vm = this;
@@ -8085,10 +8051,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuejs_paginate__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuejs-paginate */ "./node_modules/vuejs-paginate/dist/index.js");
 /* harmony import */ var vuejs_paginate__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vuejs_paginate__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _components_bootstrap_Loading_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../components/bootstrap/Loading.vue */ "./resources/js/components/bootstrap/Loading.vue");
-var _methods;
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 
 
 
@@ -8096,17 +8058,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      profile_id: 0,
+      user_id: 0,
       notifications: {},
-      profiles: [],
+      users: [],
       loaded: false
     };
   },
-  methods: (_methods = {
+  methods: {
     getNotifications: function getNotifications() {
       var pageNumber = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/profiles/" + this.profile_id + "/notifications?page=" + pageNumber, {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/users/auth/notifications?page=" + pageNumber, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
@@ -8115,11 +8077,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         console.log(error.response);
       });
     },
-    showProfile: function showProfile(profileId) {
+    showUser: function showUser(userId) {
       this.$router.push({
         name: "profile",
         params: {
-          id: profileId
+          id: userId
         }
       });
     },
@@ -8138,81 +8100,85 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           id: jobId
         }
       });
+    },
+    // showUser(userId) {
+    //     this.$router.push({
+    //         name: "user",
+    //         params: {
+    //             id: userId,
+    //         },
+    //     });
+    // },
+    getAlertClass: function getAlertClass(notification) {
+      if (notification.read_at == null) return "alert-info";else return "alert-light";
+    },
+    acceptConnection: function acceptConnection(targetUserId) {
+      var vm = this;
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/users/auth/connections/accept", {
+        target_user_id: targetUserId
+      }, {
+        headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
+      }).then(function (response) {
+        console.log(response);
+        var notificationIndex = vm.notifications.data.findIndex(function (el) {
+          return el.data.user_id == targetUserId;
+        });
+        vm.notifications.data.splice(notificationIndex, 1);
+        vm.$notify({
+          title: "نجاح",
+          text: "تم قبول طلب الإتصال بنجاح",
+          type: "success"
+        });
+      })["catch"](function (error) {
+        console.log(error.response);
+        var errors = error.response.data.errors;
+
+        for (var _error in errors) {
+          vm.$notify({
+            title: "خطأ:لم يتم تنفيذ",
+            text: errors[_error][0],
+            type: "error"
+          });
+        }
+      });
+    },
+    removeConnection: function removeConnection(targetUserId) {
+      var vm = this;
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/users/auth/connections/remove" + targetUserId, {
+        headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
+      }).then(function (response) {
+        console.log(response);
+        var notificationIndex = vm.notifications.data.findIndex(function (el) {
+          return el.data.user_id == targetUserId;
+        });
+        vm.notifications.data.splice(notificationIndex, 1);
+        vm.$notify({
+          title: "نجاح",
+          text: "تم حذف الطلب بنجاح",
+          type: "success"
+        });
+      })["catch"](function (error) {
+        console.log(error.response);
+        var errors = error.response.data.errors;
+
+        for (var _error2 in errors) {
+          vm.$notify({
+            title: "خطأ:لم يتم تنفيذ",
+            text: errors[_error2][0],
+            type: "error"
+          });
+        }
+      });
     }
-  }, _defineProperty(_methods, "showProfile", function showProfile(profileId) {
-    this.$router.push({
-      name: "profile",
-      params: {
-        id: profileId
-      }
-    });
-  }), _defineProperty(_methods, "getAlertClass", function getAlertClass(notification) {
-    if (notification.read_at == null) return "alert-info";else return "alert-light";
-  }), _defineProperty(_methods, "acceptConnection", function acceptConnection(profileId, targetProfileId) {
-    var vm = this;
-    axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/profiles/" + profileId + "/connections/accept", {
-      target_profile_id: targetProfileId
-    }, {
-      headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
-    }).then(function (response) {
-      console.log(response);
-      var notificationIndex = vm.notifications.data.findIndex(function (el) {
-        return el.data.profile_id == targetProfileId;
-      });
-      vm.notifications.data.splice(notificationIndex, 1);
-      vm.$notify({
-        title: "نجاح",
-        text: "تم قبول طلب الإتصال بنجاح",
-        type: "success"
-      });
-    })["catch"](function (error) {
-      console.log(error.response);
-      var errors = error.response.data.errors;
-
-      for (var _error in errors) {
-        vm.$notify({
-          title: "خطأ:لم يتم تنفيذ",
-          text: errors[_error][0],
-          type: "error"
-        });
-      }
-    });
-  }), _defineProperty(_methods, "removeConnection", function removeConnection(profileId, targetProfileId) {
-    var vm = this;
-    axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/profiles/" + profileId + "/profiles/" + targetProfileId + "/connections/remove", {
-      headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
-    }).then(function (response) {
-      console.log(response);
-      var notificationIndex = vm.notifications.data.findIndex(function (el) {
-        return el.data.profile_id == targetProfileId;
-      });
-      vm.notifications.data.splice(notificationIndex, 1);
-      vm.$notify({
-        title: "نجاح",
-        text: "تم حذف الطلب بنجاح",
-        type: "success"
-      });
-    })["catch"](function (error) {
-      console.log(error.response);
-      var errors = error.response.data.errors;
-
-      for (var _error2 in errors) {
-        vm.$notify({
-          title: "خطأ:لم يتم تنفيذ",
-          text: errors[_error2][0],
-          type: "error"
-        });
-      }
-    });
-  }), _methods),
+  },
   components: {
     Paginate: (vuejs_paginate__WEBPACK_IMPORTED_MODULE_2___default()),
     Loading: _components_bootstrap_Loading_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
   },
   created: function created() {
     var vm = this;
-    var profileId = JSON.parse(localStorage.getItem("user")).profile_id;
-    vm.profile_id = profileId;
+    var userId = JSON.parse(localStorage.getItem("user")).id;
+    vm.user_id = userId;
     vm.getNotifications();
   },
   mounted: function mounted() {
@@ -8446,21 +8412,21 @@ var render = function render() {
     }, [_c("img", {
       staticClass: "rounded-circle",
       attrs: {
-        src: _vm.previewAvatar(job.profile.avatar),
+        src: _vm.previewAvatar(job.user.profile.avatar),
         width: "50"
       },
       on: {
         click: function click($event) {
-          return _vm.goToProfile(job.profile.id);
+          return _vm.goToProfile(job.user.profile.id);
         }
       }
     }), _vm._v(" "), _c("div", {
       staticClass: "d-flex flex-column ml-2"
     }, [_c("span", {
       staticClass: "text-break name"
-    }, [_vm._v(_vm._s(job.profile.firstname) + "\n                                " + _vm._s(job.profile.lastname))]), _vm._v(" "), _c("small", {
+    }, [_vm._v(_vm._s(job.user.profile.firstname) + "\n                                " + _vm._s(job.user.profile.lastname))]), _vm._v(" "), _c("small", {
       staticClass: "mr-2 date"
-    }, [_vm._v(_vm._s(job.created_at_diff_for_humans))])])]), _vm._v(" "), job.profile_id == _vm.profile_id ? _c("div", {
+    }, [_vm._v(_vm._s(job.created_at_diff_for_humans))])])]), _vm._v(" "), job.user_id == _vm.user_id ? _c("div", {
       staticClass: "d-flex flex-row mt-1 gap-2"
     }, [_c("modal-snippet", {
       attrs: {
@@ -10806,7 +10772,7 @@ var render = function render() {
     staticClass: "container mt-5 mb-5"
   }, [!_vm.loaded ? _c("loading") : _vm._e(), _vm._v(" "), _vm.loaded ? _c("div", {
     staticClass: "row d-flex align-items-center justify-content-center"
-  }, [_vm.post && _vm.post.profile ? _c("div", {
+  }, [_vm.post && _vm.post.user ? _c("div", {
     staticClass: "col-md-12"
   }, [_c("div", {
     staticClass: "d-flex justify-content-between p-2 px-3"
@@ -10815,21 +10781,21 @@ var render = function render() {
   }, [_c("img", {
     staticClass: "rounded-circle",
     attrs: {
-      src: _vm.previewAvatar(_vm.post.profile.avatar),
+      src: _vm.previewAvatar(_vm.post.user.profile.avatar),
       width: "50"
     },
     on: {
       click: function click($event) {
-        return _vm.goToProfile(_vm.post.profile.id);
+        return _vm.goToProfile(_vm.post.user.profile.id);
       }
     }
   }), _vm._v(" "), _c("div", {
     staticClass: "d-flex flex-column ml-2"
   }, [_c("span", {
     staticClass: "text-break name"
-  }, [_vm._v(_vm._s(_vm.post.profile.firstname) + "\n                            " + _vm._s(_vm.post.profile.lastname))]), _vm._v(" "), _c("small", {
+  }, [_vm._v(_vm._s(_vm.post.user.profile.firstname) + "\n                            " + _vm._s(_vm.post.user.profile.lastname))]), _vm._v(" "), _c("small", {
     staticClass: "mr-2 date"
-  }, [_vm._v(_vm._s(_vm.post.created_at_diff_for_humans))])])]), _vm._v(" "), _vm.post.profile_id == _vm.profile_id ? _c("div", {
+  }, [_vm._v(_vm._s(_vm.post.created_at_diff_for_humans))])])]), _vm._v(" "), _vm.post.user_id == _vm.user_id ? _c("div", {
     staticClass: "d-flex flex-row mt-1 gap-2"
   }, [_c("modal-snippet", {
     attrs: {
@@ -10936,28 +10902,28 @@ var render = function render() {
     staticClass: "fa-solid fa-thumbs-up text-primary",
     on: {
       click: function click($event) {
-        return _vm.removeReactFromPost(_vm.profile_id, _vm.post.id);
+        return _vm.removeReactFromPost(_vm.user_id, _vm.post.id);
       }
     }
   }) : _c("i", {
     staticClass: "fa-solid fa-thumbs-up",
     on: {
       click: function click($event) {
-        return _vm.reactToPost(_vm.profile_id, _vm.post.id, 1);
+        return _vm.reactToPost(_vm.user_id, _vm.post.id, 1);
       }
     }
   }), _vm._v(" "), _c("span", [_vm._v("\n                            " + _vm._s(_vm._f("toNumber")(_vm.post.likes_count)) + "\n                        ")]), _vm._v(" "), _vm.post.react_type == 2 ? _c("i", {
     staticClass: "fa-solid fa-thumbs-down text-primary",
     on: {
       click: function click($event) {
-        return _vm.removeReactFromPost(_vm.profile_id, _vm.post.id);
+        return _vm.removeReactFromPost(_vm.user_id, _vm.post.id);
       }
     }
   }) : _c("i", {
     staticClass: "fa-solid fa-thumbs-down",
     on: {
       click: function click($event) {
-        return _vm.reactToPost(_vm.profile_id, _vm.post.id, 2);
+        return _vm.reactToPost(_vm.user_id, _vm.post.id, 2);
       }
     }
   }), _vm._v(" "), _c("span", [_vm._v("\n                            " + _vm._s(_vm._f("toNumber")(_vm.post.dislikes_count)) + "\n                        ")])]), _vm._v(" "), _c("div", {
@@ -11087,7 +11053,7 @@ var render = function render() {
     staticClass: "container mt-5 mb-5"
   }, [!_vm.loaded ? _c("loading") : _vm._e(), _vm._v(" "), _vm.loaded ? _c("div", {
     staticClass: "row d-flex align-items-center justify-title-center"
-  }, [_vm.job && _vm.job.profile ? _c("div", {
+  }, [_vm.job && _vm.job.user ? _c("div", {
     staticClass: "col-md-12"
   }, [_c("div", {
     staticClass: "d-flex justify-content-between p-2 px-3"
@@ -11096,21 +11062,21 @@ var render = function render() {
   }, [_c("img", {
     staticClass: "rounded-circle",
     attrs: {
-      src: _vm.previewAvatar(_vm.job.profile.avatar),
+      src: _vm.previewAvatar(_vm.job.user.profile.avatar),
       width: "50"
     },
     on: {
       click: function click($event) {
-        return _vm.goToProfile(_vm.job.profile.id);
+        return _vm.goToProfile(_vm.job.user.profile.id);
       }
     }
   }), _vm._v(" "), _c("div", {
     staticClass: "d-flex flex-column ml-2"
   }, [_c("span", {
     staticClass: "text-break name"
-  }, [_vm._v(_vm._s(_vm.job.profile.firstname) + "\n                            " + _vm._s(_vm.job.profile.lastname))]), _vm._v(" "), _c("small", {
+  }, [_vm._v(_vm._s(_vm.job.user.profile.firstname) + "\n                            " + _vm._s(_vm.job.user.profile.lastname))]), _vm._v(" "), _c("small", {
     staticClass: "mr-2 date"
-  }, [_vm._v(_vm._s(_vm.job.created_at_diff_for_humans))])])]), _vm._v(" "), _vm.job.profile_id == _vm.profile_id ? _c("div", {
+  }, [_vm._v(_vm._s(_vm.job.created_at_diff_for_humans))])])]), _vm._v(" "), _vm.job.user_id == _vm.user_id ? _c("div", {
     staticClass: "d-flex flex-row mt-1 gap-2"
   }, [_c("modal-snippet", {
     attrs: {
@@ -11272,10 +11238,10 @@ var render = function render() {
       staticClass: "max-width"
     }, [_c("div", {
       "class": "alert alert-info"
-    }, [_c("div", [_c("div", [connection.avatar != null ? _c("img", {
+    }, [_c("div", [_c("div", [connection.profile.avatar != null ? _c("img", {
       staticClass: "photo",
       attrs: {
-        src: connection.avatar,
+        src: connection.profile.avatar,
         alt: ""
       },
       on: {
@@ -11301,18 +11267,18 @@ var render = function render() {
           return _vm.goToProfile(connection.id);
         }
       }
-    }, [_vm._v("\n                                " + _vm._s(connection.firstname) + "\n                                " + _vm._s(connection.lastname) + "\n                            ")]), _vm._v(" "), _vm._m(0, true), _vm._v(" "), _c("div", [_c("button", {
+    }, [_vm._v("\n                                " + _vm._s(connection.profile.firstname) + "\n                                " + _vm._s(connection.profile.lastname) + "\n                            ")]), _vm._v(" "), _vm._m(0, true), _vm._v(" "), _c("div", [_c("button", {
       staticClass: "btn btn-success",
       on: {
         click: function click($event) {
-          return _vm.acceptConnection(_vm.profile_id, connection.id);
+          return _vm.acceptConnection(connection.id);
         }
       }
     }, [_vm._v("\n                                    تأكيد\n                                ")]), _vm._v(" "), _c("button", {
       staticClass: "btn btn-danger",
       on: {
         click: function click($event) {
-          return _vm.removeConnection(_vm.profile_id, connection.id);
+          return _vm.removeConnection(connection.id);
         }
       }
     }, [_vm._v("\n                                    حذف\n                                ")])])])])])]);
@@ -11388,11 +11354,11 @@ var render = function render() {
     }
   }), _c("span", {
     staticClass: "font-weight-bold text-break"
-  }, [_vm._v(_vm._s(_vm.firstname) + " " + _vm._s(_vm.lastname))]), _vm._v(" "), _vm.nickname ? _c("span", {
+  }, [_vm._v(_vm._s(_vm.user.profile.firstname) + "\n                        " + _vm._s(_vm.user.profile.lastname))]), _vm._v(" "), _vm.user.profile.nickname ? _c("span", {
     staticClass: "font-weight-bold text-break"
-  }, [_vm._v("(" + _vm._s(_vm.nickname) + ")")]) : _vm._e(), _vm._v(" "), _c("span", {
+  }, [_vm._v("(" + _vm._s(_vm.user.profile.nickname) + ")")]) : _vm._e(), _vm._v(" "), _c("span", {
     staticClass: "text-black-50 text-break"
-  }, [_vm._v(_vm._s(_vm.email))])]), _vm._v(" "), _c("div", {
+  }, [_vm._v(_vm._s(_vm.user.profile.user.email))])]), _vm._v(" "), _c("div", {
     staticClass: "mar-1"
   }, [_c("label", {
     staticClass: "form-label",
@@ -11403,8 +11369,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.about,
-      expression: "about"
+      value: _vm.user.profile.about,
+      expression: "user.profile.about"
     }],
     staticClass: "form-control",
     attrs: {
@@ -11416,12 +11382,13 @@ var render = function render() {
       placeholder: "عني"
     },
     domProps: {
-      value: _vm.about
+      value: _vm.user.profile.about
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.about = $event.target.value;
+
+        _vm.$set(_vm.user.profile, "about", $event.target.value);
       }
     }
   })])]), _vm._v(" "), _c("div", {
@@ -11440,8 +11407,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.firstname,
-      expression: "firstname"
+      value: _vm.user.profile.firstname,
+      expression: "user.profile.firstname"
     }],
     staticClass: "form-control",
     attrs: {
@@ -11450,12 +11417,13 @@ var render = function render() {
       name: "firstname"
     },
     domProps: {
-      value: _vm.firstname
+      value: _vm.user.profile.firstname
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.firstname = $event.target.value;
+
+        _vm.$set(_vm.user.profile, "firstname", $event.target.value);
       }
     }
   })]), _vm._v(" "), _c("div", {
@@ -11466,8 +11434,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.lastname,
-      expression: "lastname"
+      value: _vm.user.profile.lastname,
+      expression: "user.profile.lastname"
     }],
     staticClass: "form-control",
     attrs: {
@@ -11476,12 +11444,13 @@ var render = function render() {
       name: "lastname"
     },
     domProps: {
-      value: _vm.lastname
+      value: _vm.user.profile.lastname
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.lastname = $event.target.value;
+
+        _vm.$set(_vm.user.profile, "lastname", $event.target.value);
       }
     }
   })]), _vm._v(" "), _c("div", {
@@ -11492,8 +11461,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.nickname,
-      expression: "nickname"
+      value: _vm.user.profile.nickname,
+      expression: "user.profile.nickname"
     }],
     staticClass: "form-control",
     attrs: {
@@ -11502,12 +11471,13 @@ var render = function render() {
       name: "nickname"
     },
     domProps: {
-      value: _vm.nickname
+      value: _vm.user.profile.nickname
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.nickname = $event.target.value;
+
+        _vm.$set(_vm.user.profile, "nickname", $event.target.value);
       }
     }
   })]), _vm._v(" "), _c("div", {
@@ -11518,8 +11488,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.gender,
-      expression: "gender"
+      value: _vm.user.profile.gender,
+      expression: "user.profile.gender"
     }],
     staticClass: "form-control",
     attrs: {
@@ -11534,10 +11504,11 @@ var render = function render() {
           var val = "_value" in o ? o._value : o.value;
           return val;
         });
-        _vm.gender = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+
+        _vm.$set(_vm.user.profile, "gender", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
       }
     }
-  }, [_vm.gender == "ذكر" ? _c("option", {
+  }, [_vm.user.profile.gender == "ذكر" ? _c("option", {
     attrs: {
       value: "ذكر",
       selected: ""
@@ -11546,7 +11517,7 @@ var render = function render() {
     attrs: {
       value: "ذكر"
     }
-  }, [_vm._v("ذكر")]), _vm._v(" "), _vm.gender == "أنثى" ? _c("option", {
+  }, [_vm._v("ذكر")]), _vm._v(" "), _vm.user.profile.gender == "أنثى" ? _c("option", {
     attrs: {
       value: "أنثى",
       selected: ""
@@ -11566,8 +11537,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.about,
-      expression: "about"
+      value: _vm.user.profile.about,
+      expression: "user.profile.about"
     }],
     staticClass: "form-control",
     attrs: {
@@ -11578,12 +11549,13 @@ var render = function render() {
       placeholder: "عني"
     },
     domProps: {
-      value: _vm.about
+      value: _vm.user.profile.about
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.about = $event.target.value;
+
+        _vm.$set(_vm.user.profile, "about", $event.target.value);
       }
     }
   })]), _vm._v(" "), _c("div", {
@@ -11609,7 +11581,7 @@ var render = function render() {
     staticClass: "row mt-3"
   }, [_c("h4", [_vm._v("أرقام الهواتف")]), _vm._v(" "), _c("ul", {
     staticClass: "list-group list"
-  }, _vm._l(_vm.phones, function (p, i) {
+  }, _vm._l(_vm.user.phones, function (p, i) {
     return _c("li", {
       key: i,
       staticClass: "text-center list-group-item"
@@ -11628,7 +11600,7 @@ var render = function render() {
       },
       on: {
         confirmEvent: function confirmEvent($event) {
-          return _vm.deletePhone(_vm.profile_id, p.id);
+          return _vm.deletePhone(_vm.user_id, p.id);
         }
       }
     }, [_vm._v("\n                                            هل أنت متأكد من حذف هذا الرقم\n                                            " + _vm._s(p.phone) + " ؟\n                                        ")]), _vm._v(" "), _c("modal-snippet", {
@@ -11643,10 +11615,10 @@ var render = function render() {
       },
       on: {
         closeEvent: function closeEvent($event) {
-          return _vm.getProfilePhones(_vm.profile_id);
+          return _vm.getUserPhones(_vm.user_id);
         },
         confirmEvent: function confirmEvent($event) {
-          return _vm.updatePhone(_vm.profile_id, p.id, p.phone);
+          return _vm.updatePhone(_vm.user_id, p.id, p.phone);
         }
       }
     }, [_c("div", {
@@ -11692,7 +11664,7 @@ var render = function render() {
     },
     on: {
       confirmEvent: function confirmEvent($event) {
-        return _vm.addPhone(_vm.profile_id, _vm.phone);
+        return _vm.addPhone(_vm.user_id, _vm.phone);
       }
     }
   }, [_c("div", {
@@ -11729,8 +11701,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.birthdate,
-      expression: "birthdate"
+      value: _vm.user.profile.birthdate,
+      expression: "user.profile.birthdate"
     }],
     staticClass: "form-control",
     attrs: {
@@ -11739,12 +11711,13 @@ var render = function render() {
       name: "birthdate"
     },
     domProps: {
-      value: _vm.birthdate
+      value: _vm.user.profile.birthdate
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.birthdate = $event.target.value;
+
+        _vm.$set(_vm.user.profile, "birthdate", $event.target.value);
       }
     }
   })]), _vm._v(" "), _c("div", {
@@ -11755,8 +11728,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.country,
-      expression: "country"
+      value: _vm.user.profile.country,
+      expression: "user.profile.country"
     }],
     staticClass: "form-control",
     attrs: {
@@ -11765,12 +11738,13 @@ var render = function render() {
       name: "country"
     },
     domProps: {
-      value: _vm.country
+      value: _vm.user.profile.country
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.country = $event.target.value;
+
+        _vm.$set(_vm.user.profile, "country", $event.target.value);
       }
     }
   })]), _vm._v(" "), _c("div", {
@@ -11781,8 +11755,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.state,
-      expression: "state"
+      value: _vm.user.profile.state,
+      expression: "user.profile.state"
     }],
     staticClass: "form-control",
     attrs: {
@@ -11791,12 +11765,13 @@ var render = function render() {
       name: "state"
     },
     domProps: {
-      value: _vm.state
+      value: _vm.user.profile.state
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.state = $event.target.value;
+
+        _vm.$set(_vm.user.profile, "state", $event.target.value);
       }
     }
   })]), _vm._v(" "), _c("div", {
@@ -11807,8 +11782,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.city,
-      expression: "city"
+      value: _vm.user.profile.city,
+      expression: "user.profile.city"
     }],
     staticClass: "form-control",
     attrs: {
@@ -11817,12 +11792,13 @@ var render = function render() {
       name: "city"
     },
     domProps: {
-      value: _vm.city
+      value: _vm.user.profile.city
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.city = $event.target.value;
+
+        _vm.$set(_vm.user.profile, "city", $event.target.value);
       }
     }
   })]), _vm._v(" "), _c("div", {
@@ -11833,8 +11809,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.street,
-      expression: "street"
+      value: _vm.user.profile.street,
+      expression: "user.profile.street"
     }],
     staticClass: "form-control",
     attrs: {
@@ -11843,12 +11819,13 @@ var render = function render() {
       name: "street"
     },
     domProps: {
-      value: _vm.street
+      value: _vm.user.profile.street
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.street = $event.target.value;
+
+        _vm.$set(_vm.user.profile, "street", $event.target.value);
       }
     }
   })]), _vm._v(" "), _c("div", {
@@ -11859,8 +11836,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.website,
-      expression: "website"
+      value: _vm.user.profile.website,
+      expression: "user.profile.website"
     }],
     staticClass: "form-control",
     attrs: {
@@ -11869,12 +11846,13 @@ var render = function render() {
       name: "website"
     },
     domProps: {
-      value: _vm.website
+      value: _vm.user.profile.website
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.website = $event.target.value;
+
+        _vm.$set(_vm.user.profile, "website", $event.target.value);
       }
     }
   })]), _vm._v(" "), _c("div", {
@@ -11887,8 +11865,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.university,
-      expression: "university"
+      value: _vm.user.profile.university,
+      expression: "user.profile.university"
     }],
     staticClass: "form-control",
     attrs: {
@@ -11897,12 +11875,13 @@ var render = function render() {
       name: "university"
     },
     domProps: {
-      value: _vm.university
+      value: _vm.user.profile.university
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.university = $event.target.value;
+
+        _vm.$set(_vm.user.profile, "university", $event.target.value);
       }
     }
   })]), _vm._v(" "), _c("div", {
@@ -11913,8 +11892,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.degree,
-      expression: "degree"
+      value: _vm.user.profile.degree,
+      expression: "user.profile.degree"
     }],
     staticClass: "form-control",
     attrs: {
@@ -11923,12 +11902,13 @@ var render = function render() {
       name: "degree"
     },
     domProps: {
-      value: _vm.degree
+      value: _vm.user.profile.degree
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.degree = $event.target.value;
+
+        _vm.$set(_vm.user.profile, "degree", $event.target.value);
       }
     }
   })]), _vm._v(" "), _c("div", {
@@ -11939,8 +11919,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.study_type,
-      expression: "study_type"
+      value: _vm.user.profile.study_type,
+      expression: "user.profile.study_type"
     }],
     staticClass: "form-control",
     attrs: {
@@ -11949,12 +11929,13 @@ var render = function render() {
       name: "study_type"
     },
     domProps: {
-      value: _vm.study_type
+      value: _vm.user.profile.study_type
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.study_type = $event.target.value;
+
+        _vm.$set(_vm.user.profile, "study_type", $event.target.value);
       }
     }
   })])])]), _vm._v(" "), _c("div", {
@@ -11972,7 +11953,7 @@ var render = function render() {
     },
     on: {
       confirmEvent: function confirmEvent($event) {
-        return _vm.savePersonalInfo(_vm.profile_id);
+        return _vm.savePersonalInfo(_vm.user_id);
       }
     }
   }, [_vm._v("\n                                هل أنت متأكد من حفظ الملف الشخصي\n                            ")])], 1)])])])])]) : _vm._e()], 1);
@@ -12034,7 +12015,7 @@ var render = function render() {
       },
       on: {
         click: function click($event) {
-          return _vm.showProfile(notification.data.profile_id);
+          return _vm.showUser(notification.data.user_id);
         }
       }
     }) : _c("img", {
@@ -12045,14 +12026,14 @@ var render = function render() {
       },
       on: {
         click: function click($event) {
-          return _vm.showProfile(notification.data.profile_id);
+          return _vm.showUser(notification.data.user_id);
         }
       }
     }), _vm._v(" "), _c("b", {
       staticClass: "text-break fullname",
       on: {
         click: function click($event) {
-          return _vm.showProfile(notification.data.profile_id);
+          return _vm.showUser(notification.data.user_id);
         }
       }
     }, [_vm._v("\n                                " + _vm._s(notification.data.profile.firstname) + "\n                                " + _vm._s(notification.data.profile.lastname) + "\n                            ")]), _vm._v(" "), notification.type == "App\\Notifications\\CreatePostNotification" ? _c("div", {
@@ -12069,7 +12050,9 @@ var render = function render() {
       staticClass: "text-break"
     }, [_c("b", [_vm._v("قام بعرض وظيفة جديدة")]), _vm._v(" "), _c("div", {
       staticClass: "limited"
-    }, [notification.data.job ? _c("span", [_vm._v('\n                                        "' + _vm._s(notification.data.job.title) + '"\n                                    ')]) : _vm._e()])]) : _vm._e()])]) : _vm._e()])]);
+    }, [notification.data.job ? _c("span", [_vm._v('\n                                        "' + _vm._s(notification.data.job.title) + '"\n                                    ')]) : _vm._e()])]) : notification.type == "App\\Notifications\\FollowNotification" ? _c("div", {
+      staticClass: "text-break"
+    }, [_c("b", [_vm._v("يتابعك الأن")])]) : _vm._e()])]) : _vm._e()])]);
   }), _vm._v(" "), _vm.notifications.last_page > 1 ? _c("paginate", {
     attrs: {
       "page-count": _vm.notifications.last_page,
@@ -12425,17 +12408,17 @@ router.beforeEach(function (to, from, next) {
       name: "login"
     });
   } else {
-    var profileId = JSON.parse(localStorage.getItem("user")).profile_id;
+    var userId = JSON.parse(localStorage.getItem("user")).id;
     if (!routes.includes(to.name)) next({
       name: "feed" // params: {
-      //     id: profileId,
+      //     id: userId,
       // },
 
     });
-    if (to.name == "profile.edit" && to.params["id"] != profileId) return next({
+    if (to.name == "profile.edit" && to.params["id"] != userId) return next({
       name: "profile.edit",
       params: {
-        id: profileId
+        id: userId
       }
     });
   }
@@ -18262,7 +18245,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-88598018] {\n    /* background: rgb(99, 39, 120); */\n}\n.form-control[data-v-88598018]:focus {\n    box-shadow: none;\n    /* border-color: #ba68c8; */\n}\n.profile-button[data-v-88598018] {\n    /* background: rgb(99, 39, 120); */\n    box-shadow: none;\n    border: none;\n}\n.profile-button[data-v-88598018]:hover {\n    /* background: #682773; */\n}\n.profile-button[data-v-88598018]:focus {\n    /* background: #198754; */\n    box-shadow: none;\n}\n.profile-button[data-v-88598018]:active {\n    /* background: #682773; */\n    box-shadow: none;\n}\n.back[data-v-88598018]:hover {\n    /* color: #682773; */\n    cursor: pointer;\n}\n.labels[data-v-88598018] {\n    font-size: 16px;\n}\n.add-experience[data-v-88598018]:hover {\n    background: #ba68c8;\n    color: #fff;\n    cursor: pointer;\n    border: solid 1px #ba68c8;\n}\ntextarea[data-v-88598018] {\n    resize: none;\n}\n.alert[data-v-88598018] {\n    margin-top: 10px;\n    margin-bottom: 10px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-88598018] {\n    /* background: rgb(99, 39, 120); */\n}\n.form-control[data-v-88598018]:focus {\n    box-shadow: none;\n    /* border-color: #ba68c8; */\n}\n.user-button[data-v-88598018] {\n    /* background: rgb(99, 39, 120); */\n    box-shadow: none;\n    border: none;\n}\n.user-button[data-v-88598018]:hover {\n    /* background: #682773; */\n}\n.user-button[data-v-88598018]:focus {\n    /* background: #198754; */\n    box-shadow: none;\n}\n.user-button[data-v-88598018]:active {\n    /* background: #682773; */\n    box-shadow: none;\n}\n.back[data-v-88598018]:hover {\n    /* color: #682773; */\n    cursor: pointer;\n}\n.labels[data-v-88598018] {\n    font-size: 16px;\n}\n.add-experience[data-v-88598018]:hover {\n    background: #ba68c8;\n    color: #fff;\n    cursor: pointer;\n    border: solid 1px #ba68c8;\n}\ntextarea[data-v-88598018] {\n    resize: none;\n}\n.alert[data-v-88598018] {\n    margin-top: 10px;\n    margin-bottom: 10px;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

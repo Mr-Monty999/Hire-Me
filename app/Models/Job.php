@@ -11,7 +11,7 @@ class Job extends Model
 
     protected $fillable = ["title", "description", "location", "user_id"];
 
-    protected $with = ["user:id,firstname,lastname,avatar"];
+    protected $with = ["user.profile"];
 
     public function user()
     {

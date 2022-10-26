@@ -140,7 +140,7 @@ class PostService
     public static function searchForPost($content)
     {
         $content = trim($content);
-        $userId = Auth::user()->user->id;
+        $userId = Auth::id();
 
 
         $posts = Post::with([

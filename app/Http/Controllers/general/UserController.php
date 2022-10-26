@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\general;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProfileUpdateRquest;
 use App\Http\Requests\UserFollowStoreRequest;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegisterRequest;
 use App\Models\User;
 use App\Services\NotificationService;
+use App\Services\ProfileService;
 use App\Services\ResponseService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -28,6 +30,8 @@ class UserController extends Controller
         $this->middleware("permission:view-users")->only(["index", "show"]);
         $this->middleware("permission:edit-users")->only(["update"]);
         $this->middleware("permission:delete-users")->only(["destroy"]);
+        $this->middleware("permission:view-profiles")->only(["showProfile"]);
+        $this->middleware("permission:edit-profiles")->only(["updateProfile"]);
     }
     public function index()
     {
@@ -87,6 +91,11 @@ class UserController extends Controller
         $profile = UserService::showProfile($userId);
         return ResponseService::json($profile);
     }
+    public function updateProfile(ProfileUpdateRquest $request, $userId)
+    {
+        $profile =   ProfileService::update($request, User::findOrFail($userId)->profile);
+        return ResponseService::json($profile, "تم حفظ الملف الشخصي بنجاح");
+    }
     public function showPosts($userId)
     {
         $posts =  UserService::showPosts($userId);
@@ -97,7 +106,10 @@ class UserController extends Controller
     {
 
         $user = UserService::followUser(Auth::id(), $targetUserId);
-        NotificationService::sendFollowNotification(["user_id" => $targetUserId]);
+        NotificationService::sendFollowNotification([
+            "notifiable_id" => $targetUserId,
+            "user_id" => Auth::id(),
+        ]);
         return ResponseService::json($user, "تم المتابعة بنجاح");
     }
     public function unFollowUser($targetUserId)
@@ -111,9 +123,9 @@ class UserController extends Controller
         return ResponseService::json($exist, "تمت العملية بنجاح");
     }
 
-    public function getNotifications($id)
+    public function getNotifications()
     {
-
+        $id = Auth::id();
         $notifications = NotificationService::getUserAllReceivedNotifications($id);
         $data["notifications"] = $notifications;
         $data["unreaded_notifications_count"] = NotificationService::getUserUnReadedNotificationsCount($id);
@@ -149,8 +161,9 @@ class UserController extends Controller
         return ResponseService::json($data, "تمت العملية بنجاح");
     }
 
-    public function acceptConnectionRequest(Request $request, $userId)
+    public function acceptConnectionRequest(Request $request)
     {
+        $userId = Auth::id();
         $data = UserService::acceptConnectionRequest($userId, $request->target_user_id);
 
         return ResponseService::json($data, "تمت العملية بنجاح");
@@ -168,8 +181,9 @@ class UserController extends Controller
 
         return ResponseService::json($data, "تمت العملية بنجاح");
     }
-    public function getAllIncommingConnections($userId)
+    public function getAllIncommingConnections()
     {
+        $userId = Auth::id();
         $data = UserService::getAllIncommingConnections($userId);
 
         return ResponseService::json($data, "تمت العملية بنجاح");

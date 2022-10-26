@@ -8,6 +8,7 @@ use App\Http\Requests\UserPhoneUpdateRequest;
 use App\Models\User;
 use App\Models\UserPhone;
 use App\Services\ResponseService;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 
 class UserPhoneController extends Controller
@@ -28,7 +29,8 @@ class UserPhoneController extends Controller
 
     public function index($userId)
     {
-        $phones =  User::with("phones")->find($userId)->only("phones");
+
+        $phones =  UserService::showPhones($userId);
         // $phones = UserPhone::where("user_id", $userId)->get();
 
         return ResponseService::json($phones, "تم جلب أرقام الهواتف بنجاح");

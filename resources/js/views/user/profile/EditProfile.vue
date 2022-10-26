@@ -15,22 +15,23 @@
                             width="150px"
                             :src="getAvatar"
                         /><span class="font-weight-bold text-break"
-                            >{{ firstname }} {{ lastname }}</span
+                            >{{ user.profile.firstname }}
+                            {{ user.profile.lastname }}</span
                         >
                         <span
-                            v-if="nickname"
+                            v-if="user.profile.nickname"
                             class="font-weight-bold text-break"
-                            >({{ nickname }})</span
+                            >({{ user.profile.nickname }})</span
                         >
                         <span class="text-black-50 text-break">{{
-                            email
+                            user.profile.user.email
                         }}</span>
                     </div>
                     <div class="mar-1">
                         <label for="" class="form-label">حول</label>
                         <textarea
                             name="about"
-                            v-model="about"
+                            v-model="user.profile.about"
                             class="form-control"
                             id=""
                             cols="50"
@@ -54,7 +55,7 @@
                                         class="form-control"
                                         placeholder="الإسم الأول"
                                         name="firstname"
-                                        v-model="firstname"
+                                        v-model="user.profile.firstname"
                                     />
                                 </div>
                                 <div class="col-md-6">
@@ -65,7 +66,7 @@
                                         class="form-control"
                                         placeholder="إسم العائلة"
                                         name="lastname"
-                                        v-model="lastname"
+                                        v-model="user.profile.lastname"
                                     />
                                 </div>
 
@@ -77,7 +78,7 @@
                                         class="form-control"
                                         placeholder="اللقب"
                                         name="nickname"
-                                        v-model="nickname"
+                                        v-model="user.profile.nickname"
                                     />
                                 </div>
                                 <div class="col-md-6">
@@ -88,11 +89,11 @@
                                         class="form-control"
                                         name="gender"
                                         id="gender"
-                                        v-model="gender"
+                                        v-model="user.profile.gender"
                                     >
                                         <option
                                             value="ذكر"
-                                            v-if="gender == 'ذكر'"
+                                            v-if="user.profile.gender == 'ذكر'"
                                             selected
                                         >
                                             ذكر
@@ -101,7 +102,7 @@
 
                                         <option
                                             value="أنثى"
-                                            v-if="gender == 'أنثى'"
+                                            v-if="user.profile.gender == 'أنثى'"
                                             selected
                                         >
                                             انثى
@@ -115,7 +116,7 @@
                                     <label for="" class="form-label">حول</label>
                                     <textarea
                                         name="about"
-                                        v-model="about"
+                                        v-model="user.profile.about"
                                         class="form-control"
                                         id=""
                                         cols="50"
@@ -146,7 +147,7 @@
                                 <ul class="list-group list">
                                     <li
                                         class="text-center list-group-item"
-                                        v-for="(p, i) in phones"
+                                        v-for="(p, i) in user.phones"
                                         :key="i"
                                     >
                                         <p>{{ p.phone }}</p>
@@ -163,10 +164,7 @@
                                                 :name="'deletePhone' + i"
                                                 confirmAndClosed
                                                 @confirmEvent="
-                                                    deletePhone(
-                                                        profile_id,
-                                                        p.id
-                                                    )
+                                                    deletePhone(user_id, p.id)
                                                 "
                                             >
                                                 هل أنت متأكد من حذف هذا الرقم
@@ -181,11 +179,11 @@
                                                 confirmButtonClass="btn btn-warning"
                                                 :name="'editPhone' + i"
                                                 @closeEvent="
-                                                    getProfilePhones(profile_id)
+                                                    getUserPhones(user_id)
                                                 "
                                                 @confirmEvent="
                                                     updatePhone(
-                                                        profile_id,
+                                                        user_id,
                                                         p.id,
                                                         p.phone
                                                     )
@@ -218,9 +216,7 @@
                                         confirmButtonClass="btn btn-success"
                                         name="addPhone"
                                         confirmAndClosed
-                                        @confirmEvent="
-                                            addPhone(profile_id, phone)
-                                        "
+                                        @confirmEvent="addPhone(user_id, phone)"
                                     >
                                         <div class="col-md-12">
                                             <label class="labels form-label">
@@ -244,7 +240,7 @@
                                         class="form-control"
                                         placeholder="تاريخ الميلاد"
                                         name="birthdate"
-                                        v-model="birthdate"
+                                        v-model="user.profile.birthdate"
                                     />
                                 </div>
                                 <div class="col-md-6">
@@ -255,7 +251,7 @@
                                         class="form-control"
                                         placeholder="الدولة"
                                         name="country"
-                                        v-model="country"
+                                        v-model="user.profile.country"
                                     />
                                 </div>
                                 <div class="col-md-6">
@@ -266,7 +262,7 @@
                                         class="form-control"
                                         placeholder="الولاية"
                                         name="state"
-                                        v-model="state"
+                                        v-model="user.profile.state"
                                     />
                                 </div>
                                 <div class="col-md-6">
@@ -277,7 +273,7 @@
                                         class="form-control"
                                         placeholder="المدينة"
                                         name="city"
-                                        v-model="city"
+                                        v-model="user.profile.city"
                                     />
                                 </div>
                                 <div class="col-md-6">
@@ -288,7 +284,7 @@
                                         class="form-control"
                                         placeholder="الشارع"
                                         name="street"
-                                        v-model="street"
+                                        v-model="user.profile.street"
                                     />
                                 </div>
                                 <div class="col-md-6">
@@ -299,7 +295,7 @@
                                         class="form-control"
                                         placeholder="الموقع الإكتروني"
                                         name="website"
-                                        v-model="website"
+                                        v-model="user.profile.website"
                                     />
                                 </div>
                                 <div class="p-3 py-5 row">
@@ -316,7 +312,7 @@
                                             class="form-control"
                                             placeholder="الجامعة"
                                             name="university"
-                                            v-model="university"
+                                            v-model="user.profile.university"
                                         />
                                     </div>
                                     <div class="col-md-6">
@@ -327,7 +323,7 @@
                                             class="form-control"
                                             placeholder="الدرجة العلمية"
                                             name="degree"
-                                            v-model="degree"
+                                            v-model="user.profile.degree"
                                         />
                                     </div>
                                     <div class="col-md-6">
@@ -338,7 +334,7 @@
                                             class="form-control"
                                             placeholder="نوع التخصص"
                                             name="study_type"
-                                            v-model="study_type"
+                                            v-model="user.profile.study_type"
                                         />
                                     </div>
                                 </div>
@@ -353,7 +349,7 @@
                                     confirmButtonClass="btn btn-warning"
                                     name="savePersonalInfo"
                                     confirmAndClosed
-                                    @confirmEvent="savePersonalInfo(profile_id)"
+                                    @confirmEvent="savePersonalInfo(user_id)"
                                 >
                                     هل أنت متأكد من حفظ الملف الشخصي
                                 </modal-snippet>
@@ -377,32 +373,13 @@ import ModalSnippet from "../../../components/bootstrap/ModalSnippet.vue";
 export default {
     data() {
         return {
-            firstname: "",
-            lastname: "",
-            nickname: "",
-            gender: "",
-            birthdate: "",
-            email: "",
-            about: "",
-            avatar: "",
-            previewAvatar: "",
-            background_photo: "",
-            website: "",
-            country: "",
-            state: "",
-            city: "",
-            street: "",
-            university: "",
-            degree: "",
-            study_type: "",
-            skill_name: "",
-            start: "",
-            end: "",
-            position: "",
-            company_name: "",
+            user: {
+                profile: {},
+                phones: [],
+            },
             phone: "",
-            phones: [],
-            followers: [],
+            previewAvatar: "",
+            user_id: 0,
             profile_id: 0,
             loaded: false,
         };
@@ -411,7 +388,7 @@ export default {
         getAvatar() {
             if (this.previewAvatar)
                 return URL.createObjectURL(this.previewAvatar);
-            else if (this.avatar) return this.avatar;
+            else if (this.user.profile.avatar) return this.user.profile.avatar;
             else return "/images/assets/personal.jpg";
         },
     },
@@ -420,33 +397,33 @@ export default {
             this.previewAvatar = e.target.files[0];
             if (this.previewAvatar == undefined) this.previewAvatar = "";
         },
-        savePersonalInfo(profileId) {
+        savePersonalInfo(userId) {
             var vm = this;
             var data = new FormData();
             console.log(this.previewAvatar);
 
-            data.append("firstname", vm.firstname);
-            data.append("lastname", vm.lastname);
-            data.append("nickname", vm.nickname);
-            data.append("gender", vm.gender);
-            data.append("birthdate", vm.birthdate);
-            data.append("about", vm.about);
+            data.append("firstname", vm.user.profile.firstname);
+            data.append("lastname", vm.user.profile.lastname);
+            data.append("nickname", vm.user.profile.nickname);
+            data.append("gender", vm.user.profile.gender);
+            data.append("birthdate", vm.user.profile.birthdate);
+            data.append("about", vm.user.profile.about);
             data.append("avatar", vm.previewAvatar);
-            data.append("website", vm.website);
-            data.append("country", vm.country);
-            data.append("city", vm.city);
-            data.append("state", vm.state);
-            data.append("street", vm.street);
-            data.append("university", vm.university);
-            data.append("degree", vm.degree);
-            data.append("study_type", vm.study_type);
+            data.append("website", vm.user.profile.website);
+            data.append("country", vm.user.profile.country);
+            data.append("city", vm.user.profile.city);
+            data.append("state", vm.user.profile.state);
+            data.append("street", vm.user.profile.street);
+            data.append("university", vm.user.profile.university);
+            data.append("degree", vm.user.profile.degree);
+            data.append("study_type", vm.user.profile.study_type);
             data.append("_method", "put");
             axios
-                .post("/api/profiles/" + profileId + "", data, {
+                .post("/api/users/" + userId + "/profile", data, {
                     headers: headerFormAuth,
                 })
                 .then(function (response) {
-                    vm.avatar = response.data.data.avatar;
+                    vm.user.profile.avatar = response.data.data.avatar;
                     console.log(response);
                     vm.$notify({
                         title: "نجاح",
@@ -466,28 +443,28 @@ export default {
                     }
                 });
         },
-        getProfilePhones(profileId) {
+        getUserPhones(userId) {
             var vm = this;
 
             axios
-                .get("/api/profiles/" + profileId + "/phones", {
+                .get("/api/users/" + userId + "/phones", {
                     headers: headerAuth,
                 })
                 .then(function (response) {
                     console.log(response);
-                    vm.phones = response.data.data.phones;
+                    vm.user.phones = response.data.data;
                 })
                 .catch(function (error) {
                     console.log(error.response);
                     var errors = error.response.data.errors;
                 });
         },
-        addPhone(profileId, myPhone) {
+        addPhone(userId, myPhone) {
             var vm = this;
 
             axios
                 .post(
-                    "/api/profiles/" + profileId + "/phones",
+                    "/api/users/" + userId + "/phones",
                     {
                         phone: myPhone,
                     },
@@ -498,7 +475,7 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
-                    vm.phones.push(response.data.data);
+                    vm.user.phones.push(response.data.data);
                     vm.phone = "";
                     vm.$notify({
                         title: "نجاح",
@@ -518,14 +495,14 @@ export default {
                     }
                 });
         },
-        deletePhone(profileId, phoneId) {
+        deletePhone(userId, phoneId) {
             var vm = this;
-            var phoneIndex = vm.phones.findIndex((el) => el.id == phoneId);
+            var phoneIndex = vm.user.phones.findIndex((el) => el.id == phoneId);
             // vm.deletedPhones.push(vm.phones[phoneIndex]);
-            vm.phones.splice(phoneIndex, 1);
+            vm.user.phones.splice(phoneIndex, 1);
             axios
                 .delete(
-                    "/api/profiles/" + profileId + "/phones/" + phoneId,
+                    "/api/users/" + userId + "/phones/" + phoneId,
 
                     {
                         headers: headerAuth,
@@ -552,11 +529,11 @@ export default {
                     }
                 });
         },
-        updatePhone(profileId, phoneId, value) {
+        updatePhone(userId, phoneId, value) {
             var vm = this;
             axios
                 .put(
-                    "/api/profiles/" + profileId + "/phones/" + phoneId,
+                    "/api/users/" + userId + "/phones/" + phoneId,
                     {
                         phone: value,
                     },
@@ -586,34 +563,17 @@ export default {
                     }
                 });
         },
-        getProfileInfo() {
+        getUserProfile(userId) {
             var vm = this;
 
             axios
-                .get("/api/profiles/" + vm.$route.params.id + "", {
+                .get("/api/users/" + userId + "/profile", {
                     headers: headerAuth,
                 })
                 .then(function (response) {
                     console.log(response);
-                    vm.firstname = response.data.data.firstname;
-                    vm.lastname = response.data.data.lastname;
-                    vm.nickname = response.data.data.nickname;
-                    vm.birthdate = response.data.data.birthdate;
-                    vm.about = response.data.data.about;
-                    vm.gender = response.data.data.gender;
-                    vm.avatar = response.data.data.avatar;
-                    vm.background_photo = response.data.data.background_photo;
-                    vm.website = response.data.data.website;
-                    vm.country = response.data.data.country;
-                    vm.city = response.data.data.city;
-                    vm.state = response.data.data.state;
-                    vm.street = response.data.data.street;
-                    vm.university = response.data.data.university;
-                    vm.degree = response.data.data.degree;
-                    vm.study_type = response.data.data.study_type;
-                    vm.phones = response.data.data.phones;
 
-                    vm.email = response.data.data.user.email;
+                    vm.user.profile = response.data.data;
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -629,8 +589,10 @@ export default {
         Loading,
     },
     created() {
+        this.user_id = JSON.parse(localStorage.getItem("user")).id;
         this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
-        this.getProfileInfo();
+        this.getUserProfile(this.$route.params.id);
+        this.getUserPhones(this.$route.params.id);
     },
     mounted: function () {
         let vm = this;
@@ -653,22 +615,22 @@ body {
     /* border-color: #ba68c8; */
 }
 
-.profile-button {
+.user-button {
     /* background: rgb(99, 39, 120); */
     box-shadow: none;
     border: none;
 }
 
-.profile-button:hover {
+.user-button:hover {
     /* background: #682773; */
 }
 
-.profile-button:focus {
+.user-button:focus {
     /* background: #198754; */
     box-shadow: none;
 }
 
-.profile-button:active {
+.user-button:active {
     /* background: #682773; */
     box-shadow: none;
 }

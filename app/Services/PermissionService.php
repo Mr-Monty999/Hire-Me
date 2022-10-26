@@ -39,7 +39,7 @@ class PermissionService
     {
         return [
             "create-users",
-            "view-users",
+            // "view-users",
             "edit-users",
             "delete-users",
             "view-profiles",

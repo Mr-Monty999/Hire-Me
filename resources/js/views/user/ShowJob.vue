@@ -5,20 +5,20 @@
             v-if="loaded"
             class="row d-flex align-items-center justify-title-center"
         >
-            <div class="col-md-12" v-if="job && job.profile">
+            <div class="col-md-12" v-if="job && job.user">
                 <!-- <div class="card" v-for="(job, i) in jobs.data" :key="i"> -->
                 <div class="d-flex justify-content-between p-2 px-3">
                     <div class="d-flex flex-row align-items-center gap-2">
                         <img
-                            :src="previewAvatar(job.profile.avatar)"
+                            :src="previewAvatar(job.user.profile.avatar)"
                             width="50"
                             class="rounded-circle"
-                            @click="goToProfile(job.profile.id)"
+                            @click="goToProfile(job.user.profile.id)"
                         />
                         <div class="d-flex flex-column ml-2">
                             <span class="text-break name"
-                                >{{ job.profile.firstname }}
-                                {{ job.profile.lastname }}</span
+                                >{{ job.user.profile.firstname }}
+                                {{ job.user.profile.lastname }}</span
                             >
                             <small class="mr-2 date">{{
                                 job.created_at_diff_for_humans
@@ -27,7 +27,7 @@
                     </div>
                     <div
                         class="d-flex flex-row mt-1 gap-2"
-                        v-if="job.profile_id == profile_id"
+                        v-if="job.user_id == user_id"
                     >
                         <!-- <i class="fa fa-ellipsis-h"></i> -->
                         <modal-snippet
@@ -149,7 +149,7 @@
                                     class="fa-solid fa-thumbs-up text-primary"
                                     @click="
                                         removeReactFromJob(
-                                            profile_id,
+                                            user_id,
                                             job.id,
                                             1
                                         )
@@ -158,7 +158,7 @@
                                 <i
                                     v-else
                                     class="fa-solid fa-thumbs-up"
-                                    @click="reactToJob(profile_id, job.id, 1)"
+                                    @click="reactToJob(user_id, job.id, 1)"
                                 ></i>
                                 <span>
                                     {{ job.likes_count | toNumber }}
@@ -168,7 +168,7 @@
                                     class="fa-solid fa-thumbs-down text-primary"
                                     @click="
                                         removeReactFromJob(
-                                            profile_id,
+                                            user_id,
                                             job.id,
                                             2
                                         )
@@ -177,7 +177,7 @@
                                 <i
                                     v-else
                                     class="fa-solid fa-thumbs-down"
-                                    @click="reactToJob(profile_id, job.id, 2)"
+                                    @click="reactToJob(user_id, job.id, 2)"
                                 ></i>
                                 <span>
                                     {{ job.dislikes_count | toNumber }}
@@ -222,7 +222,7 @@ export default {
                 tags: [],
                 comments: [],
             },
-            profile_id: 0,
+            user_id: 0,
             loaded: false,
         };
     },
@@ -349,17 +349,17 @@ export default {
         hideModal() {
             this.$modal.hide("my-modal");
         },
-        goToProfile(profileId) {
-            if (profileId != this.$route.params.id) {
+        goToProfile(userId) {
+            if (userId != this.$route.params.id) {
                 this.$router.push({
                     name: "profile",
                     params: {
-                        id: profileId,
+                        id: userId,
                     },
                 });
             }
         },
-        // reactToJob(profileId, jobId, reactType) {
+        // reactToJob(userId, jobId, reactType) {
         //     var vm = this;
 
         //     vm.removeMyReacts(vm.job);
@@ -381,9 +381,9 @@ export default {
         //         .job(
         //             "/api/jobs/" + jobId + "/profiles",
         //             {
-        //                 profile_id: profileId,
+        //                 user_id: userId,
         //                 type: reactType,
-        //                 job_author: vm.job.profile_id,
+        //                 job_author: vm.job.user_id,
         //                 job_id: jobId,
         //             },
         //             {
@@ -405,7 +405,7 @@ export default {
         //             }
         //         });
         // },
-        // removeReactFromJob(profileId, jobId) {
+        // removeReactFromJob(userId, jobId) {
         //     var vm = this;
 
         //     vm.removeMyReacts(vm.job);
@@ -417,7 +417,7 @@ export default {
         //         type: "success",
         //     });
         //     axios
-        //         .delete("/api/jobs/" + jobId + "/profiles/" + profileId, {
+        //         .delete("/api/jobs/" + jobId + "/profiles/" + userId, {
         //             headers: headerAuth,
         //         })
         //         .then(function (response) {
@@ -466,7 +466,7 @@ export default {
     },
     computed: {},
     created() {
-        this.profile_id = JSON.parse(localStorage.getItem("user")).profile_id;
+        this.user_id = JSON.parse(localStorage.getItem("user")).id;
         this.getJob(this.$route.params.id);
         console.log("View Jobs");
         console.log(this.jobs);

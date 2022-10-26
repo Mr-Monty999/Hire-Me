@@ -30,7 +30,7 @@ class NotificationService
         $notifications =  User::find($userId)->notifications()->paginate(10);
         foreach ($notifications as $key => $value) {
             $temp = $value->data;
-            $temp["user"] = User::find($value->data["user_id"]);
+            $temp["profile"] = User::find($value->data["user_id"])->profile;
             if (isset($value->data["post_id"]))
                 $temp["post"] = Post::find($value->data["post_id"]);
             if (isset($value->data["job_id"]))
@@ -90,7 +90,7 @@ class NotificationService
     }
     public static function sendFollowNotification($data)
     {
-        User::find($data["user_id"])->notify(new FollowNotification($data));
+        User::find($data["notifiable_id"])->notify(new FollowNotification($data));
         return true;
     }
     public static function getUserUnReadedNotificationsCount($userId)
