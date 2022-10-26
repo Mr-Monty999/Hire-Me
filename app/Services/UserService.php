@@ -259,16 +259,20 @@ class UserService
         $pattern =   explode(" ", $pattern, 2);
         $result = null;
         if (isset($pattern[1])) {
-            $result = Profile::withCount("user", "user")
+            $result = Profile::with("user")
                 ->where("firstname", "LIKE", "%$pattern[0]%")
                 ->where("lastname", "LIKE", "%$pattern[1]%")
                 ->latest()
                 ->paginate(5);
         } else {
-            $result = Profile::withCount("user", "user")
+            $result = Profile::with("user")
                 ->where("firstname", "LIKE", "%$pattern[0]%")
                 ->latest()
                 ->paginate(5);
+        }
+        foreach ($result as $profile) {
+            $profile->followers_count = $profile->user->followers()->count();
+            $profile->followings_count = $profile->user->followings()->count();
         }
 
         return $result;
