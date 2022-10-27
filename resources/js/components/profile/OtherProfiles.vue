@@ -335,7 +335,13 @@ export default {
         },
         followUser(targetUserId) {
             var vm = this;
-
+            vm.followed = true;
+            vm.user.followers_count += 1;
+            vm.$notify({
+                title: "نجاح",
+                text: "تمت المتابعة بنجاح",
+                type: "success",
+            });
             axios
                 .post(
                     "/api/users/auth/follows/" + targetUserId,
@@ -346,13 +352,6 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
-                    vm.followed = true;
-                    vm.user.followers_count += 1;
-                    vm.$notify({
-                        title: "نجاح",
-                        text: response.data.message,
-                        type: "success",
-                    });
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -368,20 +367,19 @@ export default {
         },
         unFollowUser(targetUserId) {
             var vm = this;
-
+            vm.followed = false;
+            vm.user.followers_count -= 1;
+            vm.$notify({
+                title: "نجاح",
+                text: "تم إلغاء المتابعة بنجاح",
+                type: "success",
+            });
             axios
                 .delete("/api/users/auth/unfollows/" + targetUserId, {
                     headers: headerAuth,
                 })
                 .then(function (response) {
                     console.log(response);
-                    vm.followed = false;
-                    vm.user.followers_count -= 1;
-                    vm.$notify({
-                        title: "نجاح",
-                        text: response.data.message,
-                        type: "success",
-                    });
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -465,6 +463,12 @@ export default {
 
         addConnection(targetUserId) {
             var vm = this;
+            vm.connection_request = false;
+            vm.$notify({
+                title: "نجاح",
+                text: "تم إرسال طلب الإتصال بنجاح",
+                type: "success",
+            });
             axios
                 .post(
                     "/api/users/auth/connections/request/" + targetUserId + "",
@@ -475,12 +479,6 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
-                    vm.connection_request = false;
-                    vm.$notify({
-                        title: "نجاح",
-                        text: "تم إرسال طلب الإتصال بنجاح",
-                        type: "success",
-                    });
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -497,6 +495,12 @@ export default {
 
         removeConnection(targetUserId) {
             var vm = this;
+            vm.connection_request = null;
+            vm.$notify({
+                title: "نجاح",
+                text: "تم إلغاء طلب الإتصال بنجاح",
+                type: "success",
+            });
             axios
                 .delete(
                     "/api/users/auth/connections/remove/" + targetUserId + "",
@@ -506,12 +510,6 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
-                    vm.connection_request = null;
-                    vm.$notify({
-                        title: "نجاح",
-                        text: "تم إلغاء طلب الإتصال بنجاح",
-                        type: "success",
-                    });
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -535,7 +533,7 @@ export default {
                 .then(function (response) {
                     console.log(response);
 
-                    vm.connection_request = response.data.data.pivot.accepted;
+                    vm.connection_request = response.data.data;
                 })
                 .catch(function (error) {
                     console.log(error.response);

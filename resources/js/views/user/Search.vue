@@ -24,6 +24,11 @@
                         :onPageClick="search"
                         :jobs="searchedData"
                     ></view-jobs>
+                    <show-users
+                        v-else-if="selectedFilter == 2"
+                        :onPageClick="search"
+                        :users="searchedData"
+                    ></show-users>
                 </div>
             </div>
         </main>
@@ -37,6 +42,7 @@ import ViewPosts from "../../components/posts/ViewPosts.vue";
 import Loading from "../../components/bootstrap/Loading.vue";
 import Paginate from "vuejs-paginate";
 import ViewJobs from "../../components/jobs/ViewJobs.vue";
+import ShowUsers from "../user/ShowUsers.vue";
 
 // import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
 
@@ -46,13 +52,14 @@ export default {
         Loading,
         Paginate,
         ViewJobs,
+        ShowUsers,
         // ModalSnippet,
     },
     data() {
         return {
             user_id: 0,
             searchedData: [],
-            selectedFilter: 3,
+            selectedFilter: 2,
             loaded: false,
         };
     },

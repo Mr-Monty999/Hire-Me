@@ -227,9 +227,14 @@ class UserService
     }
     public static function getConnectionStatus($userId, $targetUserId)
     {
-        $user = User::find($userId)->connectionsTo()->wherePivot("user2_id", $targetUserId)->first();
+        $status = User::find($userId)->connectionsTo()
+            ->wherePivot("user2_id", $targetUserId)
+            ->first();
 
-        return $user;
+        if (isset($status->pivot))
+            $status = $status->pivot->accepted;
+
+        return $status;
     }
     public static function getAllPendingConnections($userId)
     {
@@ -259,20 +264,27 @@ class UserService
         $pattern =   explode(" ", $pattern, 2);
         $result = null;
         if (isset($pattern[1])) {
-            $result = Profile::with("user")
+            $result = Profile::with([
+                "user" => function ($q) {
+                    $q->withCount("followers", "followings");
+                }
+            ])
                 ->where("firstname", "LIKE", "%$pattern[0]%")
                 ->where("lastname", "LIKE", "%$pattern[1]%")
                 ->latest()
                 ->paginate(5);
         } else {
-            $result = Profile::with("user")
+            $result = Profile::with([
+                "user" => function ($q) {
+                    $q->withCount("followers", "followings");
+                }
+            ])
                 ->where("firstname", "LIKE", "%$pattern[0]%")
                 ->latest()
                 ->paginate(5);
         }
-        foreach ($result as $profile) {
-            $profile->followers_count = $profile->user->followers()->count();
-            $profile->followings_count = $profile->user->followings()->count();
+        foreach ($result as $data) {
+            $data->user->connection_request = self::getConnectionStatus(Auth::id(), $data->user->id);
         }
 
         return $result;

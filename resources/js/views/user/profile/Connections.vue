@@ -10,9 +10,9 @@
                 <div
                     v-for="(connection, index) in connections.data"
                     :key="index"
-                    class="max-width"
+                    class="max-width alert alert-info"
                 >
-                    <div :class="'alert alert-info'">
+                    <div :class="''">
                         <div>
                             <div>
                                 <img
@@ -231,7 +231,7 @@ main {
     border-radius: 50%;
     margin-left: 5px;
 }
-img,
+
 .fullname {
     cursor: pointer;
 }
