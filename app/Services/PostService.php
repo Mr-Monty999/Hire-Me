@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Comment;
 use App\Models\Post;
 use Auth;
 use DB;
@@ -55,11 +56,13 @@ class PostService
 
 
         $posts = Post::with([
-            "comments.replies" => function ($q) {
-                $q->latest()->paginate(5);
-            },            "reacts" => function ($q) {
+            "comments.replies.user.profile" => function ($q) {
                 $q->latest()->paginate(5);
             },
+            "reacts" => function ($q) {
+                $q->latest()->paginate(5);
+            },
+            "comments.user.profile",
             "tags",
             "user.profile",
         ])->withCount("comments", "reacts", "tags", "likes", "dislikes")->latest()->paginate(5);
@@ -83,12 +86,13 @@ class PostService
 
         $post = Post::with(
             [
-                "comments.replies" => function ($q) {
+                "comments.replies.user.profile" => function ($q) {
                     $q->latest()->paginate(5);
                 },
                 "reacts" => function ($q) {
                     $q->latest()->paginate(5);
                 },
+                "comments.user.profile",
                 "tags",
                 "user.profile"
             ]
@@ -144,10 +148,13 @@ class PostService
 
 
         $posts = Post::with([
-            "comments.replies",
+            "comments.replies.user.profile" => function ($q) {
+                $q->latest()->paginate(5);
+            },
             "reacts" => function ($q) {
                 $q->latest()->paginate(5);
             },
+            "comments.user.profile",
             "tags",
             "user.profile",
         ])->withCount("comments", "reacts", "tags", "likes", "dislikes")
@@ -166,5 +173,16 @@ class PostService
         }
 
         return $posts;
+    }
+    public static function getComments($postId)
+    {
+        $comments = Comment::with([
+            "replies.user.profile" => function ($q) {
+                $q->latest()->paginate(5);
+            },
+            "user.profile",
+            "post"
+        ])->where("post_id", "=", $postId)->get();
+        return $comments;
     }
 }

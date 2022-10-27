@@ -66,13 +66,6 @@ class UserService
             "skills",
             "experiences",
             "profile",
-            // "posts" => function ($q) {
-            //     $q->latest();
-            // },
-            // "posts.comments.replies",
-            // "posts.user:id,firstname,lastname,avatar",
-            // "posts.reacts",
-            // "posts.tags",
             "followers" => function ($q) {
                 $q->paginate(5);
             },
@@ -89,13 +82,6 @@ class UserService
             "skills",
             "experiences",
             "profile",
-            // "posts" => function ($q) {
-            //     $q->latest();
-            // },
-            // "posts.comments.replies",
-            // "posts.user:id,firstname,lastname,avatar",
-            // "posts.reacts",
-            // "posts.tags",
             "followers" => function ($q) {
                 $q->paginate(5);
             },
@@ -122,10 +108,13 @@ class UserService
     {
 
         $posts =  Post::with([
-            "comments",
+            "comments.replies.user.profile" => function ($q) {
+                $q->latest()->paginate(5);
+            },
             "reacts" => function ($q) {
                 $q->latest()->paginate(5);
             },
+            "comments.user.profile",
             "user.profile",
             "tags"
         ])->withCount("reacts", "likes", "dislikes")->where("user_id", $userId)->latest()->paginate(5);
@@ -149,10 +138,13 @@ class UserService
         $userIds = self::getFeedbackRelations($userId)->pluck("id")->push((int)$userId);
 
         $posts = Post::with([
-            "comments.replies",
+            "comments.replies.user.profile" => function ($q) {
+                $q->latest()->paginate(5);
+            },
             "reacts" => function ($q) {
                 $q->latest()->paginate(5);
             },
+            "comments.user.profile",
             "user.profile",
             "tags",
         ])->withCount("comments", "reacts", "tags", "likes", "dislikes")->whereIn("user_id", $userIds)->latest()->paginate(5);

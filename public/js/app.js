@@ -8687,7 +8687,7 @@ var render = function render() {
       "page-link-class": "page-link",
       "prev-link-class": "page-link",
       "next-link-class": "page-link",
-      "container-class": "pagination",
+      "container-class": "pagination overflow-auto",
       "page-class": "page-item"
     }
   }) : _vm._e()], 1)]);
@@ -9364,7 +9364,7 @@ var render = function render() {
       "page-link-class": "page-link",
       "prev-link-class": "page-link",
       "next-link-class": "page-link",
-      "container-class": "pagination",
+      "container-class": "pagination overflow-auto",
       "page-class": "page-item"
     }
   }) : _vm._e()], 1)]);
@@ -11437,7 +11437,7 @@ var render = function render() {
       "page-link-class": "page-link",
       "prev-link-class": "page-link",
       "next-link-class": "page-link",
-      "container-class": "pagination",
+      "container-class": "pagination overflow-auto",
       "page-class": "page-item"
     }
   }) : _vm._e()], 1)]);
@@ -11535,7 +11535,7 @@ var render = function render() {
       "page-link-class": "page-link",
       "prev-link-class": "page-link",
       "next-link-class": "page-link",
-      "container-class": "pagination",
+      "container-class": "pagination overflow-auto",
       "page-class": "page-item"
     }
   }) : _vm._e()], 2)]) : _vm._e()], 1);
@@ -12306,7 +12306,7 @@ var render = function render() {
       "page-link-class": "page-link",
       "prev-link-class": "page-link",
       "next-link-class": "page-link",
-      "container-class": "pagination",
+      "container-class": "pagination overflow-auto",
       "page-class": "page-item"
     }
   }) : _vm._e()], 2)]) : _vm._e()], 1);

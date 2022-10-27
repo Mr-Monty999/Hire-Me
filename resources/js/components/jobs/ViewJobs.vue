@@ -209,7 +209,7 @@
                 :page-link-class="'page-link'"
                 :prev-link-class="'page-link'"
                 :next-link-class="'page-link'"
-                :container-class="'pagination'"
+                :container-class="'pagination overflow-auto'"
                 :page-class="'page-item'"
             ></paginate>
         </div>

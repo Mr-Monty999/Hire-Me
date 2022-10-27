@@ -96,6 +96,12 @@ class PostController extends Controller
         $post = PostService::searchForPost($pattern);
         return ResponseService::json($post, "تمت العملية بنجاح");
     }
+    public static function getComments($postId)
+    {
+
+        $comments = PostService::getComments($postId);
+        return ResponseService::json($comments);
+    }
     /**
      * Show the form for editing the specified resource.
      *

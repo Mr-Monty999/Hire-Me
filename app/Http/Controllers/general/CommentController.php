@@ -4,6 +4,8 @@ namespace App\Http\Controllers\general;
 
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
+use App\Services\CommentService;
+use App\Services\ResponseService;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
@@ -15,7 +17,8 @@ class CommentController extends Controller
      */
     public function index()
     {
-        //
+        $comments = CommentService::getAllComments();
+        return ResponseService::json($comments);
     }
 
     /**
@@ -31,8 +34,10 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $comments = CommentService::store($request->all());
+        return ResponseService::json($comments);
     }
+
 
     /**
      * Display the specified resource.
@@ -40,9 +45,10 @@ class CommentController extends Controller
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function show(Comment $comment)
+    public function show($id)
     {
-        //
+        $comment = CommentService::show($id);
+        return ResponseService::json($comment);
     }
 
     /**
@@ -59,9 +65,10 @@ class CommentController extends Controller
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Comment $comment)
+    public function update(Request $request, $id)
     {
-        //
+        $comments = CommentService::update($id, $request->all());
+        return ResponseService::json($comments);
     }
 
     /**
@@ -70,8 +77,9 @@ class CommentController extends Controller
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Comment $comment)
+    public function destroy($id)
     {
-        //
+        $comments = CommentService::destroy($id);
+        return ResponseService::json($comments);
     }
 }

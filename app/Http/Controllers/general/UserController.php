@@ -9,6 +9,7 @@ use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegisterRequest;
 use App\Models\User;
 use App\Services\NotificationService;
+use App\Services\PostService;
 use App\Services\ProfileService;
 use App\Services\ResponseService;
 use App\Services\UserService;
@@ -201,7 +202,8 @@ class UserController extends Controller
     }
     public function showFeedbackPosts($userId)
     {
-        $posts = UserService::getFeedPosts($userId);
+        // $posts = UserService::getFeedPosts($userId);
+        $posts = PostService::getAllPosts();
         return ResponseService::json($posts, "تمت العملية بنجاح");
     }
 

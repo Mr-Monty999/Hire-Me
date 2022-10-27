@@ -64,7 +64,7 @@ Route::group(["namespace" => "general"], function () {
         Route::apiResource("certificates", "CertificateController");
 
         //Comments
-        Route::apiResource("comments.replies", "CommentController");
+        Route::apiResource("comments", "CommentController");
 
         //Companies
         Route::apiResource("companies", "CompanyController");
@@ -80,6 +80,7 @@ Route::group(["namespace" => "general"], function () {
         Route::post("posts/{id}/react", "PostController@react");
         Route::delete("posts/{id}/unreact", "PostController@unReact");
         Route::get("posts/{id}/react-type", "PostController@isReacted");
+        Route::get("posts/{id}/comments", "PostController@getComments");
 
 
         //Skills
