@@ -111,6 +111,9 @@ class UserService
             "comments.replies.user.profile" => function ($q) {
                 $q->latest()->paginate(5);
             },
+            "comments" => function ($q) {
+                $q->withCount("replies");
+            },
             "reacts" => function ($q) {
                 $q->latest()->paginate(5);
             },
@@ -140,6 +143,9 @@ class UserService
         $posts = Post::with([
             "comments.replies.user.profile" => function ($q) {
                 $q->latest()->paginate(5);
+            },
+            "comments" => function ($q) {
+                $q->withCount("replies");
             },
             "reacts" => function ($q) {
                 $q->latest()->paginate(5);

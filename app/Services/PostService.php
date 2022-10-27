@@ -59,6 +59,9 @@ class PostService
             "comments.replies.user.profile" => function ($q) {
                 $q->latest()->paginate(5);
             },
+            "comments" => function ($q) {
+                $q->withCount("replies");
+            },
             "reacts" => function ($q) {
                 $q->latest()->paginate(5);
             },
@@ -88,6 +91,9 @@ class PostService
             [
                 "comments.replies.user.profile" => function ($q) {
                     $q->latest()->paginate(5);
+                },
+                "comments" => function ($q) {
+                    $q->withCount("replies");
                 },
                 "reacts" => function ($q) {
                     $q->latest()->paginate(5);
@@ -151,6 +157,9 @@ class PostService
             "comments.replies.user.profile" => function ($q) {
                 $q->latest()->paginate(5);
             },
+            "comments" => function ($q) {
+                $q->withCount("replies");
+            },
             "reacts" => function ($q) {
                 $q->latest()->paginate(5);
             },
@@ -182,7 +191,7 @@ class PostService
             },
             "user.profile",
             "post"
-        ])->where("post_id", "=", $postId)->get();
+        ])->withCount("replies")->where("post_id", "=", $postId)->get();
         return $comments;
     }
 }

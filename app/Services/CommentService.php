@@ -36,7 +36,7 @@ class CommentService
                 $q->latest()->paginate(5);
             },
             "post"
-        ])->find($commentId);
+        ])->withCount("replies")->find($commentId);
         return $comment;
     }
 
@@ -45,11 +45,8 @@ class CommentService
         $comments = Comment::with([
             "user.profile",
             "parentComment",
-            "replies.user.profile" => function ($q) {
-                $q->latest()->paginate(5);
-            },
-            "post"
-        ])->get();
+            "post",
+        ])->withCount("replies")->get();
         return $comments;
     }
 }
