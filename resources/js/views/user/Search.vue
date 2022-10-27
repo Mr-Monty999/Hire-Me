@@ -70,7 +70,7 @@ export default {
             if (vm.selectedFilter == 2) {
                 axios
                     .get(
-                        "/api/users/search/" +
+                        "/api/search/users/" +
                             this.$route.params.pattern +
                             "?page=" +
                             pageNumber,
@@ -90,7 +90,7 @@ export default {
             } else if (vm.selectedFilter == 3) {
                 axios
                     .get(
-                        "/api/jobs/search/" +
+                        "/api/search/jobs/" +
                             this.$route.params.pattern +
                             "?page=" +
                             pageNumber,
@@ -110,7 +110,7 @@ export default {
             } else if (vm.selectedFilter == 4) {
                 axios
                     .get(
-                        "/api/posts/search/" +
+                        "/api/search/posts/" +
                             this.$route.params.pattern +
                             "?page=" +
                             pageNumber,

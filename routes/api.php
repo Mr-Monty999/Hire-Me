@@ -54,7 +54,6 @@ Route::group(["namespace" => "general"], function () {
         Route::get("users/{userId}/connections", "UserController@getAllAcceptedConnections");
         Route::get("users/auth/connections/incomming", "UserController@getAllIncommingConnections");
         Route::get("users/auth/connection-status/{targetId}", "UserController@getConnectionStatus");
-        Route::get("users/search/{pattern}", "UserController@search");
         Route::get("users/{userId}/feedback/posts", "UserController@showFeedbackPosts");
 
 
@@ -65,7 +64,7 @@ Route::group(["namespace" => "general"], function () {
         Route::apiResource("certificates", "CertificateController");
 
         //Comments
-        Route::apiResource("comments", "CommentController");
+        Route::apiResource("comments.replies", "CommentController");
 
         //Companies
         Route::apiResource("companies", "CompanyController");
@@ -81,7 +80,6 @@ Route::group(["namespace" => "general"], function () {
         Route::post("posts/{id}/react", "PostController@react");
         Route::delete("posts/{id}/unreact", "PostController@unReact");
         Route::get("posts/{id}/react-type", "PostController@isReacted");
-        Route::get("posts/search/{pattern}", "PostController@search");
 
 
         //Skills
@@ -95,10 +93,9 @@ Route::group(["namespace" => "general"], function () {
         // Route::apiResource("notifications", "NotificationController");
 
         ///Public Routes
-        Route::get("search/{pattern}", "PublicController@searchForAll");
+        Route::get("search/{type}/{pattern}", "PublicController@searchForAll");
 
         ///Jobs Routes
         Route::apiResource("jobs", "JobController");
-        Route::get("jobs/search/{pattern}", "JobController@search");
     });
 });

@@ -12,10 +12,16 @@ use phpDocumentor\Reflection\Types\Self_;
 class PublicService
 {
 
-    public static function search($pattern)
+    public static function search($type, $pattern)
     {
-        // $result = ProfileService::searchForProfile($pattern);
-        $result = PostService::searchForPost($pattern);
+        $result = null;
+        if ($type == "users")
+            $result = UserService::searchForUser($pattern);
+        else if ($type == "posts")
+            $result = PostService::searchForPost($pattern);
+        else if ($type == "jobs")
+            $result = JobService::searchForJob($pattern);
+
         return $result;
     }
 }

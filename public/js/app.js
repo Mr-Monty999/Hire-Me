@@ -7355,7 +7355,7 @@ __webpack_require__.r(__webpack_exports__);
       var vm = this;
 
       if (vm.selectedFilter == 2) {
-        axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/users/search/" + this.$route.params.pattern + "?page=" + pageNumber, {
+        axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/search/users/" + this.$route.params.pattern + "?page=" + pageNumber, {
           headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
         }).then(function (response) {
           console.log(response);
@@ -7366,7 +7366,7 @@ __webpack_require__.r(__webpack_exports__);
           console.log(error.response);
         });
       } else if (vm.selectedFilter == 3) {
-        axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/jobs/search/" + this.$route.params.pattern + "?page=" + pageNumber, {
+        axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/search/jobs/" + this.$route.params.pattern + "?page=" + pageNumber, {
           headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
         }).then(function (response) {
           console.log(response);
@@ -7377,7 +7377,7 @@ __webpack_require__.r(__webpack_exports__);
           console.log(error.response);
         });
       } else if (vm.selectedFilter == 4) {
-        axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/posts/search/" + this.$route.params.pattern + "?page=" + pageNumber, {
+        axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/search/posts/" + this.$route.params.pattern + "?page=" + pageNumber, {
           headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
         }).then(function (response) {
           console.log(response);
