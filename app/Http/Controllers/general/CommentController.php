@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\general;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreCommentRequest;
 use App\Models\Comment;
 use App\Services\CommentService;
 use App\Services\ResponseService;
@@ -32,7 +33,7 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreCommentRequest $request)
     {
         $comments = CommentService::store($request->all());
         return ResponseService::json($comments);

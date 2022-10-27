@@ -53,7 +53,7 @@ class CommentPolicy
      */
     public function update(User $user, Comment $comment)
     {
-        return $user->id == $comment->user_id;
+        return $user->id == $comment->user_id ||  $user->hasPermissionTo("edit-any-comments");
     }
 
     /**
@@ -65,7 +65,7 @@ class CommentPolicy
      */
     public function delete(User $user, Comment $comment)
     {
-        return $user->id == $comment->user_id;
+        return $user->id == $comment->user_id ||  $user->hasPermissionTo("delete-any-comments");
     }
 
     /**
@@ -89,6 +89,6 @@ class CommentPolicy
      */
     public function forceDelete(User $user, Comment $comment)
     {
-        return $user->id == $comment->user_id;
+        return $user->id == $comment->user_id ||  $user->hasPermissionTo("delete-any-comments");
     }
 }
