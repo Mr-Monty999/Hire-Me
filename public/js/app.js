@@ -8530,7 +8530,7 @@ var render = function render() {
     return _c("div", {
       key: i,
       staticClass: "card"
-    }, [_c("div", {
+    }, [job.user.profile ? _c("div", {
       staticClass: "d-flex justify-title-between justify-content-between p-2 px-3"
     }, [_c("div", {
       staticClass: "d-flex flex-row align-items-center gap-2"
@@ -8664,7 +8664,7 @@ var render = function render() {
           return _vm.deleteJob(job.id);
         }
       }
-    }, [_vm._v("\n                            هل أنت متأكد من حذف هذه الوظيفة؟\n                        ")])], 1) : _vm._e()]), _vm._v(" "), _c("div", [_c("h3", {
+    }, [_vm._v("\n                            هل أنت متأكد من حذف هذه الوظيفة؟\n                        ")])], 1) : _vm._e()]) : _vm._e(), _vm._v(" "), _c("div", [_c("h3", {
       staticClass: "text-justify p-2"
     }, [_vm._v("\n                        " + _vm._s(job.title) + "\n                    ")]), _vm._v(" "), _c("div", {
       staticClass: "text-justify p-2"
@@ -9197,7 +9197,7 @@ var render = function render() {
     return _c("div", {
       key: i,
       staticClass: "card"
-    }, [_c("div", {
+    }, [post.user.profile ? _c("div", {
       staticClass: "d-flex justify-content-between p-2 px-3"
     }, [_c("div", {
       staticClass: "d-flex flex-row align-items-center gap-2"
@@ -9308,7 +9308,7 @@ var render = function render() {
           return _vm.deletePost(post.id);
         }
       }
-    }, [_vm._v("\n                            هل أنت متأكد من حذف هذا المنشور؟\n                        ")])], 1) : _vm._e()]), _vm._v(" "), _c("div", [_c("p", {
+    }, [_vm._v("\n                            هل أنت متأكد من حذف هذا المنشور؟\n                        ")])], 1) : _vm._e()]) : _vm._e(), _vm._v(" "), _c("div", [_c("p", {
       staticClass: "text-justify p-2"
     }, [_vm._v("\n                        " + _vm._s(post.content) + "\n                    ")]), _vm._v(" "), _c("div", {
       staticClass: "d-flex justify-content-center"
@@ -9442,7 +9442,7 @@ var render = function render() {
     }
   }, [_vm._v("تعديل الملف الشخصي")])], 1), _vm._v(" "), _c("span", {
     staticClass: "text-black-50"
-  }, [_vm._v(_vm._s(_vm.user.email))]), _c("span", [_vm._v(_vm._s(_vm._f("toNumber")(_vm.user.followers_count)) + "\n                        مُتَابَع\n                    ")]), _vm._v(" "), _c("span", [_vm._v(_vm._s(_vm._f("toNumber")(_vm.user.followings_count)) + "\n                        يتابع\n                    ")])]), _vm._v(" "), _c("div", {
+  }, [_vm._v(_vm._s(_vm.user.email))]), _c("span", [_vm._v(_vm._s(_vm._f("toNumber")(_vm.user.followers_count)) + "\n                        مُتَابع\n                    ")]), _vm._v(" "), _c("span", [_vm._v(_vm._s(_vm._f("toNumber")(_vm.user.followings_count)) + "\n                        يتابع\n                    ")])]), _vm._v(" "), _c("div", {
     staticClass: "mar-1"
   }, [_c("label", {
     staticClass: "form-label",
@@ -10011,7 +10011,7 @@ var render = function render() {
     }
   }, [_vm._v("الغاء متابعة "), _c("i", {
     staticClass: "fa-solid fa-minus"
-  })]), _vm._v(" "), _c("span", [_vm._v(_vm._s(_vm._f("toNumber")(_vm.user.followers_count)) + "\n                        مُتَابَع\n                    ")]), _vm._v(" "), _c("span", [_vm._v(_vm._s(_vm._f("toNumber")(_vm.user.followings_count)) + "\n                        يتابع\n                    ")])]), _vm._v(" "), _c("div", [_c("span", [_vm._v("حول")]), _vm._v(" "), _c("textarea", {
+  })]), _vm._v(" "), _c("span", [_vm._v(_vm._s(_vm._f("toNumber")(_vm.user.followers_count)) + "\n                        مُتَابِع\n                    ")])]), _vm._v(" "), _c("div", [_c("span", [_vm._v("حول")]), _vm._v(" "), _c("textarea", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -11397,7 +11397,7 @@ var render = function render() {
       }
     }, [_vm._v("\n                                " + _vm._s(data.firstname) + "\n                                " + _vm._s(data.lastname) + "\n                            ")]), _vm._v(" "), _c("div", {
       staticClass: "text-break"
-    }, [_c("span", [_vm._v("\n                                    " + _vm._s(_vm._f("toNumber")(data.user.followers_count)) + "\n                                    متابع\n                                ")])]), _vm._v(" "), data.user.id != _vm.user_id ? _c("div", [data.user.connection_request == false ? _c("span", {
+    }, [_c("span", [_vm._v("\n                                    " + _vm._s(_vm._f("toNumber")(data.user.followers_count)) + "\n                                    متابع\n                                ")])]), _vm._v(" "), _c("div", [data.user.connection_request == false ? _c("span", {
       staticClass: "btn btn-warning mar-1",
       on: {
         click: function click($event) {
@@ -11424,7 +11424,7 @@ var render = function render() {
       }
     }, [_vm._v("إتصال\n                                    "), _c("i", {
       staticClass: "fa-solid fa-user-plus"
-    })])]) : _vm._e()])])])]);
+    })])])])])])]);
   }), 0), _vm._v(" "), _vm.users.last_page > 1 ? _c("paginate", {
     attrs: {
       "page-count": _vm.users.last_page,
@@ -11470,9 +11470,9 @@ var render = function render() {
   }, [!_vm.loaded ? _c("loading") : _vm._e(), _vm._v(" "), _vm.loaded ? _c("div", {
     staticClass: "row"
   }, [_c("div", {
-    staticClass: "bg-mine col-md-2 offset-md-1 mar-1"
+    staticClass: "bg-mine col-md-2 offset-md-1 mar-1 radius-1"
   }), _vm._v(" "), _c("div", {
-    staticClass: "bg-mine height-v90 col-md-5 d-flex flex-column align-items-center mar-1"
+    staticClass: "bg-mine height-v90 col-md-5 d-flex flex-column align-items-center mar-1 radius-1"
   }, [_c("h1", [_vm._v("طلبات الإتصال")]), _vm._v(" "), _vm._l(_vm.connections.data, function (connection, index) {
     return _c("div", {
       key: index,
@@ -12234,9 +12234,9 @@ var render = function render() {
   }, [!_vm.loaded ? _c("loading") : _vm._e(), _vm._v(" "), _vm.loaded ? _c("div", {
     staticClass: "row"
   }, [_c("div", {
-    staticClass: "bg-mine col-md-2 offset-md-1 mar-1"
+    staticClass: "bg-mine col-md-2 offset-md-1 mar-1 radius-1"
   }), _vm._v(" "), _c("div", {
-    staticClass: "bg-mine height-v90 col-md-5 d-flex flex-column align-items-center mar-1"
+    staticClass: "bg-mine height-v90 col-md-5 d-flex flex-column align-items-center mar-1 radius-1"
   }, [_c("h1", [_vm._v("الإشعارات")]), _vm._v(" "), _vm._l(_vm.notifications.data, function (notification, index) {
     return _c("div", {
       key: index,

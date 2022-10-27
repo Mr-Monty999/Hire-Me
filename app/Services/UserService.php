@@ -271,6 +271,7 @@ class UserService
             ])
                 ->where("firstname", "LIKE", "%$pattern[0]%")
                 ->where("lastname", "LIKE", "%$pattern[1]%")
+                ->where("id", "!=", Auth::user()->profile->id)
                 ->latest()
                 ->paginate(5);
         } else {
@@ -280,6 +281,7 @@ class UserService
                 }
             ])
                 ->where("firstname", "LIKE", "%$pattern[0]%")
+                ->where("id", "!=", Auth::user()->profile->id)
                 ->latest()
                 ->paginate(5);
         }

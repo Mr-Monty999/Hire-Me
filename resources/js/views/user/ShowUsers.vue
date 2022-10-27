@@ -40,7 +40,7 @@
                                         متابع
                                     </span>
                                 </div>
-                                <div v-if="data.user.id != user_id">
+                                <div>
                                     <span
                                         class="btn btn-warning mar-1"
                                         v-if="

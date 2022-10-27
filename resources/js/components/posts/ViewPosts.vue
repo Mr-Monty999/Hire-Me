@@ -3,7 +3,10 @@
         <div class="row d-flex align-items-center justify-content-center">
             <div class="col-md-12">
                 <div class="card" v-for="(post, i) in posts.data" :key="i">
-                    <div class="d-flex justify-content-between p-2 px-3">
+                    <div
+                        v-if="post.user.profile"
+                        class="d-flex justify-content-between p-2 px-3"
+                    >
                         <div class="d-flex flex-row align-items-center gap-2">
                             <img
                                 :src="previewAvatar(post.user.profile.avatar)"

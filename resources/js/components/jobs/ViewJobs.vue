@@ -4,6 +4,7 @@
             <div class="col-md-12">
                 <div class="card" v-for="(job, i) in jobs.data" :key="i">
                     <div
+                        v-if="job.user.profile"
                         class="d-flex justify-title-between justify-content-between p-2 px-3"
                     >
                         <div class="d-flex flex-row align-items-center gap-2">

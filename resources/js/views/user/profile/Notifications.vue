@@ -2,9 +2,9 @@
     <main class="contrainer-fluid">
         <loading v-if="!loaded"></loading>
         <div v-if="loaded" class="row">
-            <div class="bg-mine col-md-2 offset-md-1 mar-1"></div>
+            <div class="bg-mine col-md-2 offset-md-1 mar-1 radius-1"></div>
             <div
-                class="bg-mine height-v90 col-md-5 d-flex flex-column align-items-center mar-1"
+                class="bg-mine height-v90 col-md-5 d-flex flex-column align-items-center mar-1 radius-1"
             >
                 <h1>الإشعارات</h1>
                 <div

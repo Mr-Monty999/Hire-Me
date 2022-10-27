@@ -35,7 +35,7 @@
                         <span class="text-black-50">{{ user.email }}</span
                         ><span
                             >{{ user.followers_count | toNumber }}
-                            مُتَابَع
+                            مُتَابع
                         </span>
                         <span
                             >{{ user.followings_count | toNumber }}

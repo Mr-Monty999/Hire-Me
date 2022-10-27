@@ -52,12 +52,12 @@
                         ></span>
                         <span
                             >{{ user.followers_count | toNumber }}
-                            مُتَابَع
+                            مُتَابِع
                         </span>
-                        <span
+                        <!-- <span
                             >{{ user.followings_count | toNumber }}
                             يتابع
-                        </span>
+                        </span> -->
                     </div>
                     <div>
                         <span>حول</span>
