@@ -6837,7 +6837,7 @@ __webpack_require__.r(__webpack_exports__);
       password: "",
       birthdate: "",
       repassword: "",
-      gender: "",
+      gender: "ذكر",
       success: null
     };
   },

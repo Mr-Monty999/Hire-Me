@@ -108,7 +108,7 @@ export default {
             password: "",
             birthdate: "",
             repassword: "",
-            gender: "",
+            gender: "ذكر",
             success: null,
         };
     },
