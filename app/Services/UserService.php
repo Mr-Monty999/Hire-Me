@@ -108,9 +108,6 @@ class UserService
     {
 
         $posts =  Post::with([
-            "comments.replies.user.profile" => function ($q) {
-                $q->latest()->paginate(5);
-            },
             "comments" => function ($q) {
                 $q->withCount("replies");
             },
@@ -118,8 +115,8 @@ class UserService
                 $q->latest()->paginate(5);
             },
             "comments.user.profile",
+            "tags",
             "user.profile",
-            "tags"
         ])->withCount("reacts", "likes", "dislikes")->where("user_id", $userId)->latest()->paginate(5);
 
         // $posts["count"] = self::getPostsCount($userId);
@@ -141,9 +138,6 @@ class UserService
         $userIds = self::getFeedbackRelations($userId)->pluck("id")->push((int)$userId);
 
         $posts = Post::with([
-            "comments.replies.user.profile" => function ($q) {
-                $q->latest()->paginate(5);
-            },
             "comments" => function ($q) {
                 $q->withCount("replies");
             },
@@ -151,8 +145,8 @@ class UserService
                 $q->latest()->paginate(5);
             },
             "comments.user.profile",
-            "user.profile",
             "tags",
+            "user.profile",
         ])->withCount("comments", "reacts", "tags", "likes", "dislikes")->whereIn("user_id", $userIds)->latest()->paginate(5);
 
         foreach ($posts as  $post) {

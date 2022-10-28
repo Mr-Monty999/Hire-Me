@@ -56,9 +56,6 @@ class PostService
 
 
         $posts = Post::with([
-            "comments.replies.user.profile" => function ($q) {
-                $q->latest()->paginate(5);
-            },
             "comments" => function ($q) {
                 $q->withCount("replies");
             },
@@ -89,9 +86,6 @@ class PostService
 
         $post = Post::with(
             [
-                "comments.replies.user.profile" => function ($q) {
-                    $q->latest()->paginate(5);
-                },
                 "comments" => function ($q) {
                     $q->withCount("replies");
                 },
@@ -100,7 +94,7 @@ class PostService
                 },
                 "comments.user.profile",
                 "tags",
-                "user.profile"
+                "user.profile",
             ]
         )->withCount(["reacts", "comments", "tags", "likes", "dislikes"])->find($postId);
 
@@ -154,9 +148,6 @@ class PostService
 
 
         $posts = Post::with([
-            "comments.replies.user.profile" => function ($q) {
-                $q->latest()->paginate(5);
-            },
             "comments" => function ($q) {
                 $q->withCount("replies");
             },
@@ -186,9 +177,6 @@ class PostService
     public static function getComments($postId)
     {
         $comments = Comment::with([
-            "replies.user.profile" => function ($q) {
-                $q->latest()->paginate(5);
-            },
             "user.profile",
             "post"
         ])->withCount("replies")->where("post_id", "=", $postId)->get();

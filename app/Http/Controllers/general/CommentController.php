@@ -51,7 +51,11 @@ class CommentController extends Controller
         $comment = CommentService::show($id);
         return ResponseService::json($comment);
     }
-
+    public static function getReplies($commentId)
+    {
+        $replies = CommentService::getReplies($commentId);
+        return ResponseService::json($replies);
+    }
     /**
      * Show the form for editing the specified resource.
      *

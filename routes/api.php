@@ -65,6 +65,7 @@ Route::group(["namespace" => "general"], function () {
 
         //Comments
         Route::apiResource("comments", "CommentController");
+        Route::get("comments/{comment}/replies", "CommentController@getReplies");
 
         //Companies
         Route::apiResource("companies", "CompanyController");

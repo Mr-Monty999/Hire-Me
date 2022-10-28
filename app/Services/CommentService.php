@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Comment;
 use App\Models\Post;
+use Auth;
 use Gate;
 
 /**
@@ -40,9 +41,6 @@ class CommentService
         $comment = Comment::with([
             "user.profile",
             "parentComment",
-            "replies.user.profile" => function ($q) {
-                $q->latest()->paginate(5);
-            },
             "post"
         ])->withCount("replies")->find($commentId);
         return $comment;
@@ -53,8 +51,16 @@ class CommentService
         $comments = Comment::with([
             "user.profile",
             "parentComment",
-            "post",
+            "post"
         ])->withCount("replies")->get();
+        return $comments;
+    }
+    public static function getReplies($commentId)
+    {
+        $comments = Comment::with([
+            "user.profile",
+            "post"
+        ])->withCount("replies")->where("comment_id", "=", $commentId)->get();
         return $comments;
     }
 }
