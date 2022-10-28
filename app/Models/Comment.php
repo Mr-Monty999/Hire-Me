@@ -10,7 +10,7 @@ class Comment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["content", "photo", "post_id", "user_id", "comment_id"];
+    protected $fillable = ["content", "photo", "post_id", "user_id", "comment_id", "mention_id"];
 
     public function post()
     {
@@ -21,7 +21,10 @@ class Comment extends Model
     {
         return $this->belongsTo(User::class);
     }
-
+    public function mention()
+    {
+        return $this->belongsTo(User::class, "mention_id");
+    }
     public function replies()
     {
         return $this->hasMany(Comment::class);

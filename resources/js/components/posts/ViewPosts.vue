@@ -225,12 +225,8 @@
                                     ></i
                                 ></span>
                             </div>
-                            <div>
-                                <div
-                                    v-for="(comment, i) in post.comments"
-                                    :key="i"
-                                    class="comment mar-1"
-                                >
+                            <div v-for="(comment, i) in post.comments" :key="i">
+                                <div class="comment mar-1">
                                     <img
                                         v-if="
                                             comment.user.profile.avatar != null
@@ -274,34 +270,53 @@
                                             ></i
                                         ></span>
                                     </div>
-                                    <div
-                                        v-for="(reply, x) in comment.replies"
-                                        :key="x"
-                                        class="reply mar-1"
-                                    >
-                                        <img
-                                            v-if="
-                                                reply.user.profile.avatar !=
-                                                null
-                                            "
-                                            class="photo"
-                                            :src="reply.user.profile.avatar"
-                                            alt=""
-                                        />
-                                        <img
-                                            class="photo"
-                                            src="/images/assets/personal.jpg"
-                                            alt=""
-                                        />
-                                        <b class="text-break fullname">
-                                            {{ reply.user.profile.firstname }}
-                                            {{ reply.user.profile.lastname }}
-                                        </b>
-                                        <div class="text-break">
-                                            <span class="comment-content"
-                                                >{{ reply.content }}
-                                            </span>
-                                        </div>
+                                </div>
+                                <!-- <div class="comment-input">
+                                    <textarea-autosize
+                                        placeholder="رد"
+                                        ref="comment-reply"
+                                        v-model="comment.reply"
+                                        :min-height="30"
+                                        :max-height="350"
+                                        class="form-control"
+                                        @keyup.enter.native="
+                                            sendReply(
+                                                post,
+                                                comment.reply,
+                                                comment,
+                                                comment
+                                            )
+                                        "
+                                        important
+                                    />
+                                    <div hidden class="fonts">
+                                        <i class="fa fa-camera"></i>
+                                    </div>
+                                </div> -->
+                                <div
+                                    v-for="(reply, x) in comment.replies"
+                                    :key="x"
+                                    class="reply mar-1"
+                                >
+                                    <img
+                                        v-if="reply.user.profile.avatar != null"
+                                        class="photo"
+                                        :src="reply.user.profile.avatar"
+                                        alt=""
+                                    />
+                                    <img
+                                        class="photo"
+                                        src="/images/assets/personal.jpg"
+                                        alt=""
+                                    />
+                                    <b class="text-break fullname">
+                                        {{ reply.user.profile.firstname }}
+                                        {{ reply.user.profile.lastname }}
+                                    </b>
+                                    <div class="text-break">
+                                        <span class="comment-content"
+                                            >{{ reply.content }}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -629,6 +644,45 @@ export default {
                     }
                 });
         },
+        sendReply(post, reply, comment, mention) {
+            let vm = this;
+            comment.reply = "";
+            axios
+                .post(
+                    "/api/comments",
+                    {
+                        content: reply,
+                        post_id: post.id,
+                        user_id: vm.user_id,
+                        comment_id: comment.id,
+                        mention_id: mention.id,
+                    },
+                    {
+                        headers: headerAuth,
+                    }
+                )
+                .then(function (response) {
+                    console.log(response);
+                    // comment.replies.unshift(response.data.data);
+                    vm.$notify({
+                        title: "نجاح",
+                        text: "تم مشاركة التعليق بنجاح",
+                        type: "success",
+                    });
+                })
+                .catch(function (error) {
+                    comment.reply = reply;
+                    console.log(error.response);
+                    var errors = error.response.data.errors;
+                    for (const error in errors) {
+                        vm.$notify({
+                            title: "خطأ:لم يتم تنفيذ",
+                            text: errors[error][0],
+                            type: "error",
+                        });
+                    }
+                });
+        },
         loadComments(post) {
             let vm = this;
             axios
@@ -833,7 +887,7 @@ i {
     width: fit-content;
 }
 .reply {
-    margin-right: 40px;
+    margin-right: 60px;
     margin-left: 10px;
     padding: 10px;
     border-radius: 10px;

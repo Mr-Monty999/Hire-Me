@@ -54,6 +54,7 @@ class CommentController extends Controller
     public static function getReplies($commentId)
     {
         $replies = CommentService::getReplies($commentId);
+
         return ResponseService::json($replies);
     }
     /**

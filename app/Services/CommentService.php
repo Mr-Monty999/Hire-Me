@@ -7,6 +7,10 @@ use App\Models\Comment;
 use App\Models\Post;
 use Auth;
 use Gate;
+use Illuminate\Pagination\PaginationServiceProvider;
+use Illuminate\Pagination\PaginationState;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
 
 /**
  * Class CommentService.
@@ -67,17 +71,18 @@ class CommentService
     }
     public static function getReplies($commentId)
     {
-        $comments = Comment::with([
+        $replies = Comment::with([
             "user.profile",
             // "parentComment",
-            "post"
+            "post",
+            "mention.profile"
         ])->withCount("replies")
             ->where("comment_id", "=", $commentId)
             ->get();
 
-        foreach ($comments as $comment) {
-            $comment->created_at_diff_for_humans = $comment->created_at->diffForHumans();
+        foreach ($replies as $reply) {
+            $reply->created_at_diff_for_humans = $reply->created_at->diffForHumans();
         }
-        return $comments;
+        return $replies;
     }
 }
