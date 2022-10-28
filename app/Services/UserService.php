@@ -113,7 +113,10 @@ class UserService
             },
             "tags",
             "user.profile",
-        ])->withCount("reacts", "likes", "dislikes")->where("user_id", $userId)->latest()->paginate(5);
+        ])
+            ->withCount("comments", "reacts", "tags", "likes", "dislikes")->where("user_id", $userId)
+            ->latest()
+            ->paginate(5);
 
         // $posts["count"] = self::getPostsCount($userId);
         foreach ($posts as  $post) {
@@ -139,7 +142,8 @@ class UserService
             },
             "tags",
             "user.profile",
-        ])->withCount("comments", "reacts", "tags", "likes", "dislikes")
+        ])
+            ->withCount("comments", "reacts", "tags", "likes", "dislikes")
             ->whereIn("user_id", $userIds)
             ->latest()
             ->paginate(5);

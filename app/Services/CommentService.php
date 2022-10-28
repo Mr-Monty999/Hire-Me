@@ -69,6 +69,7 @@ class CommentService
     {
         $comments = Comment::with([
             "user.profile",
+            // "parentComment",
             "post"
         ])->withCount("replies")
             ->where("comment_id", "=", $commentId)

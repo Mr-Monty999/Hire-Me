@@ -6094,28 +6094,25 @@ __webpack_require__.r(__webpack_exports__);
 
       return avatar;
     },
-    sendComment: function sendComment(postId, comment) {
+    sendComment: function sendComment(post, comment) {
       var vm = this;
-      var index = vm.posts.data.findIndex(function (el) {
-        return el.id == postId;
-      });
-      vm.posts.data[index].comment = "";
+      post.comment = "";
       axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/comments", {
         content: comment,
-        post_id: postId,
+        post_id: post.id,
         user_id: vm.user_id
       }, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        vm.posts.data[index].comments.unshift(response.data.data);
+        post.comments.unshift(response.data.data);
         vm.$notify({
           title: "نجاح",
           text: "تم مشاركة التعليق بنجاح",
           type: "success"
         });
       })["catch"](function (error) {
-        vm.posts.data[index].comment = comment;
+        post.comment = comment;
         console.log(error.response);
         var errors = error.response.data.errors;
 
@@ -6128,16 +6125,13 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    loadComments: function loadComments(postId) {
+    loadComments: function loadComments(post) {
       var vm = this;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/posts/" + postId + "/comments", {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/posts/" + post.id + "/comments", {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        var index = vm.posts.data.findIndex(function (el) {
-          return el.id == postId;
-        });
-        vm.posts.data[index].comments = response.data.data;
+        post.comments = response.data.data;
       })["catch"](function (error) {
         console.log(error.response);
         var errors = error.response.data.errors;
@@ -6150,6 +6144,32 @@ __webpack_require__.r(__webpack_exports__);
           });
         }
       });
+    },
+    hideComments: function hideComments(post) {
+      post.comments = [];
+    },
+    loadReplies: function loadReplies(comment) {
+      var vm = this;
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/comments/" + comment.id + "/replies", {
+        headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
+      }).then(function (response) {
+        console.log(response);
+        comment.replies = response.data.data;
+      })["catch"](function (error) {
+        console.log(error.response);
+        var errors = error.response.data.errors;
+
+        for (var _error7 in errors) {
+          vm.$notify({
+            title: "خطأ:لم يتم تنفيذ",
+            text: errors[_error7][0],
+            type: "error"
+          });
+        }
+      });
+    },
+    hideReplies: function hideReplies(comment) {
+      comment.replies = [];
     }
   },
   computed: {
@@ -9428,7 +9448,7 @@ var render = function render() {
       nativeOn: {
         keyup: function keyup($event) {
           if (!$event.type.indexOf("key") && _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")) return null;
-          return _vm.sendComment(post.id, post.comment);
+          return _vm.sendComment(post, post.comment);
         }
       },
       model: {
@@ -9438,7 +9458,27 @@ var render = function render() {
         },
         expression: "post.comment"
       }
-    }), _vm._v(" "), _vm._m(0, true)], 1), _vm._v(" "), _vm._l(post.comments, function (comment, i) {
+    }), _vm._v(" "), _vm._m(0, true)], 1), _vm._v(" "), post.comments_count > 0 ? _c("div", {
+      staticClass: "d-flex gap-3"
+    }, [_c("span", {
+      staticClass: "muted-color load-comments",
+      on: {
+        click: function click($event) {
+          return _vm.loadComments(post);
+        }
+      }
+    }, [_vm._v("اظهار التعليقات\n                                "), _c("i", {
+      staticClass: "fa-solid fa-arrow-rotate-left"
+    })]), _vm._v(" "), _c("span", {
+      staticClass: "muted-color load-comments",
+      on: {
+        click: function click($event) {
+          return _vm.hideComments(post);
+        }
+      }
+    }, [_vm._v("إخفاء التعليقات\n                                "), _c("i", {
+      staticClass: "fa-solid fa-arrow-rotate-right"
+    })])]) : _vm._e(), _vm._v(" "), _c("div", _vm._l(post.comments, function (comment, i) {
       return _c("div", {
         key: i,
         staticClass: "comment mar-1"
@@ -9456,21 +9496,55 @@ var render = function render() {
         }
       }), _vm._v(" "), _c("b", {
         staticClass: "text-break fullname"
-      }, [_vm._v("\n                                " + _vm._s(comment.user.profile.firstname) + "\n                                " + _vm._s(comment.user.profile.firstname) + "\n                            ")]), _vm._v(" "), _c("div", {
+      }, [_vm._v("\n                                    " + _vm._s(comment.user.profile.firstname) + "\n                                    " + _vm._s(comment.user.profile.lastname) + "\n                                ")]), _vm._v(" "), _c("div", {
         staticClass: "text-break"
       }, [_c("span", {
         staticClass: "comment-content"
-      }, [_vm._v(_vm._s(comment.content) + "\n                                ")])])]);
-    }), _vm._v(" "), _c("div", [_c("span", {
-      staticClass: "muted-color load-comments",
-      on: {
-        click: function click($event) {
-          return _vm.loadComments(post.id);
+      }, [_vm._v(_vm._s(comment.content) + "\n                                    ")])]), _vm._v(" "), comment.replies_count > 0 ? _c("div", {
+        staticClass: "d-flex gap-3"
+      }, [_c("span", {
+        staticClass: "muted-color load-comments",
+        on: {
+          click: function click($event) {
+            return _vm.loadReplies(comment);
+          }
         }
-      }
-    }, [_vm._v("اظهار التعليقات\n                                "), _c("i", {
-      staticClass: "fa-solid fa-arrow-rotate-left"
-    })])])], 2)])]);
+      }, [_vm._v("اظهار الردود\n                                        "), _c("i", {
+        staticClass: "fa-solid fa-arrow-rotate-left"
+      })]), _vm._v(" "), _c("span", {
+        staticClass: "muted-color load-comments",
+        on: {
+          click: function click($event) {
+            return _vm.hideReplies(comment);
+          }
+        }
+      }, [_vm._v("إخفاء الردود\n                                        "), _c("i", {
+        staticClass: "fa-solid fa-arrow-rotate-right"
+      })])]) : _vm._e(), _vm._v(" "), _vm._l(comment.replies, function (reply, x) {
+        return _c("div", {
+          key: x,
+          staticClass: "reply mar-1"
+        }, [reply.user.profile.avatar != null ? _c("img", {
+          staticClass: "photo",
+          attrs: {
+            src: reply.user.profile.avatar,
+            alt: ""
+          }
+        }) : _vm._e(), _vm._v(" "), _c("img", {
+          staticClass: "photo",
+          attrs: {
+            src: "/images/assets/personal.jpg",
+            alt: ""
+          }
+        }), _vm._v(" "), _c("b", {
+          staticClass: "text-break fullname"
+        }, [_vm._v("\n                                        " + _vm._s(reply.user.profile.firstname) + "\n                                        " + _vm._s(reply.user.profile.lastname) + "\n                                    ")]), _vm._v(" "), _c("div", {
+          staticClass: "text-break"
+        }, [_c("span", {
+          staticClass: "comment-content"
+        }, [_vm._v(_vm._s(reply.content) + "\n                                        ")])])]);
+      })], 2);
+    }), 0)])])]);
   }), 0), _vm._v(" "), _vm.posts.last_page > 1 ? _c("paginate", {
     attrs: {
       "page-count": _vm.posts.last_page,
@@ -18360,7 +18434,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-665bb057] {\n    background-color: #eee;\n    font-family: \"Poppins\", sans-serif;\n    font-weight: 300;\n}\n.card[data-v-665bb057] {\n    border: none;\n    /* margin-top: 10px; */\n    margin-bottom: 100px;\n}\n.ellipsis[data-v-665bb057] {\n    color: #a09c9c;\n}\nhr[data-v-665bb057] {\n    color: #a09c9c;\n    margin-top: 4px;\n    margin-bottom: 8px;\n}\n.muted-color[data-v-665bb057] {\n    color: #a09c9c;\n    font-size: 13px;\n}\n.ellipsis i[data-v-665bb057] {\n    margin-top: 3px;\n    cursor: pointer;\n}\n.icons i[data-v-665bb057] {\n    font-size: 25px;\n}\n.icons i[data-v-665bb057]:hover {\n    color: #0d6efd;\n}\n.icons .fa-solid.fa-thumbs-up[data-v-665bb057] {\n}\n.icons .fa-solid.fa-thumbs-down[data-v-665bb057] {\n    margin-top: 4px;\n    margin-right: 10px;\n}\n.rounded-image[data-v-665bb057] {\n    border-radius: 50% !important;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    height: 50px;\n    width: 50px;\n}\n.name[data-v-665bb057] {\n    font-weight: bold;\n}\n.date[data-v-665bb057] {\n    color: #65676b !important;\n}\n.comment-text[data-v-665bb057] {\n    font-size: 12px;\n}\n.status small[data-v-665bb057] {\n    margin-right: 10px;\n    color: blue;\n}\n.form-control[data-v-665bb057] {\n    border-radius: 26px;\n}\n.comment-input[data-v-665bb057] {\n    position: relative;\n}\n.fonts[data-v-665bb057] {\n    position: absolute;\n    left: 13px;\n    top: 8px;\n    color: #a09c9c;\n}\n.form-control[data-v-665bb057]:focus {\n    color: #495057;\n    background-color: #fff;\n    border-color: #8bbafe;\n    outline: 0;\n    box-shadow: none;\n}\n.options[data-v-665bb057] {\n    font-size: 23px;\n    color: #757575;\n    cursor: pointer;\n}\n.options[data-v-665bb057]:hover {\n    color: #000;\n}\na[data-v-665bb057] {\n    text-decoration: none;\n}\nimg[data-v-665bb057] {\n    cursor: pointer;\n}\ni[data-v-665bb057] {\n    cursor: pointer;\n}\n.load-comments[data-v-665bb057] {\n    font-size: 15px;\n    cursor: pointer;\n}\n.load-comments[data-v-665bb057]:hover {\n    color: #65676b !important;\n}\n.fa-arrow-rotate-left[data-v-665bb057] {\n    font-size: inherit;\n}\n.photo[data-v-665bb057] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin-left: 5px;\n}\n.fullname[data-v-665bb057] {\n    font-size: 15px;\n}\n.comment-content[data-v-665bb057] {\n    font-size: 15px;\n}\n.comment[data-v-665bb057] {\n    margin-right: 20px;\n    margin-left: 10px;\n    padding: 10px;\n    border-radius: 10px;\n    background-color: #ededed;\n    width: -webkit-fit-content;\n    width: -moz-fit-content;\n    width: fit-content;\n}\ntextarea[data-v-665bb057] {\n    border-radius: 10px !important;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-665bb057] {\n    background-color: #eee;\n    font-family: \"Poppins\", sans-serif;\n    font-weight: 300;\n}\n.card[data-v-665bb057] {\n    border: none;\n    /* margin-top: 10px; */\n    margin-bottom: 100px;\n}\n.ellipsis[data-v-665bb057] {\n    color: #a09c9c;\n}\nhr[data-v-665bb057] {\n    color: #a09c9c;\n    margin-top: 4px;\n    margin-bottom: 8px;\n}\n.muted-color[data-v-665bb057] {\n    color: #a09c9c;\n    font-size: 13px;\n}\n.ellipsis i[data-v-665bb057] {\n    margin-top: 3px;\n    cursor: pointer;\n}\n.icons i[data-v-665bb057] {\n    font-size: 25px;\n}\n.icons i[data-v-665bb057]:hover {\n    color: #0d6efd;\n}\n.icons .fa-solid.fa-thumbs-up[data-v-665bb057] {\n}\n.icons .fa-solid.fa-thumbs-down[data-v-665bb057] {\n    margin-top: 4px;\n    margin-right: 10px;\n}\n.rounded-image[data-v-665bb057] {\n    border-radius: 50% !important;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    height: 50px;\n    width: 50px;\n}\n.name[data-v-665bb057] {\n    font-weight: bold;\n}\n.date[data-v-665bb057] {\n    color: #65676b !important;\n}\n.comment-text[data-v-665bb057] {\n    font-size: 12px;\n}\n.status small[data-v-665bb057] {\n    margin-right: 10px;\n    color: blue;\n}\n.form-control[data-v-665bb057] {\n    border-radius: 26px;\n}\n.comment-input[data-v-665bb057] {\n    position: relative;\n}\n.fonts[data-v-665bb057] {\n    position: absolute;\n    left: 13px;\n    top: 8px;\n    color: #a09c9c;\n}\n.form-control[data-v-665bb057]:focus {\n    color: #495057;\n    background-color: #fff;\n    border-color: #8bbafe;\n    outline: 0;\n    box-shadow: none;\n}\n.options[data-v-665bb057] {\n    font-size: 23px;\n    color: #757575;\n    cursor: pointer;\n}\n.options[data-v-665bb057]:hover {\n    color: #000;\n}\na[data-v-665bb057] {\n    text-decoration: none;\n}\nimg[data-v-665bb057] {\n    cursor: pointer;\n}\ni[data-v-665bb057] {\n    cursor: pointer;\n}\n.load-comments[data-v-665bb057] {\n    font-size: 15px;\n    cursor: pointer;\n}\n.load-comments[data-v-665bb057]:hover {\n    color: #65676b !important;\n}\n.fa-arrow-rotate-left[data-v-665bb057],\n.fa-arrow-rotate-right[data-v-665bb057] {\n    font-size: inherit;\n}\n.photo[data-v-665bb057] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin-left: 5px;\n}\n.fullname[data-v-665bb057] {\n    font-size: 15px;\n}\n.comment-content[data-v-665bb057] {\n    font-size: 15px;\n}\n.comment[data-v-665bb057] {\n    margin-right: 20px;\n    margin-left: 10px;\n    padding: 10px;\n    border-radius: 10px;\n    background-color: #ededed;\n    width: -webkit-fit-content;\n    width: -moz-fit-content;\n    width: fit-content;\n}\n.reply[data-v-665bb057] {\n    margin-right: 40px;\n    margin-left: 10px;\n    padding: 10px;\n    border-radius: 10px;\n    background-color: #ededed;\n    width: -webkit-fit-content;\n    width: -moz-fit-content;\n    width: fit-content;\n}\ntextarea[data-v-665bb057] {\n    border-radius: 10px !important;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

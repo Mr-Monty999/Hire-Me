@@ -198,7 +198,7 @@
                                     :max-height="350"
                                     class="form-control"
                                     @keyup.enter.native="
-                                        sendComment(post.id, post.comment)
+                                        sendComment(post, post.comment)
                                     "
                                     important
                                 />
@@ -207,38 +207,103 @@
                                 </div>
                             </div>
                             <div
-                                v-for="(comment, i) in post.comments"
-                                :key="i"
-                                class="comment mar-1"
+                                v-if="post.comments_count > 0"
+                                class="d-flex gap-3"
                             >
-                                <img
-                                    v-if="comment.user.profile.avatar != null"
-                                    class="photo"
-                                    :src="comment.user.profile.avatar"
-                                    alt=""
-                                />
-                                <img
-                                    class="photo"
-                                    src="/images/assets/personal.jpg"
-                                    alt=""
-                                />
-                                <b class="text-break fullname">
-                                    {{ comment.user.profile.firstname }}
-                                    {{ comment.user.profile.firstname }}
-                                </b>
-                                <div class="text-break">
-                                    <span class="comment-content"
-                                        >{{ comment.content }}
-                                    </span>
-                                </div>
-                            </div>
-                            <div>
                                 <span
-                                    @click="loadComments(post.id)"
+                                    @click="loadComments(post)"
                                     class="muted-color load-comments"
                                     >اظهار التعليقات
                                     <i class="fa-solid fa-arrow-rotate-left"></i
                                 ></span>
+                                <span
+                                    @click="hideComments(post)"
+                                    class="muted-color load-comments"
+                                    >إخفاء التعليقات
+                                    <i
+                                        class="fa-solid fa-arrow-rotate-right"
+                                    ></i
+                                ></span>
+                            </div>
+                            <div>
+                                <div
+                                    v-for="(comment, i) in post.comments"
+                                    :key="i"
+                                    class="comment mar-1"
+                                >
+                                    <img
+                                        v-if="
+                                            comment.user.profile.avatar != null
+                                        "
+                                        class="photo"
+                                        :src="comment.user.profile.avatar"
+                                        alt=""
+                                    />
+                                    <img
+                                        class="photo"
+                                        src="/images/assets/personal.jpg"
+                                        alt=""
+                                    />
+                                    <b class="text-break fullname">
+                                        {{ comment.user.profile.firstname }}
+                                        {{ comment.user.profile.lastname }}
+                                    </b>
+                                    <div class="text-break">
+                                        <span class="comment-content"
+                                            >{{ comment.content }}
+                                        </span>
+                                    </div>
+                                    <div
+                                        v-if="comment.replies_count > 0"
+                                        class="d-flex gap-3"
+                                    >
+                                        <span
+                                            @click="loadReplies(comment)"
+                                            class="muted-color load-comments"
+                                            >اظهار الردود
+                                            <i
+                                                class="fa-solid fa-arrow-rotate-left"
+                                            ></i
+                                        ></span>
+                                        <span
+                                            @click="hideReplies(comment)"
+                                            class="muted-color load-comments"
+                                            >إخفاء الردود
+                                            <i
+                                                class="fa-solid fa-arrow-rotate-right"
+                                            ></i
+                                        ></span>
+                                    </div>
+                                    <div
+                                        v-for="(reply, x) in comment.replies"
+                                        :key="x"
+                                        class="reply mar-1"
+                                    >
+                                        <img
+                                            v-if="
+                                                reply.user.profile.avatar !=
+                                                null
+                                            "
+                                            class="photo"
+                                            :src="reply.user.profile.avatar"
+                                            alt=""
+                                        />
+                                        <img
+                                            class="photo"
+                                            src="/images/assets/personal.jpg"
+                                            alt=""
+                                        />
+                                        <b class="text-break fullname">
+                                            {{ reply.user.profile.firstname }}
+                                            {{ reply.user.profile.lastname }}
+                                        </b>
+                                        <div class="text-break">
+                                            <span class="comment-content"
+                                                >{{ reply.content }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -527,16 +592,15 @@ export default {
             }
             return avatar;
         },
-        sendComment(postId, comment) {
+        sendComment(post, comment) {
             let vm = this;
-            var index = vm.posts.data.findIndex((el) => el.id == postId);
-            vm.posts.data[index].comment = "";
+            post.comment = "";
             axios
                 .post(
                     "/api/comments",
                     {
                         content: comment,
-                        post_id: postId,
+                        post_id: post.id,
                         user_id: vm.user_id,
                     },
                     {
@@ -545,7 +609,7 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
-                    vm.posts.data[index].comments.unshift(response.data.data);
+                    post.comments.unshift(response.data.data);
                     vm.$notify({
                         title: "نجاح",
                         text: "تم مشاركة التعليق بنجاح",
@@ -553,7 +617,7 @@ export default {
                     });
                 })
                 .catch(function (error) {
-                    vm.posts.data[index].comment = comment;
+                    post.comment = comment;
                     console.log(error.response);
                     var errors = error.response.data.errors;
                     for (const error in errors) {
@@ -565,18 +629,15 @@ export default {
                     }
                 });
         },
-        loadComments(postId) {
+        loadComments(post) {
             let vm = this;
             axios
-                .get("/api/posts/" + postId + "/comments", {
+                .get("/api/posts/" + post.id + "/comments", {
                     headers: headerAuth,
                 })
                 .then(function (response) {
                     console.log(response);
-                    var index = vm.posts.data.findIndex(
-                        (el) => el.id == postId
-                    );
-                    vm.posts.data[index].comments = response.data.data;
+                    post.comments = response.data.data;
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -589,6 +650,34 @@ export default {
                         });
                     }
                 });
+        },
+        hideComments(post) {
+            post.comments = [];
+        },
+        loadReplies(comment) {
+            let vm = this;
+            axios
+                .get("/api/comments/" + comment.id + "/replies", {
+                    headers: headerAuth,
+                })
+                .then(function (response) {
+                    console.log(response);
+                    comment.replies = response.data.data;
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                    var errors = error.response.data.errors;
+                    for (const error in errors) {
+                        vm.$notify({
+                            title: "خطأ:لم يتم تنفيذ",
+                            text: errors[error][0],
+                            type: "error",
+                        });
+                    }
+                });
+        },
+        hideReplies(comment) {
+            comment.replies = [];
         },
     },
     computed: {
@@ -719,7 +808,8 @@ i {
 .load-comments:hover {
     color: #65676b !important;
 }
-.fa-arrow-rotate-left {
+.fa-arrow-rotate-left,
+.fa-arrow-rotate-right {
     font-size: inherit;
 }
 .photo {
@@ -736,6 +826,14 @@ i {
 }
 .comment {
     margin-right: 20px;
+    margin-left: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #ededed;
+    width: fit-content;
+}
+.reply {
+    margin-right: 40px;
     margin-left: 10px;
     padding: 10px;
     border-radius: 10px;

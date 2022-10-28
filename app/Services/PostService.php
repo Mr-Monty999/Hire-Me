@@ -147,7 +147,8 @@ class PostService
             },
             "tags",
             "user.profile",
-        ])->withCount("comments", "reacts", "tags", "likes", "dislikes")
+        ])
+            ->withCount("comments", "reacts", "tags", "likes", "dislikes")
             ->where("content", "LIKE", "%$content%")
             ->latest()
             ->paginate(5);
