@@ -25,6 +25,7 @@ class PostService
         $data["post_id"] = $post->id;
         NotificationService::sendCreatePostNotification($data);
         $post = self::getPost($post->id, Auth::user()->id);
+        $post->created_at_diff_for_humans = "الأن";
 
         return $post;
     }
@@ -56,20 +57,16 @@ class PostService
 
 
         $posts = Post::with([
-            "comments" => function ($q) {
-                $q->withCount("replies");
-            },
             "reacts" => function ($q) {
                 $q->latest()->paginate(5);
             },
-            "comments.user.profile",
             "tags",
             "user.profile",
         ])->withCount("comments", "reacts", "tags", "likes", "dislikes")->latest()->paginate(5);
 
         foreach ($posts as  $post) {
             $post->created_at_diff_for_humans = $post->created_at->diffForHumans();
-
+            $post->comments = [];
             $react = $post->reacts()->where("user_id", "=", $userId)->first();
             if ($react)
                 $post->react_type = $react->pivot->type;
@@ -86,19 +83,16 @@ class PostService
 
         $post = Post::with(
             [
-                "comments" => function ($q) {
-                    $q->withCount("replies");
-                },
                 "reacts" => function ($q) {
                     $q->latest()->paginate(5);
                 },
-                "comments.user.profile",
                 "tags",
                 "user.profile",
             ]
         )->withCount(["reacts", "comments", "tags", "likes", "dislikes"])->find($postId);
 
         $post->created_at_diff_for_humans = $post->created_at->diffForHumans();
+        $post->comments = [];
         $react = $post->reacts()->where("user_id", "=", $authUserId)->first();
         if ($react)
             $post->react_type = $react->pivot->type;
@@ -148,13 +142,9 @@ class PostService
 
 
         $posts = Post::with([
-            "comments" => function ($q) {
-                $q->withCount("replies");
-            },
             "reacts" => function ($q) {
                 $q->latest()->paginate(5);
             },
-            "comments.user.profile",
             "tags",
             "user.profile",
         ])->withCount("comments", "reacts", "tags", "likes", "dislikes")
@@ -164,7 +154,7 @@ class PostService
 
         foreach ($posts as  $post) {
             $post->created_at_diff_for_humans = $post->created_at->diffForHumans();
-
+            $post->comments = [];
             $react = $post->reacts()->where("user_id", "=", $userId)->first();
             if ($react)
                 $post->react_type = $react->pivot->type;
@@ -178,8 +168,14 @@ class PostService
     {
         $comments = Comment::with([
             "user.profile",
-            "post"
-        ])->withCount("replies")->where("post_id", "=", $postId)->get();
+        ])->withCount("replies")
+            ->where("post_id", "=", $postId)
+            ->whereNull("comment_id")
+            ->get();
+
+        foreach ($comments as $comment) {
+            $comment->created_at_diff_for_humans = $comment->created_at->diffForHumans();
+        }
         return $comments;
     }
 }

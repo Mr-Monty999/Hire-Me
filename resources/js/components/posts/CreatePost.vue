@@ -158,6 +158,9 @@ export default {
                     // });
                 })
                 .catch(function (error) {
+                    vm.$notify({
+                        clean: true,
+                    });
                     console.log(error.response);
                     var errors = error.response.data.errors;
                     for (const error in errors) {

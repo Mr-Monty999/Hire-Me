@@ -35,8 +35,7 @@ Route::group(["namespace" => "general"], function () {
         Route::apiResource("users", "UserController");
 
 
-        //Profiles
-        // Route::apiResource("profiles", "ProfileController");
+
 
 
         Route::get("users/{userId}/posts", "UserController@showPosts");

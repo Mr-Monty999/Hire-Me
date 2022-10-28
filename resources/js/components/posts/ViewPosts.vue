@@ -190,13 +190,55 @@
                         <hr />
                         <div class="comments">
                             <div class="comment-input">
-                                <textarea
-                                    type="text"
+                                <textarea-autosize
+                                    placeholder="أكتب تعليقك"
+                                    ref="myTextarea"
+                                    v-model="post.comment"
+                                    :min-height="30"
+                                    :max-height="350"
                                     class="form-control"
-                                ></textarea>
-                                <div class="fonts">
+                                    @keyup.enter.native="
+                                        sendComment(post.id, post.comment)
+                                    "
+                                    important
+                                />
+                                <div hidden class="fonts">
                                     <i class="fa fa-camera"></i>
                                 </div>
+                            </div>
+                            <div
+                                v-for="(comment, i) in post.comments"
+                                :key="i"
+                                class="comment mar-1"
+                            >
+                                <img
+                                    v-if="comment.user.profile.avatar != null"
+                                    class="photo"
+                                    :src="comment.user.profile.avatar"
+                                    alt=""
+                                />
+                                <img
+                                    class="photo"
+                                    src="/images/assets/personal.jpg"
+                                    alt=""
+                                />
+                                <b class="text-break fullname">
+                                    {{ comment.user.profile.firstname }}
+                                    {{ comment.user.profile.firstname }}
+                                </b>
+                                <div class="text-break">
+                                    <span class="comment-content"
+                                        >{{ comment.content }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div>
+                                <span
+                                    @click="loadComments(post.id)"
+                                    class="muted-color load-comments"
+                                    >اظهار التعليقات
+                                    <i class="fa-solid fa-arrow-rotate-left"></i
+                                ></span>
                             </div>
                         </div>
                     </div>
@@ -485,6 +527,69 @@ export default {
             }
             return avatar;
         },
+        sendComment(postId, comment) {
+            let vm = this;
+            var index = vm.posts.data.findIndex((el) => el.id == postId);
+            vm.posts.data[index].comment = "";
+            axios
+                .post(
+                    "/api/comments",
+                    {
+                        content: comment,
+                        post_id: postId,
+                        user_id: vm.user_id,
+                    },
+                    {
+                        headers: headerAuth,
+                    }
+                )
+                .then(function (response) {
+                    console.log(response);
+                    vm.posts.data[index].comments.unshift(response.data.data);
+                    vm.$notify({
+                        title: "نجاح",
+                        text: "تم مشاركة التعليق بنجاح",
+                        type: "success",
+                    });
+                })
+                .catch(function (error) {
+                    vm.posts.data[index].comment = comment;
+                    console.log(error.response);
+                    var errors = error.response.data.errors;
+                    for (const error in errors) {
+                        vm.$notify({
+                            title: "خطأ:لم يتم تنفيذ",
+                            text: errors[error][0],
+                            type: "error",
+                        });
+                    }
+                });
+        },
+        loadComments(postId) {
+            let vm = this;
+            axios
+                .get("/api/posts/" + postId + "/comments", {
+                    headers: headerAuth,
+                })
+                .then(function (response) {
+                    console.log(response);
+                    var index = vm.posts.data.findIndex(
+                        (el) => el.id == postId
+                    );
+                    vm.posts.data[index].comments = response.data.data;
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                    var errors = error.response.data.errors;
+                    for (const error in errors) {
+                        vm.$notify({
+                            title: "خطأ:لم يتم تنفيذ",
+                            text: errors[error][0],
+                            type: "error",
+                        });
+                    }
+                });
+        },
     },
     computed: {
         calcPageCount() {
@@ -575,9 +680,7 @@ hr {
 .comment-input {
     position: relative;
 }
-.comment-input textarea {
-    height: 50px;
-}
+
 .fonts {
     position: absolute;
     left: 13px;
@@ -603,14 +706,43 @@ hr {
 a {
     text-decoration: none;
 }
-textarea {
-    resize: none !important;
-    height: 300px;
-}
 img {
     cursor: pointer;
 }
 i {
     cursor: pointer;
+}
+.load-comments {
+    font-size: 15px;
+    cursor: pointer;
+}
+.load-comments:hover {
+    color: #65676b !important;
+}
+.fa-arrow-rotate-left {
+    font-size: inherit;
+}
+.photo {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-left: 5px;
+}
+.fullname {
+    font-size: 15px;
+}
+.comment-content {
+    font-size: 15px;
+}
+.comment {
+    margin-right: 20px;
+    margin-left: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #ededed;
+    width: fit-content;
+}
+textarea {
+    border-radius: 10px !important;
 }
 </style>

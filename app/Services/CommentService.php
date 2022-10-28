@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Models\Post;
 use Auth;
@@ -15,6 +16,9 @@ class CommentService
     public static function store($data)
     {
         $comment = Comment::create($data);
+        $comment = self::show($comment->id);
+        $comment->created_at_diff_for_humans = "الأن";
+
         return $comment;
     }
     public static function update($commentId, $data)
@@ -43,6 +47,8 @@ class CommentService
             "parentComment",
             "post"
         ])->withCount("replies")->find($commentId);
+        $comment->created_at_diff_for_humans = $comment->created_at->diffForHumans();
+
         return $comment;
     }
 
@@ -53,14 +59,24 @@ class CommentService
             "parentComment",
             "post"
         ])->withCount("replies")->get();
-        return $comments;
+
+        foreach ($comments as $comment) {
+            $comment->created_at_diff_for_humans = $comment->created_at->diffForHumans();
+        }
+        return  $comments;
     }
     public static function getReplies($commentId)
     {
         $comments = Comment::with([
             "user.profile",
             "post"
-        ])->withCount("replies")->where("comment_id", "=", $commentId)->get();
+        ])->withCount("replies")
+            ->where("comment_id", "=", $commentId)
+            ->get();
+
+        foreach ($comments as $comment) {
+            $comment->created_at_diff_for_humans = $comment->created_at->diffForHumans();
+        }
         return $comments;
     }
 }

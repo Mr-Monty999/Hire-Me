@@ -21,7 +21,9 @@ import router from "./router/index";
 import Vue from "vue";
 import Notifications from "vue-notification";
 import VModal from "vue-js-modal";
+import TextareaAutosize from "vue-textarea-autosize";
 
+Vue.use(TextareaAutosize);
 Vue.use(VModal);
 Vue.use(Notifications);
 

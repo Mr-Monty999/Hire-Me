@@ -5808,6 +5808,9 @@ __webpack_require__.r(__webpack_exports__);
         //     content: response.data.data.content,
         // });
       })["catch"](function (error) {
+        vm.$notify({
+          clean: true
+        });
         console.log(error.response);
         var errors = error.response.data.errors;
 
@@ -6090,6 +6093,63 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return avatar;
+    },
+    sendComment: function sendComment(postId, comment) {
+      var vm = this;
+      var index = vm.posts.data.findIndex(function (el) {
+        return el.id == postId;
+      });
+      vm.posts.data[index].comment = "";
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/comments", {
+        content: comment,
+        post_id: postId,
+        user_id: vm.user_id
+      }, {
+        headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
+      }).then(function (response) {
+        console.log(response);
+        vm.posts.data[index].comments.unshift(response.data.data);
+        vm.$notify({
+          title: "نجاح",
+          text: "تم مشاركة التعليق بنجاح",
+          type: "success"
+        });
+      })["catch"](function (error) {
+        vm.posts.data[index].comment = comment;
+        console.log(error.response);
+        var errors = error.response.data.errors;
+
+        for (var _error5 in errors) {
+          vm.$notify({
+            title: "خطأ:لم يتم تنفيذ",
+            text: errors[_error5][0],
+            type: "error"
+          });
+        }
+      });
+    },
+    loadComments: function loadComments(postId) {
+      var vm = this;
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/posts/" + postId + "/comments", {
+        headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
+      }).then(function (response) {
+        console.log(response);
+        var index = vm.posts.data.findIndex(function (el) {
+          return el.id == postId;
+        });
+        vm.posts.data[index].comments = response.data.data;
+      })["catch"](function (error) {
+        console.log(error.response);
+        var errors = error.response.data.errors;
+
+        for (var _error6 in errors) {
+          vm.$notify({
+            title: "خطأ:لم يتم تنفيذ",
+            text: errors[_error6][0],
+            type: "error"
+          });
+        }
+      });
     }
   },
   computed: {
@@ -9351,7 +9411,66 @@ var render = function render() {
       }
     }), _vm._v(" "), _c("span", [_vm._v("\n                                " + _vm._s(_vm._f("toNumber")(post.dislikes_count)) + "\n                            ")])]), _vm._v(" "), _c("div", {
       staticClass: "d-flex flex-row muted-color"
-    }, [_c("span", [_vm._v("التعليقات " + _vm._s(post.comments_count))])])]), _vm._v(" "), _c("hr"), _vm._v(" "), _vm._m(0, true)])]);
+    }, [_c("span", [_vm._v("التعليقات " + _vm._s(post.comments_count))])])]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("div", {
+      staticClass: "comments"
+    }, [_c("div", {
+      staticClass: "comment-input"
+    }, [_c("textarea-autosize", {
+      ref: "myTextarea",
+      refInFor: true,
+      staticClass: "form-control",
+      attrs: {
+        placeholder: "أكتب تعليقك",
+        "min-height": 30,
+        "max-height": 350,
+        important: ""
+      },
+      nativeOn: {
+        keyup: function keyup($event) {
+          if (!$event.type.indexOf("key") && _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")) return null;
+          return _vm.sendComment(post.id, post.comment);
+        }
+      },
+      model: {
+        value: post.comment,
+        callback: function callback($$v) {
+          _vm.$set(post, "comment", $$v);
+        },
+        expression: "post.comment"
+      }
+    }), _vm._v(" "), _vm._m(0, true)], 1), _vm._v(" "), _vm._l(post.comments, function (comment, i) {
+      return _c("div", {
+        key: i,
+        staticClass: "comment mar-1"
+      }, [comment.user.profile.avatar != null ? _c("img", {
+        staticClass: "photo",
+        attrs: {
+          src: comment.user.profile.avatar,
+          alt: ""
+        }
+      }) : _vm._e(), _vm._v(" "), _c("img", {
+        staticClass: "photo",
+        attrs: {
+          src: "/images/assets/personal.jpg",
+          alt: ""
+        }
+      }), _vm._v(" "), _c("b", {
+        staticClass: "text-break fullname"
+      }, [_vm._v("\n                                " + _vm._s(comment.user.profile.firstname) + "\n                                " + _vm._s(comment.user.profile.firstname) + "\n                            ")]), _vm._v(" "), _c("div", {
+        staticClass: "text-break"
+      }, [_c("span", {
+        staticClass: "comment-content"
+      }, [_vm._v(_vm._s(comment.content) + "\n                                ")])])]);
+    }), _vm._v(" "), _c("div", [_c("span", {
+      staticClass: "muted-color load-comments",
+      on: {
+        click: function click($event) {
+          return _vm.loadComments(post.id);
+        }
+      }
+    }, [_vm._v("اظهار التعليقات\n                                "), _c("i", {
+      staticClass: "fa-solid fa-arrow-rotate-left"
+    })])])], 2)])]);
   }), 0), _vm._v(" "), _vm.posts.last_page > 1 ? _c("paginate", {
     attrs: {
       "page-count": _vm.posts.last_page,
@@ -9375,19 +9494,13 @@ var staticRenderFns = [function () {
       _c = _vm._self._c;
 
   return _c("div", {
-    staticClass: "comments"
-  }, [_c("div", {
-    staticClass: "comment-input"
-  }, [_c("textarea", {
-    staticClass: "form-control",
+    staticClass: "fonts",
     attrs: {
-      type: "text"
+      hidden: ""
     }
-  }), _vm._v(" "), _c("div", {
-    staticClass: "fonts"
   }, [_c("i", {
     staticClass: "fa fa-camera"
-  })])])]);
+  })]);
 }];
 render._withStripped = true;
 
@@ -9415,7 +9528,7 @@ var render = function render() {
   }, [!_vm.loaded ? _c("loading") : _vm._e(), _vm._v(" "), _vm.loaded ? _c("main", {
     staticClass: "container rounded mt-5 mb-5"
   }, [_c("div", {
-    staticClass: "row gap-4"
+    staticClass: "row gap-md-4"
   }, [_c("div", {
     staticClass: "col-md-3 border-right bg-mine radius-1"
   }, [_c("div", {
@@ -9951,7 +10064,7 @@ var render = function render() {
   return _c("div", [!_vm.loaded ? _c("loading") : _vm._e(), _vm._v(" "), _vm.loaded ? _c("main", {
     staticClass: "container rounded mt-5 mb-5"
   }, [_c("div", {
-    staticClass: "row gap-4"
+    staticClass: "row gap-md-4"
   }, [_c("div", {
     staticClass: "col-md-3 border-right bg-mine radius-1"
   }, [_c("div", {
@@ -10687,7 +10800,7 @@ var render = function render() {
   return _c("div", [!_vm.loaded ? _c("loading") : _vm._e(), _vm._v(" "), _vm.loaded ? _c("main", {
     staticClass: "container rounded mt-5 mb-5"
   }, [_c("div", {
-    staticClass: "row gap-4"
+    staticClass: "row gap-md-4"
   }, [_vm._m(0), _vm._v(" "), _c("div", {
     staticClass: "col-md-7 border-right bg-mine radius-1"
   }, [_c("div", {
@@ -10747,7 +10860,7 @@ var render = function render() {
   return _c("div", [!_vm.loaded ? _c("loading") : _vm._e(), _vm._v(" "), _vm.loaded ? _c("main", {
     staticClass: "container rounded mt-5 mb-5"
   }, [_c("div", {
-    staticClass: "row gap-4"
+    staticClass: "row gap-md-4"
   }, [_vm._m(0), _vm._v(" "), _c("div", {
     staticClass: "col-md-7 border-right bg-mine radius-1"
   }, [_c("div", {
@@ -12361,11 +12474,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _assets_css_all_min_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./assets/css/all.min.css */ "./resources/js/assets/css/all.min.css");
 /* harmony import */ var _components_layouts_MainLayout_vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/layouts/MainLayout.vue */ "./resources/js/components/layouts/MainLayout.vue");
 /* harmony import */ var _router_index__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./router/index */ "./resources/js/router/index.js");
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
 /* harmony import */ var vue_notification__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! vue-notification */ "./node_modules/vue-notification/dist/index.js");
 /* harmony import */ var vue_notification__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(vue_notification__WEBPACK_IMPORTED_MODULE_9__);
 /* harmony import */ var vue_js_modal__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! vue-js-modal */ "./node_modules/vue-js-modal/dist/index.js");
 /* harmony import */ var vue_js_modal__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(vue_js_modal__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var vue_textarea_autosize__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! vue-textarea-autosize */ "./node_modules/vue-textarea-autosize/dist/vue-textarea-autosize.esm.js");
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -12386,9 +12500,11 @@ window.Vue = (__webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js
 
 
 
-vue__WEBPACK_IMPORTED_MODULE_11__["default"].use((vue_js_modal__WEBPACK_IMPORTED_MODULE_10___default()));
-vue__WEBPACK_IMPORTED_MODULE_11__["default"].use((vue_notification__WEBPACK_IMPORTED_MODULE_9___default()));
-vue__WEBPACK_IMPORTED_MODULE_11__["default"].filter("toNumber", function (value) {
+
+vue__WEBPACK_IMPORTED_MODULE_12__["default"].use(vue_textarea_autosize__WEBPACK_IMPORTED_MODULE_11__["default"]);
+vue__WEBPACK_IMPORTED_MODULE_12__["default"].use((vue_js_modal__WEBPACK_IMPORTED_MODULE_10___default()));
+vue__WEBPACK_IMPORTED_MODULE_12__["default"].use((vue_notification__WEBPACK_IMPORTED_MODULE_9___default()));
+vue__WEBPACK_IMPORTED_MODULE_12__["default"].filter("toNumber", function (value) {
   return Number(value).toLocaleString();
 });
 /**
@@ -12407,7 +12523,7 @@ vue__WEBPACK_IMPORTED_MODULE_11__["default"].filter("toNumber", function (value)
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-var app = new vue__WEBPACK_IMPORTED_MODULE_11__["default"]({
+var app = new vue__WEBPACK_IMPORTED_MODULE_12__["default"]({
   el: "#app",
   router: _router_index__WEBPACK_IMPORTED_MODULE_8__["default"],
   components: {
@@ -18244,7 +18360,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-665bb057] {\n    background-color: #eee;\n    font-family: \"Poppins\", sans-serif;\n    font-weight: 300;\n}\n.card[data-v-665bb057] {\n    border: none;\n    /* margin-top: 10px; */\n    margin-bottom: 100px;\n}\n.ellipsis[data-v-665bb057] {\n    color: #a09c9c;\n}\nhr[data-v-665bb057] {\n    color: #a09c9c;\n    margin-top: 4px;\n    margin-bottom: 8px;\n}\n.muted-color[data-v-665bb057] {\n    color: #a09c9c;\n    font-size: 13px;\n}\n.ellipsis i[data-v-665bb057] {\n    margin-top: 3px;\n    cursor: pointer;\n}\n.icons i[data-v-665bb057] {\n    font-size: 25px;\n}\n.icons i[data-v-665bb057]:hover {\n    color: #0d6efd;\n}\n.icons .fa-solid.fa-thumbs-up[data-v-665bb057] {\n}\n.icons .fa-solid.fa-thumbs-down[data-v-665bb057] {\n    margin-top: 4px;\n    margin-right: 10px;\n}\n.rounded-image[data-v-665bb057] {\n    border-radius: 50% !important;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    height: 50px;\n    width: 50px;\n}\n.name[data-v-665bb057] {\n    font-weight: bold;\n}\n.date[data-v-665bb057] {\n    color: #65676b !important;\n}\n.comment-text[data-v-665bb057] {\n    font-size: 12px;\n}\n.status small[data-v-665bb057] {\n    margin-right: 10px;\n    color: blue;\n}\n.form-control[data-v-665bb057] {\n    border-radius: 26px;\n}\n.comment-input[data-v-665bb057] {\n    position: relative;\n}\n.comment-input textarea[data-v-665bb057] {\n    height: 50px;\n}\n.fonts[data-v-665bb057] {\n    position: absolute;\n    left: 13px;\n    top: 8px;\n    color: #a09c9c;\n}\n.form-control[data-v-665bb057]:focus {\n    color: #495057;\n    background-color: #fff;\n    border-color: #8bbafe;\n    outline: 0;\n    box-shadow: none;\n}\n.options[data-v-665bb057] {\n    font-size: 23px;\n    color: #757575;\n    cursor: pointer;\n}\n.options[data-v-665bb057]:hover {\n    color: #000;\n}\na[data-v-665bb057] {\n    text-decoration: none;\n}\ntextarea[data-v-665bb057] {\n    resize: none !important;\n    height: 300px;\n}\nimg[data-v-665bb057] {\n    cursor: pointer;\n}\ni[data-v-665bb057] {\n    cursor: pointer;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-665bb057] {\n    background-color: #eee;\n    font-family: \"Poppins\", sans-serif;\n    font-weight: 300;\n}\n.card[data-v-665bb057] {\n    border: none;\n    /* margin-top: 10px; */\n    margin-bottom: 100px;\n}\n.ellipsis[data-v-665bb057] {\n    color: #a09c9c;\n}\nhr[data-v-665bb057] {\n    color: #a09c9c;\n    margin-top: 4px;\n    margin-bottom: 8px;\n}\n.muted-color[data-v-665bb057] {\n    color: #a09c9c;\n    font-size: 13px;\n}\n.ellipsis i[data-v-665bb057] {\n    margin-top: 3px;\n    cursor: pointer;\n}\n.icons i[data-v-665bb057] {\n    font-size: 25px;\n}\n.icons i[data-v-665bb057]:hover {\n    color: #0d6efd;\n}\n.icons .fa-solid.fa-thumbs-up[data-v-665bb057] {\n}\n.icons .fa-solid.fa-thumbs-down[data-v-665bb057] {\n    margin-top: 4px;\n    margin-right: 10px;\n}\n.rounded-image[data-v-665bb057] {\n    border-radius: 50% !important;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    height: 50px;\n    width: 50px;\n}\n.name[data-v-665bb057] {\n    font-weight: bold;\n}\n.date[data-v-665bb057] {\n    color: #65676b !important;\n}\n.comment-text[data-v-665bb057] {\n    font-size: 12px;\n}\n.status small[data-v-665bb057] {\n    margin-right: 10px;\n    color: blue;\n}\n.form-control[data-v-665bb057] {\n    border-radius: 26px;\n}\n.comment-input[data-v-665bb057] {\n    position: relative;\n}\n.fonts[data-v-665bb057] {\n    position: absolute;\n    left: 13px;\n    top: 8px;\n    color: #a09c9c;\n}\n.form-control[data-v-665bb057]:focus {\n    color: #495057;\n    background-color: #fff;\n    border-color: #8bbafe;\n    outline: 0;\n    box-shadow: none;\n}\n.options[data-v-665bb057] {\n    font-size: 23px;\n    color: #757575;\n    cursor: pointer;\n}\n.options[data-v-665bb057]:hover {\n    color: #000;\n}\na[data-v-665bb057] {\n    text-decoration: none;\n}\nimg[data-v-665bb057] {\n    cursor: pointer;\n}\ni[data-v-665bb057] {\n    cursor: pointer;\n}\n.load-comments[data-v-665bb057] {\n    font-size: 15px;\n    cursor: pointer;\n}\n.load-comments[data-v-665bb057]:hover {\n    color: #65676b !important;\n}\n.fa-arrow-rotate-left[data-v-665bb057] {\n    font-size: inherit;\n}\n.photo[data-v-665bb057] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin-left: 5px;\n}\n.fullname[data-v-665bb057] {\n    font-size: 15px;\n}\n.comment-content[data-v-665bb057] {\n    font-size: 15px;\n}\n.comment[data-v-665bb057] {\n    margin-right: 20px;\n    margin-left: 10px;\n    padding: 10px;\n    border-radius: 10px;\n    background-color: #ededed;\n    width: -webkit-fit-content;\n    width: -moz-fit-content;\n    width: fit-content;\n}\ntextarea[data-v-665bb057] {\n    border-radius: 10px !important;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -54816,6 +54932,279 @@ if (inBrowser && window.Vue) {
 var version = '3.6.4';
 
 
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-textarea-autosize/dist/vue-textarea-autosize.esm.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/vue-textarea-autosize/dist/vue-textarea-autosize.esm.js ***!
+  \******************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/*!
+ * vue-textarea-autosize v1.1.1 
+ * (c) 2019 Saymon
+ * Released under the MIT License.
+ */
+//
+//
+//
+//
+//
+//
+//
+var script = {
+  name: 'TextareaAutosize',
+  props: {
+    value: {
+      type: [String, Number],
+      default: ''
+    },
+    autosize: {
+      type: Boolean,
+      default: true
+    },
+    minHeight: {
+      type: [Number],
+      'default': null
+    },
+    maxHeight: {
+      type: [Number],
+      'default': null
+    },
+
+    /*
+     * Force !important for style properties
+     */
+    important: {
+      type: [Boolean, Array],
+      default: false
+    }
+  },
+  data: function data() {
+    return {
+      // data property for v-model binding with real textarea tag
+      val: null,
+      // works when content height becomes more then value of the maxHeight property
+      maxHeightScroll: false,
+      height: 'auto'
+    };
+  },
+  computed: {
+    computedStyles: function computedStyles() {
+      if (!this.autosize) return {};
+      return {
+        resize: !this.isResizeImportant ? 'none' : 'none !important',
+        height: this.height,
+        overflow: this.maxHeightScroll ? 'auto' : !this.isOverflowImportant ? 'hidden' : 'hidden !important'
+      };
+    },
+    isResizeImportant: function isResizeImportant() {
+      var imp = this.important;
+      return imp === true || Array.isArray(imp) && imp.includes('resize');
+    },
+    isOverflowImportant: function isOverflowImportant() {
+      var imp = this.important;
+      return imp === true || Array.isArray(imp) && imp.includes('overflow');
+    },
+    isHeightImportant: function isHeightImportant() {
+      var imp = this.important;
+      return imp === true || Array.isArray(imp) && imp.includes('height');
+    }
+  },
+  watch: {
+    value: function value(val) {
+      this.val = val;
+    },
+    val: function val(_val) {
+      this.$nextTick(this.resize);
+      this.$emit('input', _val);
+    },
+    minHeight: function minHeight() {
+      this.$nextTick(this.resize);
+    },
+    maxHeight: function maxHeight() {
+      this.$nextTick(this.resize);
+    },
+    autosize: function autosize(val) {
+      if (val) this.resize();
+    }
+  },
+  methods: {
+    resize: function resize() {
+      var _this = this;
+
+      var important = this.isHeightImportant ? 'important' : '';
+      this.height = "auto".concat(important ? ' !important' : '');
+      this.$nextTick(function () {
+        var contentHeight = _this.$el.scrollHeight + 1;
+
+        if (_this.minHeight) {
+          contentHeight = contentHeight < _this.minHeight ? _this.minHeight : contentHeight;
+        }
+
+        if (_this.maxHeight) {
+          if (contentHeight > _this.maxHeight) {
+            contentHeight = _this.maxHeight;
+            _this.maxHeightScroll = true;
+          } else {
+            _this.maxHeightScroll = false;
+          }
+        }
+
+        var heightVal = contentHeight + 'px';
+        _this.height = "".concat(heightVal).concat(important ? ' !important' : '');
+      });
+      return this;
+    }
+  },
+  created: function created() {
+    this.val = this.value;
+  },
+  mounted: function mounted() {
+    this.resize();
+  }
+};
+
+function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier
+/* server only */
+, shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
+  if (typeof shadowMode !== 'boolean') {
+    createInjectorSSR = createInjector;
+    createInjector = shadowMode;
+    shadowMode = false;
+  } // Vue.extend constructor export interop.
+
+
+  var options = typeof script === 'function' ? script.options : script; // render functions
+
+  if (template && template.render) {
+    options.render = template.render;
+    options.staticRenderFns = template.staticRenderFns;
+    options._compiled = true; // functional template
+
+    if (isFunctionalTemplate) {
+      options.functional = true;
+    }
+  } // scopedId
+
+
+  if (scopeId) {
+    options._scopeId = scopeId;
+  }
+
+  var hook;
+
+  if (moduleIdentifier) {
+    // server build
+    hook = function hook(context) {
+      // 2.3 injection
+      context = context || // cached call
+      this.$vnode && this.$vnode.ssrContext || // stateful
+      this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext; // functional
+      // 2.2 with runInNewContext: true
+
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__;
+      } // inject component styles
+
+
+      if (style) {
+        style.call(this, createInjectorSSR(context));
+      } // register component module identifier for async chunk inference
+
+
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier);
+      }
+    }; // used by ssr in case component is cached and beforeCreate
+    // never gets called
+
+
+    options._ssrRegister = hook;
+  } else if (style) {
+    hook = shadowMode ? function () {
+      style.call(this, createInjectorShadow(this.$root.$options.shadowRoot));
+    } : function (context) {
+      style.call(this, createInjector(context));
+    };
+  }
+
+  if (hook) {
+    if (options.functional) {
+      // register for functional component in vue file
+      var originalRender = options.render;
+
+      options.render = function renderWithStyleInjection(h, context) {
+        hook.call(context);
+        return originalRender(h, context);
+      };
+    } else {
+      // inject component registration as beforeCreate hook
+      var existing = options.beforeCreate;
+      options.beforeCreate = existing ? [].concat(existing, hook) : [hook];
+    }
+  }
+
+  return script;
+}
+
+var normalizeComponent_1 = normalizeComponent;
+
+/* script */
+const __vue_script__ = script;
+
+/* template */
+var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('textarea',{directives:[{name:"model",rawName:"v-model",value:(_vm.val),expression:"val"}],style:(_vm.computedStyles),domProps:{"value":(_vm.val)},on:{"focus":_vm.resize,"input":function($event){if($event.target.composing){ return; }_vm.val=$event.target.value;}}})};
+var __vue_staticRenderFns__ = [];
+
+  /* style */
+  const __vue_inject_styles__ = undefined;
+  /* scoped */
+  const __vue_scope_id__ = undefined;
+  /* module identifier */
+  const __vue_module_identifier__ = undefined;
+  /* functional template */
+  const __vue_is_functional_template__ = false;
+  /* style inject */
+  
+  /* style inject SSR */
+  
+
+  
+  var TextareaAutosize = normalizeComponent_1(
+    { render: __vue_render__, staticRenderFns: __vue_staticRenderFns__ },
+    __vue_inject_styles__,
+    __vue_script__,
+    __vue_scope_id__,
+    __vue_is_functional_template__,
+    __vue_module_identifier__,
+    undefined,
+    undefined
+  );
+
+var version = '1.1.1';
+
+var install = function install(Vue) {
+  Vue.component('TextareaAutosize', TextareaAutosize);
+};
+
+var plugin = {
+  install: install,
+  version: version
+};
+
+if (typeof window !== 'undefined' && window.Vue) {
+  window.Vue.use(plugin);
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (plugin);
 
 
 /***/ }),

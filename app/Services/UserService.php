@@ -108,13 +108,9 @@ class UserService
     {
 
         $posts =  Post::with([
-            "comments" => function ($q) {
-                $q->withCount("replies");
-            },
             "reacts" => function ($q) {
                 $q->latest()->paginate(5);
             },
-            "comments.user.profile",
             "tags",
             "user.profile",
         ])->withCount("reacts", "likes", "dislikes")->where("user_id", $userId)->latest()->paginate(5);
@@ -122,7 +118,7 @@ class UserService
         // $posts["count"] = self::getPostsCount($userId);
         foreach ($posts as  $post) {
             $post->created_at_diff_for_humans = $post->created_at->diffForHumans();
-
+            $post->comments = [];
             $react = $post->reacts()->where("user_id", "=", $userId)->first();
             if ($react)
                 $post->react_type = $react->pivot->type;
@@ -138,20 +134,19 @@ class UserService
         $userIds = self::getFeedbackRelations($userId)->pluck("id")->push((int)$userId);
 
         $posts = Post::with([
-            "comments" => function ($q) {
-                $q->withCount("replies");
-            },
             "reacts" => function ($q) {
                 $q->latest()->paginate(5);
             },
-            "comments.user.profile",
             "tags",
             "user.profile",
-        ])->withCount("comments", "reacts", "tags", "likes", "dislikes")->whereIn("user_id", $userIds)->latest()->paginate(5);
+        ])->withCount("comments", "reacts", "tags", "likes", "dislikes")
+            ->whereIn("user_id", $userIds)
+            ->latest()
+            ->paginate(5);
 
         foreach ($posts as  $post) {
             $post->created_at_diff_for_humans = $post->created_at->diffForHumans();
-
+            $post->comments = [];
             $react = $post->reacts()->where("user_id", "=", $userId)->first();
             if ($react)
                 $post->react_type = $react->pivot->type;
@@ -168,6 +163,7 @@ class UserService
     }
     public static function followUser($myUserId, $targetUserId)
     {
+
         $user = User::findOrFail($myUserId);
         $user->followings()->syncWithoutDetaching($targetUserId);
         return $user;
