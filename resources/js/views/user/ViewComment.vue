@@ -8,7 +8,12 @@
                     :src="comment.user.profile.avatar"
                     alt=""
                 />
-                <img class="photo" src="/images/assets/personal.jpg" alt="" />
+                <img
+                    v-else
+                    class="photo"
+                    src="/images/assets/personal.jpg"
+                    alt=""
+                />
                 <b class="text-break fullname">
                     {{ comment.user.profile.firstname }}
                     {{ comment.user.profile.lastname }}
@@ -31,39 +36,52 @@
                 style="margin-right: 20px"
             >
                 <span
-                    v-if="comment.replies_count > 0"
+                    v-if="comment.replies_count > 0 && !repliesLoaded"
                     @click="loadReplies(comment)"
                     class="muted-color comment-bar"
-                    >اظهار الردود
+                    >{{ comment.replies_count }} رد
                     <i class="fa-solid fa-sort-down"></i>
                 </span>
-                <!-- <span
-                    v-if="comment.replies_count > 0"
+                <span
+                    v-else-if="comment.replies_count > 0 && repliesLoaded"
                     @click="hideReplies(comment)"
                     class="muted-color comment-bar"
-                    >إخفاء الردود <i class="fa-solid fa-arrow-rotate-right"></i
-                ></span> -->
-                <span class="muted-color comment-bar"> رد </span>
-                <span class="muted-color comment-bar">
+                    >{{ comment.replies_count }} رد
+                    <i class="fa-solid fa-sort-up"></i
+                ></span>
+                <span class="muted-color comment-bar" @click="enableReply()">
+                    رد
+                </span>
+                <span class="muted-color comment-bar comment-time">
                     {{ comment.created_at_diff_for_humans }}
                 </span>
             </div>
         </div>
-        <div hidden class="comment-input">
+        <div
+            v-if="replyEnabled"
+            class="comment-input d-flex justify-content-center align-items-center"
+        >
+            <img
+                v-if="post.user.profile.avatar != null"
+                class="photo"
+                :src="post.user.profile.avatar"
+                alt=""
+            />
+            <img
+                v-else
+                class="photo"
+                src="/images/assets/personal.jpg"
+                alt=""
+            />
             <textarea-autosize
                 placeholder="رد"
                 ref="comment"
-                v-model="comment.comment"
-                :min-height="30"
+                v-model="content"
                 :max-height="350"
+                rows="1"
                 class="form-control"
                 @keyup.enter.native="
-                    sendComment(
-                        post,
-                        comment.comment,
-                        parentComment,
-                        comment.user
-                    )
+                    sendComment(post, content, parentComment, comment.user)
                 "
                 important
             />
@@ -87,6 +105,9 @@ export default {
     data() {
         return {
             user_id: 0,
+            content: "",
+            repliesLoaded: false,
+            replyEnabled: false,
         };
     },
     methods: {
@@ -98,7 +119,8 @@ export default {
                 })
                 .then(function (response) {
                     console.log(response);
-                    comment.replies = response.data.data;
+                    vm.comment.replies = response.data.data;
+                    vm.repliesLoaded = true;
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -113,11 +135,22 @@ export default {
                 });
         },
         hideReplies(comment) {
-            comment.replies = [];
+            this.comment.replies = [];
+            this.repliesLoaded = false;
         },
         sendComment(post, commentContent, parentComment, mention) {
             let vm = this;
-            this.comment.comment = "";
+
+            var spinner =
+                '<div class="spinner-border text-white" role="status">' +
+                '<span class="visually-hidden">Loading...</span>' +
+                "</div>";
+
+            vm.$notify({
+                title: "في الإنتظار...",
+                text: "جاري مشاركة الرد" + spinner,
+                type: "info",
+            });
 
             axios
                 .post(
@@ -135,15 +168,21 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
-                    // comment.replies.unshift(response.data.data);
+                    // vm.comment.replies.push(response.data.data);
+                    vm.$notify({
+                        clean: true,
+                    });
                     vm.$notify({
                         title: "نجاح",
-                        text: "تم مشاركة التعليق بنجاح",
+                        text: "تمت مشاركة التعليق بنجاح",
                         type: "success",
                     });
+                    vm.content = "";
                 })
                 .catch(function (error) {
-                    this.comment.comment = commentContent;
+                    vm.$notify({
+                        clean: true,
+                    });
                     console.log(error.response);
                     var errors = error.response.data.errors;
                     for (const error in errors) {
@@ -155,14 +194,24 @@ export default {
                     }
                 });
         },
+        enableReply() {
+            /*
+            this.content =
+                // "<span class='text-primary'>" +
+                "@" +
+                this.comment.user.profile.firstname +
+                " " +
+                this.comment.user.profile.lastname +
+                "\n";
+            // "</span><br>";
+            */
+            if (!this.replyEnabled) this.replyEnabled = true;
+            else this.replyEnabled = false;
+        },
     },
     props: ["post", "comment", "parentComment"],
     created() {
         this.user_id = JSON.parse(localStorage.getItem("user")).id;
-    },
-
-    mounted: function () {
-        let vm = this;
     },
 };
 </script>
@@ -281,7 +330,9 @@ i {
 .comment-bar:hover {
     color: #65676b !important;
 }
-
+.comment-time {
+    cursor: initial;
+}
 .fa-arrow-rotate-left,
 .fa-arrow-rotate-right {
     font-size: inherit;

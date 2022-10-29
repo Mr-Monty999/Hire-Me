@@ -189,13 +189,27 @@
                         </div>
                         <hr />
                         <div class="comments">
-                            <div class="comment-input">
+                            <div
+                                class="comment-input d-flex justify-content-center align-items-center"
+                            >
+                                <img
+                                    v-if="post.user.profile.avatar != null"
+                                    class="photo"
+                                    :src="post.user.profile.avatar"
+                                    alt=""
+                                />
+                                <img
+                                    v-else
+                                    class="photo"
+                                    src="/images/assets/personal.jpg"
+                                    alt=""
+                                />
                                 <textarea-autosize
                                     placeholder="أكتب تعليقك"
                                     ref="myTextarea"
                                     v-model="post.comment"
-                                    :min-height="30"
                                     :max-height="350"
+                                    rows="1"
                                     class="form-control"
                                     @keyup.enter.native="
                                         sendComment(post, post.comment)
@@ -211,12 +225,14 @@
                                 class="d-flex gap-3"
                             >
                                 <span
+                                    v-if="!commentsLoaded"
                                     @click="loadComments(post)"
                                     class="muted-color load-comments"
                                     >اظهار التعليقات
                                     <i class="fa-solid fa-arrow-rotate-left"></i
                                 ></span>
                                 <span
+                                    v-else-if="commentsLoaded"
                                     @click="hideComments(post)"
                                     class="muted-color load-comments"
                                     >إخفاء التعليقات
@@ -287,6 +303,7 @@ export default {
             photo: "",
             previewPhoto: "",
             user_id: 0,
+            commentsLoaded: false,
         };
     },
     components: {
@@ -346,6 +363,9 @@ export default {
                     });
                 })
                 .catch(function (error) {
+                    vm.$notify({
+                        clean: true,
+                    });
                     console.log(error.response);
                     var errors = error.response.data.errors;
                     for (const error in errors) {
@@ -537,7 +557,18 @@ export default {
         },
         sendComment(post, comment) {
             let vm = this;
-            post.comment = "";
+
+            var spinner =
+                '<div class="spinner-border text-white" role="status">' +
+                '<span class="visually-hidden">Loading...</span>' +
+                "</div>";
+
+            vm.$notify({
+                title: "في الإنتظار...",
+                text: "جاري مشاركة التعليق" + spinner,
+                type: "info",
+            });
+
             axios
                 .post(
                     "/api/comments",
@@ -554,13 +585,19 @@ export default {
                     console.log(response);
                     post.comments.unshift(response.data.data);
                     vm.$notify({
+                        clean: true,
+                    });
+                    vm.$notify({
                         title: "نجاح",
-                        text: "تم مشاركة التعليق بنجاح",
+                        text: "تمت مشاركة التعليق بنجاح",
                         type: "success",
                     });
+                    post.comment = "";
                 })
                 .catch(function (error) {
-                    post.comment = comment;
+                    vm.$notify({
+                        clean: true,
+                    });
                     console.log(error.response);
                     var errors = error.response.data.errors;
                     for (const error in errors) {
@@ -581,6 +618,7 @@ export default {
                 .then(function (response) {
                     console.log(response);
                     post.comments = response.data.data;
+                    vm.commentsLoaded = true;
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -596,6 +634,7 @@ export default {
         },
         hideComments(post) {
             post.comments = [];
+            this.commentsLoaded = false;
         },
         loadReplies(comment) {
             let vm = this;
@@ -764,7 +803,7 @@ i {
     margin-left: 10px;
 }
 .reply {
-    margin-right: 40px;
+    margin-right: 50px;
     margin-left: 20px;
 }
 

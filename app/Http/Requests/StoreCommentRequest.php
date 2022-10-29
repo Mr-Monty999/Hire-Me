@@ -24,9 +24,18 @@ class StoreCommentRequest extends FormRequest
     public function rules()
     {
         return [
+            "content" => "required",
             "photo" => "image|nullable",
             "post_id" => "required",
             "user_id" => "required"
+        ];
+    }
+    public function messages()
+    {
+        return [
+            "content.required" => "الرجاء كتابة محتوى التعليق !",
+            "photo.image" => "الرجاء رفع صورة فقط !",
+
         ];
     }
 }
