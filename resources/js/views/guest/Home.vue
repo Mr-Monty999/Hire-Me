@@ -1,7 +1,7 @@
 <template>
     <div>
         <main class="container d-flex flex-column align-items-center">
-            <img src="/images/assets/hello2.png" alt="" />
+            <img src="../../assets/images/hello2.png" alt="" />
             <h1>مرحبا بكم في موقع شغلني</h1>
             <h3>سجل الأن وأحصل على وظيفة</h3>
             <div>

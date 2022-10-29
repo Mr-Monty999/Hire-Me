@@ -10526,7 +10526,7 @@ var render = function render() {
     staticClass: "container d-flex flex-column align-items-center"
   }, [_c("img", {
     attrs: {
-      src: "/images/assets/hello2.png",
+      src: __webpack_require__(/*! ../../assets/images/hello2.png */ "./resources/js/assets/images/hello2.png"),
       alt: ""
     }
   }), _vm._v(" "), _c("h1", [_vm._v("مرحبا بكم في موقع شغلني")]), _vm._v(" "), _c("h3", [_vm._v("سجل الأن وأحصل على وظيفة")]), _vm._v(" "), _c("div", [_c("router-link", {
@@ -18907,6 +18907,16 @@ module.exports = function (url, options) {
 
   return url;
 };
+
+/***/ }),
+
+/***/ "./resources/js/assets/images/hello2.png":
+/*!***********************************************!*\
+  !*** ./resources/js/assets/images/hello2.png ***!
+  \***********************************************/
+/***/ ((module) => {
+
+module.exports = "/images/hello2.png?788b7888d4e9732ff4615afe6166c481";
 
 /***/ }),
 
