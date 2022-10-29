@@ -10464,7 +10464,7 @@ var staticRenderFns = [function () {
     staticClass: "container d-flex flex-column align-items-center"
   }, [_c("img", {
     attrs: {
-      src: "/images/assets/about.png",
+      src: __webpack_require__(/*! ../../assets/images/about.png */ "./resources/js/assets/images/about.png"),
       alt: ""
     }
   }), _vm._v(" "), _c("h1", [_vm._v("\n            مشروع شغلني هو موقع يساعدك في إيجاد وعرض الوظائف بمختلف أنواعها\n        ")])])]);
@@ -18907,6 +18907,16 @@ module.exports = function (url, options) {
 
   return url;
 };
+
+/***/ }),
+
+/***/ "./resources/js/assets/images/about.png":
+/*!**********************************************!*\
+  !*** ./resources/js/assets/images/about.png ***!
+  \**********************************************/
+/***/ ((module) => {
+
+module.exports = "/images/about.png?1ff6499ea7620fc827638e2e3178cbe9";
 
 /***/ }),
 
