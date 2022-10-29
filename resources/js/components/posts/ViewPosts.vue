@@ -226,97 +226,23 @@
                                 ></span>
                             </div>
                             <div v-for="(comment, i) in post.comments" :key="i">
-                                <div class="comment mar-1">
-                                    <img
-                                        v-if="
-                                            comment.user.profile.avatar != null
-                                        "
-                                        class="photo"
-                                        :src="comment.user.profile.avatar"
-                                        alt=""
-                                    />
-                                    <img
-                                        class="photo"
-                                        src="/images/assets/personal.jpg"
-                                        alt=""
-                                    />
-                                    <b class="text-break fullname">
-                                        {{ comment.user.profile.firstname }}
-                                        {{ comment.user.profile.lastname }}
-                                    </b>
-                                    <div class="text-break">
-                                        <span class="comment-content"
-                                            >{{ comment.content }}
-                                        </span>
-                                    </div>
-                                    <div
-                                        v-if="comment.replies_count > 0"
-                                        class="d-flex gap-3"
-                                    >
-                                        <span
-                                            @click="loadReplies(comment)"
-                                            class="muted-color load-comments"
-                                            >اظهار الردود
-                                            <i
-                                                class="fa-solid fa-arrow-rotate-left"
-                                            ></i
-                                        ></span>
-                                        <span
-                                            @click="hideReplies(comment)"
-                                            class="muted-color load-comments"
-                                            >إخفاء الردود
-                                            <i
-                                                class="fa-solid fa-arrow-rotate-right"
-                                            ></i
-                                        ></span>
-                                    </div>
+                                <div class="comment">
+                                    <view-comment
+                                        :post="post"
+                                        :comment="comment"
+                                        :parentComment="comment"
+                                    ></view-comment>
                                 </div>
-                                <!-- <div class="comment-input">
-                                    <textarea-autosize
-                                        placeholder="رد"
-                                        ref="comment-reply"
-                                        v-model="comment.reply"
-                                        :min-height="30"
-                                        :max-height="350"
-                                        class="form-control"
-                                        @keyup.enter.native="
-                                            sendReply(
-                                                post,
-                                                comment.reply,
-                                                comment,
-                                                comment
-                                            )
-                                        "
-                                        important
-                                    />
-                                    <div hidden class="fonts">
-                                        <i class="fa fa-camera"></i>
-                                    </div>
-                                </div> -->
                                 <div
                                     v-for="(reply, x) in comment.replies"
                                     :key="x"
-                                    class="reply mar-1"
                                 >
-                                    <img
-                                        v-if="reply.user.profile.avatar != null"
-                                        class="photo"
-                                        :src="reply.user.profile.avatar"
-                                        alt=""
-                                    />
-                                    <img
-                                        class="photo"
-                                        src="/images/assets/personal.jpg"
-                                        alt=""
-                                    />
-                                    <b class="text-break fullname">
-                                        {{ reply.user.profile.firstname }}
-                                        {{ reply.user.profile.lastname }}
-                                    </b>
-                                    <div class="text-break">
-                                        <span class="comment-content"
-                                            >{{ reply.content }}
-                                        </span>
+                                    <div class="reply">
+                                        <view-comment
+                                            :post="post"
+                                            :comment="reply"
+                                            :parentComment="comment"
+                                        ></view-comment>
                                     </div>
                                 </div>
                             </div>
@@ -351,6 +277,7 @@ import headerFormAuth from "../../helpers/formAuth";
 import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
 import Paginate from "vuejs-paginate";
 import services from "../../helpers/services";
+import ViewComment from "../../views/user/ViewComment.vue";
 
 export default {
     name: "ViewPosts",
@@ -365,6 +292,7 @@ export default {
     components: {
         ModalSnippet,
         Paginate,
+        ViewComment,
     },
     methods: {
         getFile(e) {
@@ -644,45 +572,6 @@ export default {
                     }
                 });
         },
-        sendReply(post, reply, comment, mention) {
-            let vm = this;
-            comment.reply = "";
-            axios
-                .post(
-                    "/api/comments",
-                    {
-                        content: reply,
-                        post_id: post.id,
-                        user_id: vm.user_id,
-                        comment_id: comment.id,
-                        mention_id: mention.id,
-                    },
-                    {
-                        headers: headerAuth,
-                    }
-                )
-                .then(function (response) {
-                    console.log(response);
-                    // comment.replies.unshift(response.data.data);
-                    vm.$notify({
-                        title: "نجاح",
-                        text: "تم مشاركة التعليق بنجاح",
-                        type: "success",
-                    });
-                })
-                .catch(function (error) {
-                    comment.reply = reply;
-                    console.log(error.response);
-                    var errors = error.response.data.errors;
-                    for (const error in errors) {
-                        vm.$notify({
-                            title: "خطأ:لم يتم تنفيذ",
-                            text: errors[error][0],
-                            type: "error",
-                        });
-                    }
-                });
-        },
         loadComments(post) {
             let vm = this;
             axios
@@ -855,13 +744,7 @@ img {
 i {
     cursor: pointer;
 }
-.load-comments {
-    font-size: 15px;
-    cursor: pointer;
-}
-.load-comments:hover {
-    color: #65676b !important;
-}
+
 .fa-arrow-rotate-left,
 .fa-arrow-rotate-right {
     font-size: inherit;
@@ -873,28 +756,26 @@ i {
     margin-left: 5px;
 }
 .fullname {
-    font-size: 15px;
+    font-size: 16px;
 }
-.comment-content {
-    font-size: 15px;
-}
+
 .comment {
     margin-right: 20px;
     margin-left: 10px;
-    padding: 10px;
-    border-radius: 10px;
-    background-color: #ededed;
-    width: fit-content;
 }
 .reply {
-    margin-right: 60px;
-    margin-left: 10px;
-    padding: 10px;
-    border-radius: 10px;
-    background-color: #ededed;
-    width: fit-content;
+    margin-right: 40px;
+    margin-left: 20px;
 }
+
 textarea {
     border-radius: 10px !important;
+}
+.load-comments {
+    font-size: 15px;
+    cursor: pointer;
+}
+.load-comments:hover {
+    color: #65676b !important;
 }
 </style>

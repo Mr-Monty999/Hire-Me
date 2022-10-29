@@ -21,10 +21,10 @@ class UserPhoneController extends Controller
 
     public function __construct()
     {
-        $this->middleware("permission:create-users-phones")->only(["store"]);
-        $this->middleware("permission:view-users-phones")->only(["index", "show"]);
-        $this->middleware("permission:edit-users-phones")->only(["update"]);
-        $this->middleware("permission:delete-users-phones")->only(["destroy"]);
+        $this->middleware("permission:create-users-phones|create-any-users-phones")->only(["store"]);
+        $this->middleware("permission:view-users-phones|view-any-users-phones")->only(["index", "show"]);
+        $this->middleware("permission:edit-users-phones|edit-any-users-phones")->only(["update"]);
+        $this->middleware("permission:delete-users-phones|delete-any-users-phones")->only(["destroy"]);
     }
 
     public function index($userId)

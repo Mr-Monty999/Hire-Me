@@ -8,6 +8,13 @@ use Illuminate\Http\Request;
 
 class CompanyPhoneController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware("permission:create-companies-phones|create-any-companies-phones")->only(["store"]);
+        $this->middleware("permission:view-companies-phones|view-any-companies-phones")->only(["index", "show"]);
+        $this->middleware("permission:edit-companies-phones|edit-any-companies-phones")->only(["update"]);
+        $this->middleware("permission:delete-companies-phones|delete-any-companies-phones")->only(["destroy"]);
+    }
     /**
      * Display a listing of the resource.
      *

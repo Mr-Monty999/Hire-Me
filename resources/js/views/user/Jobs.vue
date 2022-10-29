@@ -25,7 +25,7 @@
                                 <input
                                     type="text"
                                     class="form-control"
-                                    placeholder="عنوان العمل"
+                                    placeholder="عنوان الوظيفة"
                                     name="title"
                                     cols="100px"
                                     v-model="title"
@@ -45,7 +45,7 @@
                                 <input
                                     type="text"
                                     class="form-control"
-                                    placeholder="الموقع"
+                                    placeholder="مكان الوظيفة"
                                     name="location"
                                     cols="100px"
                                     v-model="location"

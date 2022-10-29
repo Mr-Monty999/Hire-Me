@@ -24,10 +24,10 @@ class PostController extends Controller
      */
     public function __construct()
     {
-        $this->middleware("permission:create-posts")->only(["store"]);
-        $this->middleware("permission:view-posts")->only(["index", "show"]);
-        $this->middleware("permission:edit-posts")->only(["update"]);
-        $this->middleware("permission:delete-posts")->only(["destroy"]);
+        $this->middleware("permission:create-posts|create-any-posts")->only(["store"]);
+        $this->middleware("permission:view-posts|view-any-posts")->only(["index", "show"]);
+        $this->middleware("permission:edit-posts|edit-any-posts")->only(["update"]);
+        $this->middleware("permission:delete-posts|delete-any-posts")->only(["destroy"]);
     }
 
     public function index()

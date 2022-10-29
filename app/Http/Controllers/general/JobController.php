@@ -22,10 +22,10 @@ class JobController extends Controller
      */
     public function __construct()
     {
-        $this->middleware("permission:create-jobs")->only(["store"]);
-        $this->middleware("permission:view-jobs")->only(["index", "show"]);
-        $this->middleware("permission:edit-jobs")->only(["update"]);
-        $this->middleware("permission:delete-jobs")->only(["destroy"]);
+        $this->middleware("permission:create-jobs|create-any-jobs")->only(["store"]);
+        $this->middleware("permission:view-jobs|view-any-jobs")->only(["index", "show"]);
+        $this->middleware("permission:edit-jobs|edit-any-jobs")->only(["update"]);
+        $this->middleware("permission:delete-jobs|delete-any-jobs")->only(["destroy"]);
     }
 
     public function index()

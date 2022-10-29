@@ -11,6 +11,14 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware("permission:create-comments|create-any-comments")->only(["store"]);
+        $this->middleware("permission:view-comments|view-any-comments")->only(["index", "show"]);
+        $this->middleware("permission:edit-comments|edit-any-comments")->only(["update"]);
+        $this->middleware("permission:delete-comments|delete-any-comments")->only(["destroy"]);
+    }
     /**
      * Display a listing of the resource.
      *

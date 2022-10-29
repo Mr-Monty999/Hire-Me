@@ -20,10 +20,10 @@ class SkillController extends Controller
 
     public function __construct()
     {
-        $this->middleware("permission:create-skills")->only(["store"]);
-        $this->middleware("permission:view-skills")->only(["index", "show"]);
-        $this->middleware("permission:edit-skills")->only(["update"]);
-        $this->middleware("permission:delete-skills")->only(["destroy"]);
+        $this->middleware("permission:create-skills|create-any-skills")->only(["store"]);
+        $this->middleware("permission:view-skills|view-any-skills")->only(["index", "show"]);
+        $this->middleware("permission:edit-skills|edit-any-skills")->only(["update"]);
+        $this->middleware("permission:delete-skills|delete-any-skills")->only(["destroy"]);
     }
     public function index()
     {

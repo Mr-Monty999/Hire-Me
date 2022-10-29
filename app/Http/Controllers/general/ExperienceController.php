@@ -21,10 +21,10 @@ class ExperienceController extends Controller
 
     public function __construct()
     {
-        $this->middleware("permission:create-experiences")->only(["store"]);
-        $this->middleware("permission:view-experiences")->only(["index", "show"]);
-        $this->middleware("permission:edit-experiences")->only(["update"]);
-        $this->middleware("permission:delete-experiences")->only(["destroy"]);
+        $this->middleware("permission:create-experiences|create-any-experiences")->only(["store"]);
+        $this->middleware("permission:view-experiences|view-any-experiences")->only(["index", "show"]);
+        $this->middleware("permission:edit-experiences|edit-any-experiences")->only(["update"]);
+        $this->middleware("permission:delete-experiences|delete-any-experiences")->only(["destroy"]);
     }
 
     public function index()

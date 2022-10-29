@@ -27,12 +27,12 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        $this->middleware("permission:create-users")->only(["store"]);
-        $this->middleware("permission:view-users")->only(["index", "show"]);
-        $this->middleware("permission:edit-users")->only(["update"]);
-        $this->middleware("permission:delete-users")->only(["destroy"]);
-        $this->middleware("permission:view-profiles")->only(["showProfile"]);
-        $this->middleware("permission:edit-profiles")->only(["updateProfile"]);
+        $this->middleware("permission:create-users|create-any-users")->only(["store"]);
+        $this->middleware("permission:view-users|view-any-users")->only(["index", "show"]);
+        $this->middleware("permission:edit-users|edit-any-users")->only(["update"]);
+        $this->middleware("permission:delete-users|delete-any-users")->only(["destroy"]);
+        $this->middleware("permission:view-profiles|view-any-profiles")->only(["showProfile"]);
+        $this->middleware("permission:edit-profiles|edit-any-profiles")->only(["updateProfile"]);
     }
     public function index()
     {

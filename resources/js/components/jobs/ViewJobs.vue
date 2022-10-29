@@ -65,7 +65,7 @@
                                     <input
                                         type="text"
                                         class="form-control"
-                                        placeholder="الموقع"
+                                        placeholder="مكان الوظيفة"
                                         name="location"
                                         cols="100px"
                                         v-model="location"

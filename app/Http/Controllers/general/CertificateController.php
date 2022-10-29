@@ -8,6 +8,13 @@ use Illuminate\Http\Request;
 
 class CertificateController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware("permission:create-certificates|create-any-certificates")->only(["store"]);
+        $this->middleware("permission:view-certificates|view-any-certificates")->only(["index", "show"]);
+        $this->middleware("permission:edit-certificates|edit-any-certificates")->only(["update"]);
+        $this->middleware("permission:delete-certificates|delete-any-certificates")->only(["destroy"]);
+    }
     /**
      * Display a listing of the resource.
      *
