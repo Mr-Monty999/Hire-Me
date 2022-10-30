@@ -4,6 +4,7 @@ namespace App\Http\Controllers\general;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCommentRequest;
+use App\Http\Requests\UpdateCommentRequest;
 use App\Models\Comment;
 use App\Services\CommentService;
 use App\Services\ResponseService;
@@ -79,7 +80,7 @@ class CommentController extends Controller
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateCommentRequest $request, $id)
     {
         $comments = CommentService::update($id, $request->all());
         return ResponseService::json($comments);

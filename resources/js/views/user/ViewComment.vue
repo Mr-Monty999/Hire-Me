@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="mar-1">
+        <div v-if="comment.id > 0" class="mar-1">
             <div class="comment">
                 <img
                     v-if="comment.user.profile.avatar != null"
@@ -23,22 +23,7 @@
                     {{ comment.user.profile.firstname }}
                     {{ comment.user.profile.lastname }}
                 </b>
-                <span v-if="comment.user.id == user_id" class="actions">
-                    <modal-snippet
-                        closeButtonName="إغلاق"
-                        launchButtonName="حذف"
-                        iconLaunchButton
-                        confirmButtonName="حذف"
-                        title="حذف تعليق"
-                        launchButtonClass="fa-solid fa-trash text-danger"
-                        confirmButtonClass="btn btn-danger"
-                        :name="'deleteComment' + comment.id"
-                        confirmAndClosed
-                        @confirmEvent="deleteComment(comment)"
-                    >
-                        هل أنت متأكد من حذف هذا التعليق؟
-                    </modal-snippet>
-                </span>
+
                 <span v-if="comment.mention" class="text-break">
                     <br />
                     <mark class="text-bold mention text-primary">
@@ -75,6 +60,65 @@
                 </span>
                 <span class="muted-color comment-bar comment-time">
                     {{ comment.created_at_diff_for_humans }}
+                </span>
+                <span v-if="comment.user.id == user_id" class="d-flex gap-1">
+                    <modal-snippet
+                        launchButtonName="تعديل"
+                        closeButtonName="إغلاق"
+                        confirmButtonName="تعديل"
+                        title="تعديل تعليقك"
+                        iconLaunchButton
+                        launchButtonClass="fa-solid fa-pen-to-square text-warning actions"
+                        confirmButtonClass="btn btn-warning"
+                        :name="'editComment' + comment.id"
+                        @confirmEvent="updateComment(comment)"
+                        @onLaunchButtonClick="editComment(comment)"
+                    >
+                        <div class="col-md-12">
+                            <textarea-autosize
+                                placeholder="رد"
+                                ref="editComment"
+                                v-model="content"
+                                :max-height="350"
+                                rows="1"
+                                class="form-control"
+                            />
+                            <!-- <div class="d-flex justify-content-center mar-1">
+                                <img :src="getPhoto" class="img-fluid" alt="" />
+                            </div>
+                            <div class="row px-3 mar-1">
+                                <div>
+                                    <label
+                                        class="fa fa-image options mr-4 col-1"
+                                        :for="'photo' + i"
+                                    >
+                                        <input
+                                            type="file"
+                                            :name="'photo' + i"
+                                            hidden
+                                            :id="'photo' + i"
+                                            @change="getFile"
+                                        />
+                                    </label>
+                                </div>
+                                <i class="options fa fa-ellipsis-h col-1"> </i>
+                            </div> -->
+                        </div>
+                    </modal-snippet>
+                    <modal-snippet
+                        closeButtonName="إغلاق"
+                        launchButtonName="حذف"
+                        iconLaunchButton
+                        confirmButtonName="حذف"
+                        title="حذف تعليق"
+                        launchButtonClass="fa-solid fa-trash text-danger actions"
+                        confirmButtonClass="btn btn-danger"
+                        :name="'deleteComment' + comment.id"
+                        confirmAndClosed
+                        @confirmEvent="deleteComment(comment)"
+                    >
+                        هل أنت متأكد من حذف هذا التعليق؟
+                    </modal-snippet>
                 </span>
             </div>
         </div>
@@ -116,6 +160,7 @@
 <script>
 import axios from "axios";
 import headerAuth from "../../helpers/auth";
+import headerFormAuth from "../../helpers/formAuth";
 
 import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
 
@@ -134,6 +179,59 @@ export default {
         };
     },
     methods: {
+        editComment(comment) {
+            this.content = comment.content;
+        },
+        updateComment(comment) {
+            var vm = this;
+            let data = new FormData();
+            data.append("content", vm.content);
+            // data.append("photo", vm.previewPhoto);
+            data.append("_method", "put");
+
+            var spinner =
+                '<div class="spinner-border text-white" role="status">' +
+                '<span class="visually-hidden">Loading...</span>' +
+                "</div>";
+
+            vm.$notify({
+                title: "في الإنتظار...",
+                text: "جاري تعديل التعليق " + spinner,
+                type: "info",
+            });
+            axios
+                .post("/api/comments/" + comment.id, data, {
+                    headers: headerFormAuth,
+                })
+                .then(function (response) {
+                    console.log(response);
+                    comment.content = vm.content;
+                    vm.$emit("renderComment");
+                    vm.$forceUpdate();
+                    vm.$notify({
+                        clean: true,
+                    });
+                    vm.$notify({
+                        title: "نجاح",
+                        text: "تم تعديل التعليق بنجاح",
+                        type: "success",
+                    });
+                })
+                .catch(function (error) {
+                    vm.$notify({
+                        clean: true,
+                    });
+                    console.log(error.response);
+                    var errors = error.response.data.errors;
+                    for (const error in errors) {
+                        vm.$notify({
+                            title: "خطأ:لم يتم تنفيذ",
+                            text: errors[error][0],
+                            type: "error",
+                        });
+                    }
+                });
+        },
         deleteComment(comment) {
             var vm = this;
             var spinner =
@@ -154,11 +252,9 @@ export default {
                 .then(function (response) {
                     console.log(response);
 
-                    var index = vm.post.comments.findIndex(
-                        (el) => el.id == comment.id
-                    );
-
-                    vm.post.comments.splice(index, 1);
+                    comment.id = -1;
+                    vm.parentComment.replies_count -= 1;
+                    vm.post.comments_count -= 1;
 
                     vm.$emit("renderComment");
                     vm.$forceUpdate();
@@ -247,6 +343,8 @@ export default {
                     parentComment.replies.push(response.data.data);
 
                     parentComment.replies_count += 1;
+                    post.comments_count += 1;
+
                     vm.replyEnabled = false;
                     vm.$emit("renderComment");
                     vm.$notify({
@@ -463,5 +561,8 @@ i {
 }
 textarea {
     border-radius: 10px !important;
+}
+.actions {
+    font-size: 15px !important;
 }
 </style>

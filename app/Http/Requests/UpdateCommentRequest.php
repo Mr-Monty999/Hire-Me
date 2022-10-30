@@ -24,7 +24,16 @@ class UpdateCommentRequest extends FormRequest
     public function rules()
     {
         return [
+            "content" => "required",
             "photo" => "image|nullable",
+        ];
+    }
+    public function messages()
+    {
+        return [
+            "content.required" => "الرجاء كتابة محتوى التعليق !",
+            "photo.image" => "الرجاء رفع صورة فقط !",
+
         ];
     }
 }

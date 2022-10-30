@@ -183,9 +183,9 @@
                                     {{ post.dislikes_count | toNumber }}
                                 </span>
                             </div>
-                            <div class="d-flex flex-row muted-color">
+                            <!-- <div class="d-flex flex-row muted-color">
                                 <span>التعليقات {{ post.comments_count }}</span>
-                            </div>
+                            </div> -->
                         </div>
                         <hr />
                         <div class="comments">
@@ -228,7 +228,8 @@
                                     v-if="!post.commentsLoaded"
                                     @click="loadComments(post)"
                                     class="muted-color load-comments"
-                                    >اظهار التعليقات
+                                    >إظهار {{ post.comments_count }}
+                                    تعليق
                                     <i class="fa-solid fa-arrow-rotate-left"></i
                                 ></span>
                                 <span

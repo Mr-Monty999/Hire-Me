@@ -7923,14 +7923,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _helpers_auth__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../helpers/auth */ "./resources/js/helpers/auth.js");
-/* harmony import */ var _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../components/bootstrap/ModalSnippet.vue */ "./resources/js/components/bootstrap/ModalSnippet.vue");
+/* harmony import */ var _helpers_formAuth__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../helpers/formAuth */ "./resources/js/helpers/formAuth.js");
+/* harmony import */ var _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../components/bootstrap/ModalSnippet.vue */ "./resources/js/components/bootstrap/ModalSnippet.vue");
+
 
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "ViewComment",
   components: {
-    ModalSnippet: _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
+    ModalSnippet: _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
   },
   data: function data() {
     return {
@@ -7941,6 +7943,52 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    editComment: function editComment(comment) {
+      this.content = comment.content;
+    },
+    updateComment: function updateComment(comment) {
+      var vm = this;
+      var data = new FormData();
+      data.append("content", vm.content); // data.append("photo", vm.previewPhoto);
+
+      data.append("_method", "put");
+      var spinner = '<div class="spinner-border text-white" role="status">' + '<span class="visually-hidden">Loading...</span>' + "</div>";
+      vm.$notify({
+        title: "في الإنتظار...",
+        text: "جاري تعديل التعليق " + spinner,
+        type: "info"
+      });
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/comments/" + comment.id, data, {
+        headers: _helpers_formAuth__WEBPACK_IMPORTED_MODULE_2__["default"]
+      }).then(function (response) {
+        console.log(response);
+        comment.content = vm.content;
+        vm.$emit("renderComment");
+        vm.$forceUpdate();
+        vm.$notify({
+          clean: true
+        });
+        vm.$notify({
+          title: "نجاح",
+          text: "تم تعديل التعليق بنجاح",
+          type: "success"
+        });
+      })["catch"](function (error) {
+        vm.$notify({
+          clean: true
+        });
+        console.log(error.response);
+        var errors = error.response.data.errors;
+
+        for (var _error in errors) {
+          vm.$notify({
+            title: "خطأ:لم يتم تنفيذ",
+            text: errors[_error][0],
+            type: "error"
+          });
+        }
+      });
+    },
     deleteComment: function deleteComment(comment) {
       var vm = this;
       var spinner = '<div class="spinner-border text-white" role="status">' + '<span class="visually-hidden">Loading...</span>' + "</div>";
@@ -7953,10 +8001,9 @@ __webpack_require__.r(__webpack_exports__);
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        var index = vm.post.comments.findIndex(function (el) {
-          return el.id == comment.id;
-        });
-        vm.post.comments.splice(index, 1);
+        comment.id = -1;
+        vm.parentComment.replies_count -= 1;
+        vm.post.comments_count -= 1;
         vm.$emit("renderComment");
         vm.$forceUpdate();
         vm.$notify({
@@ -7971,10 +8018,10 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error.response);
         var errors = error.response.data.errors;
 
-        for (var _error in errors) {
+        for (var _error2 in errors) {
           vm.$notify({
             title: "خطأ:لم يتم تنفيذ",
-            text: errors[_error][0],
+            text: errors[_error2][0],
             type: "error"
           });
         }
@@ -7993,10 +8040,10 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error.response);
         var errors = error.response.data.errors;
 
-        for (var _error2 in errors) {
+        for (var _error3 in errors) {
           vm.$notify({
             title: "خطأ:لم يتم تنفيذ",
-            text: errors[_error2][0],
+            text: errors[_error3][0],
             type: "error"
           });
         }
@@ -8028,6 +8075,7 @@ __webpack_require__.r(__webpack_exports__);
         if (!parentComment.replies) parentComment.replies = [];
         parentComment.replies.push(response.data.data);
         parentComment.replies_count += 1;
+        post.comments_count += 1;
         vm.replyEnabled = false;
         vm.$emit("renderComment");
         vm.$notify({
@@ -8046,10 +8094,10 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error.response);
         var errors = error.response.data.errors;
 
-        for (var _error3 in errors) {
+        for (var _error4 in errors) {
           vm.$notify({
             title: "خطأ:لم يتم تنفيذ",
-            text: errors[_error3][0],
+            text: errors[_error4][0],
             type: "error"
           });
         }
@@ -9634,9 +9682,7 @@ var render = function render() {
           return _vm.reactToPost(_vm.user_id, post.id, 2);
         }
       }
-    }), _vm._v(" "), _c("span", [_vm._v("\n                                " + _vm._s(_vm._f("toNumber")(post.dislikes_count)) + "\n                            ")])]), _vm._v(" "), _c("div", {
-      staticClass: "d-flex flex-row muted-color"
-    }, [_c("span", [_vm._v("التعليقات " + _vm._s(post.comments_count))])])]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("div", {
+    }), _vm._v(" "), _c("span", [_vm._v("\n                                " + _vm._s(_vm._f("toNumber")(post.dislikes_count)) + "\n                            ")])])]), _vm._v(" "), _c("hr"), _vm._v(" "), _c("div", {
       staticClass: "comments"
     }, [_c("div", {
       staticClass: "comment-input d-flex justify-content-center align-items-center"
@@ -9684,7 +9730,7 @@ var render = function render() {
           return _vm.loadComments(post);
         }
       }
-    }, [_vm._v("اظهار التعليقات\n                                "), _c("i", {
+    }, [_vm._v("إظهار " + _vm._s(post.comments_count) + "\n                                تعليق\n                                "), _c("i", {
       staticClass: "fa-solid fa-arrow-rotate-left"
     })]) : post.commentsLoaded ? _c("span", {
       staticClass: "muted-color load-comments",
@@ -11837,7 +11883,7 @@ var render = function render() {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _c("div", [_c("div", {
+  return _c("div", [_vm.comment.id > 0 ? _c("div", {
     staticClass: "mar-1"
   }, [_c("div", {
     staticClass: "comment"
@@ -11870,26 +11916,7 @@ var render = function render() {
         return _vm.goToUserProfile(_vm.comment.user.id);
       }
     }
-  }, [_vm._v("\n                " + _vm._s(_vm.comment.user.profile.firstname) + "\n                " + _vm._s(_vm.comment.user.profile.lastname) + "\n            ")]), _vm._v(" "), _vm.comment.user.id == _vm.user_id ? _c("span", {
-    staticClass: "actions"
-  }, [_c("modal-snippet", {
-    attrs: {
-      closeButtonName: "إغلاق",
-      launchButtonName: "حذف",
-      iconLaunchButton: "",
-      confirmButtonName: "حذف",
-      title: "حذف تعليق",
-      launchButtonClass: "fa-solid fa-trash text-danger",
-      confirmButtonClass: "btn btn-danger",
-      name: "deleteComment" + _vm.comment.id,
-      confirmAndClosed: ""
-    },
-    on: {
-      confirmEvent: function confirmEvent($event) {
-        return _vm.deleteComment(_vm.comment);
-      }
-    }
-  }, [_vm._v("\n                    هل أنت متأكد من حذف هذا التعليق؟\n                ")])], 1) : _vm._e(), _vm._v(" "), _vm.comment.mention ? _c("span", {
+  }, [_vm._v("\n                " + _vm._s(_vm.comment.user.profile.firstname) + "\n                " + _vm._s(_vm.comment.user.profile.lastname) + "\n            ")]), _vm._v(" "), _vm.comment.mention ? _c("span", {
     staticClass: "text-break"
   }, [_c("br"), _vm._v(" "), _c("mark", {
     staticClass: "text-bold mention text-primary"
@@ -11929,7 +11956,62 @@ var render = function render() {
     }
   }, [_vm._v("\n                رد\n            ")]), _vm._v(" "), _c("span", {
     staticClass: "muted-color comment-bar comment-time"
-  }, [_vm._v("\n                " + _vm._s(_vm.comment.created_at_diff_for_humans) + "\n            ")])])]), _vm._v(" "), _vm.replyEnabled ? _c("div", {
+  }, [_vm._v("\n                " + _vm._s(_vm.comment.created_at_diff_for_humans) + "\n            ")]), _vm._v(" "), _vm.comment.user.id == _vm.user_id ? _c("span", {
+    staticClass: "d-flex gap-1"
+  }, [_c("modal-snippet", {
+    attrs: {
+      launchButtonName: "تعديل",
+      closeButtonName: "إغلاق",
+      confirmButtonName: "تعديل",
+      title: "تعديل تعليقك",
+      iconLaunchButton: "",
+      launchButtonClass: "fa-solid fa-pen-to-square text-warning actions",
+      confirmButtonClass: "btn btn-warning",
+      name: "editComment" + _vm.comment.id
+    },
+    on: {
+      confirmEvent: function confirmEvent($event) {
+        return _vm.updateComment(_vm.comment);
+      },
+      onLaunchButtonClick: function onLaunchButtonClick($event) {
+        return _vm.editComment(_vm.comment);
+      }
+    }
+  }, [_c("div", {
+    staticClass: "col-md-12"
+  }, [_c("textarea-autosize", {
+    ref: "editComment",
+    staticClass: "form-control",
+    attrs: {
+      placeholder: "رد",
+      "max-height": 350,
+      rows: "1"
+    },
+    model: {
+      value: _vm.content,
+      callback: function callback($$v) {
+        _vm.content = $$v;
+      },
+      expression: "content"
+    }
+  })], 1)]), _vm._v(" "), _c("modal-snippet", {
+    attrs: {
+      closeButtonName: "إغلاق",
+      launchButtonName: "حذف",
+      iconLaunchButton: "",
+      confirmButtonName: "حذف",
+      title: "حذف تعليق",
+      launchButtonClass: "fa-solid fa-trash text-danger actions",
+      confirmButtonClass: "btn btn-danger",
+      name: "deleteComment" + _vm.comment.id,
+      confirmAndClosed: ""
+    },
+    on: {
+      confirmEvent: function confirmEvent($event) {
+        return _vm.deleteComment(_vm.comment);
+      }
+    }
+  }, [_vm._v("\n                    هل أنت متأكد من حذف هذا التعليق؟\n                ")])], 1) : _vm._e()])]) : _vm._e(), _vm._v(" "), _vm.replyEnabled ? _c("div", {
     staticClass: "comment-input d-flex justify-content-center align-items-center"
   }, [_vm.post.user.profile.avatar != null ? _c("img", {
     staticClass: "photo",
@@ -19028,7 +19110,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-62c22d95] {\n    background-color: #eee;\n    font-family: \"Poppins\", sans-serif;\n    font-weight: 300;\n}\n.card[data-v-62c22d95] {\n    border: none;\n    /* margin-top: 10px; */\n    margin-bottom: 100px;\n}\n.ellipsis[data-v-62c22d95] {\n    color: #a09c9c;\n}\nhr[data-v-62c22d95] {\n    color: #a09c9c;\n    margin-top: 4px;\n    margin-bottom: 8px;\n}\n.muted-color[data-v-62c22d95] {\n    color: #a09c9c;\n    font-size: 13px;\n}\n.ellipsis i[data-v-62c22d95] {\n    margin-top: 3px;\n    cursor: pointer;\n}\n.icons i[data-v-62c22d95] {\n    font-size: 25px;\n}\n.icons i[data-v-62c22d95]:hover {\n    color: #0d6efd;\n}\n.icons .fa-solid.fa-thumbs-up[data-v-62c22d95] {\n}\n.icons .fa-solid.fa-thumbs-down[data-v-62c22d95] {\n    margin-top: 4px;\n    margin-right: 10px;\n}\n.rounded-image[data-v-62c22d95] {\n    border-radius: 50% !important;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    height: 50px;\n    width: 50px;\n}\n.name[data-v-62c22d95] {\n    font-weight: bold;\n}\n.date[data-v-62c22d95] {\n    color: #65676b !important;\n}\n.comment-text[data-v-62c22d95] {\n    font-size: 12px;\n}\n.status small[data-v-62c22d95] {\n    margin-right: 10px;\n    color: blue;\n}\n.form-control[data-v-62c22d95] {\n    border-radius: 26px;\n}\n.comment-input[data-v-62c22d95] {\n    position: relative;\n}\n.fonts[data-v-62c22d95] {\n    position: absolute;\n    left: 13px;\n    top: 8px;\n    color: #a09c9c;\n}\n.form-control[data-v-62c22d95]:focus {\n    color: #495057;\n    background-color: #fff;\n    border-color: #8bbafe;\n    outline: 0;\n    box-shadow: none;\n}\n.options[data-v-62c22d95] {\n    font-size: 23px;\n    color: #757575;\n    cursor: pointer;\n}\n.options[data-v-62c22d95]:hover {\n    color: #000;\n}\na[data-v-62c22d95] {\n    text-decoration: none;\n}\nimg[data-v-62c22d95] {\n    cursor: pointer;\n}\ni[data-v-62c22d95] {\n    cursor: pointer;\n}\n.comment-bar[data-v-62c22d95] {\n    font-size: 11px;\n    cursor: pointer;\n    /* display: flex;\n    justify-content: center;\n    align-items: center; */\n    font-weight: bold;\n    position: relative;\n}\n.fa-sort-up[data-v-62c22d95] {\n    transform: translateY(47%);\n}\n.comment-bar[data-v-62c22d95]:hover {\n    color: #65676b !important;\n}\n.comment-time[data-v-62c22d95] {\n    cursor: initial;\n}\n.fa-arrow-rotate-left[data-v-62c22d95],\n.fa-arrow-rotate-right[data-v-62c22d95] {\n    font-size: inherit;\n}\n.photo[data-v-62c22d95] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin-left: 5px;\n}\n.fullname[data-v-62c22d95] {\n    font-size: 16px;\n    cursor: pointer;\n}\n.comment-content[data-v-62c22d95] {\n    font-size: 16px;\n}\n.comment[data-v-62c22d95] {\n    padding: 10px;\n    border-radius: 10px;\n    background-color: #ededed;\n    width: -webkit-fit-content;\n    width: -moz-fit-content;\n    width: fit-content;\n    min-width: 35%;\n}\n.mention[data-v-62c22d95] {\n    font-size: 16px;\n    border-radius: 5px;\n    padding: 3px;\n    background-color: transparent;\n    /* color: #065fd4; */\n}\ntextarea[data-v-62c22d95] {\n    border-radius: 10px !important;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-62c22d95] {\n    background-color: #eee;\n    font-family: \"Poppins\", sans-serif;\n    font-weight: 300;\n}\n.card[data-v-62c22d95] {\n    border: none;\n    /* margin-top: 10px; */\n    margin-bottom: 100px;\n}\n.ellipsis[data-v-62c22d95] {\n    color: #a09c9c;\n}\nhr[data-v-62c22d95] {\n    color: #a09c9c;\n    margin-top: 4px;\n    margin-bottom: 8px;\n}\n.muted-color[data-v-62c22d95] {\n    color: #a09c9c;\n    font-size: 13px;\n}\n.ellipsis i[data-v-62c22d95] {\n    margin-top: 3px;\n    cursor: pointer;\n}\n.icons i[data-v-62c22d95] {\n    font-size: 25px;\n}\n.icons i[data-v-62c22d95]:hover {\n    color: #0d6efd;\n}\n.icons .fa-solid.fa-thumbs-up[data-v-62c22d95] {\n}\n.icons .fa-solid.fa-thumbs-down[data-v-62c22d95] {\n    margin-top: 4px;\n    margin-right: 10px;\n}\n.rounded-image[data-v-62c22d95] {\n    border-radius: 50% !important;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    height: 50px;\n    width: 50px;\n}\n.name[data-v-62c22d95] {\n    font-weight: bold;\n}\n.date[data-v-62c22d95] {\n    color: #65676b !important;\n}\n.comment-text[data-v-62c22d95] {\n    font-size: 12px;\n}\n.status small[data-v-62c22d95] {\n    margin-right: 10px;\n    color: blue;\n}\n.form-control[data-v-62c22d95] {\n    border-radius: 26px;\n}\n.comment-input[data-v-62c22d95] {\n    position: relative;\n}\n.fonts[data-v-62c22d95] {\n    position: absolute;\n    left: 13px;\n    top: 8px;\n    color: #a09c9c;\n}\n.form-control[data-v-62c22d95]:focus {\n    color: #495057;\n    background-color: #fff;\n    border-color: #8bbafe;\n    outline: 0;\n    box-shadow: none;\n}\n.options[data-v-62c22d95] {\n    font-size: 23px;\n    color: #757575;\n    cursor: pointer;\n}\n.options[data-v-62c22d95]:hover {\n    color: #000;\n}\na[data-v-62c22d95] {\n    text-decoration: none;\n}\nimg[data-v-62c22d95] {\n    cursor: pointer;\n}\ni[data-v-62c22d95] {\n    cursor: pointer;\n}\n.comment-bar[data-v-62c22d95] {\n    font-size: 11px;\n    cursor: pointer;\n    /* display: flex;\n    justify-content: center;\n    align-items: center; */\n    font-weight: bold;\n    position: relative;\n}\n.fa-sort-up[data-v-62c22d95] {\n    transform: translateY(47%);\n}\n.comment-bar[data-v-62c22d95]:hover {\n    color: #65676b !important;\n}\n.comment-time[data-v-62c22d95] {\n    cursor: initial;\n}\n.fa-arrow-rotate-left[data-v-62c22d95],\n.fa-arrow-rotate-right[data-v-62c22d95] {\n    font-size: inherit;\n}\n.photo[data-v-62c22d95] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin-left: 5px;\n}\n.fullname[data-v-62c22d95] {\n    font-size: 16px;\n    cursor: pointer;\n}\n.comment-content[data-v-62c22d95] {\n    font-size: 16px;\n}\n.comment[data-v-62c22d95] {\n    padding: 10px;\n    border-radius: 10px;\n    background-color: #ededed;\n    width: -webkit-fit-content;\n    width: -moz-fit-content;\n    width: fit-content;\n    min-width: 35%;\n}\n.mention[data-v-62c22d95] {\n    font-size: 16px;\n    border-radius: 5px;\n    padding: 3px;\n    background-color: transparent;\n    /* color: #065fd4; */\n}\ntextarea[data-v-62c22d95] {\n    border-radius: 10px !important;\n}\n.actions[data-v-62c22d95] {\n    font-size: 15px !important;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
