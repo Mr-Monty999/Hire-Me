@@ -49,7 +49,9 @@ class CommentService
         $comment = Comment::with([
             "user.profile",
             "parentComment",
-            "post"
+            "post",
+            "mention.profile"
+
         ])->withCount("replies")->find($commentId);
         $comment->created_at_diff_for_humans = $comment->created_at->diffForHumans();
 
@@ -73,7 +75,7 @@ class CommentService
     {
         $replies = Comment::with([
             "user.profile",
-            // "parentComment",
+            "parentComment",
             "post",
             "mention.profile"
         ])->withCount("replies")

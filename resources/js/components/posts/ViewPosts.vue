@@ -225,14 +225,14 @@
                                 class="d-flex gap-3"
                             >
                                 <span
-                                    v-if="!commentsLoaded"
+                                    v-if="!post.commentsLoaded"
                                     @click="loadComments(post)"
                                     class="muted-color load-comments"
                                     >اظهار التعليقات
                                     <i class="fa-solid fa-arrow-rotate-left"></i
                                 ></span>
                                 <span
-                                    v-else-if="commentsLoaded"
+                                    v-else-if="post.commentsLoaded"
                                     @click="hideComments(post)"
                                     class="muted-color load-comments"
                                     >إخفاء التعليقات
@@ -259,6 +259,7 @@
                                             :post="post"
                                             :comment="reply"
                                             :parentComment="comment"
+                                            @renderComment="$forceUpdate()"
                                         />
                                     </div>
                                 </div>
@@ -304,7 +305,6 @@ export default {
             photo: "",
             previewPhoto: "",
             user_id: 0,
-            commentsLoaded: false,
         };
     },
     components: {
@@ -622,7 +622,7 @@ export default {
                 .then(function (response) {
                     console.log(response);
                     post.comments = response.data.data;
-                    vm.commentsLoaded = true;
+                    vm.$set(post, "commentsLoaded", true);
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -638,7 +638,7 @@ export default {
         },
         hideComments(post) {
             post.comments = [];
-            this.commentsLoaded = false;
+            this.$set(post, "commentsLoaded", false);
         },
         loadReplies(comment) {
             let vm = this;
@@ -664,6 +664,10 @@ export default {
         },
         hideReplies(comment) {
             comment.replies = [];
+        },
+        updatePage() {
+            this.$forceUpdate();
+            this.$forceUpdate();
         },
     },
     computed: {
@@ -806,8 +810,8 @@ i {
     margin-left: 10px;
 }
 .reply {
-    margin-right: 50px;
-    margin-left: 20px;
+    margin-right: 60px;
+    margin-left: 10px;
 }
 
 textarea {

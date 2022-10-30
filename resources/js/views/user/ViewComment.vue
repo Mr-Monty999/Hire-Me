@@ -23,6 +23,22 @@
                     {{ comment.user.profile.firstname }}
                     {{ comment.user.profile.lastname }}
                 </b>
+                <span v-if="comment.user.id == user_id" class="actions">
+                    <modal-snippet
+                        closeButtonName="إغلاق"
+                        launchButtonName="حذف"
+                        iconLaunchButton
+                        confirmButtonName="حذف"
+                        title="حذف تعليق"
+                        launchButtonClass="fa-solid fa-trash text-danger"
+                        confirmButtonClass="btn btn-danger"
+                        :name="'deleteComment' + comment.id"
+                        confirmAndClosed
+                        @confirmEvent="deleteComment(comment)"
+                    >
+                        هل أنت متأكد من حذف هذا التعليق؟
+                    </modal-snippet>
+                </span>
                 <span v-if="comment.mention" class="text-break">
                     <br />
                     <mark class="text-bold mention text-primary">
@@ -41,14 +57,14 @@
             >
                 <span
                     v-if="comment.replies_count > 0 && !repliesLoaded"
-                    @click="loadReplies(comment)"
+                    @click="loadReplies(parentComment)"
                     class="muted-color comment-bar"
                     >{{ comment.replies_count }} رد
                     <i class="fa-solid fa-sort-down"></i>
                 </span>
                 <span
                     v-else-if="comment.replies_count > 0 && repliesLoaded"
-                    @click="hideReplies(comment)"
+                    @click="hideReplies(parentComment)"
                     class="muted-color comment-bar"
                 >
                     {{ comment.replies_count }} رد
@@ -86,7 +102,7 @@
                 rows="1"
                 class="form-control"
                 @keyup.enter.native="
-                    sendComment(post, content, parentComment, comment.user)
+                    sendReply(post, content, parentComment, comment.user)
                 "
                 important
             />
@@ -101,13 +117,13 @@
 import axios from "axios";
 import headerAuth from "../../helpers/auth";
 
-// import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
+import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
 
 export default {
     name: "ViewComment",
 
     components: {
-        // ModalSnippet,
+        ModalSnippet,
     },
     data() {
         return {
@@ -118,6 +134,56 @@ export default {
         };
     },
     methods: {
+        deleteComment(comment) {
+            var vm = this;
+            var spinner =
+                '<div class="spinner-border text-white" role="status">' +
+                '<span class="visually-hidden">Loading...</span>' +
+                "</div>";
+
+            vm.$notify({
+                title: "في الإنتظار...",
+                text: "جاري حذف التعليق " + spinner,
+                type: "info",
+            });
+
+            axios
+                .delete("/api/comments/" + comment.id, {
+                    headers: headerAuth,
+                })
+                .then(function (response) {
+                    console.log(response);
+
+                    var index = vm.post.comments.findIndex(
+                        (el) => el.id == comment.id
+                    );
+
+                    vm.post.comments.splice(index, 1);
+
+                    vm.$emit("renderComment");
+                    vm.$forceUpdate();
+
+                    vm.$notify({
+                        clean: true,
+                    });
+                    vm.$notify({
+                        title: "نجاح",
+                        text: "تم حذف التعليق بنجاح",
+                        type: "success",
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                    var errors = error.response.data.errors;
+                    for (const error in errors) {
+                        vm.$notify({
+                            title: "خطأ:لم يتم تنفيذ",
+                            text: errors[error][0],
+                            type: "error",
+                        });
+                    }
+                });
+        },
         loadReplies(comment) {
             let vm = this;
 
@@ -148,9 +214,8 @@ export default {
             this.$emit("renderComment");
             this.repliesLoaded = false;
         },
-        sendComment(post, commentContent, parentComment, mention) {
+        sendReply(post, commentContent, parentComment, mention) {
             let vm = this;
-
             var spinner =
                 '<div class="spinner-border text-white" role="status">' +
                 '<span class="visually-hidden">Loading...</span>' +
@@ -180,8 +245,9 @@ export default {
                     console.log(response);
                     if (!parentComment.replies) parentComment.replies = [];
                     parentComment.replies.push(response.data.data);
-                    parentComment.replies_count += 1;
 
+                    parentComment.replies_count += 1;
+                    vm.replyEnabled = false;
                     vm.$emit("renderComment");
                     vm.$notify({
                         clean: true,
