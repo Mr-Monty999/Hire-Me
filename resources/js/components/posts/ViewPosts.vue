@@ -12,7 +12,7 @@
                                 :src="previewAvatar(post.user.profile.avatar)"
                                 width="50"
                                 class="rounded-circle"
-                                @click="goToProfile(post.user.id)"
+                                @click="goToUserProfile(post.user.id)"
                             />
                             <div class="d-flex flex-column ml-2">
                                 <span class="text-break name"
@@ -247,7 +247,8 @@
                                         :post="post"
                                         :comment="comment"
                                         :parentComment="comment"
-                                    ></view-comment>
+                                        @renderComment="$forceUpdate()"
+                                    />
                                 </div>
                                 <div
                                     v-for="(reply, x) in comment.replies"
@@ -258,7 +259,7 @@
                                             :post="post"
                                             :comment="reply"
                                             :parentComment="comment"
-                                        ></view-comment>
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -433,14 +434,16 @@ export default {
         hideModal() {
             this.$modal.hide("my-modal");
         },
-        goToProfile(userId) {
+        goToUserProfile(userId) {
             if (userId != this.$route.params.id) {
-                this.$router.push({
+                let url = this.$router.resolve({
                     name: "profile",
                     params: {
                         id: userId,
                     },
                 });
+
+                window.open(url.href, "_blank");
             }
         },
         reactToPost(userId, postId, reactType) {
@@ -557,7 +560,6 @@ export default {
         },
         sendComment(post, comment) {
             let vm = this;
-
             var spinner =
                 '<div class="spinner-border text-white" role="status">' +
                 '<span class="visually-hidden">Loading...</span>' +
@@ -583,7 +585,9 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
+                    if (!post.comments) post.comments = [];
                     post.comments.unshift(response.data.data);
+                    post.comments_count += 1;
                     vm.$notify({
                         clean: true,
                     });
@@ -673,12 +677,11 @@ export default {
         },
     },
     props: ["posts", "onPageClick"],
+    watch: {},
     created() {
         this.user_id = JSON.parse(localStorage.getItem("user")).id;
-
-        console.log("View Posts");
-        console.log(this.posts);
     },
+    updated() {},
 };
 </script>
 

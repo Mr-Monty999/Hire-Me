@@ -5998,14 +5998,15 @@ __webpack_require__.r(__webpack_exports__);
     hideModal: function hideModal() {
       this.$modal.hide("my-modal");
     },
-    goToProfile: function goToProfile(userId) {
+    goToUserProfile: function goToUserProfile(userId) {
       if (userId != this.$route.params.id) {
-        this.$router.push({
+        var url = this.$router.resolve({
           name: "profile",
           params: {
             id: userId
           }
         });
+        window.open(url.href, "_blank");
       }
     },
     reactToPost: function reactToPost(userId, postId, reactType) {
@@ -6117,7 +6118,9 @@ __webpack_require__.r(__webpack_exports__);
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
+        if (!post.comments) post.comments = [];
         post.comments.unshift(response.data.data);
+        post.replies_count += 1;
         vm.$notify({
           clean: true
         });
@@ -6201,11 +6204,11 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   props: ["posts", "onPageClick"],
+  watch: {},
   created: function created() {
     this.user_id = JSON.parse(localStorage.getItem("user")).id;
-    console.log("View Posts");
-    console.log(this.posts);
-  }
+  },
+  updated: function updated() {}
 });
 
 /***/ }),
@@ -7921,6 +7924,7 @@ __webpack_require__.r(__webpack_exports__);
  // import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  name: "ViewComment",
   components: {// ModalSnippet,
   },
   data: function data() {
@@ -7938,7 +7942,8 @@ __webpack_require__.r(__webpack_exports__);
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
         console.log(response);
-        vm.comment.replies = response.data.data;
+        comment.replies = response.data.data;
+        vm.$emit("renderComment");
         vm.repliesLoaded = true;
       })["catch"](function (error) {
         console.log(error.response);
@@ -7954,7 +7959,8 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     hideReplies: function hideReplies(comment) {
-      this.comment.replies = [];
+      comment.replies = [];
+      this.$emit("renderComment");
       this.repliesLoaded = false;
     },
     sendComment: function sendComment(post, commentContent, parentComment, mention) {
@@ -7974,8 +7980,11 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         headers: _helpers_auth__WEBPACK_IMPORTED_MODULE_1__["default"]
       }).then(function (response) {
-        console.log(response); // vm.comment.replies.push(response.data.data);
-
+        console.log(response);
+        if (!parentComment.replies) parentComment.replies = [];
+        parentComment.replies.push(response.data.data);
+        parentComment.replies_count += 1;
+        vm.$emit("renderComment");
         vm.$notify({
           clean: true
         });
@@ -8009,10 +8018,21 @@ __webpack_require__.r(__webpack_exports__);
           this.comment.user.profile.firstname +
           " " +
           this.comment.user.profile.lastname +
-          "\n";
+          "\n ";
       // "</span><br>";
       */
       if (!this.replyEnabled) this.replyEnabled = true;else this.replyEnabled = false;
+    },
+    goToUserProfile: function goToUserProfile(userId) {
+      if (userId != this.$route.params.id) {
+        var url = this.$router.resolve({
+          name: "profile",
+          params: {
+            id: userId
+          }
+        });
+        window.open(url.href, "_blank");
+      }
     }
   },
   props: ["post", "comment", "parentComment"],
@@ -9429,7 +9449,7 @@ var render = function render() {
       },
       on: {
         click: function click($event) {
-          return _vm.goToProfile(post.user.id);
+          return _vm.goToUserProfile(post.user.id);
         }
       }
     }), _vm._v(" "), _c("div", {
@@ -9640,6 +9660,11 @@ var render = function render() {
           post: post,
           comment: comment,
           parentComment: comment
+        },
+        on: {
+          renderComment: function renderComment($event) {
+            return _vm.$forceUpdate();
+          }
         }
       })], 1), _vm._v(" "), _vm._l(comment.replies, function (reply, x) {
         return _c("div", {
@@ -11771,18 +11796,35 @@ var render = function render() {
     attrs: {
       src: _vm.comment.user.profile.avatar,
       alt: ""
+    },
+    on: {
+      click: function click($event) {
+        return _vm.goToUserProfile(_vm.comment.user.id);
+      }
     }
   }) : _c("img", {
     staticClass: "photo",
     attrs: {
       src: "/images/assets/personal.jpg",
       alt: ""
+    },
+    on: {
+      click: function click($event) {
+        return _vm.goToUserProfile(_vm.comment.user.id);
+      }
     }
   }), _vm._v(" "), _c("b", {
-    staticClass: "text-break fullname"
+    staticClass: "text-break fullname",
+    on: {
+      click: function click($event) {
+        return _vm.goToUserProfile(_vm.comment.user.id);
+      }
+    }
   }, [_vm._v("\n                " + _vm._s(_vm.comment.user.profile.firstname) + "\n                " + _vm._s(_vm.comment.user.profile.lastname) + "\n            ")]), _vm._v(" "), _vm.comment.mention ? _c("span", {
-    staticClass: "text-break text-bold mention text-primary"
-  }, [_c("br"), _vm._v("\n                @" + _vm._s(_vm.comment.mention.profile.firstname) + "\n                " + _vm._s(_vm.comment.mention.profile.lastname) + "\n                "), _c("br")]) : _vm._e(), _vm._v(" "), _c("div", {
+    staticClass: "text-break"
+  }, [_c("br"), _vm._v(" "), _c("mark", {
+    staticClass: "text-bold mention text-primary"
+  }, [_vm._v("\n                    @" + _vm._s(_vm.comment.mention.profile.firstname) + "\n                    " + _vm._s(_vm.comment.mention.profile.lastname) + "\n                ")]), _vm._v(" "), _c("br")]) : _vm._e(), _vm._v(" "), _c("div", {
     staticClass: "text-break"
   }, [_c("span", {
     staticClass: "comment-content"
@@ -11807,7 +11849,7 @@ var render = function render() {
         return _vm.hideReplies(_vm.comment);
       }
     }
-  }, [_vm._v(_vm._s(_vm.comment.replies_count) + " رد\n                "), _c("i", {
+  }, [_vm._v("\n                " + _vm._s(_vm.comment.replies_count) + " رد\n                "), _c("i", {
     staticClass: "fa-solid fa-sort-up"
   })]) : _vm._e(), _vm._v(" "), _c("span", {
     staticClass: "muted-color comment-bar",
@@ -18917,7 +18959,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-62c22d95] {\n    background-color: #eee;\n    font-family: \"Poppins\", sans-serif;\n    font-weight: 300;\n}\n.card[data-v-62c22d95] {\n    border: none;\n    /* margin-top: 10px; */\n    margin-bottom: 100px;\n}\n.ellipsis[data-v-62c22d95] {\n    color: #a09c9c;\n}\nhr[data-v-62c22d95] {\n    color: #a09c9c;\n    margin-top: 4px;\n    margin-bottom: 8px;\n}\n.muted-color[data-v-62c22d95] {\n    color: #a09c9c;\n    font-size: 13px;\n}\n.ellipsis i[data-v-62c22d95] {\n    margin-top: 3px;\n    cursor: pointer;\n}\n.icons i[data-v-62c22d95] {\n    font-size: 25px;\n}\n.icons i[data-v-62c22d95]:hover {\n    color: #0d6efd;\n}\n.icons .fa-solid.fa-thumbs-up[data-v-62c22d95] {\n}\n.icons .fa-solid.fa-thumbs-down[data-v-62c22d95] {\n    margin-top: 4px;\n    margin-right: 10px;\n}\n.rounded-image[data-v-62c22d95] {\n    border-radius: 50% !important;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    height: 50px;\n    width: 50px;\n}\n.name[data-v-62c22d95] {\n    font-weight: bold;\n}\n.date[data-v-62c22d95] {\n    color: #65676b !important;\n}\n.comment-text[data-v-62c22d95] {\n    font-size: 12px;\n}\n.status small[data-v-62c22d95] {\n    margin-right: 10px;\n    color: blue;\n}\n.form-control[data-v-62c22d95] {\n    border-radius: 26px;\n}\n.comment-input[data-v-62c22d95] {\n    position: relative;\n}\n.fonts[data-v-62c22d95] {\n    position: absolute;\n    left: 13px;\n    top: 8px;\n    color: #a09c9c;\n}\n.form-control[data-v-62c22d95]:focus {\n    color: #495057;\n    background-color: #fff;\n    border-color: #8bbafe;\n    outline: 0;\n    box-shadow: none;\n}\n.options[data-v-62c22d95] {\n    font-size: 23px;\n    color: #757575;\n    cursor: pointer;\n}\n.options[data-v-62c22d95]:hover {\n    color: #000;\n}\na[data-v-62c22d95] {\n    text-decoration: none;\n}\nimg[data-v-62c22d95] {\n    cursor: pointer;\n}\ni[data-v-62c22d95] {\n    cursor: pointer;\n}\n.comment-bar[data-v-62c22d95] {\n    font-size: 11px;\n    cursor: pointer;\n    /* display: flex;\n    justify-content: center;\n    align-items: center; */\n    font-weight: bold;\n}\n.comment-bar[data-v-62c22d95]:hover {\n    color: #65676b !important;\n}\n.comment-time[data-v-62c22d95] {\n    cursor: initial;\n}\n.fa-arrow-rotate-left[data-v-62c22d95],\n.fa-arrow-rotate-right[data-v-62c22d95] {\n    font-size: inherit;\n}\n.photo[data-v-62c22d95] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin-left: 5px;\n}\n.fullname[data-v-62c22d95] {\n    font-size: 16px;\n}\n.comment-content[data-v-62c22d95] {\n    font-size: 16px;\n}\n.comment[data-v-62c22d95] {\n    padding: 10px;\n    border-radius: 10px;\n    background-color: #ededed;\n    width: -webkit-fit-content;\n    width: -moz-fit-content;\n    width: fit-content;\n    min-width: 35%;\n}\n.mention[data-v-62c22d95] {\n    font-size: 16px;\n}\ntextarea[data-v-62c22d95] {\n    border-radius: 10px !important;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-62c22d95] {\n    background-color: #eee;\n    font-family: \"Poppins\", sans-serif;\n    font-weight: 300;\n}\n.card[data-v-62c22d95] {\n    border: none;\n    /* margin-top: 10px; */\n    margin-bottom: 100px;\n}\n.ellipsis[data-v-62c22d95] {\n    color: #a09c9c;\n}\nhr[data-v-62c22d95] {\n    color: #a09c9c;\n    margin-top: 4px;\n    margin-bottom: 8px;\n}\n.muted-color[data-v-62c22d95] {\n    color: #a09c9c;\n    font-size: 13px;\n}\n.ellipsis i[data-v-62c22d95] {\n    margin-top: 3px;\n    cursor: pointer;\n}\n.icons i[data-v-62c22d95] {\n    font-size: 25px;\n}\n.icons i[data-v-62c22d95]:hover {\n    color: #0d6efd;\n}\n.icons .fa-solid.fa-thumbs-up[data-v-62c22d95] {\n}\n.icons .fa-solid.fa-thumbs-down[data-v-62c22d95] {\n    margin-top: 4px;\n    margin-right: 10px;\n}\n.rounded-image[data-v-62c22d95] {\n    border-radius: 50% !important;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    height: 50px;\n    width: 50px;\n}\n.name[data-v-62c22d95] {\n    font-weight: bold;\n}\n.date[data-v-62c22d95] {\n    color: #65676b !important;\n}\n.comment-text[data-v-62c22d95] {\n    font-size: 12px;\n}\n.status small[data-v-62c22d95] {\n    margin-right: 10px;\n    color: blue;\n}\n.form-control[data-v-62c22d95] {\n    border-radius: 26px;\n}\n.comment-input[data-v-62c22d95] {\n    position: relative;\n}\n.fonts[data-v-62c22d95] {\n    position: absolute;\n    left: 13px;\n    top: 8px;\n    color: #a09c9c;\n}\n.form-control[data-v-62c22d95]:focus {\n    color: #495057;\n    background-color: #fff;\n    border-color: #8bbafe;\n    outline: 0;\n    box-shadow: none;\n}\n.options[data-v-62c22d95] {\n    font-size: 23px;\n    color: #757575;\n    cursor: pointer;\n}\n.options[data-v-62c22d95]:hover {\n    color: #000;\n}\na[data-v-62c22d95] {\n    text-decoration: none;\n}\nimg[data-v-62c22d95] {\n    cursor: pointer;\n}\ni[data-v-62c22d95] {\n    cursor: pointer;\n}\n.comment-bar[data-v-62c22d95] {\n    font-size: 11px;\n    cursor: pointer;\n    /* display: flex;\n    justify-content: center;\n    align-items: center; */\n    font-weight: bold;\n    position: relative;\n}\n.fa-sort-up[data-v-62c22d95] {\n    transform: translateY(47%);\n}\n.comment-bar[data-v-62c22d95]:hover {\n    color: #65676b !important;\n}\n.comment-time[data-v-62c22d95] {\n    cursor: initial;\n}\n.fa-arrow-rotate-left[data-v-62c22d95],\n.fa-arrow-rotate-right[data-v-62c22d95] {\n    font-size: inherit;\n}\n.photo[data-v-62c22d95] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin-left: 5px;\n}\n.fullname[data-v-62c22d95] {\n    font-size: 16px;\n    cursor: pointer;\n}\n.comment-content[data-v-62c22d95] {\n    font-size: 16px;\n}\n.comment[data-v-62c22d95] {\n    padding: 10px;\n    border-radius: 10px;\n    background-color: #ededed;\n    width: -webkit-fit-content;\n    width: -moz-fit-content;\n    width: fit-content;\n    min-width: 35%;\n}\n.mention[data-v-62c22d95] {\n    font-size: 16px;\n    border-radius: 5px;\n    padding: 3px;\n    background-color: transparent;\n    /* color: #065fd4; */\n}\ntextarea[data-v-62c22d95] {\n    border-radius: 10px !important;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

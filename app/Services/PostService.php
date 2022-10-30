@@ -66,7 +66,6 @@ class PostService
 
         foreach ($posts as  $post) {
             $post->created_at_diff_for_humans = $post->created_at->diffForHumans();
-            $post->comments = [];
             $react = $post->reacts()->where("user_id", "=", $userId)->first();
             if ($react)
                 $post->react_type = $react->pivot->type;
@@ -155,7 +154,6 @@ class PostService
 
         foreach ($posts as  $post) {
             $post->created_at_diff_for_humans = $post->created_at->diffForHumans();
-            $post->comments = [];
             $react = $post->reacts()->where("user_id", "=", $userId)->first();
             if ($react)
                 $post->react_type = $react->pivot->type;

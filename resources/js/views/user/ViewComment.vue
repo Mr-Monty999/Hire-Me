@@ -7,24 +7,28 @@
                     class="photo"
                     :src="comment.user.profile.avatar"
                     alt=""
+                    @click="goToUserProfile(comment.user.id)"
                 />
                 <img
                     v-else
                     class="photo"
                     src="/images/assets/personal.jpg"
                     alt=""
+                    @click="goToUserProfile(comment.user.id)"
                 />
-                <b class="text-break fullname">
+                <b
+                    @click="goToUserProfile(comment.user.id)"
+                    class="text-break fullname"
+                >
                     {{ comment.user.profile.firstname }}
                     {{ comment.user.profile.lastname }}
                 </b>
-                <span
-                    v-if="comment.mention"
-                    class="text-break text-bold mention text-primary"
-                >
+                <span v-if="comment.mention" class="text-break">
                     <br />
-                    @{{ comment.mention.profile.firstname }}
-                    {{ comment.mention.profile.lastname }}
+                    <mark class="text-bold mention text-primary">
+                        @{{ comment.mention.profile.firstname }}
+                        {{ comment.mention.profile.lastname }}
+                    </mark>
                     <br />
                 </span>
                 <div class="text-break">
@@ -46,9 +50,10 @@
                     v-else-if="comment.replies_count > 0 && repliesLoaded"
                     @click="hideReplies(comment)"
                     class="muted-color comment-bar"
-                    >{{ comment.replies_count }} رد
-                    <i class="fa-solid fa-sort-up"></i
-                ></span>
+                >
+                    {{ comment.replies_count }} رد
+                    <i class="fa-solid fa-sort-up"></i>
+                </span>
                 <span class="muted-color comment-bar" @click="enableReply()">
                     رد
                 </span>
@@ -99,6 +104,8 @@ import headerAuth from "../../helpers/auth";
 // import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
 
 export default {
+    name: "ViewComment",
+
     components: {
         // ModalSnippet,
     },
@@ -113,13 +120,15 @@ export default {
     methods: {
         loadReplies(comment) {
             let vm = this;
+
             axios
                 .get("/api/comments/" + comment.id + "/replies", {
                     headers: headerAuth,
                 })
                 .then(function (response) {
                     console.log(response);
-                    vm.comment.replies = response.data.data;
+                    comment.replies = response.data.data;
+                    vm.$emit("renderComment");
                     vm.repliesLoaded = true;
                 })
                 .catch(function (error) {
@@ -135,7 +144,8 @@ export default {
                 });
         },
         hideReplies(comment) {
-            this.comment.replies = [];
+            comment.replies = [];
+            this.$emit("renderComment");
             this.repliesLoaded = false;
         },
         sendComment(post, commentContent, parentComment, mention) {
@@ -168,7 +178,11 @@ export default {
                 )
                 .then(function (response) {
                     console.log(response);
-                    // vm.comment.replies.push(response.data.data);
+                    if (!parentComment.replies) parentComment.replies = [];
+                    parentComment.replies.push(response.data.data);
+                    parentComment.replies_count += 1;
+
+                    vm.$emit("renderComment");
                     vm.$notify({
                         clean: true,
                     });
@@ -202,11 +216,23 @@ export default {
                 this.comment.user.profile.firstname +
                 " " +
                 this.comment.user.profile.lastname +
-                "\n";
+                "\n ";
             // "</span><br>";
-            */
+*/
             if (!this.replyEnabled) this.replyEnabled = true;
             else this.replyEnabled = false;
+        },
+        goToUserProfile(userId) {
+            if (userId != this.$route.params.id) {
+                let url = this.$router.resolve({
+                    name: "profile",
+                    params: {
+                        id: userId,
+                    },
+                });
+
+                window.open(url.href, "_blank");
+            }
         },
     },
     props: ["post", "comment", "parentComment"],
@@ -325,6 +351,10 @@ i {
     justify-content: center;
     align-items: center; */
     font-weight: bold;
+    position: relative;
+}
+.fa-sort-up {
+    transform: translateY(47%);
 }
 
 .comment-bar:hover {
@@ -345,6 +375,7 @@ i {
 }
 .fullname {
     font-size: 16px;
+    cursor: pointer;
 }
 .comment-content {
     font-size: 16px;
@@ -359,6 +390,10 @@ i {
 
 .mention {
     font-size: 16px;
+    border-radius: 5px;
+    padding: 3px;
+    background-color: transparent;
+    /* color: #065fd4; */
 }
 textarea {
     border-radius: 10px !important;
