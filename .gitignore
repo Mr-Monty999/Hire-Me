@@ -15,4 +15,5 @@ yarn-error.log
 /.vscode
 /nbproject/private/
 *.jpg
+*.jpeg
 *.png
