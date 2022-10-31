@@ -104,6 +104,40 @@
                                 >
                                     <b>يتابعك الأن</b>
                                 </div>
+                                <div
+                                    v-else-if="
+                                        notification.type ==
+                                        'App\\Notifications\\SendCommentNotification'
+                                    "
+                                    class="text-break"
+                                >
+                                    <b>قام بالتعليق على منشور لك</b>
+                                    <div class="limited">
+                                        <span v-if="notification.data.comment">
+                                            "{{
+                                                notification.data.comment
+                                                    .content
+                                            }}"
+                                        </span>
+                                    </div>
+                                </div>
+                                <div
+                                    v-else-if="
+                                        notification.type ==
+                                        'App\\Notifications\\MentionUserNotification'
+                                    "
+                                    class="text-break"
+                                >
+                                    <b>أشار إليك في تعليق</b>
+                                    <div class="limited">
+                                        <span v-if="notification.data.comment">
+                                            "{{
+                                                notification.data.comment
+                                                    .content
+                                            }}"
+                                        </span>
+                                    </div>
+                                </div>
                                 <!-- <div
                                     v-else-if="
                                         notification.type ==

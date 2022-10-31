@@ -11,6 +11,7 @@ use Illuminate\Pagination\PaginationServiceProvider;
 use Illuminate\Pagination\PaginationState;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
+use RateLimiter;
 
 /**
  * Class CommentService.
@@ -19,6 +20,7 @@ class CommentService
 {
     public static function store($data)
     {
+
         $comment = Comment::create($data);
         $comment = self::show($comment->id);
         $comment->created_at_diff_for_humans = "الأن";
@@ -73,13 +75,14 @@ class CommentService
     }
     public static function getReplies($commentId)
     {
+
         $replies = Comment::with([
             "user.profile",
             "parentComment",
             "post",
             "mention.profile"
         ])->withCount("replies")
-            ->where("comment_id", "=", $commentId)
+            ->where("parent_comment_id", "=", $commentId)
             ->get();
 
         foreach ($replies as $reply) {

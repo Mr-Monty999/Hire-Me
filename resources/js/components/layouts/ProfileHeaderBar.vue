@@ -265,6 +265,11 @@ export default {
         this.user_id = JSON.parse(localStorage.getItem("user")).id;
         this.getProfileInfo(this.user_id);
         this.getHeaderCounts();
+
+        setInterval(() => {
+            this.getProfileInfo(this.user_id);
+            this.getHeaderCounts();
+        }, 10000);
     },
 };
 </script>

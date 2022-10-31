@@ -75,14 +75,14 @@
                         @onLaunchButtonClick="editComment(comment)"
                     >
                         <div class="col-md-12">
-                            <textarea-autosize
-                                placeholder="رد"
-                                ref="editComment"
-                                v-model="content"
-                                :max-height="350"
-                                rows="1"
+                            <textarea
+                                type="text"
                                 class="form-control"
-                            />
+                                placeholder="محتوى المنشور"
+                                name="content"
+                                rows="9"
+                                v-model="content"
+                            ></textarea>
                             <!-- <div class="d-flex justify-content-center mar-1">
                                 <img :src="getPhoto" class="img-fluid" alt="" />
                             </div>
@@ -165,7 +165,7 @@ import headerFormAuth from "../../helpers/formAuth";
 import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
 
 export default {
-    name: "ViewComment",
+    name: "Comment",
 
     components: {
         ModalSnippet,
@@ -322,15 +322,15 @@ export default {
                 text: "جاري مشاركة الرد" + spinner,
                 type: "info",
             });
-
+            let tempContent = vm.content;
+            vm.content = "";
             axios
                 .post(
                     "/api/comments",
                     {
                         content: commentContent,
                         post_id: post.id,
-                        user_id: vm.user_id,
-                        comment_id: parentComment.id,
+                        parent_comment_id: parentComment.id,
                         mention_id: mention.id,
                     },
                     {
@@ -355,9 +355,10 @@ export default {
                         text: "تمت مشاركة التعليق بنجاح",
                         type: "success",
                     });
-                    vm.content = "";
                 })
                 .catch(function (error) {
+                    vm.content = tempContent.trim();
+
                     vm.$notify({
                         clean: true,
                     });

@@ -169,7 +169,7 @@ class PostService
             "user.profile",
         ])->withCount("replies")
             ->where("post_id", "=", $postId)
-            ->whereNull("comment_id")
+            ->whereNull("parent_comment_id")
             ->get();
 
         foreach ($comments as $comment) {

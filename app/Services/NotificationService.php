@@ -2,14 +2,18 @@
 
 namespace App\Services;
 
+use App\Models\Comment;
 use App\Models\Job;
 use App\Models\Post;
 use App\Models\User;
 use App\Notifications\ConnectionRequestNotification;
 use App\Notifications\CreatePostNotification;
 use App\Notifications\FollowNotification;
+use App\Notifications\MentionUserNotification;
 use App\Notifications\OfferJobNotification;
 use App\Notifications\ReactToPostNotification;
+use App\Notifications\SendCommentNotification;
+use App\Notifications\SendCommentReplyNotification;
 use App\Notifications\SendConnectiondataNotification;
 use App\Notifications\SendConnectionRequestNotification;
 use Auth;
@@ -35,6 +39,10 @@ class NotificationService
                 $temp["post"] = Post::find($value->data["post_id"]);
             if (isset($value->data["job_id"]))
                 $temp["job"] = Job::find($value->data["job_id"]);
+            if (isset($value->data["comment_id"]))
+                $temp["comment"] = Comment::find($value->data["comment_id"]);
+            if (isset($value->data["parent_comment_id"]))
+                $temp["parent_comment"] = Comment::find($value->data["parent_comment_id"]);
 
             $value->data = $temp;
             // $value->data->user = User::find($value->data["user_id"]);
@@ -93,6 +101,19 @@ class NotificationService
         User::find($data["notifiable_id"])->notify(new FollowNotification($data));
         return true;
     }
+    public static function sendCommentNotification($data)
+    {
+
+        User::find($data["notifiable_id"])->notify(new  SendCommentNotification($data));
+        return true;
+    }
+    public static function sendMentionUserNotification($data)
+    {
+
+        User::find($data["notifiable_id"])->notify(new MentionUserNotification($data));
+        return true;
+    }
+
     public static function getUserUnReadedNotificationsCount($userId)
     {
         return User::find($userId)->unreadNotifications()->count();

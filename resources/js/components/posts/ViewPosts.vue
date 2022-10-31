@@ -47,7 +47,7 @@
                                         class="form-control"
                                         placeholder="محتوى المنشور"
                                         name="content"
-                                        cols="100px"
+                                        rows="10"
                                         v-model="content"
                                     ></textarea>
                                     <div
@@ -244,7 +244,7 @@
                             </div>
                             <div v-for="(comment, i) in post.comments" :key="i">
                                 <div class="comment">
-                                    <view-comment
+                                    <comment
                                         :post="post"
                                         :comment="comment"
                                         :parentComment="comment"
@@ -256,7 +256,7 @@
                                     :key="x"
                                 >
                                     <div class="reply">
-                                        <view-comment
+                                        <comment
                                             :post="post"
                                             :comment="reply"
                                             :parentComment="comment"
@@ -296,7 +296,7 @@ import headerFormAuth from "../../helpers/formAuth";
 import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
 import Paginate from "vuejs-paginate";
 import services from "../../helpers/services";
-import ViewComment from "../../views/user/ViewComment.vue";
+import Comment from "../../views/user/Comment.vue";
 
 export default {
     name: "ViewPosts",
@@ -311,7 +311,7 @@ export default {
     components: {
         ModalSnippet,
         Paginate,
-        ViewComment,
+        Comment,
     },
     methods: {
         getFile(e) {
@@ -571,6 +571,8 @@ export default {
                 text: "جاري مشاركة التعليق" + spinner,
                 type: "info",
             });
+            let tempContent = post.comment;
+            post.comment = "";
 
             axios
                 .post(
@@ -578,7 +580,6 @@ export default {
                     {
                         content: comment,
                         post_id: post.id,
-                        user_id: vm.user_id,
                     },
                     {
                         headers: headerAuth,
@@ -597,9 +598,9 @@ export default {
                         text: "تمت مشاركة التعليق بنجاح",
                         type: "success",
                     });
-                    post.comment = "";
                 })
                 .catch(function (error) {
+                    post.comment = tempContent.trim();
                     vm.$notify({
                         clean: true,
                     });

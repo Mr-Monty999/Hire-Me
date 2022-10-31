@@ -27,7 +27,6 @@ class StoreCommentRequest extends FormRequest
             "content" => "required",
             "photo" => "image|nullable",
             "post_id" => "required",
-            "user_id" => "required"
         ];
     }
     public function messages()
