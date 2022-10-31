@@ -1,8 +1,8 @@
 <template>
-    <header>
-        <nav class="navbar navbar-expand-lg bg-light">
+    <header class="bg-success">
+        <nav class="navbar navbar-expand-lg">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">شغلني</a>
+                <a class="navbar-brand text-white" href="#">شغلني</a>
                 <button
                     class="navbar-toggler"
                     type="button"
@@ -30,7 +30,9 @@
                                 aria-expanded="false"
                             >
                                 <span>
-                                    <span>{{ firstname }} {{ lastname }}</span>
+                                    <span class="text-white"
+                                        >{{ firstname }} {{ lastname }}</span
+                                    >
                                     <img
                                         class="personal-photo"
                                         :src="previewAvatar"

@@ -14,9 +14,23 @@
                 >
                     <div
                         @click="
-                            if (notification.data.post_id)
-                                return showPost(notification.data.post_id);
-                            else if (notification.data.job_id)
+                            if (notification.data.post_id) {
+                                if (
+                                    notification.data.comment_id &&
+                                    notification.data.parent_comment_id
+                                )
+                                    return showPost(
+                                        notification.data.post_id,
+                                        notification.data.parent_comment_id,
+                                        notification.data.comment_id
+                                    );
+                                else if (notification.data.comment_id)
+                                    return showPost(
+                                        notification.data.post_id,
+                                        notification.data.comment_id
+                                    );
+                                else return showPost(notification.data.post_id);
+                            } else if (notification.data.job_id)
                                 return showJob(notification.data.job_id);
                         "
                         :class="'alert ' + getAlertClass(notification)"
@@ -234,11 +248,13 @@ export default {
                 },
             });
         },
-        showPost(postId) {
+        showPost(postId, parentCommentId = null, replyId = null) {
             this.$router.push({
                 name: "post",
                 params: {
                     id: postId,
+                    parentCommentId: parentCommentId,
+                    replyCommentId: replyId,
                 },
             });
         },

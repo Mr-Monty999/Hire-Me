@@ -59,6 +59,7 @@ class MentionUserNotification extends Notification
             "user_id" => $this->data["user_id"],
             "post_id" => $this->data["post_id"],
             "comment_id" => $this->data["comment_id"],
+            "parent_comment_id" => $this->data["parent_comment_id"],
             "mention_id" => $this->data["mention_id"],
         ];
     }

@@ -7720,7 +7720,7 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         console.log(response);
         vm.post = response.data.data;
-        vm.loadComments(vm.post);
+        if (vm.$route.params.parentCommentId) vm.loadComments(vm.post);
       })["catch"](function (error) {
         console.log(error.response);
       });
@@ -8656,10 +8656,14 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     showPost: function showPost(postId) {
+      var parentCommentId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      var replyId = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
       this.$router.push({
         name: "post",
         params: {
-          id: postId
+          id: postId,
+          parentCommentId: parentCommentId,
+          replyCommentId: replyId
         }
       });
     },
@@ -9321,12 +9325,14 @@ var render = function render() {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _c("header", [_c("nav", {
-    staticClass: "navbar navbar-expand-lg bg-light"
+  return _c("header", {
+    staticClass: "bg-success"
+  }, [_c("nav", {
+    staticClass: "navbar navbar-expand-lg"
   }, [_c("div", {
     staticClass: "container-fluid"
   }, [_c("a", {
-    staticClass: "navbar-brand",
+    staticClass: "navbar-brand text-white",
     attrs: {
       href: "#"
     }
@@ -9347,7 +9353,9 @@ var render = function render() {
       "data-bs-toggle": "dropdown",
       "aria-expanded": "false"
     }
-  }, [_c("span", [_c("span", [_vm._v(_vm._s(_vm.firstname) + " " + _vm._s(_vm.lastname))]), _vm._v(" "), _c("img", {
+  }, [_c("span", [_c("span", {
+    staticClass: "text-white"
+  }, [_vm._v(_vm._s(_vm.firstname) + " " + _vm._s(_vm.lastname))]), _vm._v(" "), _c("img", {
     staticClass: "personal-photo",
     attrs: {
       src: _vm.previewAvatar,
@@ -13069,7 +13077,9 @@ var render = function render() {
       "class": "alert " + _vm.getAlertClass(notification),
       on: {
         click: function click($event) {
-          if (notification.data.post_id) return _vm.showPost(notification.data.post_id);else if (notification.data.job_id) return _vm.showJob(notification.data.job_id);
+          if (notification.data.post_id) {
+            if (notification.data.comment_id && notification.data.parent_comment_id) return _vm.showPost(notification.data.post_id, notification.data.parent_comment_id, notification.data.comment_id);else if (notification.data.comment_id) return _vm.showPost(notification.data.post_id, notification.data.comment_id);else return _vm.showPost(notification.data.post_id);
+          } else if (notification.data.job_id) return _vm.showJob(notification.data.job_id);
         }
       }
     }, [notification.data.profile ? _c("div", [_c("div", [notification.data.profile.avatar != null ? _c("img", {

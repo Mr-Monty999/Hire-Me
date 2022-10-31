@@ -601,7 +601,9 @@ export default {
                 .then(function (response) {
                     console.log(response);
                     vm.post = response.data.data;
-                    vm.loadComments(vm.post);
+
+                    if (vm.$route.params.parentCommentId)
+                        vm.loadComments(vm.post);
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -617,7 +619,9 @@ export default {
     },
     created() {
         this.user_id = JSON.parse(localStorage.getItem("user")).id;
+
         this.getPost(this.$route.params.id);
+
         console.log("View Posts");
         console.log(this.posts);
     },
