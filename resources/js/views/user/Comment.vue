@@ -68,7 +68,7 @@
                         confirmButtonName="تعديل"
                         title="تعديل تعليقك"
                         iconLaunchButton
-                        launchButtonClass="fa-solid fa-pen-to-square text-warning actions"
+                        launchButtonClass="fa-solid fa-pen-to-square text-warning comment-actions"
                         confirmButtonClass="btn btn-warning"
                         :name="'editComment' + comment.id"
                         @confirmEvent="updateComment(comment)"
@@ -111,7 +111,7 @@
                         iconLaunchButton
                         confirmButtonName="حذف"
                         title="حذف تعليق"
-                        launchButtonClass="fa-solid fa-trash text-danger actions"
+                        launchButtonClass="fa-solid fa-trash text-danger comment-actions"
                         confirmButtonClass="btn btn-danger"
                         :name="'deleteComment' + comment.id"
                         confirmAndClosed
@@ -568,8 +568,5 @@ i {
 }
 textarea {
     border-radius: 10px !important;
-}
-.actions {
-    font-size: 15px !important;
 }
 </style>

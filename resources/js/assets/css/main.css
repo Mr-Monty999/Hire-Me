@@ -41,3 +41,9 @@ main {
 .max-width {
     width: 100%;
 }
+.profile-actions {
+    font-size: 30px;
+}
+.comment-actions {
+    font-size: 15px;
+}

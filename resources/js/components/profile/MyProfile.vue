@@ -42,7 +42,7 @@
                             يتابع
                         </span>
                     </div>
-                    <div class="mar-1">
+                    <div hidden class="mar-1">
                         <label for="" class="form-label">حول</label>
                         <textarea
                             name="profile.about"
@@ -86,7 +86,6 @@
                                 name="addExperience"
                                 confirmAndClosed
                                 @confirmEvent="addExperience()"
-                                @onLaunchButtonClick="clearData()"
                             >
                                 <div class="col-md-12">
                                     <label class="labels">إسم الشركة</label
@@ -159,14 +158,15 @@
                                         </div>
                                     </button>
                                     <div
-                                        class="d-flex flex-column justify-content-center align-items-center gap-1 mar-1"
+                                        class="d-flex justify-content-center align-items-center gap-2 mar-1"
                                     >
                                         <modal-snippet
                                             launchButtonName="حذف"
                                             closeButtonName="إغلاق"
                                             confirmButtonName="حذف"
                                             title="حذف خبرة"
-                                            launchButtonClass="btn btn-danger"
+                                            iconLaunchButton
+                                            launchButtonClass="fa-solid fa-trash text-danger profile-actions"
                                             confirmButtonClass="btn btn-danger"
                                             :name="'deleteExperience' + i"
                                             confirmAndClosed
@@ -181,8 +181,9 @@
                                             launchButtonName="تعديل"
                                             closeButtonName="إغلاق"
                                             confirmButtonName="تعديل"
+                                            iconLaunchButton
                                             title="تعديل خبرة"
-                                            launchButtonClass="btn btn-warning"
+                                            launchButtonClass="fa-solid fa-pen-to-square text-warning profile-actions"
                                             confirmButtonClass="btn btn-warning"
                                             :name="'updateExperience' + i"
                                             @confirmEvent="
@@ -350,9 +351,10 @@
                                         launchButtonName="حذف"
                                         closeButtonName="إغلاق"
                                         confirmButtonName="حذف"
+                                        iconLaunchButton
                                         :title="'حذف ' + skill.name"
-                                        launchButtonClass="btn btn-danger"
-                                        confirmButtonClass="btn btn-success"
+                                        launchButtonClass="fa-solid fa-trash text-danger profile-actions"
+                                        confirmButtonClass="btn btn-danger"
                                         :name="'deleteSkill' + i"
                                         confirmAndClosed
                                         @confirmEvent="deleteSkill(skill.id)"
@@ -452,7 +454,16 @@ export default {
         },
         addExperience() {
             var vm = this;
+            var spinner =
+                '<div class="spinner-border text-white" role="status">' +
+                '<span class="visually-hidden">Loading...</span>' +
+                "</div>";
 
+            vm.$notify({
+                title: "في الإنتظار...",
+                text: "جاري إضافة الخبرة " + spinner,
+                type: "info",
+            });
             axios
                 .post(
                     "/api/experiences",
@@ -472,7 +483,9 @@ export default {
                     console.log(response);
                     vm.user.experiences.push(response.data.data);
                     vm.clearData();
-
+                    vm.$notify({
+                        clean: true,
+                    });
                     vm.$notify({
                         title: "نجاح",
                         text: "تم إضافة الخبرة بنجاح",
@@ -480,6 +493,9 @@ export default {
                     });
                 })
                 .catch(function (error) {
+                    vm.$notify({
+                        clean: true,
+                    });
                     console.log(error.response);
                     var errors = error.response.data.errors;
                     for (const error in errors) {
@@ -493,7 +509,16 @@ export default {
         },
         addSkill() {
             var vm = this;
+            var spinner =
+                '<div class="spinner-border text-white" role="status">' +
+                '<span class="visually-hidden">Loading...</span>' +
+                "</div>";
 
+            vm.$notify({
+                title: "في الإنتظار...",
+                text: "جاري إضافة المهارة " + spinner,
+                type: "info",
+            });
             axios
                 .post(
                     "/api/skills",
@@ -511,6 +536,9 @@ export default {
                     var skillExist = vm.user.skills.find(
                         (el) => el.name == response.data.data.name
                     );
+                    vm.$notify({
+                        clean: true,
+                    });
                     if (!skillExist) {
                         vm.user.skills.push(response.data.data);
                         vm.skill_name = "";
@@ -528,6 +556,9 @@ export default {
                     }
                 })
                 .catch(function (error) {
+                    vm.$notify({
+                        clean: true,
+                    });
                     console.log(error.response);
                     var errors = error.response.data.errors;
                     for (const error in errors) {
@@ -587,7 +618,16 @@ export default {
         },
         deleteSkill(skillId) {
             var vm = this;
+            var spinner =
+                '<div class="spinner-border text-white" role="status">' +
+                '<span class="visually-hidden">Loading...</span>' +
+                "</div>";
 
+            vm.$notify({
+                title: "في الإنتظار...",
+                text: "جاري حذف المهارة " + spinner,
+                type: "info",
+            });
             axios
                 .delete("/api/skills/" + skillId + "/detach", {
                     headers: headerAuth,
@@ -599,12 +639,18 @@ export default {
                     );
                     vm.user.skills.splice(index, 1);
                     vm.$notify({
+                        clean: true,
+                    });
+                    vm.$notify({
                         title: "نجاح",
                         text: "تم حذف المهارة بنجاح",
                         type: "success",
                     });
                 })
                 .catch(function (error) {
+                    vm.$notify({
+                        clean: true,
+                    });
                     console.log(error.response);
                     var errors = error.response.data.errors;
                     for (const error in errors) {
@@ -619,6 +665,16 @@ export default {
         deleteExperience(experienceId) {
             var vm = this;
 
+            var spinner =
+                '<div class="spinner-border text-white" role="status">' +
+                '<span class="visually-hidden">Loading...</span>' +
+                "</div>";
+
+            vm.$notify({
+                title: "في الإنتظار...",
+                text: "جاري حذف الخبرة " + spinner,
+                type: "info",
+            });
             axios
                 .delete("/api/experiences/" + experienceId, {
                     headers: headerAuth,
@@ -630,12 +686,18 @@ export default {
                     );
                     vm.user.experiences.splice(index, 1);
                     vm.$notify({
+                        clean: true,
+                    });
+                    vm.$notify({
                         title: "نجاح",
                         text: "تم حذف الخبرة بنجاح",
                         type: "success",
                     });
                 })
                 .catch(function (error) {
+                    vm.$notify({
+                        clean: true,
+                    });
                     console.log(error.response);
                     var errors = error.response.data.errors;
                     for (const error in errors) {
@@ -660,6 +722,16 @@ export default {
         updateExperience(experienceId) {
             var vm = this;
 
+            var spinner =
+                '<div class="spinner-border text-white" role="status">' +
+                '<span class="visually-hidden">Loading...</span>' +
+                "</div>";
+
+            vm.$notify({
+                title: "في الإنتظار...",
+                text: "جاري حفظ الخبرة " + spinner,
+                type: "info",
+            });
             axios
                 .put(
                     "/api/experiences/" + experienceId,
@@ -685,7 +757,9 @@ export default {
                     vm.user.experiences[expIndex].start = vm.start;
                     vm.user.experiences[expIndex].end = vm.end;
                     vm.user.experiences[expIndex].position = vm.position;
-
+                    vm.$notify({
+                        clean: true,
+                    });
                     vm.$notify({
                         title: "نجاح",
                         text: "تم تعديل الخبرة بنجاح",
@@ -693,6 +767,9 @@ export default {
                     });
                 })
                 .catch(function (error) {
+                    vm.$notify({
+                        clean: true,
+                    });
                     console.log(error.response);
                     var errors = error.response.data.errors;
                     for (const error in errors) {
