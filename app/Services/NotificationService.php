@@ -17,6 +17,7 @@ use App\Notifications\SendCommentReplyNotification;
 use App\Notifications\SendConnectiondataNotification;
 use App\Notifications\SendConnectionRequestNotification;
 use Auth;
+use DB;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Notification;
@@ -74,6 +75,15 @@ class NotificationService
     public static function sendReactToPostNotification($data)
     {
 
+        $notification =  DB::table("notifications")
+            ->where("type", "=", "App\Notifications\ReactToPostNotification")
+            ->where("notifiable_id", "=", $data["post_author"])
+            ->whereJsonContains("data->post_id", $data["post_id"])
+            ->whereJsonContains("data->user_id", $data["user_id"]);
+
+
+        $notification->delete();
+
         if ($data["post_author"] != $data["user_id"])
             User::find($data["post_author"])->notify(new ReactToPostNotification($data));
 
@@ -104,13 +114,15 @@ class NotificationService
     public static function sendCommentNotification($data)
     {
 
-        User::find($data["notifiable_id"])->notify(new  SendCommentNotification($data));
+        if ($data["notifiable_id"] != Auth::id())
+            User::find($data["notifiable_id"])->notify(new  SendCommentNotification($data));
         return true;
     }
     public static function sendMentionUserNotification($data)
     {
 
-        User::find($data["notifiable_id"])->notify(new MentionUserNotification($data));
+        if ($data["notifiable_id"] != Auth::id())
+            User::find($data["notifiable_id"])->notify(new MentionUserNotification($data));
         return true;
     }
 

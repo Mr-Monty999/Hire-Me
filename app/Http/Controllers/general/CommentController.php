@@ -24,7 +24,7 @@ class CommentController extends Controller
         $this->middleware("permission:view-comments|view-any-comments")->only(["index", "show"]);
         $this->middleware("permission:edit-comments|edit-any-comments")->only(["update"]);
         $this->middleware("permission:delete-comments|delete-any-comments")->only(["destroy"]);
-        $this->middleware("throttle:20,1")->only("store");
+        $this->middleware("throttle:10,1")->only("store");
     }
     /**
      * Display a listing of the resource.

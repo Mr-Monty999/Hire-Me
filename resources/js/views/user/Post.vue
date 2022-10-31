@@ -178,19 +178,84 @@
                                 {{ post.dislikes_count | toNumber }}
                             </span>
                         </div>
-                        <div class="d-flex flex-row muted-color">
+                        <!-- <div class="d-flex flex-row muted-color">
                             <span>التعليقات {{ post.comments.length }}</span>
-                        </div>
+                        </div> -->
                     </div>
                     <hr />
                     <div class="comments">
-                        <div class="comment-input">
-                            <textarea
-                                type="text"
+                        <div
+                            class="comment-input d-flex justify-content-center align-items-center"
+                        >
+                            <img
+                                v-if="post.user.profile.avatar != null"
+                                class="photo"
+                                :src="post.user.profile.avatar"
+                                alt=""
+                            />
+                            <img
+                                v-else
+                                class="photo"
+                                src="/images/assets/personal.jpg"
+                                alt=""
+                            />
+                            <textarea-autosize
+                                placeholder="أكتب تعليقك"
+                                ref="myTextarea"
+                                v-model="post.comment"
+                                :max-height="350"
+                                rows="1"
                                 class="form-control"
-                            ></textarea>
-                            <div class="fonts">
+                                @keyup.enter.native="
+                                    sendComment(post, post.comment)
+                                "
+                                important
+                            />
+                            <div hidden class="fonts">
                                 <i class="fa fa-camera"></i>
+                            </div>
+                        </div>
+                        <div
+                            v-if="post.comments_count > 0"
+                            class="d-flex gap-3"
+                        >
+                            <span
+                                v-if="!post.commentsLoaded"
+                                @click="loadComments(post)"
+                                class="muted-color load-comments"
+                                >إظهار {{ post.comments_count }}
+                                تعليق
+                                <i class="fa-solid fa-arrow-rotate-left"></i
+                            ></span>
+                            <span
+                                v-else-if="post.commentsLoaded"
+                                @click="hideComments(post)"
+                                class="muted-color load-comments"
+                                >إخفاء التعليقات
+                                <i class="fa-solid fa-arrow-rotate-right"></i
+                            ></span>
+                        </div>
+                        <div v-for="(comment, i) in post.comments" :key="i">
+                            <div class="comment">
+                                <comment
+                                    :post="post"
+                                    :comment="comment"
+                                    :parentComment="comment"
+                                    @renderComment="$forceUpdate()"
+                                    :loadRepliesById="
+                                        $route.params.parentCommentId
+                                    "
+                                />
+                            </div>
+                            <div v-for="(reply, x) in comment.replies" :key="x">
+                                <div class="reply">
+                                    <comment
+                                        :post="post"
+                                        :comment="reply"
+                                        :parentComment="comment"
+                                        @renderComment="$forceUpdate()"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -210,6 +275,7 @@ import headerAuth from "../../helpers/auth";
 import headerFormAuth from "../../helpers/formAuth";
 import ModalSnippet from "../../components/bootstrap/ModalSnippet.vue";
 import Loading from "../../components/bootstrap/Loading.vue";
+import Comment from "../../views/user/Comment.vue";
 
 export default {
     name: "Post",
@@ -230,6 +296,7 @@ export default {
     components: {
         ModalSnippet,
         Loading,
+        Comment,
     },
     methods: {
         getFile(e) {
@@ -407,6 +474,116 @@ export default {
             else if (post.react_type == 2 && post.dislikes_count > 0)
                 post.dislikes_count -= 1;
         },
+        sendComment(post, comment) {
+            let vm = this;
+            var spinner =
+                '<div class="spinner-border text-white" role="status">' +
+                '<span class="visually-hidden">Loading...</span>' +
+                "</div>";
+
+            vm.$notify({
+                title: "في الإنتظار...",
+                text: "جاري مشاركة التعليق" + spinner,
+                type: "info",
+            });
+            let tempContent = post.comment;
+            post.comment = "";
+
+            axios
+                .post(
+                    "/api/comments",
+                    {
+                        content: comment,
+                        post_id: post.id,
+                    },
+                    {
+                        headers: headerAuth,
+                    }
+                )
+                .then(function (response) {
+                    console.log(response);
+                    if (!post.comments) post.comments = [];
+                    post.comments.unshift(response.data.data);
+                    post.comments_count += 1;
+                    vm.$notify({
+                        clean: true,
+                    });
+                    vm.$notify({
+                        title: "نجاح",
+                        text: "تمت مشاركة التعليق بنجاح",
+                        type: "success",
+                    });
+                })
+                .catch(function (error) {
+                    post.comment = tempContent.trim();
+                    vm.$notify({
+                        clean: true,
+                    });
+                    console.log(error.response);
+                    var errors = error.response.data.errors;
+                    for (const error in errors) {
+                        vm.$notify({
+                            title: "خطأ:لم يتم تنفيذ",
+                            text: errors[error][0],
+                            type: "error",
+                        });
+                    }
+                });
+        },
+        loadComments(post) {
+            let vm = this;
+            axios
+                .get("/api/posts/" + post.id + "/comments", {
+                    headers: headerAuth,
+                })
+                .then(function (response) {
+                    console.log(response);
+                    post.comments = response.data.data;
+                    vm.$set(post, "commentsLoaded", true);
+                    if (vm.$route.params.parentCommentId) {
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                    var errors = error.response.data.errors;
+                    for (const error in errors) {
+                        vm.$notify({
+                            title: "خطأ:لم يتم تنفيذ",
+                            text: errors[error][0],
+                            type: "error",
+                        });
+                    }
+                });
+        },
+        hideComments(post) {
+            post.comments = [];
+            this.$set(post, "commentsLoaded", false);
+        },
+        loadReplies(comment) {
+            let vm = this;
+            axios
+                .get("/api/comments/" + comment.id + "/replies", {
+                    headers: headerAuth,
+                })
+                .then(function (response) {
+                    console.log(response);
+                    comment.replies = response.data.data;
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                    var errors = error.response.data.errors;
+                    for (const error in errors) {
+                        vm.$notify({
+                            title: "خطأ:لم يتم تنفيذ",
+                            text: errors[error][0],
+                            type: "error",
+                        });
+                    }
+                });
+        },
+        hideReplies(comment) {
+            comment.replies = [];
+        },
 
         previewAvatar(avatar) {
             if (!avatar) {
@@ -424,6 +601,7 @@ export default {
                 .then(function (response) {
                     console.log(response);
                     vm.post = response.data.data;
+                    vm.loadComments(vm.post);
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -453,7 +631,6 @@ export default {
     },
 };
 </script>
-
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap");
 body {
@@ -523,9 +700,7 @@ hr {
 .comment-input {
     position: relative;
 }
-.comment-input textarea {
-    height: 50px;
-}
+
 .fonts {
     position: absolute;
     left: 13px;
@@ -551,14 +726,44 @@ hr {
 a {
     text-decoration: none;
 }
-textarea {
-    resize: none !important;
-    height: 300px;
-}
 img {
     cursor: pointer;
 }
 i {
     cursor: pointer;
+}
+
+.fa-arrow-rotate-left,
+.fa-arrow-rotate-right {
+    font-size: inherit;
+}
+.photo {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-left: 5px;
+}
+.fullname {
+    font-size: 16px;
+}
+
+.comment {
+    margin-right: 20px;
+    margin-left: 10px;
+}
+.reply {
+    margin-right: 60px;
+    margin-left: 10px;
+}
+
+textarea {
+    border-radius: 10px !important;
+}
+.load-comments {
+    font-size: 15px;
+    cursor: pointer;
+}
+.load-comments:hover {
+    color: #65676b !important;
 }
 </style>

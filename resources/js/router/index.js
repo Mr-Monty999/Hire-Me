@@ -64,7 +64,7 @@ const routes = [
         component: Jobs,
     },
     {
-        path: "/posts/:id",
+        path: "/posts/:id/:parentCommentId?/:replyCommentId?",
         name: "post",
         component: Post,
     },

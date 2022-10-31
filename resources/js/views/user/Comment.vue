@@ -80,7 +80,7 @@
                                 class="form-control"
                                 placeholder="محتوى المنشور"
                                 name="content"
-                                rows="9"
+                                rows="7"
                                 v-model="content"
                             ></textarea>
                             <!-- <div class="d-flex justify-content-center mar-1">
@@ -400,9 +400,15 @@ export default {
             }
         },
     },
-    props: ["post", "comment", "parentComment"],
+    props: ["post", "comment", "parentComment", "loadRepliesById"],
     created() {
         this.user_id = JSON.parse(localStorage.getItem("user")).id;
+        if (
+            this.loadRepliesById &&
+            this.loadRepliesById == this.parentComment.id
+        ) {
+            this.loadReplies(this.comment);
+        }
     },
 };
 </script>

@@ -73,6 +73,7 @@ class PostController extends Controller
 
     public function react(Request $request, $postId)
     {
+
         $data = $request->all();
         $data["user_id"] = Auth::id();
         $reacted = PostService::react($data, $postId);
