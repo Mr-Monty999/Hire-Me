@@ -145,16 +145,10 @@ export default {
                         text: "تم نشر المنشور بنجاح",
                         type: "success",
                     });
-                    vm.posts.data.unshift(response.data.data);
+                    // vm.posts.data.unshift(response.data.data);
                     vm.content = "";
                     vm.photo = "";
                     vm.previewPhoto = "";
-                    // services.sendNotification({
-                    //     type: 1,
-                    //     user_id: vm.user_id,
-                    //     post_id: response.data.data.id,
-                    //     content: response.data.data.content,
-                    // });
                 })
                 .catch(function (error) {
                     vm.$notify({
