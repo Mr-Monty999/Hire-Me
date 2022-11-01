@@ -3,7 +3,10 @@
         <loading v-if="!loaded"></loading>
         <main v-if="loaded" class="container rounded mt-5 mb-5">
             <div class="row gap-md-4">
-                <div v-if="user" class="col-md-3 border-right bg-mine radius-1">
+                <div
+                    v-if="user.profile"
+                    class="col-md-3 border-right bg-mine radius-1"
+                >
                     <div
                         class="d-flex flex-column align-items-center text-center p-3 py-5"
                     >

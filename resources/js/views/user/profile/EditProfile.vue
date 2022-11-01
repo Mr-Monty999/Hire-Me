@@ -2,7 +2,7 @@
     <div class="root-div">
         <loading v-if="!loaded"></loading>
         <main v-if="loaded" class="container rounded mt-5 mb-5">
-            <div v-if="user" class="row gap-4">
+            <div v-if="user.profile" class="row gap-4">
                 <div class="col-md-3 border-right bg-mine">
                     <button @click="back()" class="btn btn-secondary">
                         رجوع
@@ -23,9 +23,11 @@
                             class="font-weight-bold text-break"
                             >({{ user.profile.nickname }})</span
                         >
-                        <span class="text-black-50 text-break">{{
-                            user.profile.user.email
-                        }}</span>
+                        <span
+                            v-if="user.profile.user.email"
+                            class="text-black-50 text-break"
+                            >{{ user.profile.user.email }}</span
+                        >
                     </div>
                     <div class="mar-1">
                         <label for="" class="form-label">حول</label>

@@ -10009,7 +10009,7 @@ var render = function render() {
     staticClass: "container rounded mt-5 mb-5"
   }, [_c("div", {
     staticClass: "row gap-md-4"
-  }, [_vm.user ? _c("div", {
+  }, [_vm.user.profile ? _c("div", {
     staticClass: "col-md-3 border-right bg-mine radius-1"
   }, [_c("div", {
     staticClass: "d-flex flex-column align-items-center text-center p-3 py-5"
@@ -12464,7 +12464,7 @@ var render = function render() {
     staticClass: "root-div"
   }, [!_vm.loaded ? _c("loading") : _vm._e(), _vm._v(" "), _vm.loaded ? _c("main", {
     staticClass: "container rounded mt-5 mb-5"
-  }, [_vm.user ? _c("div", {
+  }, [_vm.user.profile ? _c("div", {
     staticClass: "row gap-4"
   }, [_c("div", {
     staticClass: "col-md-3 border-right bg-mine"
@@ -12487,9 +12487,9 @@ var render = function render() {
     staticClass: "font-weight-bold text-break"
   }, [_vm._v(_vm._s(_vm.user.profile.firstname) + "\n                        " + _vm._s(_vm.user.profile.lastname))]), _vm._v(" "), _vm.user.profile.nickname ? _c("span", {
     staticClass: "font-weight-bold text-break"
-  }, [_vm._v("(" + _vm._s(_vm.user.profile.nickname) + ")")]) : _vm._e(), _vm._v(" "), _c("span", {
+  }, [_vm._v("(" + _vm._s(_vm.user.profile.nickname) + ")")]) : _vm._e(), _vm._v(" "), _vm.user.profile.user.email ? _c("span", {
     staticClass: "text-black-50 text-break"
-  }, [_vm._v(_vm._s(_vm.user.profile.user.email))])]), _vm._v(" "), _c("div", {
+  }, [_vm._v(_vm._s(_vm.user.profile.user.email))]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "mar-1"
   }, [_c("label", {
     staticClass: "form-label",
