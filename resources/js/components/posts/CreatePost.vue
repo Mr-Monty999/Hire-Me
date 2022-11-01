@@ -131,7 +131,7 @@ export default {
                 type: "info",
             });
             axios
-                .post("/api/posts/", data, {
+                .post("/api/posts", data, {
                     headers: headerFormAuth,
                 })
                 .then(function (response) {
@@ -145,7 +145,7 @@ export default {
                         text: "تم نشر المنشور بنجاح",
                         type: "success",
                     });
-                    // vm.posts.data.unshift(response.data.data);
+                    vm.posts.data.unshift(response.data.data);
                     vm.content = "";
                     vm.photo = "";
                     vm.previewPhoto = "";
