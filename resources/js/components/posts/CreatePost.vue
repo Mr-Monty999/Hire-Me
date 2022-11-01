@@ -186,6 +186,8 @@ export default {
     },
     created() {
         this.user_id = JSON.parse(localStorage.getItem("user")).id;
+    },
+    mounted() {
         this.getUserInfo();
     },
 };
