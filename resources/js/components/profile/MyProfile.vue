@@ -3,10 +3,7 @@
         <loading v-if="!loaded"></loading>
         <main v-if="loaded" class="container rounded mt-5 mb-5">
             <div class="row gap-md-4">
-                <div
-                    v-if="user.profile"
-                    class="col-md-3 border-right bg-mine radius-1"
-                >
+                <div class="col-md-3 border-right bg-mine radius-1">
                     <div
                         class="d-flex flex-column align-items-center text-center p-3 py-5"
                     >
@@ -598,6 +595,9 @@ export default {
                 .then(function (response) {
                     console.log(response);
                     vm.user = response.data.data;
+                    for (const key in vm.user.profile) {
+                        if (key == null) key = "";
+                    }
                 })
                 .catch(function (error) {
                     console.log(error.response);

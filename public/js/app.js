@@ -6237,6 +6237,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_posts_CreatePost_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../components/posts/CreatePost.vue */ "./resources/js/components/posts/CreatePost.vue");
 /* harmony import */ var _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../components/bootstrap/ModalSnippet.vue */ "./resources/js/components/bootstrap/ModalSnippet.vue");
 /* harmony import */ var _components_bootstrap_Loading_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../components/bootstrap/Loading.vue */ "./resources/js/components/bootstrap/Loading.vue");
+function _readOnlyError(name) { throw new TypeError("\"" + name + "\" is read-only"); }
+
 
 
 
@@ -6426,6 +6428,10 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         console.log(response);
         vm.user = response.data.data;
+
+        for (var key in vm.user.profile) {
+          if (key == null) "", _readOnlyError("key");
+        }
       })["catch"](function (error) {
         console.log(error.response);
       });
@@ -10009,7 +10015,7 @@ var render = function render() {
     staticClass: "container rounded mt-5 mb-5"
   }, [_c("div", {
     staticClass: "row gap-md-4"
-  }, [_vm.user.profile ? _c("div", {
+  }, [_c("div", {
     staticClass: "col-md-3 border-right bg-mine radius-1"
   }, [_c("div", {
     staticClass: "d-flex flex-column align-items-center text-center p-3 py-5"
@@ -10071,7 +10077,7 @@ var render = function render() {
         _vm.$set(_vm.user.profile, "about", $event.target.value);
       }
     }
-  })])]) : _vm._e(), _vm._v(" "), _c("div", {
+  })])]), _vm._v(" "), _c("div", {
     staticClass: "col-md-5 border-right bg-mine radius-1"
   }, [_c("div", {
     staticClass: "p-3 py-5"
@@ -12464,7 +12470,7 @@ var render = function render() {
     staticClass: "root-div"
   }, [!_vm.loaded ? _c("loading") : _vm._e(), _vm._v(" "), _vm.loaded ? _c("main", {
     staticClass: "container rounded mt-5 mb-5"
-  }, [_vm.user.profile ? _c("div", {
+  }, [_c("div", {
     staticClass: "row gap-4"
   }, [_c("div", {
     staticClass: "col-md-3 border-right bg-mine"
@@ -13087,7 +13093,7 @@ var render = function render() {
         return _vm.savePersonalInfo(_vm.user_id);
       }
     }
-  }, [_vm._v("\n                                هل أنت متأكد من حفظ الملف الشخصي\n                            ")])], 1)])])])]) : _vm._e()]) : _vm._e()], 1);
+  }, [_vm._v("\n                                هل أنت متأكد من حفظ الملف الشخصي\n                            ")])], 1)])])])])]) : _vm._e()], 1);
 };
 
 var staticRenderFns = [function () {
