@@ -12,10 +12,10 @@
                     <div class="p-3 py-5">
                         <create-post :posts="posts"></create-post>
                         <h3>المنشورات</h3>
-                        <view-posts
+                        <!-- <view-posts
                             :onPageClick="getPosts"
                             :posts="posts"
-                        ></view-posts>
+                        ></view-posts> -->
                     </div>
                 </div>
                 <div class="col-md-2 bg-mine radius-1">

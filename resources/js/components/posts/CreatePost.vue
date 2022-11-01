@@ -145,7 +145,7 @@ export default {
                         text: "تم نشر المنشور بنجاح",
                         type: "success",
                     });
-                    // vm.posts.data.unshift(response.data.data);
+                    vm.posts.data.unshift(response.data.data);
                     vm.content = "";
                     vm.photo = "";
                     vm.previewPhoto = "";
