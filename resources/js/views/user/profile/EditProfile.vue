@@ -24,7 +24,7 @@
                             >({{ user.profile.nickname }})</span
                         >
                         <span
-                            v-if="user.profile.user.email"
+                            v-if="user.profile.user"
                             class="text-black-50 text-break"
                             >{{ user.profile.user.email }}</span
                         >
