@@ -104,7 +104,7 @@ export default {
                 })
                 .then(function (response) {
                     console.log(response);
-                    vm.profile = response.data.data;
+                    // vm.profile = response.data.data;
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -118,7 +118,6 @@ export default {
             // data.append("likes_count", 0);
             // data.append("dislikes_count", 0);
             // data.append("photo", vm.previewPhoto);
-            alert("creating");
             // data.append("user_id", vm.user_id);
 
             var spinner =
