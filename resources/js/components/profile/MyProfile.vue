@@ -597,6 +597,8 @@ export default {
                     vm.user = response.data.data;
 
                     for (const key in vm.user.profile) {
+                        console.log(vm.user.profile[key]);
+
                         if (
                             !vm.user.profile[key] ||
                             vm.user.profile[key] == null
