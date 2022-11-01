@@ -139,9 +139,9 @@
                     </div>
 
                     <div>
-                        <pre class="text-justify p-2">
+                        <div class="text-justify p-2">
                             {{ post.content }}
-                        </pre>
+                        </div>
                         <div class="d-flex justify-content-center">
                             <img :src="post.photo" class="img-fluid" />
                         </div>
