@@ -100,7 +100,7 @@ export default {
 
             axios
                 .get("/api/users/" + vm.user_id + "/profile", {
-                    headers: headerFormAuth,
+                    headers: headerAuth,
                 })
                 .then(function (response) {
                     console.log(response);
@@ -186,8 +186,6 @@ export default {
     },
     created() {
         this.user_id = JSON.parse(localStorage.getItem("user")).id;
-    },
-    mounted() {
         this.getUserInfo();
     },
 };
