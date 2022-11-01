@@ -104,7 +104,7 @@ export default {
                 })
                 .then(function (response) {
                     console.log(response);
-                    // vm.profile = response.data.data;
+                    vm.profile = response.data.data;
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -145,7 +145,7 @@ export default {
                         text: "تم نشر المنشور بنجاح",
                         type: "success",
                     });
-                    vm.posts.data.unshift(response.data.data);
+                    // vm.posts.data.unshift(response.data.data);
                     vm.content = "";
                     vm.photo = "";
                     vm.previewPhoto = "";
