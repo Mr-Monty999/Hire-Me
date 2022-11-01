@@ -31,7 +31,7 @@
                                     v-model="title"
                                 />
                             </div>
-                            <pre class="col-md-12">
+                            <div class="col-md-12">
                                 <textarea
                                     type="text"
                                     class="form-control"
@@ -40,7 +40,7 @@
                                     cols="100px"
                                     v-model="description"
                                 ></textarea>
-                            </pre>
+                            </div>
                             <div class="col-md-12 mar-1">
                                 <input
                                     type="text"

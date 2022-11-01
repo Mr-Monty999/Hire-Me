@@ -134,7 +134,7 @@
                             {{ job.title }}
                         </h3>
                         <div class="text-justify p-2">
-                            <div>{{ job.description }}</div>
+                            <pre>{{ job.description }}</pre>
                         </div>
                         <hr />
                         <div
