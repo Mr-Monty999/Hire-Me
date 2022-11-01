@@ -596,7 +596,8 @@ export default {
                     console.log(response);
                     vm.user = response.data.data;
                     for (const key in vm.user.profile) {
-                        if (key == null) key = "";
+                        if (vm.user.profile.key == null)
+                            vm.user.profile.key = "";
                     }
                 })
                 .catch(function (error) {

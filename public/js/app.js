@@ -6237,8 +6237,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_posts_CreatePost_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../components/posts/CreatePost.vue */ "./resources/js/components/posts/CreatePost.vue");
 /* harmony import */ var _components_bootstrap_ModalSnippet_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../components/bootstrap/ModalSnippet.vue */ "./resources/js/components/bootstrap/ModalSnippet.vue");
 /* harmony import */ var _components_bootstrap_Loading_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../components/bootstrap/Loading.vue */ "./resources/js/components/bootstrap/Loading.vue");
-function _readOnlyError(name) { throw new TypeError("\"" + name + "\" is read-only"); }
-
 
 
 
@@ -6430,7 +6428,7 @@ function _readOnlyError(name) { throw new TypeError("\"" + name + "\" is read-on
         vm.user = response.data.data;
 
         for (var key in vm.user.profile) {
-          if (key == null) "", _readOnlyError("key");
+          if (vm.user.profile.key == null) vm.user.profile.key = "";
         }
       })["catch"](function (error) {
         console.log(error.response);
