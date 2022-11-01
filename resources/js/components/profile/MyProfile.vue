@@ -601,7 +601,8 @@ export default {
 
                         if (
                             !vm.user.profile[key] ||
-                            vm.user.profile[key] == null
+                            vm.user.profile[key] == null ||
+                            vm.user.profile == "null"
                         )
                             vm.user.profile[key] = "";
                     }
