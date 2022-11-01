@@ -576,6 +576,13 @@ export default {
                     console.log(response);
 
                     vm.user.profile = response.data.data;
+                    for (const key in vm.user.profile) {
+                        if (
+                            !vm.user.profile[key] ||
+                            vm.user.profile[key] == null
+                        )
+                            vm.user.profile[key] = "";
+                    }
                 })
                 .catch(function (error) {
                     console.log(error.response);
