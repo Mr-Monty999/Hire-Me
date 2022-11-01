@@ -25,7 +25,7 @@ class PostStoreRequest extends FormRequest
     {
         return [
             "content" => "required_if:photo,null",
-            "photo" => "image|nullable",
+            "photo" => "image|nullable|max:3000",
         ];
     }
 
@@ -33,7 +33,9 @@ class PostStoreRequest extends FormRequest
     {
         return [
             "content.required_if" => "الرجاء كتابة محتوي المنشور !",
-            "photo.image" => "الرجاء إختيار صورة فقط !"
+            "photo.image" => "الرجاء إختيار صورة فقط !",
+            "photo.max" => "الحد الأقصى للصورة 3 ميجا!"
+
         ];
     }
 }
