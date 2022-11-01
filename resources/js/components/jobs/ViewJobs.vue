@@ -134,7 +134,7 @@
                             {{ job.title }}
                         </h3>
                         <div class="text-break p-2">
-                            <div style="white-space: pre">{{ job.description }}</div>
+                            <div style="white-space: pre-wrap">{{ job.description }}</div>
                         </div>
                         <hr />
                         <div
