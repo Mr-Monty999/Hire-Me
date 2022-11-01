@@ -135,7 +135,7 @@
                         </h3>
                         <div class="text-justify p-2">
                             <div style="white-space: pre">
-                                {{ job.description }}
+                                {{ job.description.trim() }}
                             </div>
                         </div>
                         <hr />

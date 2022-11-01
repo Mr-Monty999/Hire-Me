@@ -140,7 +140,7 @@
 
                     <div>
                         <div style="white-space: pre" class="text-justify p-2">
-                            {{ post.content }}
+                            {{ post.content.trim() }}
                         </div>
                         <div class="d-flex justify-content-center">
                             <img :src="post.photo" class="img-fluid" />
