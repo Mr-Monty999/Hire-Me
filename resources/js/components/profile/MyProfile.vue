@@ -595,10 +595,12 @@ export default {
                 .then(function (response) {
                     console.log(response);
                     vm.user = response.data.data;
+                    alert(vm.user);
+
                     for (const key in vm.user.profile) {
                         if (vm.user.profile[key] == null)
                             vm.user.profile[key] = "";
-                        console.log(key);
+                        alert(key);
                     }
                 })
                 .catch(function (error) {
