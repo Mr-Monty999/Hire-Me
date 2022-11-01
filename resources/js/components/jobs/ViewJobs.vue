@@ -130,10 +130,10 @@
                     </div>
 
                     <div>
-                        <h3 class="text-justify p-2">
+                        <h3 class="text-break p-2">
                             {{ job.title }}
                         </h3>
-                        <div class="text-justify p-2">
+                        <div class="text-break p-2">
                             <div style="white-space: pre">{{ job.description }}</div>
                         </div>
                         <hr />
@@ -187,7 +187,7 @@
                                 <span>التعليقات</span>
                             </div> -->
                         </div>
-                        <small class="text-justify p-2 date">
+                        <small class="text-break p-2 date">
                             {{ job.location }}
                             <i
                                 class="fa-solid fa-location-dot text-primary"
