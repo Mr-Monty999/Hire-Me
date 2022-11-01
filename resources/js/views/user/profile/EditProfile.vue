@@ -29,7 +29,7 @@
                             >{{ user.profile.user.email }}</span
                         >
                     </div>
-                    <div class="mar-1">
+                    <!-- <div class="mar-1">
                         <label for="" class="form-label">حول</label>
                         <textarea
                             name="about"
@@ -41,7 +41,7 @@
                             readonly
                             placeholder="عني"
                         ></textarea>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="col-md-8 border-right bg-mine">
                     <div class="p-3 py-5">
