@@ -10,10 +10,9 @@
                 </div>
                 <div class="col-md-7 border-right bg-mine radius-1">
                     <div class="p-3 py-5">
-                        <create-post v-if="posts" :posts="posts"></create-post>
+                        <create-post :posts="posts"></create-post>
                         <h3>المنشورات</h3>
                         <view-posts
-                            v-if="posts"
                             :onPageClick="getPosts"
                             :posts="posts"
                         ></view-posts>

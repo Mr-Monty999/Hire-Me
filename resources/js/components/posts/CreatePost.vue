@@ -117,8 +117,7 @@ export default {
             data.append("photo", vm.previewPhoto);
             // data.append("likes_count", 0);
             // data.append("dislikes_count", 0);
-            data.append("photo", vm.previewPhoto);
-
+            console.log(data);
             // data.append("user_id", vm.user_id);
 
             var spinner =
