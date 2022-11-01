@@ -139,7 +139,7 @@
                     </div>
 
                     <div>
-                        <div class="text-justify p-2">
+                        <div style="white-space: pre" class="text-justify p-2">
                             {{ post.content }}
                         </div>
                         <div class="d-flex justify-content-center">
